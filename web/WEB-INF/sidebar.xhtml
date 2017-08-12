@@ -1,0 +1,105 @@
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:po="http://primefaces.org/omega">
+	<div class="sidebar">
+    	
+        <div class="nano">
+            <div class="nano-content sidebar-scroll-content">
+                <div class="logo">
+                   <p:graphicImage name="images/logoSideBar.png" library="omega-layout" width="130"/>               
+                </div>
+
+                <div class="profile">
+                    <!-- <p:graphicImage name="images/man-icon-round.png" library="omega-layout" /> -->
+                    <a id="profile-button" href="#">
+                        <span class="username">Luis F. Ortiz</span>
+                        <i class="fa fa-fw fa-cog"></i>
+                    </a>
+                    <ul>
+                    	<h:form>
+                        <li><a href="#"><i class="fa fa-fw fa-sliders"></i><span>Account</span></a></li>
+                        <li><a href="#"><i class="fa fa-fw fa-bell"></i><span>Notifications</span><span class="menu-badge">2</span></a></li>
+                        <li><h:commandLink  action="#{loginService.logout()}"><i class="fa fa-fw fa-sign-out"></i><span>Salir</span></h:commandLink></li>
+                        </h:form>
+                    </ul>
+                </div>
+
+                <div class="menu">
+                    <po:menu>
+                        <p:menuitem id="om_dashboard" value="Dashboard" icon="fa fa-home" outcome="/dashboard"/>
+                        <p:submenu id="om_afiliadoconfg" label="Afiliado" icon="fa fa-child">
+                         	
+                        </p:submenu>
+                        <p:submenu id="om_campanaconfg" label="Campañas" icon="fa fa-bullhorn">
+                        	<p:submenu id="om_smscampania" label="Campañas y mensajes SMS" icon="fa fa-commenting">
+                        		 <p:menuitem id="om_smsdirecto" value="Envio SMS Directo" icon="fa fa-commenting-o" outcome="/login"/>
+                        		 <p:menuitem id="om_smscamp" value="Campaña SMS" icon="fa fa-comments-o" outcome="/login"/>		
+                        	</p:submenu>
+                        	<p:submenu id="om_emailcampania" label="Campañas &amp; Email Marketing" icon="fa fa-envelope">
+                        		<p:menuitem id="om_emaildirecto" value="Envio Email Directo" icon="fa fa-envelope" outcome="/login"/>
+                        		<p:menuitem id="om_emailcamp" value="Campaña Email" icon="fa fa-envelope-o" outcome="/login"/>		
+                        	</p:submenu>
+                        </p:submenu>
+                        <p:submenu id="om_components" label="Components" icon="fa fa-sitemap">
+                        	<p:menuitem id="om_afiliado" value="Afiliado" icon="fa fa-user" outcome="/afiliadoEdit" />
+                            <p:menuitem id="om_sample" value="Sample Page" icon="fa fa-columns" outcome="/sample" />
+                            <p:menuitem id="om_forms" value="Forms" icon="fa fa-code" outcome="/forms" />
+                            <p:menuitem id="om_data" value="Data" icon="fa fa-table" outcome="/data" />
+                            <p:menuitem id="om_panels" value="Panels" icon="fa fa-list-alt" outcome="/panel" />
+                            <p:menuitem id="om_overlays" value="Overlays" icon="fa fa-square" outcome="/overlay" />
+                            <p:menuitem id="om_menus" value="Menus" icon="fa fa-minus-square-o" outcome="/menu" />
+                            <p:menuitem id="om_messages" value="Messages" icon="fa fa-circle-o-notch" outcome="/messages" />
+                            <p:menuitem id="om_charts" value="Charts" icon="fa fa-area-chart" outcome="/charts" />
+                            <p:menuitem id="om_file" value="File" icon="fa fa-arrow-circle-o-up" outcome="/file" />
+                            <p:menuitem id="om_misc" value="Misc" icon="fa fa-user-secret" outcome="/misc" />
+                        </p:submenu>
+                        <p:menuitem id="om_db_landing" value="Landing" icon="fa fa-certificate" outcome="/landing"/>
+                        <p:submenu id="om_default" label="Template Pages" icon="fa fa-life-saver">
+                            <p:menuitem id="om_empty" value="Empty Page" icon="fa fa-square-o" outcome="/empty" />
+                            <p:menuitem id="om_login" value="Login Page" icon="fa fa-sign-in" outcome="/login" />
+                            <p:menuitem id="om_error" value="Error Page" icon="fa fa-exclamation-circle" outcome="/error" />
+                            <p:menuitem id="om_404" value="404 Page" icon="fa fa-times" outcome="/404" />
+                            <p:menuitem id="om_access" value="Access Denied Page" icon="fa fa-exclamation-triangle" outcome="/access" />
+                        </p:submenu>
+                        <p:submenu id="om_paramglobal" label="Parametros Globales" icon="fa fa-cogs">                        	
+                            <p:menuitem id="om_empresa" value="Empresa" icon="fa fa-building-o" outcome="/empresalist" />
+                            <p:menuitem id="om_sucursal" value="Sucursal" icon="fa fa-home" outcome="/sucursallist" />
+                            <p:menuitem id="om_vendedor" value="Vendedor" icon="fa fa-user" outcome="/vendedorlist" />                                                 
+                        </p:submenu>                        
+                        <p:submenu id="om_configuracionsistema" label="Configuracion" icon="fa fa-cog">
+                        	<p:menuitem id="om_usuario" value="Usurio Sistema" icon="fa fa-users" outcome="usuariolist" />      
+                        </p:submenu>
+                        <p:submenu id="om_hierarchy" label="Menu Hierarchy" icon="fa fa-gg">
+                            <p:submenu id="om_sm1" label="Submenu 1" icon="fa fa-sign-in">
+                                <p:submenu id="om_sm11" label="Submenu 1.1" icon="fa fa-sign-in">
+                                    <p:menuitem id="om_lnk111" value="Link 1.1.1" icon="fa fa-sign-in" url="#" />
+                                    <p:menuitem id="om_lnk112" value="Link 1.1.2" icon="fa fa-sign-in" url="#" />
+                                    <p:menuitem id="om_lnk113" value="Link 1.1.3" icon="fa fa-sign-in" url="#" />
+                                </p:submenu>
+                                <p:submenu id="om_sm12" label="Submenu 1.2" icon="fa fa-sign-in">
+                                    <p:menuitem id="om_lnk121" value="Link 1.2.1" icon="fa fa-sign-in" url="#" />
+                                </p:submenu>
+                            </p:submenu>
+                            <p:submenu id="om_sm2" label="Submenu 2" icon="fa fa-sign-in">
+                                <p:submenu id="om_sm21" label="Submenu 2.1" icon="fa fa-sign-in">
+                                    <p:menuitem id="om_lnk211" value="Link 2.1.1" icon="fa fa-sign-in" url="#" />
+                                    <p:menuitem id="om_lnk212" value="Link 2.1.2" icon="fa fa-sign-in" url="#" />
+                                </p:submenu>
+                                <p:submenu id="om_sm22" label="Submenu 2.2" icon="fa fa-sign-in">
+                                    <p:menuitem id="om_lnk221" value="Link 2.2.1" icon="fa fa-sign-in" url="#" />
+                                </p:submenu>
+                            </p:submenu>
+                        </p:submenu>
+
+                        <p:menuitem id="om_doc" value="Documentation" icon="fa fa-book" outcome="/docs"/>
+                    </po:menu>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</ui:composition>

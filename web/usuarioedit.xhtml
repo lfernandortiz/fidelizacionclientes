@@ -1,0 +1,114 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">#{usuarioBeanEdit.usurioSelected.idusuarioweb == null ? 'Crear' : 'Editar'} Usuario</ui:define>
+
+    <ui:define name="content">    
+        <h:form id="crearusuarioform">
+       <!--  <p:growl id="growl" showDetail="true" sticky="true" />  -->
+        <p:messages id="crearusuariomessage"  autoUpdate="true" closable="true" />
+            <div class="ui-fluid">
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <div class="card">   
+                                              
+                            <h1><i class="fa fa-user"></i> Datos Basicos del Usuario </h1>
+                            
+							<p:panelGrid columns="4" id="detailempresa"
+								columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+								
+								<p:outputLabel for="nombreusuarioid" value="Nombre Usuario" />
+								<p:inputText id="nombreusuarioid"
+									value="#{usuarioBeanEdit.usurioSelected.nombreusuario}" required="true" />
+
+								<p:outputLabel for="usuarioid" value="Usuario" />
+								<p:inputText id="usuarioid"
+									value="#{usuarioBeanEdit.usurioSelected.usuario}" required="true" />
+
+								<p:outputLabel for="pwd1" value="Clave" />
+								<p:password id="pwd1" value="#{passwordView.password5}" match="pwd2" 
+									feedback="true" inline="true" required="true" />
+									
+								<p:outputLabel for="pwd2" value="Verificacion Clave" />
+								<p:password id="pwd2" value="#{passwordView.password5}" feedback="true" inline="true" required="true" />
+								
+								<p:outputLabel for="activoid" value="Usuario Activo" />
+        						<p:selectBooleanCheckbox id="activoid" value="#{usuarioBeanEdit.activo}" />
+        						
+        						<p:outputLabel for="emailid" value="Email Usuario" />
+								<p:inputText id="emailid"
+									value="#{usuarioBeanEdit.usurioSelected.emailusuario}" required="true" />
+								
+							</p:panelGrid>
+							<p:separator style="margin-bottom:5px"/>
+							
+							<p:panelGrid columns="6" id="buttons"
+								columnClasses="ui-grid-col-2,"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">	
+										
+								<p:commandButton value="Crear" id="crearnuevaid"
+												 action="#{sucursalEdit.crearSucursal()}"
+												 rendered="#{sucursalEdit.sucSelected.idsucursal == null || sucursalEdit.sucSelected.idsucursal == 0}" />
+											 
+								<p:commandButton value="Actualizar" id="actualizarid"
+												 action="#{sucursalEdit.actualizarSucursal()}"
+												 rendered="#{sucursalEdit.sucSelected.idsucursal != null &amp;&amp;sucursalEdit.sucSelected.idsucursal != 0}" />
+								 
+								<p:commandButton value="Cancelar" 
+												 id="cancelarnuevaid"
+												 action="#{usuarioBeanEdit.cancelarEdit()}"
+												 process="@this"/>	
+												 
+								<p:commandButton value="Eliminar" 
+												 id="eliminarsuc"
+												 styleClass="red-button"
+												 action="#{sucursalEdit.eliminar()}"
+												 process="@this"
+												 rendered="#{sucursalEdit.sucSelected.idsucursal != null &amp;&amp;sucursalEdit.sucSelected.idsucursal != 0}" />
+							</p:panelGrid>
+							
+							<hr class=""/>
+							
+							<p:tabView>
+								<p:tab title="Asignacion de Roles">
+									<h3><i class="fa fa-id-card"></i> Asignacion de Roles</h3>
+									<p:pickList id="pickList" value="#{usuarioBeanEdit.roles}" style="width:100%" showSourceControls="true"
+										showTargetControls="true"
+										var="rols" itemValue="#{rols}" itemLabel="#{rols.nombrerol}" responsive="true" >
+										<f:converter binding="#{rolConverter}" />
+										<f:facet name="sourceCaption">De</f:facet>
+										<f:facet name="targetCaption">A</f:facet>
+									</p:pickList>
+									<p:panelGrid columns="6" id="buttonsrol"
+										columnClasses="ui-grid-col-2," layout="grid"
+										styleClass="ui-panelgrid-blank"
+										style="border:0px none; background-color:transparent;">
+										
+										<p:commandButton value="Asignar" id="asignarid"
+											action="#{usuarioBeanEdit.asignarRoles()}" process="@this"/>
+
+										<p:commandButton value="Cancelar" id="cancelarrolid"
+											action="#{usuarioBeanEdit.cancelarEdit()}" process="@this" />
+
+										
+									</p:panelGrid>
+								</p:tab>
+								<p:tab title="Log Actividad Usuario">
+									<h3><i class="fa fa-table"></i> Log de Usuario</h3>
+								</p:tab>
+							</p:tabView>
+						</div> <!-- end car -->
+                    </div> <!-- end ui-g-12 -->
+                </div> <!-- end ui-g -->
+            </div>  <!-- end ui-fluid -->     
+        </h:form>
+    </ui:define>
+    
+</ui:composition>

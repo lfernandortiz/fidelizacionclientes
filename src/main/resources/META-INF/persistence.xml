@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.0"
+	xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+	<persistence-unit name="PuntosFPU" transaction-type="JTA"> 
+	<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+		<jta-data-source>jdbc/PuntosFDb</jta-data-source>	
+		<class>com.dromedicas.domain.Afiliado</class>
+		<class>com.dromedicas.domain.Audiwebservice</class>
+		<class>com.dromedicas.domain.Campania</class>
+		<class>com.dromedicas.domain.Contrato</class>
+		<class>com.dromedicas.domain.Detransaccion</class>
+		<class>com.dromedicas.domain.Emailcampania</class>
+		<class>com.dromedicas.domain.EmailcampaniaPK</class>
+		<class>com.dromedicas.domain.Emailenvio</class>
+		<class>com.dromedicas.domain.Emailestado</class>
+		<class>com.dromedicas.domain.EmailestadoPK</class>
+		<class>com.dromedicas.domain.Empresa</class>
+		<class>com.dromedicas.domain.Estadosm</class>
+		<class>com.dromedicas.domain.Eventowebservice</class>
+		<class>com.dromedicas.domain.Globalstat</class>
+		<class>com.dromedicas.domain.Perfil</class>
+		<class>com.dromedicas.domain.Permisorol</class>
+		<class>com.dromedicas.domain.PermisorolPK</class>
+		<class>com.dromedicas.domain.Producto</class>
+		<class>com.dromedicas.domain.Punto</class>
+		<class>com.dromedicas.domain.Rol</class>
+		<class>com.dromedicas.domain.Smscampania</class>
+		<class>com.dromedicas.domain.SmscampaniaPK</class>
+		<class>com.dromedicas.domain.Smsenvio</class>
+		<class>com.dromedicas.domain.Smsplantilla</class>
+		<class>com.dromedicas.domain.Sucursal</class>
+		<class>com.dromedicas.domain.Tipodocumento</class>
+		<class>com.dromedicas.domain.Tipoemail</class>
+		<class>com.dromedicas.domain.Tipoestaestadoemail</class>
+		<class>com.dromedicas.domain.Tiposm</class>
+		<class>com.dromedicas.domain.Tipotransaccion</class>
+		<class>com.dromedicas.domain.Tipousuario</class>
+		<class>com.dromedicas.domain.Transaccion</class>
+		<class>com.dromedicas.domain.Usuarioperfil</class>
+		<class>com.dromedicas.domain.UsuarioperfilPK</class>
+		<class>com.dromedicas.domain.Usuarioweb</class>
+		<class>com.dromedicas.domain.Vendedor</class>
+		<properties>
+			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+			<property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.SunOneJtaPlatform" />
+			<property name="hibernate.cache.use_second_level_cache"
+                value="true" />
+		</properties>
+	</persistence-unit>
+</persistence>

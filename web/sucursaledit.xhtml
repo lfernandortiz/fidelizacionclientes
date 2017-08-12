@@ -1,0 +1,104 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">#{sucursalEdit.sucSelected.idsucursal == 0 ? 'Crear' : 'Editar'} Sucursal</ui:define>
+
+    <ui:define name="content">    
+        <h:form id="crearempresaform">
+       <!--  <p:growl id="growl" showDetail="true" sticky="true" />  -->
+        <p:messages id="crearempresamessage"  autoUpdate="true" closable="true" />
+            <div class="ui-fluid">
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <div class="card">   
+                                              
+                            <h1><i class="fa fa-home"></i> Datos de la Sucursal </h1>
+                            
+							<p:panelGrid columns="4" id="detailempresa"
+								columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+								
+								<p:outputLabel for="empresaid" value="Empresa: " />
+						        <p:selectOneMenu id="empresaid" value="#{sucursalEdit.sucSelected.empresa}" >
+						            <f:selectItems value="#{sucursalEdit.empresList}" var="emp" itemLabel="#{emp.nombreEmpresa}" 
+						            			   itemValue="#{emp}"/>
+						            <f:converter binding="#{sucursalConverter}" />
+									
+								</p:selectOneMenu>
+
+								<p:outputLabel for="nombrecrearid" value="Nombre Sucursal" />
+								<p:inputText id="nombrecrearid"
+									value="#{sucursalEdit.sucSelected.nombreSucursal}" required="true" />
+
+								<p:outputLabel for="dircrearid" value="Direccion" />
+								<p:inputText id="dircrearid" value="#{sucursalEdit.sucSelected.direccion}"
+									required="true" />
+
+								<p:outputLabel for="mailcrearid" value="Email" />
+								<p:inputText id="mailcrearid" value="#{sucursalEdit.sucSelected.email}"
+									required="true" />
+
+								<p:outputLabel for="codigointid" value="Codigo Interno" />
+								<p:inputText id="codigointid"
+									value="#{sucursalEdit.sucSelected.codigointerno}" required="true" />
+
+								<p:outputLabel for="apikeyid" value="Api Key" />
+								<p:inputText id="apikeyid" value="#{sucursalEdit.sucSelected.apikey}" />
+								
+								
+								
+							</p:panelGrid>
+							<p:separator style="height:5px"/>
+							
+							<p:panelGrid columns="6" id="buttons"
+								columnClasses="ui-grid-col-2,"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">	
+										
+								<p:commandButton value="Crear" id="crearnuevaid"
+												 action="#{sucursalEdit.crearSucursal()}"
+												 update="crearempresaform"
+												 rendered="#{sucursalEdit.sucSelected.idsucursal == null || sucursalEdit.sucSelected.idsucursal == 0}" />
+											 
+								<p:commandButton value="Actualizar" id="actualizarid"
+												 action="#{sucursalEdit.actualizarSucursal()}"
+												 update="crearempresaform"
+												 rendered="#{sucursalEdit.sucSelected.idsucursal != null &amp;&amp;sucursalEdit.sucSelected.idsucursal != 0}" />
+								 
+								<p:commandButton value="Cancelar" 
+												 id="cancelarnuevaid"
+												 action="#{sucursalEdit.cancelarEdit()}"
+												 process="@this"
+												 update="detailempresa" />	
+												 
+								<p:commandButton value="Generar Codigo API" 
+												 id="crearapiid"
+												 styleClass="green-button"
+												 action="#{sucursalEdit.generarCodigoApi()}" 
+												 process="@this"
+												 update=":crearempresaform:apikeyid" />
+												 
+								<p:commandButton value="Eliminar" 
+												 id="eliminarsuc"
+												 styleClass="red-button"
+												 action="#{sucursalEdit.eliminar()}"
+												 process="@this"
+												 update="detailempresa" 
+												 rendered="#{sucursalEdit.sucSelected.idsucursal != null &amp;&amp;sucursalEdit.sucSelected.idsucursal != 0}" />
+												 
+															
+							</p:panelGrid>
+							
+						</div> <!-- end car -->
+                    </div> <!-- end ui-g-12 -->
+                </div> <!-- end ui-g -->
+            </div>  <!-- end ui-fluid -->     
+        </h:form>
+    </ui:define>
+    
+</ui:composition>

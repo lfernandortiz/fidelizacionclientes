@@ -1,0 +1,82 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">#{vendedorBeanEdit.venSelected.docuvendedor == null ? 'Crear' : 'Editar'} Vendedor</ui:define>
+
+    <ui:define name="content">    
+        <h:form id="crearemvendedorform">
+       <!--  <p:growl id="growl" showDetail="true" sticky="true" />  -->
+        <p:messages id="crearvendedormessage"  autoUpdate="true" closable="true" showDetail="true"/>
+            <div class="ui-fluid">
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <div class="card">   
+                                              
+                            <h1><i class="fa fa-home"></i> Datos del Vendedor </h1>
+                            
+							<p:panelGrid columns="4" id="detailvendedor"
+								columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+								
+								<p:outputLabel for="docuid" value="Documento" />
+								<p:inputText id="docuid" value="#{vendedorBeanEdit.venSelected.docuvendedor}" required="true" />
+								
+								<p:outputLabel for="empresaid" value="Empresa: " />
+						        <p:selectOneMenu id="empresaid" value="#{vendedorBeanEdit.venSelected.empresa}" >
+						            <f:selectItems value="#{vendedorBeanEdit.empresList}" var="emp" itemLabel="#{emp.nombreEmpresa}" 
+						            			   itemValue="#{emp}"/>
+						            <f:converter binding="#{sucursalConverter}" />
+									
+								</p:selectOneMenu>
+								
+								<p:outputLabel for="nombresid" value="Nombres:" />
+								<p:inputText id="nombresid"
+									value="#{vendedorBeanEdit.venSelected.nombres}" required="true" />
+
+								<p:outputLabel for="apellidosid" value="Apellidos:" />
+								<p:inputText id="apellidosid"
+									value="#{vendedorBeanEdit.venSelected.apellidos}" required="true" />
+
+								<p:outputLabel for="activoid" value="Vendedor Activo" />
+        						<p:selectBooleanCheckbox id="activoid" value="#{vendedorBeanEdit.activo}" />
+								
+							</p:panelGrid>
+							<p:separator style="height:5px"/>
+							
+							<p:panelGrid columns="6" id="buttons"
+								columnClasses="ui-grid-col-2,"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">	
+								<p:commandButton value="Crear" id="crearnuevaid"
+												 action="#{vendedorBeanEdit.crearVendedor()}"
+											     update="crearemvendedorform"
+											     rendered="#{vendedorBeanEdit.venSelected.docuvendedor == null || 
+											     				vendedorBeanEdit.existe == true}" />
+											 
+								<p:commandButton value="Actualizar" id="actualizarid"
+												 action="#{vendedorBeanEdit.actualizarVendedor()}"
+												 update="crearemvendedorform"
+												 rendered="#{vendedorBeanEdit.venSelected.docuvendedor != null&amp;&amp;
+												 				vendedorBeanEdit.existe == false }" />
+								 
+								<p:commandButton value="Cancelar" 
+												 id="cancelarnuevaid"
+												 action="#{vendedorBeanEdit.cancelarEdit()}"
+												 process="@this"/>												 
+								
+															
+							</p:panelGrid>
+							
+						</div> <!-- end car -->
+                    </div> <!-- end ui-g-12 -->
+                </div> <!-- end ui-g -->
+            </div>  <!-- end ui-fluid -->     
+        </h:form>
+    </ui:define>
+    
+</ui:composition>

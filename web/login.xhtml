@@ -1,0 +1,79 @@
+<!DOCTYPE html [<!ENTITY nbsp "&ntid;"> ]>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<f:facet name="first">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+	</f:facet>
+	<title>Login Puntos Farmanorte</title>
+	<link rel="shortcut icon" type="image/x-icon" href="#{resource['omega-layout/images/favicon.ico']}"/>
+</h:head>
+
+<h:body styleClass="login-body">
+	<p:growl id="mensajes" showDetail="true" life="2000" />
+	<h:form>	
+	
+	<div id="login-wrapper">
+		<p:graphicImage class="imaglogin" name="images/loginLogoFP2x.png" library="omega-layout" />
+
+		<div id="login-container">
+			<span class="title">Puntos Farmanorte</span>
+
+			<div class="ui-g ui-fluid">
+				<div class="ui-g-12">
+					<p:inputText placeholder="Username" value="#{loginService.username}"/>
+				</div>
+				<div class="ui-g-12">
+					<p:password placeholder="Password" value="#{loginService.password}" feedback="false"/>
+				</div>
+				<div class="ui-g-12 ui-md-6">
+					<span class="remember-me">Recordarme</span>
+					<p:selectBooleanCheckbox />
+				</div>
+				<div class="ui-g-12 ui-md-6 contrasenia">
+					<p:link>¿Olvido su contraseña?</p:link>
+				</div>
+				<div class="ui-g-12">
+						<p:commandButton value="Login" icon="fa fa-check"
+							action="#{loginService.login}" update=":mensajes"
+							oncomplete="manejarLogin(xhr, status, args)" />
+				</div>
+			</div>
+		</div>
+
+		<div class="login-footer">
+			Plataforma Puntos Farmanorte <script type="text/javascript">
+                document.write(new Date().getFullYear());
+                </script>.
+		</div>		
+	</div>	
+	<h:outputStylesheet name="css/layout.css" library="omega-layout" />
+	</h:form>
+	<div class="logofooter">
+		<a href="http://www.dromedicas.com.co" target="_blank">
+			<!-- A little logo of mark -->
+			<p:graphicImage name="images/isologoDromedicasBN.svg" library="omega-layout" width="18"/>
+		</a> 
+	</div>
+</h:body>
+ <script type="text/javascript">
+ //<![CDATA[
+ function manejarLogin(xhr, status, args) {
+	  console.log("-->"+args.validationFailed);
+	    if (!args.validationFailed && args.estaLogeado) {
+	      setTimeout(function() {
+	        window.location = args.view;
+	      }, 700);
+	    }
+	  }
+//]]>
+</script>
+</html>

@@ -1,0 +1,88 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">Editar / Crear Sucursal</ui:define>	
+    <ui:define name="content">
+		<div class="message">
+			<h:form>
+				<p:messages id="globalMessagex" showDetail="true" closable="true" />
+			</h:form>
+		</div>
+		<h:form id="formppal">
+        
+            <div class="ui-fluid">
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <div class="card">                        
+                            <h1>Vendedor</h1>
+							<p:fieldset legend="Buscar Vendedor por:" toggleable="true" toggleSpeed="500">
+                            <p:panelGrid columns="4" id="vendedorForm"
+								columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+								
+								<p:outputLabel for="nombreid" value="Nombre Vendedor" />
+								<p:inputText id="nombreid"  value="#{vendedorBeanList.nombreVendedor}"/>
+							
+								<p:outputLabel for="docuId" value="Documento Vendedor" />
+								<p:inputText id="docuId" value="#{vendedorBeanList.documento}"/>						
+								
+							</p:panelGrid>
+							<p:spacer height="10px"/>
+							<p:panelGrid columns="6" id="buttons"
+								columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">								
+								<p:commandButton value="Buscar" id="buscarbutton"
+									actionListener="#{vendedorBeanList.buscarVendedor()}"
+									update="vendedorDetail"/>
+								<p:commandButton value="Cancelar" id="cancelarbutton"
+									action="#{vendedorBeanList.cancelarList()}"
+									update=":formppal:vendedorDetail, :formppal:vendedorForm"/>
+								<p:commandButton value="Crear" id="crearbutton"
+												 action="#{vendedorBeanList.crearVendedor()}" />
+							</p:panelGrid>						
+                        	</p:fieldset>
+                        	
+                        	<p:spacer height="40px"/>
+                        	<!-- tabla detalle sucursal -->
+                        	<p:dataTable id="vendedorDetail" var="ven" value="#{vendedorBeanList.vendedorList}" 
+                        			rowKey="#{ven.docuvendedor}" selectionMode="single"  
+                        			emptyMessage="No hay registros para este criterio de busqueda :-("
+                        			paginator="true" rows="20">
+								<f:facet name="header">Vendedor</f:facet>
+								<p:column headerText="Documento">
+									<h:outputText value="#{ven.docuvendedor}" /> 
+								</p:column>
+								<p:column headerText="Nombre Vendedor">
+									<h:outputText value="#{ven.nombres}#{' '}#{ven.apellidos}" /> 
+								</p:column>
+								<p:column headerText="Empresa">
+									<h:outputText value="#{ven.empresa.nombreEmpresa}" /> 
+								</p:column>
+								<p:column headerText="Estado">
+									<h:outputText value="#{ven.actvo== 1 ? 'Activo' : 'Inactivo' }" /> 
+								</p:column>								
+								
+								<p:column headerText="Editar" style="width:32px;text-align: center">
+									<p:commandButton  icon="fa fa-pencil"
+													  title="Editar #{ven.nombres}#{' '}#{ven.apellidos}"
+													  id="editarrowid"
+													  action="#{vendedorBeanEdit.editarVendedor()}">
+										<f:setPropertyActionListener value="#{ven}" target="#{vendedorBeanEdit.venSelected}" /> 
+									</p:commandButton>	
+								</p:column>		
+							</p:dataTable>	
+						</div> <!-- end card -->
+                    </div> <!-- end ui-g-12 -->
+                </div> <!-- end ui-g -->
+            </div>  <!-- end ui-fluid -->
+            </h:form>
+            
+    	
+    </ui:define>
+</ui:composition>

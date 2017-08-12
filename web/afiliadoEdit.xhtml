@@ -1,0 +1,115 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">Editar/Crear Afiliado</ui:define>
+
+    <ui:define name="content">    
+        <h:form>
+        <p:growl id="growl" showDetail="true" sticky="true" /> 
+        <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
+            <div class="ui-fluid">
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <div class="card">                        
+                            <h1>Crear nuevo afiliado</h1>
+							<p:panelGrid columns="4" id="afiliadoForm"
+								columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+								
+								<p:outputLabel for="nombreid" value="Nombres" />
+								<p:inputText id="nombreid" value="#{afiliado.nombres}" required="true"/>
+							
+								<p:outputLabel for="apellidoid" value="Apellidos" />
+								<p:inputText id="apellidoid" value="#{afiliado.apellidos}" required="true"/>
+							
+								<p:outputLabel for="cedulaid" value="Documento" />
+								<p:inputText id="cedulaid" value="#{afiliado.documento}" />
+
+								<p:outputLabel for="fechanacid" value="Fecha de nacimiento" />
+								<p:calendar id="fechanacid" value="#{afiliado.fechanacimiento}"
+									pattern = "dd/MM/yyyy"
+									navigator="true" popupIconOnly="false" mode="popup"
+									showOn="button" yearRange="c-100:c+0">
+									<f:convertDateTime pattern = "dd/MM/yyyy" />
+								</p:calendar>
+
+								<p:outputLabel for="edadid" value="Edad" />
+								<p:spinner id="edadid" value="#{persona.edad}" />
+								
+								<p:outputLabel for="sexomenu" value="Sexo"/>
+                                <p:selectOneMenu id="sexomenu" value="#{afiliado.sexo}">
+                                    <f:selectItem itemLabel="Femenino" itemValue="f" />
+                                    <f:selectItem itemLabel="Masculino" itemValue="m" />
+                                    <f:selectItem itemLabel="Otro" itemValue="o" />
+                                </p:selectOneMenu>				
+                                
+                                <p:outputLabel for="celularid" value="Celular" />
+								<p:inputText id="celularid" value="#{afiliado.celular}" />				
+
+								<p:outputLabel for="telefonoid" value="Telefono" />
+								<p:inputText id="telefonoid" value="#{afiliado.telefonofijo}" />
+								
+								<p:outputLabel for="direccionid" value="Dirección" />
+								<p:inputText id="direccionid" value="#{afiliado.street}" />									
+								
+								<p:outputLabel for="emailid" value="Email" />
+								<p:inputText id="emailid" value="#{afiliado.email}" />
+								
+								<p:outputLabel for="sucursalid" value="Sucursal"/>
+                                <p:selectOneMenu id="sucursalid" value="#{afiliado.sucursal}">
+                                    <f:selectItem itemLabel="Farmanorte 1" itemValue="01" />
+                                    <f:selectItem itemLabel="Farmanorte 2" itemValue="02" />
+                                    
+                                </p:selectOneMenu>	
+								
+															
+															
+							</p:panelGrid>
+							<p:separator style="height:10px"/>
+							<h2>Datos adicionales del Afiliado</h2>
+							<p:separator style="height:5px"/>
+							<p:panelGrid columns="4" id="afiliadoAdiForm"
+								columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+
+								<p:outputLabel for="nacionalidadid" value="Nacionalidad"/>
+                                <p:selectOneMenu id="nacionalidadid" value="#{afiliado.nacionalidad}">
+                                    <f:selectItem itemLabel="Colombia" itemValue="c" />
+                                    <f:selectItem itemLabel="Venezuela" itemValue="v" />
+                                    <f:selectItem itemLabel="Otro" itemValue="o" />
+                                </p:selectOneMenu>	
+                                
+                                <p:outputLabel for="departamentoid" value="Departamento - Estado"/>
+                                <p:selectOneMenu id="departamentoid" value="#{afiliado.departamento}">
+                                    <f:selectItem itemLabel="Norte de Santander" itemValue="n" />
+                                    <f:selectItem itemLabel="Santander" itemValue="s" />
+                                    <f:selectItem itemLabel="Otro" itemValue="o" />
+                                </p:selectOneMenu>
+                                
+                                <p:outputLabel for="twitterid" value="Twitter Perfil" />
+								<p:inputText id="twitterid" value="#{afiliado.twitterperfil}" />
+								
+								<p:outputLabel for="facebookid" value="Facebook Perfil" />
+								<p:inputText id="facebookid" value="#{afiliado.facebookperfil}" />
+
+
+								<p:commandButton value="Crear" id="crearbutton"
+									action="#{afiliadoService.colocarValores}"
+									update="afiliadoForm" />
+							
+							</p:panelGrid><!-- end panel Datos Adicionales -->
+							<p:separator style="height:20px"/>						
+						</div>
+                    </div>
+                </div>
+            </div>          
+        </h:form>
+    </ui:define>
+    
+</ui:composition>

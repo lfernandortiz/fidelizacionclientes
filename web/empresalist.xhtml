@@ -1,0 +1,212 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">Editar / Crear Empresa</ui:define>	
+    <ui:define name="content">
+		<div class="message">
+			<h:form>
+				<p:messages id="globalMessagex" showDetail="true" closable="true" />
+			</h:form>
+		</div>
+		<h:form id="formppal">
+        
+            <div class="ui-fluid">
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <div class="card">                        
+                            <h1>Empresa</h1>
+							<p:fieldset legend="Buscar Empresa por:" toggleable="true" toggleSpeed="500">
+							
+                            <p:panelGrid columns="4" id="empresaForm"
+								columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+								
+								<p:outputLabel for="nitid" value="Nit Empresa" />
+								<p:inputText id="nitid" value="#{empresaBeanList.nit}"/>
+							
+								<p:outputLabel for="nombreempresaid" value="Nombre Empresa" />
+								<p:inputText id="nombreempresaid" value="#{empresaBeanList.nombreEmpresa}"/>
+							
+								<p:outputLabel for="direccionid" value="Direccion" />
+								<p:inputText id="direccionid" value="#{empresaBeanList.direccion}"/>
+
+								<p:outputLabel for="telefonoid" value="Telefono" />
+								<p:inputText id="telefonoid" value="#{empresaBeanList.telefono}"/>	
+							</p:panelGrid>
+							
+							<p:spacer height="10px"/>
+							<!-- panel para botones del list -->
+							<p:panelGrid columns="6" id="buttons"
+								columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">								
+								<p:commandButton value="Buscar" id="buscarbutton"
+									actionListener="#{empresaBeanList.buscarEmpresa()}"
+									update=":formppal:empresadetail"/>
+								<p:commandButton value="Cancelar" id="cancelarbutton"
+									action="#{empresaBeanList.cancelarList()}"
+									update=":formppal:empresadetail, :formppal:empresaForm"/>
+								<p:commandButton value="Crear" id="crearbutton"
+												 action="#{empresaBeanList.crear}" />
+							</p:panelGrid>				
+									
+                        	</p:fieldset>
+                        	
+                        	<p:spacer height="40px"/>
+                        	
+                        	<!-- tabla detalle empresa -->
+                        	<p:dataTable id="empresadetail" var="emp" value="#{empresaBeanList.empresaList}" selectionMode="single" 
+                        	reflow="true" selection="#{empresaBeanList.selectedEmpresa}" rowKey="#{emp.idempresa}" paginator="true" rows="10">
+								<f:facet name="header">Empresas</f:facet>
+								<p:column headerText="Nit" sortBy="#{emp.nit}">
+									<h:outputText value="#{emp.nit}" /> 
+								</p:column>
+								<p:column headerText="Nombre Empresa" sortBy="#{emp.nombreEmpresa}">
+									<h:outputText value="#{emp.nombreEmpresa}" />
+								</p:column>
+								<p:column headerText="Direccion" sortBy="#{emp.direccion}">
+									<h:outputText value="#{emp.direccion}" />
+								</p:column>
+								<p:column headerText="Telefono" sortBy="#{emp.telefono}">
+									<h:outputText value="#{emp.telefono}" />
+								</p:column>
+								<p:column headerText="Email" sortBy="#{emp.email}">
+									<h:outputText value="#{emp.emailNotificaciones}" />
+								</p:column>
+								<p:column headerText="Editar" style="width:32px;text-align: center">
+									<p:commandButton  icon="fa fa-pencil"
+													  title="Editar #{emp.nombreEmpresa}"
+													  id="editarrowid"
+													  action="#{empresaBeanEdit.editarRegistro(emp)}"
+													  immediate="true">										
+										<f:setPropertyActionListener value="#{emp}" target="#{empresaBeanEdit.selectedEmpresa}" /> 
+									</p:commandButton>	
+								</p:column>		
+							</p:dataTable>	
+						</div> <!-- end card -->
+                    </div> <!-- end ui-g-12 -->
+                </div> <!-- end ui-g -->
+            </div>  <!-- end ui-fluid -->
+            </h:form>
+            
+            
+            <!-- dialogo editar empresa -->
+            <p:dialog id="detalleempresa" widgetVar="detallew" showCloseIcon="true" header="Editar Empresa" modal="true" resizable="false">	 
+            <f:facet name="header"><i class="fa fa-building-o" aria-hidden="true"></i> <p:spacer style="width:5px"/> Editar Empresa</f:facet>
+            <h:form id="editarempresaform">         
+	            <div class="card" id="cardedit">
+	            <p:messages id="editarempresamessage"  autoUpdate="true" closable="true" />
+	            	<p:panel header="Datos de la Empresa">
+					<p:panelGrid columns="4" id="detailempresaeditar" 
+						columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+						layout="grid" styleClass="ui-panelgrid-blank"
+						style="border:0px none; background-color:transparent;">
+						<p:outputLabel for="nitEditarid" value="Nit Empresa" />
+						<p:inputText id="nitEditarid" value="#{empresaBean.selectedEmpresa.nit}" required="true" />
+
+						<p:outputLabel for="nombreEditarid" value="Nombre Empresa" />
+						<p:inputText id="nombreEditarid" value="#{empresaBean.selectedEmpresa.nombreEmpresa}"
+							required="true" />
+
+						<p:outputLabel for="direccionEditarId" value="Direccion" />
+						<p:inputText id="direccionEditarId" value="#{empresaBean.selectedEmpresa.direccion}"
+							required="true" />
+
+						<p:outputLabel for="telempresaeditid" value="Telefono" />
+						<p:inputText id="telempresaeditid" value="#{empresaBean.selectedEmpresa.telefono}"
+							required="true" />
+							
+						<p:outputLabel for="emailnotiEditid" value="Email Notificaciones" />
+						<p:inputText id="emailnotiEditid"
+							value="#{empresaBean.selectedEmpresa.emailNotificaciones}" required="true" />
+
+						<p:outputLabel for="emaileditarid" value="Email" />
+						<p:inputText id="emaileditarid" value="#{empresaBean.selectedEmpresa.email}" />						
+
+					</p:panelGrid>					
+					</p:panel>
+					<p:separator style="height:5px"/>
+					<p:toolbar>
+						 <f:facet name="left">
+							<p:commandButton value="Actualizar" 
+										 id="crearnuevaid"
+										 action="#{empresaBean.actualizarEmpresa()}" 
+										 update="crearpresaform"/>
+							<p:separator style="width:10px"/>							
+							<p:commandButton value="Cancelar" 
+										 id="cancelarnuevaid"
+										 action="#{empresaBean.cancelar()}"
+										 process="@this"
+										 update="crearempresadialog"/>
+						 </f:facet>
+					</p:toolbar>	
+					</div>
+			</h:form>				          	
+            </p:dialog>
+            
+            
+            
+            <!-- dialogo crear empresa -->
+            <p:dialog id="crearempresadialog" widgetVar="creardialw" 
+            		  showCloseIcon="true" modal="true" resizable="false">
+            <f:facet name="header"><i class="fa fa-building-o" aria-hidden="true"></i> <p:spacer style="width:5px"/> Crear Empresa</f:facet>	 
+            <h:form id="crearpresaform">           
+	            <div class="card" id="cardcrear">
+	            <p:messages id="crearempresamessage"  autoUpdate="true" closable="true" />
+	            	<p:panel header="Datos de la Empresa">
+					<p:panelGrid columns="4" id="detailempresa" 
+						columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+						layout="grid" styleClass="ui-panelgrid-blank"
+						style="border:0px none; background-color:transparent;">
+						<p:outputLabel for="nitcrearid" value="Nit Empresa" />
+						<p:inputText id="nitcrearid" value="#{empresaBean.nit}" required="true" />
+
+						<p:outputLabel for="nombrecrearid" value="Nombre Empresa" />
+						<p:inputText id="nombrecrearid" value="#{empresaBean.nombreEmpresa}"
+							required="true" />
+
+						<p:outputLabel for="dircrearid" value="Direccion" />
+						<p:inputText id="dircrearid" value="#{empresaBean.direccion}"
+							required="true" />
+
+						<p:outputLabel for="telcrearid" value="Telefono" />
+						<p:inputText id="telcrearid" value="#{empresaBean.telefono}"
+							required="true" />
+							
+						<p:outputLabel for="emialnoticreid" value="Email Notificaciones" />
+						<p:inputText id="emialnoticreid"
+							value="#{empresaBean.emailNotificaciones}" required="true" />
+
+						<p:outputLabel for="emailcrearid" value="Email" />
+						<p:inputText id="emailcrearid" value="#{empresaBean.email}" />						
+
+					</p:panelGrid>					
+					</p:panel>
+					<p:separator style="height:5px"/>
+					<p:toolbar>
+						 <f:facet name="left">
+							<p:commandButton value="Crear" 
+										 id="crearnuevaid"
+										 action="#{empresaBean.crearEmpresa()}" 
+										 update="crearpresaform"/>
+							<p:separator style="width:10px"/>							
+							<p:commandButton value="Cancelar" 
+										 id="cancelarnuevaid"
+										 action="#{empresaBean.cancelar()}"
+										 process="@this"
+										 update="crearempresadialog"/>
+						 </f:facet>
+					</p:toolbar>	
+					</div>
+			</h:form>				          	
+            </p:dialog>
+            
+            
+        	
+    </ui:define>
+</ui:composition>

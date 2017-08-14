@@ -17,6 +17,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 
 /**
@@ -27,6 +28,7 @@ import javax.persistence.TemporalType;
 @RequestScoped
 @Entity
 @NamedQuery(name="Afiliado.findAll", query="SELECT a FROM Afiliado a")
+@XmlRootElement
 public class Afiliado implements Serializable {
 	private static final long serialVersionUID = 1L;
 

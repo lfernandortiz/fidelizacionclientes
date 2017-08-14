@@ -84,8 +84,13 @@ public class LoginFileter implements Filter {
 		 */
 		if (urlStr.endsWith("login.xhtml"))
 			return true;
+		
 		if (urlStr.indexOf("/javax.faces.resource/") != -1)
 			return true;
+		
+		if (urlStr.indexOf("webservice") != -1)
+			return true;
+		
 		return false;
 	}
 

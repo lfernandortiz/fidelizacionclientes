@@ -100,4 +100,21 @@
 	<session-config>
 		<session-timeout>50</session-timeout>
 	</session-config>
+	
+	<servlet>
+        <servlet-name>Puntos Farmanorte</servlet-name>
+        <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
+        
+        <init-param>
+            <param-name>com.sun.jersey.config.property.packages</param-name>
+            <param-value>com.dromedicas.servicio.rest</param-value>
+        </init-param>
+        
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Puntos Farmanorte</servlet-name>
+        <url-pattern>/webservice/*</url-pattern>
+    </servlet-mapping>
+	
 </web-app>

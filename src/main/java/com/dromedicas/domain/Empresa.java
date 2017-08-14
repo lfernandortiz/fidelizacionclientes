@@ -14,6 +14,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.xml.bind.annotation.XmlRootElement;
 
 
 /**
@@ -24,6 +25,7 @@ import javax.persistence.OneToMany;
 @SessionScoped
 @Entity
 @NamedQuery(name="Empresa.findAll", query="SELECT e FROM Empresa e order by e.nombreEmpresa")
+@XmlRootElement
 public class Empresa implements Serializable {
 	private static final long serialVersionUID = 1L;
 

@@ -2,6 +2,8 @@ package com.dromedicas.domain;
 
 import java.io.Serializable;
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlRootElement;
+
 import java.util.Date;
 
 
@@ -11,6 +13,7 @@ import java.util.Date;
  */
 @Entity
 @NamedQueries({@NamedQuery(name="Audiwebservice.findAll", query="SELECT a FROM Audiwebservice a")})
+@XmlRootElement
 public class Audiwebservice implements Serializable {
 	private static final long serialVersionUID = 1L;
 

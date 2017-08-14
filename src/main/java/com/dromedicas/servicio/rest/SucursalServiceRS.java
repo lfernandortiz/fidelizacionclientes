@@ -22,7 +22,10 @@ public class SucursalServiceRS {
 	@GET
 	@Produces("application/json")
 	public List<Sucursal> listarSucursaels(){
-		return this.sServices.findAllSucursals();
+		
+		List<Sucursal> s =  this.sServices.findAllSucursals();
+		
+		return s;
 	}
 
 }

@@ -17,6 +17,8 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 /**
  * The persistent class for the sucursal database table.
@@ -41,23 +43,28 @@ public class Sucursal implements Serializable {
 	private String direccion;
 
 	private String email;
-
+	
+	
 	@Column(name="nombre_sucursal")
 	private String nombreSucursal;
-
+	
+	@JsonIgnore
 	//bi-directional many-to-one association to Afiliado
 	@OneToMany(mappedBy="sucursal", cascade={CascadeType.ALL})
 	private Set<Afiliado> afiliados;
 
+	@JsonIgnore
 	//bi-directional many-to-one association to Audiwebservice
 	@OneToMany(mappedBy="sucursal")
 	private Set<Audiwebservice> audiwebservices;
 
+	@JsonIgnore
 	//bi-directional many-to-one association to Empresa
 	@ManyToOne
 	@JoinColumn(name="idempresa")
 	private Empresa empresa;
 
+	@JsonIgnore
 	//bi-directional many-to-one association to Transaccion
 	@OneToMany(mappedBy="sucursal")
 	private Set<Transaccion> transaccions;

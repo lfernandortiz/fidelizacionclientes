@@ -113,6 +113,11 @@ public class Afiliado implements Serializable {
 	//bi-directional many-to-one association to Transaccion
 	@OneToMany(mappedBy="afiliado")
 	private Set<Transaccion> transaccions;
+	
+	// bi-directional many-to-one association to Afiliadopatologia
+	@OneToMany(mappedBy = "afiliado")
+	private Set<Afiliadopatologia> afiliadopatologias;
+
 
 	public Afiliado() {
 	}

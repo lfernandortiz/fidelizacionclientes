@@ -6,6 +6,9 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+
+import org.primefaces.component.datatable.DataTable;
 
 import com.dromedicas.domain.Afiliado;
 import com.dromedicas.service.AfiliadoService;
@@ -51,8 +54,18 @@ public class AfiliadoBeanList {
 	
 	//metodos para botones del list
 	
-	public void cancelarList(){
+	public void cancelarList() {
+		//Reset campos formulario de busqueda
+		this.setValorABuscar("");
+
+		// Reset DataTable Object (reestablecer la paginacion)
+		DataTable dataTable = (DataTable) FacesContext.getCurrentInstance().getViewRoot()
+				.findComponent("formppal:sucursalDetail");
+		dataTable.reset();
 		
+		//Consulta nuevamente el List
+		this.afiliadoList = this.afiliadoService.findAllAfiliados();
+
 	}
 	
 	public String crearAfiliado(){

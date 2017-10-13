@@ -52,8 +52,8 @@
                         	<!-- tabla detalle sucursal -->
                         	<p:dataTable id="sucursalDetail" var="af" value="#{afiliadoBeanList.afiliadoList}" 
                         			rowKey="#{af.documento}" selectionMode="single"  paginator="true" rows="20">
-								<f:facet name="header">Sucursal</f:facet>
-								<p:column headerText="Documento">
+								<f:facet name="header">Afiliados</f:facet>
+								<p:column headerText="Documento" sortby="#{af.documento}">
 									<h:outputText value="#{af.documento}" /> 
 								</p:column>
 								<p:column headerText="Nombres">

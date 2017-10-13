@@ -48,10 +48,11 @@ public class AfiliadoService {
 	@SuppressWarnings("unchecked")
 	public List<Afiliado> bucarAfiliadoByFields(String criterio){
 		System.out.println("nombre recibido: " + criterio);
-		String queryString = "from Afiliado p where  p.documento like '%" + criterio.trim() + "%' " +		
-			" OR p.nombres like '%" + criterio.trim().toUpperCase() + "%' " +
-			" OR p.apellidos like '%" + criterio.trim().toUpperCase() + "%' " +		
-			" OR p.email like '%" + criterio.trim() + "%' ";
+		String queryString = "from Afiliado a where  a.documento like '%" + criterio.trim() + "%' " +		
+			" OR a.nombres like '%" + criterio.trim().toUpperCase() + "%' " +
+			" OR a.apellidos like '%" + criterio.trim().toUpperCase() + "%' " +		
+			" OR a.email like '%" + criterio.trim() + "%' " +
+			" ORDER BY a.nombres, a.apellidos";
 			
 		System.out.println("QueryString:" + queryString);
 		Query query = em.createQuery(queryString);

@@ -40,7 +40,7 @@ public class SucursalBeanList implements Serializable{
 		this.sucursalList = sucService.findAllSucursals();		
 	}	
 
-	public List<Sucursal> getSucursalList() {
+	public List<Sucursal> afiliadoBeanList() {
 		return sucursalList;
 	}
 

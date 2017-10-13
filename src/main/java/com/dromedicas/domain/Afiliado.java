@@ -1,8 +1,9 @@
 package com.dromedicas.domain;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
@@ -12,13 +13,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
-
 
 /**
  * The persistent class for the afiliado database table.
@@ -27,7 +29,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @ManagedBean(name="afiliado")
 @RequestScoped
 @Entity
-@NamedQuery(name="Afiliado.findAll", query="SELECT a FROM Afiliado a")
+@NamedQuery(name="Afiliado.findAll", query="SELECT a FROM Afiliado a ORDER BY a.momento DESC")
 @XmlRootElement
 public class Afiliado implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -48,6 +50,8 @@ public class Afiliado implements Serializable {
 
 	private String documento;
 
+	private int edad;
+
 	private String email;
 
 	private byte emailvalidado;
@@ -60,7 +64,15 @@ public class Afiliado implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date fechavalidacionemail;
 
-	private int idvendedor;
+	private byte hijosentre13y18;
+
+	private byte hijosentre4y12;
+
+	private byte hijosmayores;
+
+	private byte hijosmenoresde4;
+
+	private Integer idvendedor;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date momento;
@@ -68,6 +80,8 @@ public class Afiliado implements Serializable {
 	private String nacionalidad;
 
 	private String nombres;
+
+	private BigInteger puntosavencer;
 
 	private String sexo;
 
@@ -81,11 +95,25 @@ public class Afiliado implements Serializable {
 
 	private String telefonofijo;
 
+	private int tienehijos;
+
+	private BigInteger totalpuntos;
+
 	private String twitterperfil;
 
 	private String urlimageperfil;
 
 	private String usuarioweb;
+
+	//bi-directional many-to-one association to Estudioafiliado
+	@ManyToOne
+	@JoinColumn(name="estudios")
+	private Estudioafiliado estudioafiliado;
+
+	//bi-directional many-to-one association to Ocupacion
+	@ManyToOne(cascade={CascadeType.ALL})
+	@JoinColumn(name="ocupacion")
+	private Ocupacion ocupacionBean;
 
 	//bi-directional many-to-one association to Sucursal
 	@ManyToOne(cascade={CascadeType.ALL})
@@ -102,22 +130,44 @@ public class Afiliado implements Serializable {
 	@JoinColumn(name="creador")
 	private Usuarioweb usuariowebBean;
 
+	//bi-directional many-to-one association to Afiliadopatologia
+	@OneToMany(mappedBy="afiliado")
+	private List<Afiliadopatologia> afiliadopatologias;
+
 	//bi-directional many-to-one association to Emailenvio
 	@OneToMany(mappedBy="afiliado")
-	private Set<Emailenvio> emailenvios;
+	private List<Emailenvio> emailenvios;
+
+	//bi-directional many-to-one association to Nucleofamilia
+	@OneToMany(mappedBy="afiliado")
+	private List<Nucleofamilia> nucleofamilias;
+
+	
+	
+	//bi-directional many-to-many association to Afiliado
+		@ManyToMany(cascade={CascadeType.ALL})
+		@JoinTable(
+			name="afiliadopatologianucleo"
+			, joinColumns={
+				@JoinColumn(name="idpatologia")
+				}
+			, inverseJoinColumns={
+				@JoinColumn(name="idafiliado")
+				}
+			)
+	private List<Patologia> patologias;
+
+	//bi-directional many-to-one association to Referido
+	@OneToMany(mappedBy="afiliado")
+	private List<Referido> referidos;
 
 	//bi-directional many-to-one association to Smsenvio
 	@OneToMany(mappedBy="afiliado")
-	private Set<Smsenvio> smsenvios;
+	private List<Smsenvio> smsenvios;
 
 	//bi-directional many-to-one association to Transaccion
 	@OneToMany(mappedBy="afiliado")
-	private Set<Transaccion> transaccions;
-	
-	// bi-directional many-to-one association to Afiliadopatologia
-	@OneToMany(mappedBy = "afiliado")
-	private Set<Afiliadopatologia> afiliadopatologias;
-
+	private List<Transaccion> transaccions;
 
 	public Afiliado() {
 	}
@@ -178,6 +228,14 @@ public class Afiliado implements Serializable {
 		this.documento = documento;
 	}
 
+	public int getEdad() {
+		return this.edad;
+	}
+
+	public void setEdad(int edad) {
+		this.edad = edad;
+	}
+
 	public String getEmail() {
 		return this.email;
 	}
@@ -218,11 +276,43 @@ public class Afiliado implements Serializable {
 		this.fechavalidacionemail = fechavalidacionemail;
 	}
 
-	public int getIdvendedor() {
+	public byte getHijosentre13y18() {
+		return this.hijosentre13y18;
+	}
+
+	public void setHijosentre13y18(byte hijosentre13y18) {
+		this.hijosentre13y18 = hijosentre13y18;
+	}
+
+	public byte getHijosentre4y12() {
+		return this.hijosentre4y12;
+	}
+
+	public void setHijosentre4y12(byte hijosentre4y12) {
+		this.hijosentre4y12 = hijosentre4y12;
+	}
+
+	public byte getHijosmayores() {
+		return this.hijosmayores;
+	}
+
+	public void setHijosmayores(byte hijosmayores) {
+		this.hijosmayores = hijosmayores;
+	}
+
+	public byte getHijosmenoresde4() {
+		return this.hijosmenoresde4;
+	}
+
+	public void setHijosmenoresde4(byte hijosmenoresde4) {
+		this.hijosmenoresde4 = hijosmenoresde4;
+	}
+
+	public Integer getIdvendedor() {
 		return this.idvendedor;
 	}
 
-	public void setIdvendedor(int idvendedor) {
+	public void setIdvendedor(Integer idvendedor) {
 		this.idvendedor = idvendedor;
 	}
 
@@ -248,6 +338,14 @@ public class Afiliado implements Serializable {
 
 	public void setNombres(String nombres) {
 		this.nombres = nombres;
+	}
+
+	public BigInteger getPuntosavencer() {
+		return this.puntosavencer;
+	}
+
+	public void setPuntosavencer(BigInteger puntosavencer) {
+		this.puntosavencer = puntosavencer;
 	}
 
 	public String getSexo() {
@@ -298,6 +396,22 @@ public class Afiliado implements Serializable {
 		this.telefonofijo = telefonofijo;
 	}
 
+	public int getTienehijos() {
+		return this.tienehijos;
+	}
+
+	public void setTienehijos(int tienehijos) {
+		this.tienehijos = tienehijos;
+	}
+
+	public BigInteger getTotalpuntos() {
+		return this.totalpuntos;
+	}
+
+	public void setTotalpuntos(BigInteger totalpuntos) {
+		this.totalpuntos = totalpuntos;
+	}
+
 	public String getTwitterperfil() {
 		return this.twitterperfil;
 	}
@@ -322,6 +436,22 @@ public class Afiliado implements Serializable {
 		this.usuarioweb = usuarioweb;
 	}
 
+	public Estudioafiliado getEstudioafiliado() {
+		return this.estudioafiliado;
+	}
+
+	public void setEstudioafiliado(Estudioafiliado estudioafiliado) {
+		this.estudioafiliado = estudioafiliado;
+	}
+
+	public Ocupacion getOcupacionBean() {
+		return this.ocupacionBean;
+	}
+
+	public void setOcupacionBean(Ocupacion ocupacionBean) {
+		this.ocupacionBean = ocupacionBean;
+	}
+
 	public Sucursal getSucursal() {
 		return this.sucursal;
 	}
@@ -338,20 +468,41 @@ public class Afiliado implements Serializable {
 		this.tipodocumentoBean = tipodocumentoBean;
 	}
 
-
 	public Usuarioweb getUsuariowebBean() {
-		return usuariowebBean;
+		return this.usuariowebBean;
 	}
 
 	public void setUsuariowebBean(Usuarioweb usuariowebBean) {
 		this.usuariowebBean = usuariowebBean;
 	}
 
-	public Set<Emailenvio> getEmailenvios() {
+	public List<Afiliadopatologia> getAfiliadopatologias() {
+		return this.afiliadopatologias;
+	}
+
+	public void setAfiliadopatologias(List<Afiliadopatologia> afiliadopatologias) {
+		this.afiliadopatologias = afiliadopatologias;
+	}
+
+	public Afiliadopatologia addAfiliadopatologia(Afiliadopatologia afiliadopatologia) {
+		getAfiliadopatologias().add(afiliadopatologia);
+		afiliadopatologia.setAfiliado(this);
+
+		return afiliadopatologia;
+	}
+
+	public Afiliadopatologia removeAfiliadopatologia(Afiliadopatologia afiliadopatologia) {
+		getAfiliadopatologias().remove(afiliadopatologia);
+		afiliadopatologia.setAfiliado(null);
+
+		return afiliadopatologia;
+	}
+
+	public List<Emailenvio> getEmailenvios() {
 		return this.emailenvios;
 	}
 
-	public void setEmailenvios(Set<Emailenvio> emailenvios) {
+	public void setEmailenvios(List<Emailenvio> emailenvios) {
 		this.emailenvios = emailenvios;
 	}
 
@@ -369,11 +520,63 @@ public class Afiliado implements Serializable {
 		return emailenvio;
 	}
 
-	public Set<Smsenvio> getSmsenvios() {
+	public List<Nucleofamilia> getNucleofamilias() {
+		return this.nucleofamilias;
+	}
+
+	public void setNucleofamilias(List<Nucleofamilia> nucleofamilias) {
+		this.nucleofamilias = nucleofamilias;
+	}
+
+	public Nucleofamilia addNucleofamilia(Nucleofamilia nucleofamilia) {
+		getNucleofamilias().add(nucleofamilia);
+		nucleofamilia.setAfiliado(this);
+
+		return nucleofamilia;
+	}
+
+	public Nucleofamilia removeNucleofamilia(Nucleofamilia nucleofamilia) {
+		getNucleofamilias().remove(nucleofamilia);
+		nucleofamilia.setAfiliado(null);
+
+		return nucleofamilia;
+	}
+
+	public List<Patologia> getPatologias() {
+		return this.patologias;
+	}
+
+	public void setPatologias(List<Patologia> patologias) {
+		this.patologias = patologias;
+	}
+
+	public List<Referido> getReferidos() {
+		return this.referidos;
+	}
+
+	public void setReferidos(List<Referido> referidos) {
+		this.referidos = referidos;
+	}
+
+	public Referido addReferido(Referido referido) {
+		getReferidos().add(referido);
+		referido.setAfiliado(this);
+
+		return referido;
+	}
+
+	public Referido removeReferido(Referido referido) {
+		getReferidos().remove(referido);
+		referido.setAfiliado(null);
+
+		return referido;
+	}
+
+	public List<Smsenvio> getSmsenvios() {
 		return this.smsenvios;
 	}
 
-	public void setSmsenvios(Set<Smsenvio> smsenvios) {
+	public void setSmsenvios(List<Smsenvio> smsenvios) {
 		this.smsenvios = smsenvios;
 	}
 
@@ -391,11 +594,11 @@ public class Afiliado implements Serializable {
 		return smsenvio;
 	}
 
-	public Set<Transaccion> getTransaccions() {
+	public List<Transaccion> getTransaccions() {
 		return this.transaccions;
 	}
 
-	public void setTransaccions(Set<Transaccion> transaccions) {
+	public void setTransaccions(List<Transaccion> transaccions) {
 		this.transaccions = transaccions;
 	}
 

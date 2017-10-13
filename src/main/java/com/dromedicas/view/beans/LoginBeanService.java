@@ -48,7 +48,9 @@ public class LoginBeanService {
 		System.out.println("Password: " + this.getPassword());
 		
 		RequestContext context = RequestContext.getCurrentInstance();
-		FacesMessage msg = null;
+		FacesMessage msg = null;				
+		//Aca proceso de busqueda de credenciales enla base de datos
+		
 		if (username != null && username.equals("admin") && password != null && password.equals("apolo11")) {
 			logeado = true;
 			msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Bienvenido", username);
@@ -60,12 +62,10 @@ public class LoginBeanService {
 		FacesContext.getCurrentInstance().addMessage(null, msg);
 		context.addCallbackParam("estaLogeado", logeado);
 		if (logeado)
-			context.addCallbackParam("view", "dashboard.xhtml");
-		
+			context.addCallbackParam("view", "dashboard.xhtml");		
 	}
 	
 	
-
 	public String logout() {
 		HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
 		session.invalidate();

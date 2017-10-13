@@ -2,7 +2,7 @@ package com.dromedicas.domain;
 
 import java.io.Serializable;
 import javax.persistence.*;
-import java.util.Set;
+import java.util.List;
 
 
 /**
@@ -22,7 +22,20 @@ public class Patologia implements Serializable {
 
 	//bi-directional many-to-one association to Afiliadopatologia
 	@OneToMany(mappedBy="patologia")
-	private Set<Afiliadopatologia> afiliadopatologias;
+	private List<Afiliadopatologia> afiliadopatologias;
+
+	//bi-directional many-to-many association to Afiliado
+	@ManyToMany(cascade={CascadeType.ALL})
+	@JoinTable(
+		name="afiliadopatologianucleo"
+		, joinColumns={
+			@JoinColumn(name="idpatologia")
+			}
+		, inverseJoinColumns={
+			@JoinColumn(name="idafiliado")
+			}
+		)
+	private List<Afiliado> afiliados;
 
 	public Patologia() {
 	}
@@ -43,11 +56,11 @@ public class Patologia implements Serializable {
 		this.drescripcion = drescripcion;
 	}
 
-	public Set<Afiliadopatologia> getAfiliadopatologias() {
+	public List<Afiliadopatologia> getAfiliadopatologias() {
 		return this.afiliadopatologias;
 	}
 
-	public void setAfiliadopatologias(Set<Afiliadopatologia> afiliadopatologias) {
+	public void setAfiliadopatologias(List<Afiliadopatologia> afiliadopatologias) {
 		this.afiliadopatologias = afiliadopatologias;
 	}
 
@@ -63,6 +76,14 @@ public class Patologia implements Serializable {
 		afiliadopatologia.setPatologia(null);
 
 		return afiliadopatologia;
+	}
+
+	public List<Afiliado> getAfiliados() {
+		return this.afiliados;
+	}
+
+	public void setAfiliados(List<Afiliado> afiliados) {
+		this.afiliados = afiliados;
 	}
 
 }

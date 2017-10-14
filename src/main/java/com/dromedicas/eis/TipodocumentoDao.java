@@ -9,6 +9,8 @@ public interface TipodocumentoDao {
 	public List<Tipodocumento> findAllTipodocumentos();
 
 	public Tipodocumento obtenerTipodocumentoById(Tipodocumento instance);
+	
+	public Tipodocumento obtenerTipodocumentoByIdString(String instance);	
 
 	public void insertTipodocumento(Tipodocumento instance);
 

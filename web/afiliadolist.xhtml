@@ -25,8 +25,9 @@
 								layout="grid" styleClass="ui-panelgrid-blank"
 								style="border:0px none; background-color:transparent;">
 								
-								<p:outputLabel for="nitid" value="Criterio a buscar" />
-								<p:inputText id="nitid" value="#{afiliadoBeanList.valorABuscar}"/>
+								<p:outputLabel for="criterioid" value="Criterio a buscar" />
+								<p:inputText id="criterioid" value="#{afiliadoBeanList.valorABuscar}"/>
+								<p:tooltip id="toolTipCriterio" for="criterioid" value="Ingrese Cedula o Nombres o Apellidos o Email" position="top"/>
 							
 								<!-- <p:outputLabel for="nombreempresaid" value="Nombre Empresa" />
 								<p:inputText id="nombreempresaid" value="#{sucursalbenlist.empresa}"/>		 -->				
@@ -52,7 +53,7 @@
                         	<!-- tabla detalle sucursal -->
                         	<p:dataTable id="sucursalDetail" var="af" value="#{afiliadoBeanList.afiliadoList}" 
                         			rowKey="#{af.documento}" selectionMode="single"  paginator="true" rows="20">
-								<f:facet name="header">Afiliados</f:facet>
+								<f:facet name="header">Afiliados - #{afiliadoBeanList.afiliadoList.size()}</f:facet>
 								<p:column headerText="Documento" sortby="#{af.documento}">
 									<h:outputText value="#{af.documento}" /> 
 								</p:column>
@@ -74,7 +75,7 @@
 													  title="Editar #{af.nombres}"
 													  id="editarrowid"
 													  action="#{afiliadoBeanList.editarAfiliado()}">
-										<f:setPropertyActionListener value="#{af}" target="#{sucursalEdit.sucSelected}" /> 
+										<f:setPropertyActionListener value="#{af}" target="#{afiliadoBeanEdit.afiliadoSelected}" /> 
 									</p:commandButton>	
 								</p:column>		
 							</p:dataTable>	

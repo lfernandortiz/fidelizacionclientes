@@ -5,7 +5,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 template="/WEB-INF/template.xhtml">
 
-    <ui:define name="title">Editar/Crear Afiliado</ui:define>
+    <ui:define name="title">#{afiliadoBeanEdit.afiliadoSelected.idafiliado == 0 ? 'Crear' : 'Editar'} Afiliado</ui:define>
 
     <ui:define name="content">    
         <h:form>
@@ -15,47 +15,61 @@
                 <div class="ui-g">
                     <div class="ui-g-12">
                         <div class="card">                        
-                            <h1>Crear nuevo afiliado</h1>
+                            <h1><i class="fa fa-child"></i> Datos del Afiliado</h1>
 							<p:panelGrid columns="4" id="afiliadoForm"
 								columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
 								layout="grid" styleClass="ui-panelgrid-blank"
 								style="border:0px none; background-color:transparent;">
 								
 								<p:outputLabel for="nombreid" value="Nombres" />
-								<p:inputText id="nombreid" value="#{afiliado.nombres}" required="true"/>
+								<p:inputText id="nombreid" value="#{afiliadoBeanEdit.afiliadoSelected.nombres}" required="true"/>
 							
 								<p:outputLabel for="apellidoid" value="Apellidos" />
-								<p:inputText id="apellidoid" value="#{afiliado.apellidos}" required="true"/>
+								<p:inputText id="apellidoid" value="#{afiliadoBeanEdit.afiliadoSelected.apellidos}" required="true"/>
 							
-								<p:outputLabel for="cedulaid" value="Documento" />
-								<p:inputText id="cedulaid" value="#{afiliado.documento}" />
+								<p:outputLabel for="tipodocid" value="Tipo Documento" />							
+								<p:selectOneMenu id="tipodocid"
+									value="#{afiliadoBeanEdit.afiliadoSelected.tipodocumentoBean}"
+									effect="fade" var="t"
+									filter="false" filterMatchMode="startsWith">
+									<f:selectItems value="#{afiliadoBeanEdit.tipodocList}" var="tipo"
+										itemLabel="#{tipo.descripcion}" itemValue="#{tipo}" />
+									<f:converter binding="#{tipoDocumentoConverter}" />									
+								</p:selectOneMenu>
 
+								<p:outputLabel for="cedulaid" value="Documento" />
+								<p:inputText id="cedulaid" value="#{afiliadoBeanEdit.afiliadoSelected.documento}" />
+
+								<p:outputLabel for="sexomenu" value="Sexo"/>
+                                <p:selectOneMenu id="sexomenu" value="#{afiliadoBeanEdit.afiliadoSelected.sexo}">
+                                    <f:selectItem itemLabel="Femenino" itemValue="F" />
+                                    <f:selectItem itemLabel="Masculino" itemValue="M" />
+                                    <f:selectItem itemLabel="Otro" itemValue="o" />
+                                </p:selectOneMenu>	
+								
 								<p:outputLabel for="fechanacid" value="Fecha de nacimiento" />
-								<p:calendar id="fechanacid" value="#{afiliado.fechanacimiento}"
+								<p:calendar id="fechanacid" value="#{afiliadoBeanEdit.afiliadoSelected.fechanacimiento}"
 									pattern = "dd/MM/yyyy"
 									navigator="true" popupIconOnly="false" mode="popup"
 									showOn="button" yearRange="c-100:c+0">
 									<f:convertDateTime pattern = "dd/MM/yyyy" />
 								</p:calendar>
-
-								<p:outputLabel for="edadid" value="Edad" />
-								<p:spinner id="edadid" value="#{persona.edad}" />
 								
-								<p:outputLabel for="sexomenu" value="Sexo"/>
-                                <p:selectOneMenu id="sexomenu" value="#{afiliado.sexo}">
-                                    <f:selectItem itemLabel="Femenino" itemValue="f" />
-                                    <f:selectItem itemLabel="Masculino" itemValue="m" />
-                                    <f:selectItem itemLabel="Otro" itemValue="o" />
-                                </p:selectOneMenu>				
-                                
+								
+								<p:outputLabel for="direccionid" value="Direccion" />
+								<p:inputText id="direccionid" value="#{afiliadoBeanEdit.afiliadoSelected.street}" />								
+
+								<p:outputLabel for="barrioid" value="Barrio" />
+								<p:inputText id="barrioid" value="#{afiliadoBeanEdit.afiliadoSelected.streetdos}" />
+								
+								<p:outputLabel for="ciudadid" value="Ciudad" />
+								<p:inputText id="ciudadid" value="#{afiliadoBeanEdit.afiliadoSelected.ciudad}" />
+								                                
                                 <p:outputLabel for="celularid" value="Celular" />
-								<p:inputText id="celularid" value="#{afiliado.celular}" />				
+								<p:inputText id="celularid" value="#{afiliadoBeanEdit.afiliadoSelected.celular}" />				
 
 								<p:outputLabel for="telefonoid" value="Telefono" />
-								<p:inputText id="telefonoid" value="#{afiliado.telefonofijo}" />
-								
-								<p:outputLabel for="direccionid" value="Dirección" />
-								<p:inputText id="direccionid" value="#{afiliado.street}" />									
+								<p:inputText id="telefonoid" value="#{afiliadoBeanEdit.afiliadoSelected.telefonofijo}" />
 								
 								<p:outputLabel for="emailid" value="Email" />
 								<p:inputText id="emailid" value="#{afiliado.email}" />
@@ -66,8 +80,6 @@
                                     <f:selectItem itemLabel="Farmanorte 2" itemValue="02" />
                                     
                                 </p:selectOneMenu>	
-								
-															
 															
 							</p:panelGrid>
 							<p:separator style="height:10px"/>

@@ -26,16 +26,20 @@
 							
 								<p:outputLabel for="apellidoid" value="Apellidos" />
 								<p:inputText id="apellidoid" value="#{afiliadoBeanEdit.afiliadoSelected.apellidos}" required="true"/>
-							
-								<p:outputLabel for="tipodocid" value="Tipo Documento" />							
-								<p:selectOneMenu id="tipodocid"
-									value="#{afiliadoBeanEdit.afiliadoSelected.tipodocumentoBean}"
-									effect="fade" var="t"
-									filter="false" filterMatchMode="startsWith">
-									<f:selectItems value="#{afiliadoBeanEdit.tipodocList}" var="tipo"
-										itemLabel="#{tipo.descripcion}" itemValue="#{tipo}" />
-									<f:converter binding="#{tipoDocumentoConverter}" />									
+								
+								
+
+								<p:outputLabel for="tipodocid" value="#{afiliadoBeanEdit.afiliadoSelected.tipodocumentoBean.descripcion}" />
+								<p:selectOneMenu id="tipodocid" value="#{afiliadoBeanEdit.afiliadoSelected.tipodocumentoBean}"
+										var="ts" >
+									<f:selectItems value="#{afiliadoBeanEdit.tipodocList}" var="tp"
+										itemLabel="#{tp.descripcion}" itemValue="#{tp}" />
+									<f:converter binding="#{tipoDocumentoConverter}" />
+									<p:column>
+										<h:outputText value="#{ts.descripcion}#{' --'}" />
+									</p:column>
 								</p:selectOneMenu>
+
 
 								<p:outputLabel for="cedulaid" value="Documento" />
 								<p:inputText id="cedulaid" value="#{afiliadoBeanEdit.afiliadoSelected.documento}" />

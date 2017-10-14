@@ -77,7 +77,7 @@ public class AfiliadoBeanList {
 	}
 	
 	public String editarAfiliado(){
-		return "afiliadoedit";
+		return "afiliadoedit?faces-redirect=true";
 	}
 	
 	

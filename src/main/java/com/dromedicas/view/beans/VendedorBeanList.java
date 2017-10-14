@@ -80,12 +80,12 @@ public class VendedorBeanList {
 	
 	public String crearVendedor(){
 		FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("vendedorBeanEdit");
-		return "vendedoredit";
+		return "vendedoredit?faces-redirect=true";
 	}
 	
 	
 	public String editarVendedor(){
-		return "vendedoredit";
+		return "vendedoredit?faces-redirect=true";
 	}
 	
 }

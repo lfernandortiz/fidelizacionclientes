@@ -62,7 +62,7 @@ public class UsuarioBeanList {
 	 */
 
 	public String crearUsuario(){
-		return "usuarioedit";
+		return "usuarioedit?faces-redirect=true";
 	}
 	
 	public void cancelarList(){
@@ -74,7 +74,7 @@ public class UsuarioBeanList {
 	}
 	
 	public String editarUsuario(){
-		return "usuarioedit";
+		return "usuarioedit?faces-redirect=true";
 	}
 	
 

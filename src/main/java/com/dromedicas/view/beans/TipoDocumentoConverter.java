@@ -27,7 +27,7 @@ public class TipoDocumentoConverter implements Converter {
     public Object getAsObject(FacesContext fc, UIComponent uic, String value) {
         if(value != null && value.trim().length() > 0) {
             try { 
-            	List<Tipodocumento> list =  service.findAllTipodocumento();            	
+            	  	
                 System.out.println("****------" + service.obtenerTipodocumentoByIdString(value));                
                 return service.obtenerTipodocumentoByIdString(value);
             } catch(NumberFormatException e) {

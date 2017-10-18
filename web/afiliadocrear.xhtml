@@ -1,0 +1,1287 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">Crear Afiliado</ui:define>
+
+    <ui:define name="content">    
+        <h:form>
+        <p:growl id="growl" showDetail="true" sticky="true" /> 
+        <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
+            <div class="ui-fluid">
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <div class="card">                        
+                            <h1><i class="fa fa-child"></i> Datos del Afiliado</h1>
+							<p:panelGrid columns="4" id="afiliadoForm"
+								columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+								
+								<p:outputLabel for="nombreid" value="Nombres" />
+								<p:inputText id="nombreid"  value="#{afiliadoBeanEdit.afiliadoSelected.nombres}" required="true"/>
+							
+								<p:outputLabel for="apellidoid" value="Apellidos" />
+								<p:inputText id="apellidoid" value="#{afiliadoBeanEdit.afiliadoSelected.apellidos}" required="true"/>
+
+								<p:outputLabel for="tipodocid" value="Tipo Documento" />
+								<p:selectOneMenu id="tipodocid" value="#{afiliadoBeanEdit.afiliadoSelected.tipodocumentoBean}">
+									<f:selectItems value="#{afiliadoBeanEdit.tipodocList}" var="tp"
+										itemLabel="#{tp.descripcion}" itemValue="#{tp}" />
+									<f:converter binding="#{tipoDocumentoConverter}" />									
+								</p:selectOneMenu>
+	
+								<p:outputLabel for="cedulaid" value="Documento" />
+								<p:inputText id="cedulaid" value="#{afiliadoBeanEdit.afiliadoSelected.documento}" />
+
+								<p:outputLabel for="sexomenu" value="Sexo"/>
+                                <p:selectOneMenu id="sexomenu" value="#{afiliadoBeanEdit.afiliadoSelected.sexo}">
+                                    <f:selectItem itemLabel="Femenino" itemValue="F" />
+                                    <f:selectItem itemLabel="Masculino" itemValue="M" />
+                                    <f:selectItem itemLabel="Otro" itemValue="o" />
+                                </p:selectOneMenu>	
+								
+								<p:outputLabel for="fechanacid" value="Fecha de nacimiento" />
+								<p:calendar id="fechanacid" value="#{afiliadoBeanEdit.afiliadoSelected.fechanacimiento}"
+									pattern = "dd/MM/yyyy"
+									navigator="true" popupIconOnly="false" mode="popup"
+									showOn="button" yearRange="c-100:c+0">
+									<f:convertDateTime pattern = "dd/MM/yyyy" />
+								</p:calendar>
+							</p:panelGrid> 
+							<p:panelGrid columns="12" id="direccionForm"
+								columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">								
+								
+								<p:outputLabel for="street1" value="Direccion" />
+                                <p:selectOneMenu id="street1" value="#{afiliadoBeanEdit.street1}">
+                                    <f:selectItem itemLabel="AVENIDA" itemValue="AVENIDA"/>
+									<f:selectItem itemLabel="AUTOPISTA" itemValue="AUTOPISTA"/>
+									<f:selectItem itemLabel="BLOQUE" itemValue="BLOQUE"/>
+									<f:selectItem itemLabel="BOULEVAR" itemValue="BOULEVAR"/>
+									<f:selectItem itemLabel="CALLE" itemValue="CALLE"/>
+									<f:selectItem itemLabel="CARRERA" itemValue="CARRERA"/>
+									<f:selectItem itemLabel="CARRETERA" itemValue="CARRETERA"/>
+									<f:selectItem itemLabel="CASA" itemValue="CASA"/>
+									<f:selectItem itemLabel="CIRCUNVALAR" itemValue="CIRCUNVALAR"/>
+									<f:selectItem itemLabel="CONJUNTO CERRADO" itemValue="CONJUNTO CERRADO"/>
+									<f:selectItem itemLabel="CORREGIMIENTO" itemValue="CORREGIMIENTO"/>
+									<f:selectItem itemLabel="DIAGONAL" itemValue="DIAGONAL"/>
+									<f:selectItem itemLabel="EDIFICIO" itemValue="EDIFICIO"/>
+									<f:selectItem itemLabel="FINCA" itemValue="FINCA"/>
+									<f:selectItem itemLabel="HACIENDA" itemValue="HACIENDA"/>
+									<f:selectItem itemLabel="KILOMETRO" itemValue="KILOMETRO"/>
+									<f:selectItem itemLabel="LOTE" itemValue="LOTE"/>
+									<f:selectItem itemLabel="MANZANA" itemValue="MANZANA"/>
+									<f:selectItem itemLabel="TRANSVERSAL" itemValue="TRANSVERSAL"/>
+									<f:selectItem itemLabel="TRONCAL" itemValue="TRONCAL"/>
+									<f:selectItem itemLabel="URBANIZACION" itemValue="URBANIZACION"/>
+									<f:selectItem itemLabel="VEREDA" itemValue="VEREDA"/>
+									<f:selectItem itemLabel="VIA" itemValue="VIA"/>
+                                </p:selectOneMenu>	
+								<p:inputText id="street1valor" value="#{afiliadoBeanEdit.street1Valor}" />
+								
+								<p:outputLabel for="street2" value="Complemento Direccion" />
+								<p:selectOneMenu id="street2" value="#{afiliadoBeanEdit.street2}">
+                                    <f:selectItem itemLabel="No." itemValue="No."/>
+									<f:selectItem itemLabel="AVENIDA" itemValue="AVENIDA"/>
+									<f:selectItem itemLabel="AUTOPISTA" itemValue="AUTOPISTA"/>
+									<f:selectItem itemLabel="BLOQUE" itemValue="BLOQUE"/>
+									<f:selectItem itemLabel="BOULEVAR" itemValue="BOULEVAR"/>
+									<f:selectItem itemLabel="CALLE" itemValue="CALLE"/>
+									<f:selectItem itemLabel="CARRERA" itemValue="CARRERA"/>
+									<f:selectItem itemLabel="CARRETERA" itemValue="CARRETERA"/>
+									<f:selectItem itemLabel="CASA" itemValue="CASA"/>
+									<f:selectItem itemLabel="CIRCUNVALAR" itemValue="CIRCUNVALAR"/>
+									<f:selectItem itemLabel="CORREGIMIENTO" itemValue="CORREGIMIENTO"/>
+									<f:selectItem itemLabel="DIAGONAL" itemValue="DIAGONAL"/>
+									<f:selectItem itemLabel="EDIFICIO" itemValue="EDIFICIO"/>
+									<f:selectItem itemLabel="FINCA" itemValue="FINCA"/>
+									<f:selectItem itemLabel="HACIENDA" itemValue="HACIENDA"/>
+									<f:selectItem itemLabel="KILOMETRO" itemValue="KILOMETRO"/>
+									<f:selectItem itemLabel="LOTE" itemValue="LOTE"/>
+									<f:selectItem itemLabel="MANZANA" itemValue="MANZANA"/>
+									<f:selectItem itemLabel="TRANSVERSAL" itemValue="TRANSVERSAL"/>
+									<f:selectItem itemLabel="TRONCAL" itemValue="TRONCAL"/>
+									<f:selectItem itemLabel="URBANIZACION" itemValue="URBANIZACION"/>
+									<f:selectItem itemLabel="VEREDA" itemValue="VEREDA"/>
+									<f:selectItem itemLabel="VIA" itemValue="VIA"/>
+                                </p:selectOneMenu>
+								<p:inputText id="street2valor" value="#{afiliadoBeanEdit.street2Valor}" />
+							</p:panelGrid> 
+							<p:panelGrid columns="1" id="dircompletaForm"
+								columnClasses="ui-grid-col-12"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+							<div class="dircompleta">#{afiliadoBeanEdit.street1}</div>
+							</p:panelGrid> 	
+							<p:panelGrid columns="4" id="anotherdataForm"
+								columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">								
+
+								<p:outputLabel for="barrioid" value="Barrio" />
+								<p:inputText id="barrioid" value="#{afiliadoBeanEdit.afiliadoSelected.streetdos}" />
+								
+								<p:outputLabel for="ciudadid" value="Ciudad"/>
+                                <p:selectOneMenu id="ciudadid" value="#{afiliadoBeanEdit.afiliadoSelected.ciudad}">
+                                    <f:selectItem itemLabel="ABREGO (N De Santander)" itemValue="ABREGO"/>
+									<f:selectItem itemLabel="ABRIAQUI (Antioquia)" itemValue="ABRIAQUI"/>
+									<f:selectItem itemLabel="ACEVEDO P (Huila)" itemValue="ACEVEDO P"/>
+									<f:selectItem itemLabel="ACHI (Bolivar)" itemValue="ACHI"/>
+									<f:selectItem itemLabel="AGRADO (Huila)" itemValue="AGRADO"/>
+									<f:selectItem itemLabel="AGUACHICA (Cesar)" itemValue="AGUACHICA"/>
+									<f:selectItem itemLabel="AGUADA (Santander)" itemValue="AGUADA"/>
+									<f:selectItem itemLabel="AGUADAS (Caldas)" itemValue="AGUADAS"/>
+									<f:selectItem itemLabel="AGUAZUL (Casanare)" itemValue="AGUAZUL"/>
+									<f:selectItem itemLabel="AGUSTIN CODAZZI (Cesar)" itemValue="AGUSTIN CODAZZI"/>
+									<f:selectItem itemLabel="AIPE (Huila)" itemValue="AIPE"/>
+									<f:selectItem itemLabel="ALBAN (Nariño)" itemValue="ALBAN"/>
+									<f:selectItem itemLabel="ALBANIA (Caqueta)" itemValue="ALBANIA"/>
+									<f:selectItem itemLabel="ALBANIA (Guajira)" itemValue="ALBANIA"/>
+									<f:selectItem itemLabel="ALBANIA (Santander)" itemValue="ALBANIA"/>
+									<f:selectItem itemLabel="ALCALA (Valle Del Cauca)" itemValue="ALCALA"/>
+									<f:selectItem itemLabel="ALDAÑA (Nariño)" itemValue="ALDAÑA"/>
+									<f:selectItem itemLabel="ALGARROBO (Magdalena)" itemValue="ALGARROBO"/>
+									<f:selectItem itemLabel="ALGECIRAS (Huila)" itemValue="ALGECIRAS"/>
+									<f:selectItem itemLabel="ALMAGUER (Cauca)" itemValue="ALMAGUER"/>
+									<f:selectItem itemLabel="ALMEIDA (Boyaca)" itemValue="ALMEIDA"/>
+									<f:selectItem itemLabel="ALPUJARRA (Tolima)" itemValue="ALPUJARRA"/>
+									<f:selectItem itemLabel="ALTAMIRA (Huila)" itemValue="ALTAMIRA"/>
+									<f:selectItem itemLabel="ALTO BAUDO (PIE DE PATO) (Choco)" itemValue="ALTO BAUDO (PIE DE PATO)"/>
+									<f:selectItem itemLabel="ALTOS DEL ROSARIO (Bolivar)" itemValue="ALTOS DEL ROSARIO"/>
+									<f:selectItem itemLabel="ALVARADO (Tolima)" itemValue="ALVARADO"/>
+									<f:selectItem itemLabel="AMAGA (Antioquia)" itemValue="AMAGA"/>
+									<f:selectItem itemLabel="AMALFI (Antioquia)" itemValue="AMALFI"/>
+									<f:selectItem itemLabel="AMBALEMA (Tolima)" itemValue="AMBALEMA"/>
+									<f:selectItem itemLabel="ANAPOIMA (Cundinamarca)" itemValue="ANAPOIMA"/>
+									<f:selectItem itemLabel="ANCUYA (Nariño)" itemValue="ANCUYA"/>
+									<f:selectItem itemLabel="ANDALUCIA (Valle Del Cauca)" itemValue="ANDALUCIA"/>
+									<f:selectItem itemLabel="ANDES (Antioquia)" itemValue="ANDES"/>
+									<f:selectItem itemLabel="ANGELOPOLIS (Antioquia)" itemValue="ANGELOPOLIS"/>
+									<f:selectItem itemLabel="ANGOSTURA (Antioquia)" itemValue="ANGOSTURA"/>
+									<f:selectItem itemLabel="ANOLAIMA (Cundinamarca)" itemValue="ANOLAIMA"/>
+									<f:selectItem itemLabel="ANORI (Antioquia)" itemValue="ANORI"/>
+									<f:selectItem itemLabel="ANSERMA (Caldas)" itemValue="ANSERMA"/>
+									<f:selectItem itemLabel="ANSERMANUEVO (Valle Del Cauca)" itemValue="ANSERMANUEVO"/>
+									<f:selectItem itemLabel="ANTIOQUIA (Antioquia)" itemValue="ANTIOQUIA"/>
+									<f:selectItem itemLabel="ANZA (Antioquia)" itemValue="ANZA"/>
+									<f:selectItem itemLabel="ANZOATEGUI (Tolima)" itemValue="ANZOATEGUI"/>
+									<f:selectItem itemLabel="APARTADO (Antioquia)" itemValue="APARTADO"/>
+									<f:selectItem itemLabel="APIA (Risaralda)" itemValue="APIA"/>
+									<f:selectItem itemLabel="AQUITANIA (Boyaca)" itemValue="AQUITANIA"/>
+									<f:selectItem itemLabel="ARACATACA (Magdalena)" itemValue="ARACATACA"/>
+									<f:selectItem itemLabel="ARANZAZU (Caldas)" itemValue="ARANZAZU"/>
+									<f:selectItem itemLabel="ARATOCA (Santander)" itemValue="ARATOCA"/>
+									<f:selectItem itemLabel="ARAUCA (Arauca)" itemValue="ARAUCA"/>
+									<f:selectItem itemLabel="ARAUQUITA (Arauca)" itemValue="ARAUQUITA"/>
+									<f:selectItem itemLabel="ARBELAEZ (Cundinamarca)" itemValue="ARBELAEZ"/>
+									<f:selectItem itemLabel="ARBOLEDA (Nariño)" itemValue="ARBOLEDA"/>
+									<f:selectItem itemLabel="ARBOLEDAS (N De Santander)" itemValue="ARBOLEDAS"/>
+									<f:selectItem itemLabel="ARBOLETES (Antioquia)" itemValue="ARBOLETES"/>
+									<f:selectItem itemLabel="ARCABUCO (Boyaca)" itemValue="ARCABUCO"/>
+									<f:selectItem itemLabel="ARENAL (Bolivar)" itemValue="ARENAL"/>
+									<f:selectItem itemLabel="ARGELIA (Cauca)" itemValue="ARGELIA"/>
+									<f:selectItem itemLabel="ARGELIA (Antioquia)" itemValue="ARGELIA"/>
+									<f:selectItem itemLabel="ARGELIA (Valle Del Cauca)" itemValue="ARGELIA"/>
+									<f:selectItem itemLabel="ARIGUANI (Magdalena)" itemValue="ARIGUANI"/>
+									<f:selectItem itemLabel="ARJONA (Bolivar)" itemValue="ARJONA"/>
+									<f:selectItem itemLabel="ARMENIA (Antioquia)" itemValue="ARMENIA"/>
+									<f:selectItem itemLabel="ARMENIA (Quindio)" itemValue="ARMENIA"/>
+									<f:selectItem itemLabel="ARMERO (GUAYABAL) (Tolima)" itemValue="ARMERO (GUAYABAL)"/>
+									<f:selectItem itemLabel="ARROYOHONDO (Bolivar)" itemValue="ARROYOHONDO"/>
+									<f:selectItem itemLabel="ASTREA (Cesar)" itemValue="ASTREA"/>
+									<f:selectItem itemLabel="ATACO (Tolima)" itemValue="ATACO"/>
+									<f:selectItem itemLabel="ATRATO (Choco)" itemValue="ATRATO"/>
+									<f:selectItem itemLabel="AYAPEL (Cordoba)" itemValue="AYAPEL"/>
+									<f:selectItem itemLabel="BAGADO (Choco)" itemValue="BAGADO"/>
+									<f:selectItem itemLabel="BAHIA SOLANO (MUTIS) (Choco)" itemValue="BAHIA SOLANO (MUTIS)"/>
+									<f:selectItem itemLabel="BAJO BAUDO (PIZARRO) (Choco)" itemValue="BAJO BAUDO (PIZARRO)"/>
+									<f:selectItem itemLabel="BALBOA (Cauca)" itemValue="BALBOA"/>
+									<f:selectItem itemLabel="BALBOA (Risaralda)" itemValue="BALBOA"/>
+									<f:selectItem itemLabel="BARANOA (Atlantico)" itemValue="BARANOA"/>
+									<f:selectItem itemLabel="BARAYA (Huila)" itemValue="BARAYA"/>
+									<f:selectItem itemLabel="BARBACOAS (Nariño)" itemValue="BARBACOAS"/>
+									<f:selectItem itemLabel="BARBOSA (Antioquia)" itemValue="BARBOSA"/>
+									<f:selectItem itemLabel="BARBOSA (Santander)" itemValue="BARBOSA"/>
+									<f:selectItem itemLabel="BARICHARA (Santander)" itemValue="BARICHARA"/>
+									<f:selectItem itemLabel="BARRANCA DE UPIA (Meta)" itemValue="BARRANCA DE UPIA"/>
+									<f:selectItem itemLabel="BARRANCABERMEJA (Santander)" itemValue="BARRANCABERMEJA"/>
+									<f:selectItem itemLabel="BARRANCAS (Guajira)" itemValue="BARRANCAS"/>
+									<f:selectItem itemLabel="BARRANCO DE LOBA (Bolivar)" itemValue="BARRANCO DE LOBA"/>
+									<f:selectItem itemLabel="BARRANQUILLA (Atlantico)" itemValue="BARRANQUILLA"/>
+									<f:selectItem itemLabel="BECERRIL (Cesar)" itemValue="BECERRIL"/>
+									<f:selectItem itemLabel="BELALCAZAR (Caldas)" itemValue="BELALCAZAR"/>
+									<f:selectItem itemLabel="BELEN (Boyaca)" itemValue="BELEN"/>
+									<f:selectItem itemLabel="BELEN (Nariño)" itemValue="BELEN"/>
+									<f:selectItem itemLabel="BELEN ANDAQUIES (Caqueta)" itemValue="BELEN ANDAQUIES"/>
+									<f:selectItem itemLabel="BELEN DE UMBRIA (Risaralda)" itemValue="BELEN DE UMBRIA"/>
+									<f:selectItem itemLabel="BELLO (Antioquia)" itemValue="BELLO"/>
+									<f:selectItem itemLabel="BELMIRA (Antioquia)" itemValue="BELMIRA"/>
+									<f:selectItem itemLabel="BELTRAN (Cundinamarca)" itemValue="BELTRAN"/>
+									<f:selectItem itemLabel="BERBEO (Boyaca)" itemValue="BERBEO"/>
+									<f:selectItem itemLabel="BETANIA (Antioquia)" itemValue="BETANIA"/>
+									<f:selectItem itemLabel="BETEITIVA (Boyaca)" itemValue="BETEITIVA"/>
+									<f:selectItem itemLabel="BETULIA (Antioquia)" itemValue="BETULIA"/>
+									<f:selectItem itemLabel="BETULIA (Santander)" itemValue="BETULIA"/>
+									<f:selectItem itemLabel="BITUIMA (Cundinamarca)" itemValue="BITUIMA"/>
+									<f:selectItem itemLabel="BOAVITA (Boyaca)" itemValue="BOAVITA"/>
+									<f:selectItem itemLabel="BOCHALEMA (N De Santander)" itemValue="BOCHALEMA"/>
+									<f:selectItem itemLabel="BOGOTA (Cundinamarca)" itemValue="BOGOTA"/>
+									<f:selectItem itemLabel="BOJACA (Cundinamarca)" itemValue="BOJACA"/>
+									<f:selectItem itemLabel="BOJAYA (BELLAVISTA) (Choco)" itemValue="BOJAYA (BELLAVISTA)"/>
+									<f:selectItem itemLabel="BOLIVAR (Cauca)" itemValue="BOLIVAR"/>
+									<f:selectItem itemLabel="BOLIVAR (Santander)" itemValue="BOLIVAR"/>
+									<f:selectItem itemLabel="BOLIVAR (Valle Del Cauca)" itemValue="BOLIVAR"/>
+									<f:selectItem itemLabel="BOSCONIA (Cesar)" itemValue="BOSCONIA"/>
+									<f:selectItem itemLabel="BOYACA (Boyaca)" itemValue="BOYACA"/>
+									<f:selectItem itemLabel="BRICEÑO (Boyaca)" itemValue="BRICEÑO"/>
+									<f:selectItem itemLabel="BRICEÑO (Antioquia)" itemValue="BRICEÑO"/>
+									<f:selectItem itemLabel="BUCARAMANGA (Santander)" itemValue="BUCARAMANGA"/>
+									<f:selectItem itemLabel="BUCARASICA (N De Santander)" itemValue="BUCARASICA"/>
+									<f:selectItem itemLabel="BUENAVENTURA (Valle Del Cauca)" itemValue="BUENAVENTURA"/>
+									<f:selectItem itemLabel="BUENAVISTA (Boyaca)" itemValue="BUENAVISTA"/>
+									<f:selectItem itemLabel="BUENAVISTA (Cordoba)" itemValue="BUENAVISTA"/>
+									<f:selectItem itemLabel="BUENAVISTA (Quindio)" itemValue="BUENAVISTA"/>
+									<f:selectItem itemLabel="BUENAVISTA (Sucre)" itemValue="BUENAVISTA"/>
+									<f:selectItem itemLabel="BUENOS AIRES (Cauca)" itemValue="BUENOS AIRES"/>
+									<f:selectItem itemLabel="BUESACO (Nariño)" itemValue="BUESACO"/>
+									<f:selectItem itemLabel="BUGA (Valle Del Cauca)" itemValue="BUGA"/>
+									<f:selectItem itemLabel="BUGALAGRANDE (Valle Del Cauca)" itemValue="BUGALAGRANDE"/>
+									<f:selectItem itemLabel="BURITICA (Antioquia)" itemValue="BURITICA"/>
+									<f:selectItem itemLabel="BUSBANZA (Boyaca)" itemValue="BUSBANZA"/>
+									<f:selectItem itemLabel="CABRERA (Cundinamarca)" itemValue="CABRERA"/>
+									<f:selectItem itemLabel="CABRERA (Santander)" itemValue="CABRERA"/>
+									<f:selectItem itemLabel="CABUYARO (Meta)" itemValue="CABUYARO"/>
+									<f:selectItem itemLabel="CACERES (Antioquia)" itemValue="CACERES"/>
+									<f:selectItem itemLabel="CACHIPAY (Cundinamarca)" itemValue="CACHIPAY"/>
+									<f:selectItem itemLabel="CACHIRA (N De Santander)" itemValue="CACHIRA"/>
+									<f:selectItem itemLabel="CACOTA (N De Santander)" itemValue="CACOTA"/>
+									<f:selectItem itemLabel="CAICEDO (Antioquia)" itemValue="CAICEDO"/>
+									<f:selectItem itemLabel="CAICEDONIA (Valle Del Cauca)" itemValue="CAICEDONIA"/>
+									<f:selectItem itemLabel="CAIMITO (Sucre)" itemValue="CAIMITO"/>
+									<f:selectItem itemLabel="CAJAMARCA (Tolima)" itemValue="CAJAMARCA"/>
+									<f:selectItem itemLabel="CAJIBIO (Cauca)" itemValue="CAJIBIO"/>
+									<f:selectItem itemLabel="CAJICA (Cundinamarca)" itemValue="CAJICA"/>
+									<f:selectItem itemLabel="CALAMAR (Bolivar)" itemValue="CALAMAR"/>
+									<f:selectItem itemLabel="CALAMAR (Guaviare)" itemValue="CALAMAR"/>
+									<f:selectItem itemLabel="CALARCA (Quindio)" itemValue="CALARCA"/>
+									<f:selectItem itemLabel="CALDAS (Boyaca)" itemValue="CALDAS"/>
+									<f:selectItem itemLabel="CALDAS (Antioquia)" itemValue="CALDAS"/>
+									<f:selectItem itemLabel="CALDONO (Cauca)" itemValue="CALDONO"/>
+									<f:selectItem itemLabel="CALI (Valle Del Cauca)" itemValue="CALI"/>
+									<f:selectItem itemLabel="CALIFORNIA (Santander)" itemValue="CALIFORNIA"/>
+									<f:selectItem itemLabel="CALIMA (Valle Del Cauca)" itemValue="CALIMA"/>
+									<f:selectItem itemLabel="CALOTO (Cauca)" itemValue="CALOTO"/>
+									<f:selectItem itemLabel="CAMPAMENTO (Antioquia)" itemValue="CAMPAMENTO"/>
+									<f:selectItem itemLabel="CAMPO DE LA CRUZ (Atlantico)" itemValue="CAMPO DE LA CRUZ"/>
+									<f:selectItem itemLabel="CAMPOALEGRE (Huila)" itemValue="CAMPOALEGRE"/>
+									<f:selectItem itemLabel="CAMPOHERMOSO (Boyaca)" itemValue="CAMPOHERMOSO"/>
+									<f:selectItem itemLabel="CANALETE (Cordoba)" itemValue="CANALETE"/>
+									<f:selectItem itemLabel="CAÑASGORDAS (Antioquia)" itemValue="CAÑASGORDAS"/>
+									<f:selectItem itemLabel="CANDELARIA (Valle Del Cauca)" itemValue="CANDELARIA"/>
+									<f:selectItem itemLabel="CANDELARIA (Atlantico)" itemValue="CANDELARIA"/>
+									<f:selectItem itemLabel="CANTAGALLO (Bolivar)" itemValue="CANTAGALLO"/>
+									<f:selectItem itemLabel="CANTON DE SAN PABLO (Choco)" itemValue="CANTON DE SAN PABLO"/>
+									<f:selectItem itemLabel="CAPARRAPI (Cundinamarca)" itemValue="CAPARRAPI"/>
+									<f:selectItem itemLabel="CAPITANEJO (Santander)" itemValue="CAPITANEJO"/>
+									<f:selectItem itemLabel="CAQUEZA (Cundinamarca)" itemValue="CAQUEZA"/>
+									<f:selectItem itemLabel="CARACOLI (Antioquia)" itemValue="CARACOLI"/>
+									<f:selectItem itemLabel="CARAMANTA (Antioquia)" itemValue="CARAMANTA"/>
+									<f:selectItem itemLabel="CARCASI (Santander)" itemValue="CARCASI"/>
+									<f:selectItem itemLabel="CAREPA (Antioquia)" itemValue="CAREPA"/>
+									<f:selectItem itemLabel="CARMEN APICALA (Tolima)" itemValue="CARMEN APICALA"/>
+									<f:selectItem itemLabel="CARMEN DE CARUPA (Cundinamarca)" itemValue="CARMEN DE CARUPA"/>
+									<f:selectItem itemLabel="CARMEN DE VIBORAL (Antioquia)" itemValue="CARMEN DE VIBORAL"/>
+									<f:selectItem itemLabel="CARMEN DEL DARIEN (Choco)" itemValue="CARMEN DEL DARIEN"/>
+									<f:selectItem itemLabel="CAROLINA (Antioquia)" itemValue="CAROLINA"/>
+									<f:selectItem itemLabel="CARTAGENA (Bolivar)" itemValue="CARTAGENA"/>
+									<f:selectItem itemLabel="CARTAGENA DEL CHAIRA (Caqueta)" itemValue="CARTAGENA DEL CHAIRA"/>
+									<f:selectItem itemLabel="CARTAGO (Valle Del Cauca)" itemValue="CARTAGO"/>
+									<f:selectItem itemLabel="CARURU (Vaupes)" itemValue="CARURU"/>
+									<f:selectItem itemLabel="CASABIANCA (Tolima)" itemValue="CASABIANCA"/>
+									<f:selectItem itemLabel="CASTILLA LA NUEVA (Meta)" itemValue="CASTILLA LA NUEVA"/>
+									<f:selectItem itemLabel="CAUCASIA (Antioquia)" itemValue="CAUCASIA"/>
+									<f:selectItem itemLabel="CEPITA (Santander)" itemValue="CEPITA"/>
+									<f:selectItem itemLabel="CERETE (Cordoba)" itemValue="CERETE"/>
+									<f:selectItem itemLabel="CERINZA (Boyaca)" itemValue="CERINZA"/>
+									<f:selectItem itemLabel="CERRITO (Santander)" itemValue="CERRITO"/>
+									<f:selectItem itemLabel="CERRO SAN ANTONIO (Magdalena)" itemValue="CERRO SAN ANTONIO"/>
+									<f:selectItem itemLabel="CERTEGUI (Choco)" itemValue="CERTEGUI"/>
+									<f:selectItem itemLabel="CHACHAGUI (Nariño)" itemValue="CHACHAGUI"/>
+									<f:selectItem itemLabel="CHAGUANI (Cundinamarca)" itemValue="CHAGUANI"/>
+									<f:selectItem itemLabel="CHALAN (Sucre)" itemValue="CHALAN"/>
+									<f:selectItem itemLabel="CHAPARRAL (Tolima)" itemValue="CHAPARRAL"/>
+									<f:selectItem itemLabel="CHARALA (Santander)" itemValue="CHARALA"/>
+									<f:selectItem itemLabel="CHARTA (Santander)" itemValue="CHARTA"/>
+									<f:selectItem itemLabel="CHIA (Cundinamarca)" itemValue="CHIA"/>
+									<f:selectItem itemLabel="CHIGORODO (Antioquia)" itemValue="CHIGORODO"/>
+									<f:selectItem itemLabel="CHIMA (Cordoba)" itemValue="CHIMA"/>
+									<f:selectItem itemLabel="CHIMA (Santander)" itemValue="CHIMA"/>
+									<f:selectItem itemLabel="CHIMICHAGUA (Cesar)" itemValue="CHIMICHAGUA"/>
+									<f:selectItem itemLabel="CHINACOTA (N De Santander)" itemValue="CHINACOTA"/>
+									<f:selectItem itemLabel="CHINAVITA (Boyaca)" itemValue="CHINAVITA"/>
+									<f:selectItem itemLabel="CHINCHINA (Caldas)" itemValue="CHINCHINA"/>
+									<f:selectItem itemLabel="CHINU (Cordoba)" itemValue="CHINU"/>
+									<f:selectItem itemLabel="CHIPAQUE (Cundinamarca)" itemValue="CHIPAQUE"/>
+									<f:selectItem itemLabel="CHIPATA (Santander)" itemValue="CHIPATA"/>
+									<f:selectItem itemLabel="CHIQUINQUIRA (Boyaca)" itemValue="CHIQUINQUIRA"/>
+									<f:selectItem itemLabel="CHIQUIZA (Boyaca)" itemValue="CHIQUIZA"/>
+									<f:selectItem itemLabel="CHIRIGUANA (Cesar)" itemValue="CHIRIGUANA"/>
+									<f:selectItem itemLabel="CHISCAS (Boyaca)" itemValue="CHISCAS"/>
+									<f:selectItem itemLabel="CHITA (Boyaca)" itemValue="CHITA"/>
+									<f:selectItem itemLabel="CHITAGA (N De Santander)" itemValue="CHITAGA"/>
+									<f:selectItem itemLabel="CHITARAQUE (Boyaca)" itemValue="CHITARAQUE"/>
+									<f:selectItem itemLabel="CHIVATA (Boyaca)" itemValue="CHIVATA"/>
+									<f:selectItem itemLabel="CHIVOLO (Magdalena)" itemValue="CHIVOLO"/>
+									<f:selectItem itemLabel="CHIVOR (Boyaca)" itemValue="CHIVOR"/>
+									<f:selectItem itemLabel="CHOACHI (Cundinamarca)" itemValue="CHOACHI"/>
+									<f:selectItem itemLabel="CHOCONTA (Cundinamarca)" itemValue="CHOCONTA"/>
+									<f:selectItem itemLabel="CICUCO (Bolivar)" itemValue="CICUCO"/>
+									<f:selectItem itemLabel="CIENAGA (Magdalena)" itemValue="CIENAGA"/>
+									<f:selectItem itemLabel="CIENAGA DE ORO (Cordoba)" itemValue="CIENAGA DE ORO"/>
+									<f:selectItem itemLabel="CIENEGA (Boyaca)" itemValue="CIENEGA"/>
+									<f:selectItem itemLabel="CIMITARRA (Santander)" itemValue="CIMITARRA"/>
+									<f:selectItem itemLabel="CIRCASIA (Quindio)" itemValue="CIRCASIA"/>
+									<f:selectItem itemLabel="CISNEROS (Antioquia)" itemValue="CISNEROS"/>
+									<f:selectItem itemLabel="CIUDAD BOLIVAR (Antioquia)" itemValue="CIUDAD BOLIVAR"/>
+									<f:selectItem itemLabel="CLEMENCIA (Bolivar)" itemValue="CLEMENCIA"/>
+									<f:selectItem itemLabel="COCORNA (Antioquia)" itemValue="COCORNA"/>
+									<f:selectItem itemLabel="COELLO (Tolima)" itemValue="COELLO"/>
+									<f:selectItem itemLabel="COGUA (Cundinamarca)" itemValue="COGUA"/>
+									<f:selectItem itemLabel="COLOMBIA (Huila)" itemValue="COLOMBIA"/>
+									<f:selectItem itemLabel="COLON (Putumayo)" itemValue="COLON"/>
+									<f:selectItem itemLabel="COLON(GENOVA) (Nariño)" itemValue="COLON(GENOVA)"/>
+									<f:selectItem itemLabel="COLOSO (Sucre)" itemValue="COLOSO"/>
+									<f:selectItem itemLabel="COMBITA (Boyaca)" itemValue="COMBITA"/>
+									<f:selectItem itemLabel="CONCEPCION (Antioquia)" itemValue="CONCEPCION"/>
+									<f:selectItem itemLabel="CONCEPCION (Santander)" itemValue="CONCEPCION"/>
+									<f:selectItem itemLabel="CONCORDIA (Magdalena)" itemValue="CONCORDIA"/>
+									<f:selectItem itemLabel="CONCORDIA (Antioquia)" itemValue="CONCORDIA"/>
+									<f:selectItem itemLabel="CONDOTO (Choco)" itemValue="CONDOTO"/>
+									<f:selectItem itemLabel="CONFINES (Santander)" itemValue="CONFINES"/>
+									<f:selectItem itemLabel="CONSACA (Nariño)" itemValue="CONSACA"/>
+									<f:selectItem itemLabel="CONTADERO (Nariño)" itemValue="CONTADERO"/>
+									<f:selectItem itemLabel="CONTRATACION (Santander)" itemValue="CONTRATACION"/>
+									<f:selectItem itemLabel="CONVENCION (N De Santander)" itemValue="CONVENCION"/>
+									<f:selectItem itemLabel="COPACABANA (Antioquia)" itemValue="COPACABANA"/>
+									<f:selectItem itemLabel="COPER (Boyaca)" itemValue="COPER"/>
+									<f:selectItem itemLabel="CORDOBA (Bolivar)" itemValue="CORDOBA"/>
+									<f:selectItem itemLabel="CORDOBA (Nariño)" itemValue="CORDOBA"/>
+									<f:selectItem itemLabel="CORDOBA (Quindio)" itemValue="CORDOBA"/>
+									<f:selectItem itemLabel="CORINTO (Cauca)" itemValue="CORINTO"/>
+									<f:selectItem itemLabel="COROMORO (Santander)" itemValue="COROMORO"/>
+									<f:selectItem itemLabel="COROZAL (Sucre)" itemValue="COROZAL"/>
+									<f:selectItem itemLabel="CORRALES (Boyaca)" itemValue="CORRALES"/>
+									<f:selectItem itemLabel="COTA (Cundinamarca)" itemValue="COTA"/>
+									<f:selectItem itemLabel="COTORRA (Cordoba)" itemValue="COTORRA"/>
+									<f:selectItem itemLabel="COVARACHIA (Boyaca)" itemValue="COVARACHIA"/>
+									<f:selectItem itemLabel="COVEÑAS (Sucre)" itemValue="COVEÑAS"/>
+									<f:selectItem itemLabel="COYAIMA (Tolima)" itemValue="COYAIMA"/>
+									<f:selectItem itemLabel="CRAVO NORTE (Arauca)" itemValue="CRAVO NORTE"/>
+									<f:selectItem itemLabel="CUASPUD (Nariño)" itemValue="CUASPUD"/>
+									<f:selectItem itemLabel="CUBARA (Boyaca)" itemValue="CUBARA"/>
+									<f:selectItem itemLabel="CUBARRAL (Meta)" itemValue="CUBARRAL"/>
+									<f:selectItem itemLabel="CUCAITA (Boyaca)" itemValue="CUCAITA"/>
+									<f:selectItem itemLabel="CUCUNUBA (Cundinamarca)" itemValue="CUCUNUBA"/>
+									<f:selectItem itemLabel="CUCUTA (N De Santander)" itemValue="CUCUTA"/>
+									<f:selectItem itemLabel="CUCUTILLA (N De Santander)" itemValue="CUCUTILLA"/>
+									<f:selectItem itemLabel="CUITIVA (Boyaca)" itemValue="CUITIVA"/>
+									<f:selectItem itemLabel="CUMARAL (Meta)" itemValue="CUMARAL"/>
+									<f:selectItem itemLabel="CUMARIBO (Vichada)" itemValue="CUMARIBO"/>
+									<f:selectItem itemLabel="CUMBAL (Nariño)" itemValue="CUMBAL"/>
+									<f:selectItem itemLabel="CUMBITARA (Nariño)" itemValue="CUMBITARA"/>
+									<f:selectItem itemLabel="CUNDAY (Tolima)" itemValue="CUNDAY"/>
+									<f:selectItem itemLabel="CURILLO (Caqueta)" itemValue="CURILLO"/>
+									<f:selectItem itemLabel="CURITI (Santander)" itemValue="CURITI"/>
+									<f:selectItem itemLabel="CURUMANI (Cesar)" itemValue="CURUMANI"/>
+									<f:selectItem itemLabel="DABEIBA (Antioquia)" itemValue="DABEIBA"/>
+									<f:selectItem itemLabel="DAGUA (Valle Del Cauca)" itemValue="DAGUA"/>
+									<f:selectItem itemLabel="DIBULLA (Guajira)" itemValue="DIBULLA"/>
+									<f:selectItem itemLabel="DISTRACCION (Guajira)" itemValue="DISTRACCION"/>
+									<f:selectItem itemLabel="DOLORES (Tolima)" itemValue="DOLORES"/>
+									<f:selectItem itemLabel="DON MATIAS (Antioquia)" itemValue="DON MATIAS"/>
+									<f:selectItem itemLabel="DOS QUEBRADAS (Risaralda)" itemValue="DOS QUEBRADAS"/>
+									<f:selectItem itemLabel="DUITAMA (Boyaca)" itemValue="DUITAMA"/>
+									<f:selectItem itemLabel="DURANIA (N De Santander)" itemValue="DURANIA"/>
+									<f:selectItem itemLabel="EBEJICO (Antioquia)" itemValue="EBEJICO"/>
+									<f:selectItem itemLabel="EL AGUILA (Valle Del Cauca)" itemValue="EL AGUILA"/>
+									<f:selectItem itemLabel="EL BAGRE (Antioquia)" itemValue="EL BAGRE"/>
+									<f:selectItem itemLabel="EL BANCO (Magdalena)" itemValue="EL BANCO"/>
+									<f:selectItem itemLabel="EL CAIRO (Valle Del Cauca)" itemValue="EL CAIRO"/>
+									<f:selectItem itemLabel="EL CALVARIO (Meta)" itemValue="EL CALVARIO"/>
+									<f:selectItem itemLabel="EL CARMEN (Choco)" itemValue="EL CARMEN"/>
+									<f:selectItem itemLabel="EL CARMEN (N De Santander)" itemValue="EL CARMEN"/>
+									<f:selectItem itemLabel="EL CARMEN (Santander)" itemValue="EL CARMEN"/>
+									<f:selectItem itemLabel="EL CARMEN DE BOLIVAR (Bolivar)" itemValue="EL CARMEN DE BOLIVAR"/>
+									<f:selectItem itemLabel="EL CASTILLO (Meta)" itemValue="EL CASTILLO"/>
+									<f:selectItem itemLabel="EL CERRITO (Valle Del Cauca)" itemValue="EL CERRITO"/>
+									<f:selectItem itemLabel="EL CHARCO (Nariño)" itemValue="EL CHARCO"/>
+									<f:selectItem itemLabel="EL COCUY (Boyaca)" itemValue="EL COCUY"/>
+									<f:selectItem itemLabel="EL COLEGIO (Cundinamarca)" itemValue="EL COLEGIO"/>
+									<f:selectItem itemLabel="EL COPEY (Cesar)" itemValue="EL COPEY"/>
+									<f:selectItem itemLabel="EL DONCELLO (Caqueta)" itemValue="EL DONCELLO"/>
+									<f:selectItem itemLabel="EL DORADO (Meta)" itemValue="EL DORADO"/>
+									<f:selectItem itemLabel="EL DOVIO (Valle Del Cauca)" itemValue="EL DOVIO"/>
+									<f:selectItem itemLabel="EL ESPINO (Boyaca)" itemValue="EL ESPINO"/>
+									<f:selectItem itemLabel="EL GUACAMAYO (Santander)" itemValue="EL GUACAMAYO"/>
+									<f:selectItem itemLabel="EL GUAMO (Bolivar)" itemValue="EL GUAMO"/>
+									<f:selectItem itemLabel="EL MOLINO (Guajira)" itemValue="EL MOLINO"/>
+									<f:selectItem itemLabel="EL PASO (Cesar)" itemValue="EL PASO"/>
+									<f:selectItem itemLabel="EL PAUJIL (Caqueta)" itemValue="EL PAUJIL"/>
+									<f:selectItem itemLabel="EL PEÑOL (Nariño)" itemValue="EL PEÑOL"/>
+									<f:selectItem itemLabel="EL PEÑON (Bolivar)" itemValue="EL PEÑON"/>
+									<f:selectItem itemLabel="EL PEÑON (Cundinamarca)" itemValue="EL PEÑON"/>
+									<f:selectItem itemLabel="EL PEÑON (Santander)" itemValue="EL PEÑON"/>
+									<f:selectItem itemLabel="EL PIÑON (Magdalena)" itemValue="EL PIÑON"/>
+									<f:selectItem itemLabel="EL PLAYON (Santander)" itemValue="EL PLAYON"/>
+									<f:selectItem itemLabel="EL RETEN (Magdalena)" itemValue="EL RETEN"/>
+									<f:selectItem itemLabel="EL RETORNO (Guaviare)" itemValue="EL RETORNO"/>
+									<f:selectItem itemLabel="EL ROBLE (Sucre)" itemValue="EL ROBLE"/>
+									<f:selectItem itemLabel="EL ROSAL (Cundinamarca)" itemValue="EL ROSAL"/>
+									<f:selectItem itemLabel="EL ROSARIO (Nariño)" itemValue="EL ROSARIO"/>
+									<f:selectItem itemLabel="EL TABLON (Nariño)" itemValue="EL TABLON"/>
+									<f:selectItem itemLabel="EL TAMBO (Cauca)" itemValue="EL TAMBO"/>
+									<f:selectItem itemLabel="EL TAMBO (Nariño)" itemValue="EL TAMBO"/>
+									<f:selectItem itemLabel="EL TARRA (N De Santander)" itemValue="EL TARRA"/>
+									<f:selectItem itemLabel="EL ZULIA (N De Santander)" itemValue="EL ZULIA"/>
+									<f:selectItem itemLabel="ELIAS (Huila)" itemValue="ELIAS"/>
+									<f:selectItem itemLabel="ENCINO (Santander)" itemValue="ENCINO"/>
+									<f:selectItem itemLabel="ENCISO (Santander)" itemValue="ENCISO"/>
+									<f:selectItem itemLabel="ENTRERRIOS (Antioquia)" itemValue="ENTRERRIOS"/>
+									<f:selectItem itemLabel="ENVIGADO (Antioquia)" itemValue="ENVIGADO"/>
+									<f:selectItem itemLabel="ESPINAL (Tolima)" itemValue="ESPINAL"/>
+									<f:selectItem itemLabel="FACATATIVA (Cundinamarca)" itemValue="FACATATIVA"/>
+									<f:selectItem itemLabel="FALAN (Tolima)" itemValue="FALAN"/>
+									<f:selectItem itemLabel="FILADELFIA (Caldas)" itemValue="FILADELFIA"/>
+									<f:selectItem itemLabel="FILANDIA (Quindio)" itemValue="FILANDIA"/>
+									<f:selectItem itemLabel="FIRAVITOBA (Boyaca)" itemValue="FIRAVITOBA"/>
+									<f:selectItem itemLabel="FLANDES (Tolima)" itemValue="FLANDES"/>
+									<f:selectItem itemLabel="FLORENCIA (Caqueta)" itemValue="FLORENCIA"/>
+									<f:selectItem itemLabel="FLORENCIA (Cauca)" itemValue="FLORENCIA"/>
+									<f:selectItem itemLabel="FLORESTA (Boyaca)" itemValue="FLORESTA"/>
+									<f:selectItem itemLabel="FLORIAN (Santander)" itemValue="FLORIAN"/>
+									<f:selectItem itemLabel="FLORIDA (Valle Del Cauca)" itemValue="FLORIDA"/>
+									<f:selectItem itemLabel="FLORIDABLANCA (Santander)" itemValue="FLORIDABLANCA"/>
+									<f:selectItem itemLabel="FOMEQUE (Cundinamarca)" itemValue="FOMEQUE"/>
+									<f:selectItem itemLabel="FONSECA (Guajira)" itemValue="FONSECA"/>
+									<f:selectItem itemLabel="FORTUL (Arauca)" itemValue="FORTUL"/>
+									<f:selectItem itemLabel="FOSCA (Cundinamarca)" itemValue="FOSCA"/>
+									<f:selectItem itemLabel="FREDONIA (Antioquia)" itemValue="FREDONIA"/>
+									<f:selectItem itemLabel="FRESNO (Tolima)" itemValue="FRESNO"/>
+									<f:selectItem itemLabel="FRONTINO (Antioquia)" itemValue="FRONTINO"/>
+									<f:selectItem itemLabel="FUENTE DE ORO (Meta)" itemValue="FUENTE DE ORO"/>
+									<f:selectItem itemLabel="FUNDACION (Magdalena)" itemValue="FUNDACION"/>
+									<f:selectItem itemLabel="FUNES (Nariño)" itemValue="FUNES"/>
+									<f:selectItem itemLabel="FUNZA (Cundinamarca)" itemValue="FUNZA"/>
+									<f:selectItem itemLabel="FUQUENE (Cundinamarca)" itemValue="FUQUENE"/>
+									<f:selectItem itemLabel="FUSAGASUGA (Cundinamarca)" itemValue="FUSAGASUGA"/>
+									<f:selectItem itemLabel="GACHALA (Cundinamarca)" itemValue="GACHALA"/>
+									<f:selectItem itemLabel="GACHANCIPA (Cundinamarca)" itemValue="GACHANCIPA"/>
+									<f:selectItem itemLabel="GACHANTIVA (Boyaca)" itemValue="GACHANTIVA"/>
+									<f:selectItem itemLabel="GACHETA (Cundinamarca)" itemValue="GACHETA"/>
+									<f:selectItem itemLabel="GALAN (Santander)" itemValue="GALAN"/>
+									<f:selectItem itemLabel="GALAPA (Atlantico)" itemValue="GALAPA"/>
+									<f:selectItem itemLabel="GALERAS (Sucre)" itemValue="GALERAS"/>
+									<f:selectItem itemLabel="GAMA (Cundinamarca)" itemValue="GAMA"/>
+									<f:selectItem itemLabel="GAMARRA (Cesar)" itemValue="GAMARRA"/>
+									<f:selectItem itemLabel="GAMBITA (Santander)" itemValue="GAMBITA"/>
+									<f:selectItem itemLabel="GAMEZA (Boyaca)" itemValue="GAMEZA"/>
+									<f:selectItem itemLabel="GARAGOA (Boyaca)" itemValue="GARAGOA"/>
+									<f:selectItem itemLabel="GARZON (Huila)" itemValue="GARZON"/>
+									<f:selectItem itemLabel="GENOVA (Quindio)" itemValue="GENOVA"/>
+									<f:selectItem itemLabel="GIGANTE (Huila)" itemValue="GIGANTE"/>
+									<f:selectItem itemLabel="GINEBRA (Valle Del Cauca)" itemValue="GINEBRA"/>
+									<f:selectItem itemLabel="GIRALDO (Antioquia)" itemValue="GIRALDO"/>
+									<f:selectItem itemLabel="GIRARDOT (Cundinamarca)" itemValue="GIRARDOT"/>
+									<f:selectItem itemLabel="GIRARDOTA (Antioquia)" itemValue="GIRARDOTA"/>
+									<f:selectItem itemLabel="GIRON (Santander)" itemValue="GIRON"/>
+									<f:selectItem itemLabel="GOMEZ PLATA (Antioquia)" itemValue="GOMEZ PLATA"/>
+									<f:selectItem itemLabel="GONZALEZ (Cesar)" itemValue="GONZALEZ"/>
+									<f:selectItem itemLabel="GRAMALOTE (N De Santander)" itemValue="GRAMALOTE"/>
+									<f:selectItem itemLabel="GRANADA (Cundinamarca)" itemValue="GRANADA"/>
+									<f:selectItem itemLabel="GRANADA (Meta)" itemValue="GRANADA"/>
+									<f:selectItem itemLabel="GRANADA (Antioquia)" itemValue="GRANADA"/>
+									<f:selectItem itemLabel="GUACA (Santander)" itemValue="GUACA"/>
+									<f:selectItem itemLabel="GUACAMAYAS (Boyaca)" itemValue="GUACAMAYAS"/>
+									<f:selectItem itemLabel="GUACARI (Valle Del Cauca)" itemValue="GUACARI"/>
+									<f:selectItem itemLabel="GUACHETA (Cundinamarca)" itemValue="GUACHETA"/>
+									<f:selectItem itemLabel="GUACHUCAL (Nariño)" itemValue="GUACHUCAL"/>
+									<f:selectItem itemLabel="GUADALUPE (Huila)" itemValue="GUADALUPE"/>
+									<f:selectItem itemLabel="GUADALUPE (Antioquia)" itemValue="GUADALUPE"/>
+									<f:selectItem itemLabel="GUADALUPE (Santander)" itemValue="GUADALUPE"/>
+									<f:selectItem itemLabel="GUADUAS (Cundinamarca)" itemValue="GUADUAS"/>
+									<f:selectItem itemLabel="GUAITARILLA (Nariño)" itemValue="GUAITARILLA"/>
+									<f:selectItem itemLabel="GUALMATAN (Nariño)" itemValue="GUALMATAN"/>
+									<f:selectItem itemLabel="GUAMAL (Magdalena)" itemValue="GUAMAL"/>
+									<f:selectItem itemLabel="GUAMAL (Meta)" itemValue="GUAMAL"/>
+									<f:selectItem itemLabel="GUAMO (Tolima)" itemValue="GUAMO"/>
+									<f:selectItem itemLabel="GUAPI (Cauca)" itemValue="GUAPI"/>
+									<f:selectItem itemLabel="GUAPOTA (Santander)" itemValue="GUAPOTA"/>
+									<f:selectItem itemLabel="GUARANDA (Sucre)" itemValue="GUARANDA"/>
+									<f:selectItem itemLabel="GUARNE (Antioquia)" itemValue="GUARNE"/>
+									<f:selectItem itemLabel="GUASCA (Cundinamarca)" itemValue="GUASCA"/>
+									<f:selectItem itemLabel="GUATAPE (Antioquia)" itemValue="GUATAPE"/>
+									<f:selectItem itemLabel="GUATAQUI (Cundinamarca)" itemValue="GUATAQUI"/>
+									<f:selectItem itemLabel="GUATAVITA (Cundinamarca)" itemValue="GUATAVITA"/>
+									<f:selectItem itemLabel="GUATEQUE (Boyaca)" itemValue="GUATEQUE"/>
+									<f:selectItem itemLabel="GUATICA (Risaralda)" itemValue="GUATICA"/>
+									<f:selectItem itemLabel="GUAVATA (Santander)" itemValue="GUAVATA"/>
+									<f:selectItem itemLabel="GUAYABAL DE SIQUIMA (Cundinamarca)" itemValue="GUAYABAL DE SIQUIMA"/>
+									<f:selectItem itemLabel="GUAYABETAL (Cundinamarca)" itemValue="GUAYABETAL"/>
+									<f:selectItem itemLabel="GUAYATA (Boyaca)" itemValue="GUAYATA"/>
+									<f:selectItem itemLabel="GUEPSA (Santander)" itemValue="GUEPSA"/>
+									<f:selectItem itemLabel="GUICAN (Boyaca)" itemValue="GUICAN"/>
+									<f:selectItem itemLabel="GUTIERREZ (Cundinamarca)" itemValue="GUTIERREZ"/>
+									<f:selectItem itemLabel="HACARI (N De Santander)" itemValue="HACARI"/>
+									<f:selectItem itemLabel="HATILLO DE LOBA (Bolivar)" itemValue="HATILLO DE LOBA"/>
+									<f:selectItem itemLabel="HATO (Santander)" itemValue="HATO"/>
+									<f:selectItem itemLabel="HATO COROZAL (Casanare)" itemValue="HATO COROZAL"/>
+									<f:selectItem itemLabel="HATONUEVO (Guajira)" itemValue="HATONUEVO"/>
+									<f:selectItem itemLabel="HELICONIA (Antioquia)" itemValue="HELICONIA"/>
+									<f:selectItem itemLabel="HERRAN (N De Santander)" itemValue="HERRAN"/>
+									<f:selectItem itemLabel="HERVEO (Tolima)" itemValue="HERVEO"/>
+									<f:selectItem itemLabel="HISPANIA (Antioquia)" itemValue="HISPANIA"/>
+									<f:selectItem itemLabel="HOBO (Huila)" itemValue="HOBO"/>
+									<f:selectItem itemLabel="HONDA (Tolima)" itemValue="HONDA"/>
+									<f:selectItem itemLabel="IBAGUE (Tolima)" itemValue="IBAGUE"/>
+									<f:selectItem itemLabel="ICONONZO (Tolima)" itemValue="ICONONZO"/>
+									<f:selectItem itemLabel="ILES (Nariño)" itemValue="ILES"/>
+									<f:selectItem itemLabel="IMUES (Nariño)" itemValue="IMUES"/>
+									<f:selectItem itemLabel="INZA (Cauca)" itemValue="INZA"/>
+									<f:selectItem itemLabel="IPIALES (Nariño)" itemValue="IPIALES"/>
+									<f:selectItem itemLabel="IQUIRA (Huila)" itemValue="IQUIRA"/>
+									<f:selectItem itemLabel="ISNOS (Huila)" itemValue="ISNOS"/>
+									<f:selectItem itemLabel="ISTMINA (Choco)" itemValue="ISTMINA"/>
+									<f:selectItem itemLabel="ITAGUI (Antioquia)" itemValue="ITAGUI"/>
+									<f:selectItem itemLabel="ITUANGO (Antioquia)" itemValue="ITUANGO"/>
+									<f:selectItem itemLabel="IZA (Boyaca)" itemValue="IZA"/>
+									<f:selectItem itemLabel="JAMBALO (Cauca)" itemValue="JAMBALO"/>
+									<f:selectItem itemLabel="JAMUNDI (Valle Del Cauca)" itemValue="JAMUNDI"/>
+									<f:selectItem itemLabel="JARDIN (Antioquia)" itemValue="JARDIN"/>
+									<f:selectItem itemLabel="JENESANO (Boyaca)" itemValue="JENESANO"/>
+									<f:selectItem itemLabel="JERICO (Boyaca)" itemValue="JERICO"/>
+									<f:selectItem itemLabel="JERICO (Antioquia)" itemValue="JERICO"/>
+									<f:selectItem itemLabel="JERUSALEN (Cundinamarca)" itemValue="JERUSALEN"/>
+									<f:selectItem itemLabel="JESUS MARIA (Santander)" itemValue="JESUS MARIA"/>
+									<f:selectItem itemLabel="JORDAN (Santander)" itemValue="JORDAN"/>
+									<f:selectItem itemLabel="JUAN DE ACOSTA (Atlantico)" itemValue="JUAN DE ACOSTA"/>
+									<f:selectItem itemLabel="JUNIN (Cundinamarca)" itemValue="JUNIN"/>
+									<f:selectItem itemLabel="JURADO (Choco)" itemValue="JURADO"/>
+									<f:selectItem itemLabel="LA APARTADA (Cordoba)" itemValue="LA APARTADA"/>
+									<f:selectItem itemLabel="LA ARGENTINA (Huila)" itemValue="LA ARGENTINA"/>
+									<f:selectItem itemLabel="LA BELLEZA (Santander)" itemValue="LA BELLEZA"/>
+									<f:selectItem itemLabel="LA CALERA (Cundinamarca)" itemValue="LA CALERA"/>
+									<f:selectItem itemLabel="LA CAPILLA (Boyaca)" itemValue="LA CAPILLA"/>
+									<f:selectItem itemLabel="LA CEJA (Antioquia)" itemValue="LA CEJA"/>
+									<f:selectItem itemLabel="LA CELIA (Risaralda)" itemValue="LA CELIA"/>
+									<f:selectItem itemLabel="LA CRUZ (Nariño)" itemValue="LA CRUZ"/>
+									<f:selectItem itemLabel="LA CUMBRE (Valle Del Cauca)" itemValue="LA CUMBRE"/>
+									<f:selectItem itemLabel="LA DORADA (Caldas)" itemValue="LA DORADA"/>
+									<f:selectItem itemLabel="LA ESPERANZA (N De Santander)" itemValue="LA ESPERANZA"/>
+									<f:selectItem itemLabel="LA ESTRELLA (Antioquia)" itemValue="LA ESTRELLA"/>
+									<f:selectItem itemLabel="LA FLORIDA (Nariño)" itemValue="LA FLORIDA"/>
+									<f:selectItem itemLabel="LA GLORIA (Cesar)" itemValue="LA GLORIA"/>
+									<f:selectItem itemLabel="LA JAGUA DEL PILAR (Guajira)" itemValue="LA JAGUA DEL PILAR"/>
+									<f:selectItem itemLabel="LA JAGUA IBIRICO (Cesar)" itemValue="LA JAGUA IBIRICO"/>
+									<f:selectItem itemLabel="LA LLANADA (Nariño)" itemValue="LA LLANADA"/>
+									<f:selectItem itemLabel="LA MACARENA (Meta)" itemValue="LA MACARENA"/>
+									<f:selectItem itemLabel="LA MERCED (Caldas)" itemValue="LA MERCED"/>
+									<f:selectItem itemLabel="LA MESA (Cundinamarca)" itemValue="LA MESA"/>
+									<f:selectItem itemLabel="LA MONTAÑITA (Caqueta)" itemValue="LA MONTAÑITA"/>
+									<f:selectItem itemLabel="LA PALMA (Cundinamarca)" itemValue="LA PALMA"/>
+									<f:selectItem itemLabel="LA PAZ (Santander)" itemValue="LA PAZ"/>
+									<f:selectItem itemLabel="LA PEÑA (Cundinamarca)" itemValue="LA PEÑA"/>
+									<f:selectItem itemLabel="LA PINTADA (Antioquia)" itemValue="LA PINTADA"/>
+									<f:selectItem itemLabel="LA PLATA (Huila)" itemValue="LA PLATA"/>
+									<f:selectItem itemLabel="LA PLAYA (N De Santander)" itemValue="LA PLAYA"/>
+									<f:selectItem itemLabel="LA PRIMAVERA (Vichada)" itemValue="LA PRIMAVERA"/>
+									<f:selectItem itemLabel="LA SALINA (Casanare)" itemValue="LA SALINA"/>
+									<f:selectItem itemLabel="LA SIERRA (Cauca)" itemValue="LA SIERRA"/>
+									<f:selectItem itemLabel="LA TEBAIDA (Quindio)" itemValue="LA TEBAIDA"/>
+									<f:selectItem itemLabel="LA TOLA (Nariño)" itemValue="LA TOLA"/>
+									<f:selectItem itemLabel="LA UNION (Nariño)" itemValue="LA UNION"/>
+									<f:selectItem itemLabel="LA UNION (Antioquia)" itemValue="LA UNION"/>
+									<f:selectItem itemLabel="LA UNION (Sucre)" itemValue="LA UNION"/>
+									<f:selectItem itemLabel="LA UNION (Valle Del Cauca)" itemValue="LA UNION"/>
+									<f:selectItem itemLabel="LA URIBE (Meta)" itemValue="LA URIBE"/>
+									<f:selectItem itemLabel="LA UVITA (Boyaca)" itemValue="LA UVITA"/>
+									<f:selectItem itemLabel="LA VEGA (Cauca)" itemValue="LA VEGA"/>
+									<f:selectItem itemLabel="LA VEGA (Cundinamarca)" itemValue="LA VEGA"/>
+									<f:selectItem itemLabel="LA VICTORIA (Boyaca)" itemValue="LA VICTORIA"/>
+									<f:selectItem itemLabel="LA VICTORIA (Valle Del Cauca)" itemValue="LA VICTORIA"/>
+									<f:selectItem itemLabel="LA VIRGINIA (Risaralda)" itemValue="LA VIRGINIA"/>
+									<f:selectItem itemLabel="LABATECA (N De Santander)" itemValue="LABATECA"/>
+									<f:selectItem itemLabel="LABRANZAGRANDE (Boyaca)" itemValue="LABRANZAGRANDE"/>
+									<f:selectItem itemLabel="LANDAZURI (Santander)" itemValue="LANDAZURI"/>
+									<f:selectItem itemLabel="LEBRIJA (Santander)" itemValue="LEBRIJA"/>
+									<f:selectItem itemLabel="LEIVA (Boyaca)" itemValue="LEIVA"/>
+									<f:selectItem itemLabel="LEIVA (Nariño)" itemValue="LEIVA"/>
+									<f:selectItem itemLabel="LEJANIAS (Meta)" itemValue="LEJANIAS"/>
+									<f:selectItem itemLabel="LENGUAZAQUE (Cundinamarca)" itemValue="LENGUAZAQUE"/>
+									<f:selectItem itemLabel="LERIDA (Tolima)" itemValue="LERIDA"/>
+									<f:selectItem itemLabel="LETICIA (Amazonas)" itemValue="LETICIA"/>
+									<f:selectItem itemLabel="LIBANO (Tolima)" itemValue="LIBANO"/>
+									<f:selectItem itemLabel="LIBORINA (Antioquia)" itemValue="LIBORINA"/>
+									<f:selectItem itemLabel="LINARES (Nariño)" itemValue="LINARES"/>
+									<f:selectItem itemLabel="LITORAL DEL SAN JUAN (Choco)" itemValue="LITORAL DEL SAN JUAN"/>
+									<f:selectItem itemLabel="LLORO (Choco)" itemValue="LLORO"/>
+									<f:selectItem itemLabel="LOPEZ (Cauca)" itemValue="LOPEZ"/>
+									<f:selectItem itemLabel="LORICA (Cordoba)" itemValue="LORICA"/>
+									<f:selectItem itemLabel="LOS ANDES (Nariño)" itemValue="LOS ANDES"/>
+									<f:selectItem itemLabel="LOS CORDOBAS (Cordoba)" itemValue="LOS CORDOBAS"/>
+									<f:selectItem itemLabel="LOS PALMITOS (Sucre)" itemValue="LOS PALMITOS"/>
+									<f:selectItem itemLabel="LOS PATIOS (N De Santander)" itemValue="LOS PATIOS"/>
+									<f:selectItem itemLabel="LOS SANTOS (Santander)" itemValue="LOS SANTOS"/>
+									<f:selectItem itemLabel="LOURDES (N De Santander)" itemValue="LOURDES"/>
+									<f:selectItem itemLabel="LURUACO (Atlantico)" itemValue="LURUACO"/>
+									<f:selectItem itemLabel="MACANAL (Boyaca)" itemValue="MACANAL"/>
+									<f:selectItem itemLabel="MACARAVITA (Santander)" itemValue="MACARAVITA"/>
+									<f:selectItem itemLabel="MACEO (Antioquia)" itemValue="MACEO"/>
+									<f:selectItem itemLabel="MACHETA (Cundinamarca)" itemValue="MACHETA"/>
+									<f:selectItem itemLabel="MADRID (Cundinamarca)" itemValue="MADRID"/>
+									<f:selectItem itemLabel="MAGANGUE (Bolivar)" itemValue="MAGANGUE"/>
+									<f:selectItem itemLabel="MAGUI (Nariño)" itemValue="MAGUI"/>
+									<f:selectItem itemLabel="MAHATES (Bolivar)" itemValue="MAHATES"/>
+									<f:selectItem itemLabel="MAICAO (Guajira)" itemValue="MAICAO"/>
+									<f:selectItem itemLabel="MAJAGUAL (Sucre)" itemValue="MAJAGUAL"/>
+									<f:selectItem itemLabel="MALAGA (Santander)" itemValue="MALAGA"/>
+									<f:selectItem itemLabel="MALAMBO (Atlantico)" itemValue="MALAMBO"/>
+									<f:selectItem itemLabel="MALLAMA (Nariño)" itemValue="MALLAMA"/>
+									<f:selectItem itemLabel="MANATI (Atlantico)" itemValue="MANATI"/>
+									<f:selectItem itemLabel="MANAURE (Guajira)" itemValue="MANAURE"/>
+									<f:selectItem itemLabel="MANAURE BALCON DEL CESAR (Cesar)" itemValue="MANAURE BALCON DEL CESAR"/>
+									<f:selectItem itemLabel="MANI (Casanare)" itemValue="MANI"/>
+									<f:selectItem itemLabel="MANIZALES (Caldas)" itemValue="MANIZALES"/>
+									<f:selectItem itemLabel="MANTA (Cundinamarca)" itemValue="MANTA"/>
+									<f:selectItem itemLabel="MANZANARES (Caldas)" itemValue="MANZANARES"/>
+									<f:selectItem itemLabel="MAPIRIPAN (Meta)" itemValue="MAPIRIPAN"/>
+									<f:selectItem itemLabel="MARGARITA (Bolivar)" itemValue="MARGARITA"/>
+									<f:selectItem itemLabel="MARIA LA BAJA (Bolivar)" itemValue="MARIA LA BAJA"/>
+									<f:selectItem itemLabel="MARINILLA (Antioquia)" itemValue="MARINILLA"/>
+									<f:selectItem itemLabel="MARIPI (Boyaca)" itemValue="MARIPI"/>
+									<f:selectItem itemLabel="MARIQUITA (Tolima)" itemValue="MARIQUITA"/>
+									<f:selectItem itemLabel="MARMATO (Caldas)" itemValue="MARMATO"/>
+									<f:selectItem itemLabel="MARQUETALIA (Caldas)" itemValue="MARQUETALIA"/>
+									<f:selectItem itemLabel="MARSELLA (Risaralda)" itemValue="MARSELLA"/>
+									<f:selectItem itemLabel="MARULANDA (Caldas)" itemValue="MARULANDA"/>
+									<f:selectItem itemLabel="MATANZA (Santander)" itemValue="MATANZA"/>
+									<f:selectItem itemLabel="MEDELLIN (Antioquia)" itemValue="MEDELLIN"/>
+									<f:selectItem itemLabel="MEDINA (Cundinamarca)" itemValue="MEDINA"/>
+									<f:selectItem itemLabel="MEDIO ATRATO (Choco)" itemValue="MEDIO ATRATO"/>
+									<f:selectItem itemLabel="MEDIO BAUDO (BOCA DE PEPE (Choco)" itemValue="MEDIO BAUDO (BOCA DE PEPE"/>
+									<f:selectItem itemLabel="MEDIO SAN JUAN (Choco)" itemValue="MEDIO SAN JUAN"/>
+									<f:selectItem itemLabel="MELGAR (Tolima)" itemValue="MELGAR"/>
+									<f:selectItem itemLabel="MERCADERES (Cauca)" itemValue="MERCADERES"/>
+									<f:selectItem itemLabel="MESETAS (Meta)" itemValue="MESETAS"/>
+									<f:selectItem itemLabel="MILAN (Caqueta)" itemValue="MILAN"/>
+									<f:selectItem itemLabel="MIRAFLORES (Boyaca)" itemValue="MIRAFLORES"/>
+									<f:selectItem itemLabel="MIRAFLORES (Guaviare)" itemValue="MIRAFLORES"/>
+									<f:selectItem itemLabel="MIRANDA (Cauca)" itemValue="MIRANDA"/>
+									<f:selectItem itemLabel="MISTRATO (Risaralda)" itemValue="MISTRATO"/>
+									<f:selectItem itemLabel="MITU (Vaupes)" itemValue="MITU"/>
+									<f:selectItem itemLabel="MOCOA (Putumayo)" itemValue="MOCOA"/>
+									<f:selectItem itemLabel="MOGOTES (Santander)" itemValue="MOGOTES"/>
+									<f:selectItem itemLabel="MOLAGAVITA (Santander)" itemValue="MOLAGAVITA"/>
+									<f:selectItem itemLabel="MOMIL (Cordoba)" itemValue="MOMIL"/>
+									<f:selectItem itemLabel="MOMPOS (Bolivar)" itemValue="MOMPOS"/>
+									<f:selectItem itemLabel="MONGUA (Boyaca)" itemValue="MONGUA"/>
+									<f:selectItem itemLabel="MONGUI (Boyaca)" itemValue="MONGUI"/>
+									<f:selectItem itemLabel="MONIQUIRA (Boyaca)" itemValue="MONIQUIRA"/>
+									<f:selectItem itemLabel="MOÑITOS (Cordoba)" itemValue="MOÑITOS"/>
+									<f:selectItem itemLabel="MONTEBELLO (Antioquia)" itemValue="MONTEBELLO"/>
+									<f:selectItem itemLabel="MONTECRISTO (Bolivar)" itemValue="MONTECRISTO"/>
+									<f:selectItem itemLabel="MONTELIBANO (Cordoba)" itemValue="MONTELIBANO"/>
+									<f:selectItem itemLabel="MONTENEGRO (Quindio)" itemValue="MONTENEGRO"/>
+									<f:selectItem itemLabel="MONTERIA (Cordoba)" itemValue="MONTERIA"/>
+									<f:selectItem itemLabel="MONTERREY (Casanare)" itemValue="MONTERREY"/>
+									<f:selectItem itemLabel="MORALES (Bolivar)" itemValue="MORALES"/>
+									<f:selectItem itemLabel="MORALES (Cauca)" itemValue="MORALES"/>
+									<f:selectItem itemLabel="MORELIA (Caqueta)" itemValue="MORELIA"/>
+									<f:selectItem itemLabel="MORROA (Sucre)" itemValue="MORROA"/>
+									<f:selectItem itemLabel="MOSQUERA (Cundinamarca)" itemValue="MOSQUERA"/>
+									<f:selectItem itemLabel="MOSQUERA (Nariño)" itemValue="MOSQUERA"/>
+									<f:selectItem itemLabel="MOTAVITA (Boyaca)" itemValue="MOTAVITA"/>
+									<f:selectItem itemLabel="MURILLO (Tolima)" itemValue="MURILLO"/>
+									<f:selectItem itemLabel="MURINDO (Antioquia)" itemValue="MURINDO"/>
+									<f:selectItem itemLabel="MUTATA (Antioquia)" itemValue="MUTATA"/>
+									<f:selectItem itemLabel="MUTISCUA (N De Santander)" itemValue="MUTISCUA"/>
+									<f:selectItem itemLabel="MUZO (Boyaca)" itemValue="MUZO"/>
+									<f:selectItem itemLabel="NARIÑO (Cundinamarca)" itemValue="NARIÑO"/>
+									<f:selectItem itemLabel="NARIÑO (Nariño)" itemValue="NARIÑO"/>
+									<f:selectItem itemLabel="NARIÑO (Antioquia)" itemValue="NARIÑO"/>
+									<f:selectItem itemLabel="NATAGA (Huila)" itemValue="NATAGA"/>
+									<f:selectItem itemLabel="NATAGAIMA (Tolima)" itemValue="NATAGAIMA"/>
+									<f:selectItem itemLabel="NECHI (Antioquia)" itemValue="NECHI"/>
+									<f:selectItem itemLabel="NECOCLI (Antioquia)" itemValue="NECOCLI"/>
+									<f:selectItem itemLabel="NEIRA (Caldas)" itemValue="NEIRA"/>
+									<f:selectItem itemLabel="NEIVA (Huila)" itemValue="NEIVA"/>
+									<f:selectItem itemLabel="NEMOCON (Cundinamarca)" itemValue="NEMOCON"/>
+									<f:selectItem itemLabel="NILO (Cundinamarca)" itemValue="NILO"/>
+									<f:selectItem itemLabel="NIMAIMA (Cundinamarca)" itemValue="NIMAIMA"/>
+									<f:selectItem itemLabel="NOBSA (Boyaca)" itemValue="NOBSA"/>
+									<f:selectItem itemLabel="NOCAIMA (Cundinamarca)" itemValue="NOCAIMA"/>
+									<f:selectItem itemLabel="NORCASIA (Caldas)" itemValue="NORCASIA"/>
+									<f:selectItem itemLabel="NOVITA (Choco)" itemValue="NOVITA"/>
+									<f:selectItem itemLabel="NUEVA GRANADA (Magdalena)" itemValue="NUEVA GRANADA"/>
+									<f:selectItem itemLabel="NUEVO COLON (Boyaca)" itemValue="NUEVO COLON"/>
+									<f:selectItem itemLabel="NUNCHIA (Casanare)" itemValue="NUNCHIA"/>
+									<f:selectItem itemLabel="NUQUI (Choco)" itemValue="NUQUI"/>
+									<f:selectItem itemLabel="OBANDO (Valle Del Cauca)" itemValue="OBANDO"/>
+									<f:selectItem itemLabel="OCAMONTE (Santander)" itemValue="OCAMONTE"/>
+									<f:selectItem itemLabel="OCAÑA (N De Santander)" itemValue="OCAÑA"/>
+									<f:selectItem itemLabel="OIBA (Santander)" itemValue="OIBA"/>
+									<f:selectItem itemLabel="OICATA (Boyaca)" itemValue="OICATA"/>
+									<f:selectItem itemLabel="OLAYA (Antioquia)" itemValue="OLAYA"/>
+									<f:selectItem itemLabel="OLAYA HERRERA (Nariño)" itemValue="OLAYA HERRERA"/>
+									<f:selectItem itemLabel="ONZAGA (Santander)" itemValue="ONZAGA"/>
+									<f:selectItem itemLabel="OPORAPA (Huila)" itemValue="OPORAPA"/>
+									<f:selectItem itemLabel="ORITO (Putumayo)" itemValue="ORITO"/>
+									<f:selectItem itemLabel="OROCUE (Casanare)" itemValue="OROCUE"/>
+									<f:selectItem itemLabel="ORTEGA (Tolima)" itemValue="ORTEGA"/>
+									<f:selectItem itemLabel="OSPINA (Nariño)" itemValue="OSPINA"/>
+									<f:selectItem itemLabel="OTANCHE (Boyaca)" itemValue="OTANCHE"/>
+									<f:selectItem itemLabel="OVEJAS (Sucre)" itemValue="OVEJAS"/>
+									<f:selectItem itemLabel="PACHAVITA (Boyaca)" itemValue="PACHAVITA"/>
+									<f:selectItem itemLabel="PACHO (Cundinamarca)" itemValue="PACHO"/>
+									<f:selectItem itemLabel="PACORA (Caldas)" itemValue="PACORA"/>
+									<f:selectItem itemLabel="PADILLA (Cauca)" itemValue="PADILLA"/>
+									<f:selectItem itemLabel="PAEZ (Boyaca)" itemValue="PAEZ"/>
+									<f:selectItem itemLabel="PAEZ (Cauca)" itemValue="PAEZ"/>
+									<f:selectItem itemLabel="PAICOL (Huila)" itemValue="PAICOL"/>
+									<f:selectItem itemLabel="PAILITAS (Cesar)" itemValue="PAILITAS"/>
+									<f:selectItem itemLabel="PAIME (Cundinamarca)" itemValue="PAIME"/>
+									<f:selectItem itemLabel="PAIPA (Boyaca)" itemValue="PAIPA"/>
+									<f:selectItem itemLabel="PAJARITO (Boyaca)" itemValue="PAJARITO"/>
+									<f:selectItem itemLabel="PALERMO (Huila)" itemValue="PALERMO"/>
+									<f:selectItem itemLabel="PALESTINA (Caldas)" itemValue="PALESTINA"/>
+									<f:selectItem itemLabel="PALESTINA (Huila)" itemValue="PALESTINA"/>
+									<f:selectItem itemLabel="PALMAR (Santander)" itemValue="PALMAR"/>
+									<f:selectItem itemLabel="PALMAR DE VARELA (Atlantico)" itemValue="PALMAR DE VARELA"/>
+									<f:selectItem itemLabel="PALMAS DEL SOCORRO (Santander)" itemValue="PALMAS DEL SOCORRO"/>
+									<f:selectItem itemLabel="PALMIRA (Valle Del Cauca)" itemValue="PALMIRA"/>
+									<f:selectItem itemLabel="PALMITO (Sucre)" itemValue="PALMITO"/>
+									<f:selectItem itemLabel="PALOCABILDO (Tolima)" itemValue="PALOCABILDO"/>
+									<f:selectItem itemLabel="PAMPLONA (N De Santander)" itemValue="PAMPLONA"/>
+									<f:selectItem itemLabel="PAMPLONITA (N De Santander)" itemValue="PAMPLONITA"/>
+									<f:selectItem itemLabel="PANDI (Cundinamarca)" itemValue="PANDI"/>
+									<f:selectItem itemLabel="PANQUEBA (Boyaca)" itemValue="PANQUEBA"/>
+									<f:selectItem itemLabel="PARAMO (Santander)" itemValue="PARAMO"/>
+									<f:selectItem itemLabel="PARATEBUENO (Cundinamarca)" itemValue="PARATEBUENO"/>
+									<f:selectItem itemLabel="PASCA (Cundinamarca)" itemValue="PASCA"/>
+									<f:selectItem itemLabel="PASTO (Nariño)" itemValue="PASTO"/>
+									<f:selectItem itemLabel="PATIA(EL BORDO) (Cauca)" itemValue="PATIA(EL BORDO)"/>
+									<f:selectItem itemLabel="PAUNA (Boyaca)" itemValue="PAUNA"/>
+									<f:selectItem itemLabel="PAYA (Boyaca)" itemValue="PAYA"/>
+									<f:selectItem itemLabel="PAZ DE ARIPORO (Casanare)" itemValue="PAZ DE ARIPORO"/>
+									<f:selectItem itemLabel="PAZ DEL RIO (Boyaca)" itemValue="PAZ DEL RIO"/>
+									<f:selectItem itemLabel="PEDRAZA (Magdalena)" itemValue="PEDRAZA"/>
+									<f:selectItem itemLabel="PELAYA (Cesar)" itemValue="PELAYA"/>
+									<f:selectItem itemLabel="PEÑOL (Antioquia)" itemValue="PEÑOL"/>
+									<f:selectItem itemLabel="PENSILVANIA (Caldas)" itemValue="PENSILVANIA"/>
+									<f:selectItem itemLabel="PEQUE (Antioquia)" itemValue="PEQUE"/>
+									<f:selectItem itemLabel="PEREIRA (Risaralda)" itemValue="PEREIRA"/>
+									<f:selectItem itemLabel="PESCA (Boyaca)" itemValue="PESCA"/>
+									<f:selectItem itemLabel="PIAMONTE (Cauca)" itemValue="PIAMONTE"/>
+									<f:selectItem itemLabel="PIEDECUESTA (Santander)" itemValue="PIEDECUESTA"/>
+									<f:selectItem itemLabel="PIEDRAS (Tolima)" itemValue="PIEDRAS"/>
+									<f:selectItem itemLabel="PIENDAMO (Cauca)" itemValue="PIENDAMO"/>
+									<f:selectItem itemLabel="PIJAO (Quindio)" itemValue="PIJAO"/>
+									<f:selectItem itemLabel="PIJIÑO DEL CARMEN (Magdalena)" itemValue="PIJIÑO DEL CARMEN"/>
+									<f:selectItem itemLabel="PINCHOTE (Santander)" itemValue="PINCHOTE"/>
+									<f:selectItem itemLabel="PINILLOS (Bolivar)" itemValue="PINILLOS"/>
+									<f:selectItem itemLabel="PIOJO (Atlantico)" itemValue="PIOJO"/>
+									<f:selectItem itemLabel="PISBA (Boyaca)" itemValue="PISBA"/>
+									<f:selectItem itemLabel="PITAL (Huila)" itemValue="PITAL"/>
+									<f:selectItem itemLabel="PITALITO (Huila)" itemValue="PITALITO"/>
+									<f:selectItem itemLabel="PIVIJAY (Magdalena)" itemValue="PIVIJAY"/>
+									<f:selectItem itemLabel="PIZARRO (Nariño)" itemValue="PIZARRO"/>
+									<f:selectItem itemLabel="PLANADAS (Tolima)" itemValue="PLANADAS"/>
+									<f:selectItem itemLabel="PLANETA RICA (Cordoba)" itemValue="PLANETA RICA"/>
+									<f:selectItem itemLabel="PLATO (Magdalena)" itemValue="PLATO"/>
+									<f:selectItem itemLabel="POLICARPA (Nariño)" itemValue="POLICARPA"/>
+									<f:selectItem itemLabel="POLO NUEVO (Atlantico)" itemValue="POLO NUEVO"/>
+									<f:selectItem itemLabel="PONEDERA (Atlantico)" itemValue="PONEDERA"/>
+									<f:selectItem itemLabel="POPAYAN (Cauca)" itemValue="POPAYAN"/>
+									<f:selectItem itemLabel="PORE (Casanare)" itemValue="PORE"/>
+									<f:selectItem itemLabel="POTOSI (Nariño)" itemValue="POTOSI"/>
+									<f:selectItem itemLabel="PRADERA (Valle Del Cauca)" itemValue="PRADERA"/>
+									<f:selectItem itemLabel="PRADO (Tolima)" itemValue="PRADO"/>
+									<f:selectItem itemLabel="PROVIDENCIA (Nariño)" itemValue="PROVIDENCIA"/>
+									<f:selectItem itemLabel="PROVIDENCIA (San Andres)" itemValue="PROVIDENCIA"/>
+									<f:selectItem itemLabel="PUEBLO BELLO (Cesar)" itemValue="PUEBLO BELLO"/>
+									<f:selectItem itemLabel="PUEBLO NUEVO (Cordoba)" itemValue="PUEBLO NUEVO"/>
+									<f:selectItem itemLabel="PUEBLO RICO (Risaralda)" itemValue="PUEBLO RICO"/>
+									<f:selectItem itemLabel="PUEBLORRICO (Antioquia)" itemValue="PUEBLORRICO"/>
+									<f:selectItem itemLabel="PUEBLOVIEJO (Magdalena)" itemValue="PUEBLOVIEJO"/>
+									<f:selectItem itemLabel="PUENTE NACIONAL (Santander)" itemValue="PUENTE NACIONAL"/>
+									<f:selectItem itemLabel="PUERRES (Nariño)" itemValue="PUERRES"/>
+									<f:selectItem itemLabel="PUERTO ASIS (Putumayo)" itemValue="PUERTO ASIS"/>
+									<f:selectItem itemLabel="PUERTO BERRIO (Antioquia)" itemValue="PUERTO BERRIO"/>
+									<f:selectItem itemLabel="PUERTO BOYACA (Boyaca)" itemValue="PUERTO BOYACA"/>
+									<f:selectItem itemLabel="PUERTO CARREÑO (Vichada)" itemValue="PUERTO CARREÑO"/>
+									<f:selectItem itemLabel="PUERTO CAYCEDO (Putumayo)" itemValue="PUERTO CAYCEDO"/>
+									<f:selectItem itemLabel="PUERTO COLOMBIA (Atlantico)" itemValue="PUERTO COLOMBIA"/>
+									<f:selectItem itemLabel="PUERTO CONCORDIA (Meta)" itemValue="PUERTO CONCORDIA"/>
+									<f:selectItem itemLabel="PUERTO ESCONDIDO (Cordoba)" itemValue="PUERTO ESCONDIDO"/>
+									<f:selectItem itemLabel="PUERTO GAITAN (Meta)" itemValue="PUERTO GAITAN"/>
+									<f:selectItem itemLabel="PUERTO GUZMAN (Putumayo)" itemValue="PUERTO GUZMAN"/>
+									<f:selectItem itemLabel="PUERTO INIRIDA (Guainia)" itemValue="PUERTO INIRIDA"/>
+									<f:selectItem itemLabel="PUERTO LEGUIZAMO (Putumayo)" itemValue="PUERTO LEGUIZAMO"/>
+									<f:selectItem itemLabel="PUERTO LIBERTADOR (Cordoba)" itemValue="PUERTO LIBERTADOR"/>
+									<f:selectItem itemLabel="PUERTO LLERAS (Meta)" itemValue="PUERTO LLERAS"/>
+									<f:selectItem itemLabel="PUERTO LOPEZ (Meta)" itemValue="PUERTO LOPEZ"/>
+									<f:selectItem itemLabel="PUERTO NARE (Antioquia)" itemValue="PUERTO NARE"/>
+									<f:selectItem itemLabel="PUERTO NARIÑO (Amazonas)" itemValue="PUERTO NARIÑO"/>
+									<f:selectItem itemLabel="PUERTO PARRA (Santander)" itemValue="PUERTO PARRA"/>
+									<f:selectItem itemLabel="PUERTO RICO (Caqueta)" itemValue="PUERTO RICO"/>
+									<f:selectItem itemLabel="PUERTO RICO (Meta)" itemValue="PUERTO RICO"/>
+									<f:selectItem itemLabel="PUERTO RONDON (Arauca)" itemValue="PUERTO RONDON"/>
+									<f:selectItem itemLabel="PUERTO SALGAR (Cundinamarca)" itemValue="PUERTO SALGAR"/>
+									<f:selectItem itemLabel="PUERTO SANTANDER (N De Santander)" itemValue="PUERTO SANTANDER"/>
+									<f:selectItem itemLabel="PUERTO TEJADA (Cauca)" itemValue="PUERTO TEJADA"/>
+									<f:selectItem itemLabel="PUERTO TRIUNFO (Antioquia)" itemValue="PUERTO TRIUNFO"/>
+									<f:selectItem itemLabel="PUERTO WILCHES (Santander)" itemValue="PUERTO WILCHES"/>
+									<f:selectItem itemLabel="PULI (Cundinamarca)" itemValue="PULI"/>
+									<f:selectItem itemLabel="PUPIALES (Nariño)" itemValue="PUPIALES"/>
+									<f:selectItem itemLabel="PURACE (Cauca)" itemValue="PURACE"/>
+									<f:selectItem itemLabel="PURIFICACION (Tolima)" itemValue="PURIFICACION"/>
+									<f:selectItem itemLabel="PURISIMA (Cordoba)" itemValue="PURISIMA"/>
+									<f:selectItem itemLabel="QUEBRADANEGRA (Cundinamarca)" itemValue="QUEBRADANEGRA"/>
+									<f:selectItem itemLabel="QUETAME (Cundinamarca)" itemValue="QUETAME"/>
+									<f:selectItem itemLabel="QUIBDO (Choco)" itemValue="QUIBDO"/>
+									<f:selectItem itemLabel="QUIMBAYA (Quindio)" itemValue="QUIMBAYA"/>
+									<f:selectItem itemLabel="QUINCHIA (Risaralda)" itemValue="QUINCHIA"/>
+									<f:selectItem itemLabel="QUIPAMA (Boyaca)" itemValue="QUIPAMA"/>
+									<f:selectItem itemLabel="QUIPILE (Cundinamarca)" itemValue="QUIPILE"/>
+									<f:selectItem itemLabel="RAFAEL REYES (Cundinamarca)" itemValue="RAFAEL REYES"/>
+									<f:selectItem itemLabel="RAGONVALIA (N De Santander)" itemValue="RAGONVALIA"/>
+									<f:selectItem itemLabel="RAMIRIQUI (Boyaca)" itemValue="RAMIRIQUI"/>
+									<f:selectItem itemLabel="RAQUIRA (Boyaca)" itemValue="RAQUIRA"/>
+									<f:selectItem itemLabel="RECETOR (Casanare)" itemValue="RECETOR"/>
+									<f:selectItem itemLabel="REGIDOR (Bolivar)" itemValue="REGIDOR"/>
+									<f:selectItem itemLabel="REMEDIOS (Antioquia)" itemValue="REMEDIOS"/>
+									<f:selectItem itemLabel="REMOLINO (Magdalena)" itemValue="REMOLINO"/>
+									<f:selectItem itemLabel="REPELON (Atlantico)" itemValue="REPELON"/>
+									<f:selectItem itemLabel="RESTREPO (Meta)" itemValue="RESTREPO"/>
+									<f:selectItem itemLabel="RESTREPO (Valle Del Cauca)" itemValue="RESTREPO"/>
+									<f:selectItem itemLabel="RETIRO (Antioquia)" itemValue="RETIRO"/>
+									<f:selectItem itemLabel="RICAURTE (Cundinamarca)" itemValue="RICAURTE"/>
+									<f:selectItem itemLabel="RICAURTE (Nariño)" itemValue="RICAURTE"/>
+									<f:selectItem itemLabel="RIO DE ORO (Cesar)" itemValue="RIO DE ORO"/>
+									<f:selectItem itemLabel="RIO IRO (Choco)" itemValue="RIO IRO"/>
+									<f:selectItem itemLabel="RIO QUITO (Choco)" itemValue="RIO QUITO"/>
+									<f:selectItem itemLabel="RIO VIEJO (Bolivar)" itemValue="RIO VIEJO"/>
+									<f:selectItem itemLabel="RIOBLANCO (Tolima)" itemValue="RIOBLANCO"/>
+									<f:selectItem itemLabel="RIOFRIO (Valle Del Cauca)" itemValue="RIOFRIO"/>
+									<f:selectItem itemLabel="RIOHACHA (Guajira)" itemValue="RIOHACHA"/>
+									<f:selectItem itemLabel="RIONEGRO (Antioquia)" itemValue="RIONEGRO"/>
+									<f:selectItem itemLabel="RIONEGRO (Santander)" itemValue="RIONEGRO"/>
+									<f:selectItem itemLabel="RIOSUCIO (Caldas)" itemValue="RIOSUCIO"/>
+									<f:selectItem itemLabel="RIOSUCIO (Choco)" itemValue="RIOSUCIO"/>
+									<f:selectItem itemLabel="RISARALDA (Caldas)" itemValue="RISARALDA"/>
+									<f:selectItem itemLabel="RIVERA (Huila)" itemValue="RIVERA"/>
+									<f:selectItem itemLabel="ROBERTO PAYAN (Nariño)" itemValue="ROBERTO PAYAN"/>
+									<f:selectItem itemLabel="ROBLES (LA PAZ) (Cesar)" itemValue="ROBLES (LA PAZ)"/>
+									<f:selectItem itemLabel="ROLDANILLO (Valle Del Cauca)" itemValue="ROLDANILLO"/>
+									<f:selectItem itemLabel="RONCESVALLES (Tolima)" itemValue="RONCESVALLES"/>
+									<f:selectItem itemLabel="RONDON (Boyaca)" itemValue="RONDON"/>
+									<f:selectItem itemLabel="ROSAS (Cauca)" itemValue="ROSAS"/>
+									<f:selectItem itemLabel="ROVIRA (Tolima)" itemValue="ROVIRA"/>
+									<f:selectItem itemLabel="SABANA DE TORRES (Santander)" itemValue="SABANA DE TORRES"/>
+									<f:selectItem itemLabel="SABANAGRANDE (Atlantico)" itemValue="SABANAGRANDE"/>
+									<f:selectItem itemLabel="SABANALARGA (Antioquia)" itemValue="SABANALARGA"/>
+									<f:selectItem itemLabel="SABANALARGA (Casanare)" itemValue="SABANALARGA"/>
+									<f:selectItem itemLabel="SABANALARGA (Atlantico)" itemValue="SABANALARGA"/>
+									<f:selectItem itemLabel="SABANAS DE SAN ANGEL (Magdalena)" itemValue="SABANAS DE SAN ANGEL"/>
+									<f:selectItem itemLabel="SABANETA (Antioquia)" itemValue="SABANETA"/>
+									<f:selectItem itemLabel="SABOYA (Boyaca)" itemValue="SABOYA"/>
+									<f:selectItem itemLabel="SACAMA (Casanare)" itemValue="SACAMA"/>
+									<f:selectItem itemLabel="SACHICA (Boyaca)" itemValue="SACHICA"/>
+									<f:selectItem itemLabel="SAHAGUN (Cordoba)" itemValue="SAHAGUN"/>
+									<f:selectItem itemLabel="SALADOBLANCO (Huila)" itemValue="SALADOBLANCO"/>
+									<f:selectItem itemLabel="SALAMINA (Caldas)" itemValue="SALAMINA"/>
+									<f:selectItem itemLabel="SALAMINA (Magdalena)" itemValue="SALAMINA"/>
+									<f:selectItem itemLabel="SALAZAR (N De Santander)" itemValue="SALAZAR"/>
+									<f:selectItem itemLabel="SALDAÑA (Tolima)" itemValue="SALDAÑA"/>
+									<f:selectItem itemLabel="SALENTO (Quindio)" itemValue="SALENTO"/>
+									<f:selectItem itemLabel="SALGAR (Antioquia)" itemValue="SALGAR"/>
+									<f:selectItem itemLabel="SAMACA (Boyaca)" itemValue="SAMACA"/>
+									<f:selectItem itemLabel="SAMANA (Caldas)" itemValue="SAMANA"/>
+									<f:selectItem itemLabel="SAMANIEGO (Nariño)" itemValue="SAMANIEGO"/>
+									<f:selectItem itemLabel="SAMPUES (Sucre)" itemValue="SAMPUES"/>
+									<f:selectItem itemLabel="SAN  ANTONIO DEL  TEQUEND (Cundinamarca)" itemValue="SAN  ANTONIO DEL  TEQUEND"/>
+									<f:selectItem itemLabel="SAN  JUAN DE ARAMA (Meta)" itemValue="SAN  JUAN DE ARAMA"/>
+									<f:selectItem itemLabel="SAN  VICENTE DEL CAGUAN (Caqueta)" itemValue="SAN  VICENTE DEL CAGUAN"/>
+									<f:selectItem itemLabel="SAN AGUSTIN (Huila)" itemValue="SAN AGUSTIN"/>
+									<f:selectItem itemLabel="SAN ALBERTO (Cesar)" itemValue="SAN ALBERTO"/>
+									<f:selectItem itemLabel="SAN ANDRES (Antioquia)" itemValue="SAN ANDRES"/>
+									<f:selectItem itemLabel="SAN ANDRES (Santander)" itemValue="SAN ANDRES"/>
+									<f:selectItem itemLabel="SAN ANDRES (San Andres)" itemValue="SAN ANDRES"/>
+									<f:selectItem itemLabel="SAN ANDRES SOTAVENTO (Cordoba)" itemValue="SAN ANDRES SOTAVENTO"/>
+									<f:selectItem itemLabel="SAN ANTERO (Cordoba)" itemValue="SAN ANTERO"/>
+									<f:selectItem itemLabel="SAN ANTONIO (Tolima)" itemValue="SAN ANTONIO"/>
+									<f:selectItem itemLabel="SAN BENITO (Santander)" itemValue="SAN BENITO"/>
+									<f:selectItem itemLabel="SAN BENITO ABAD (Sucre)" itemValue="SAN BENITO ABAD"/>
+									<f:selectItem itemLabel="SAN BERNARDO (Cundinamarca)" itemValue="SAN BERNARDO"/>
+									<f:selectItem itemLabel="SAN BERNARDO (Nariño)" itemValue="SAN BERNARDO"/>
+									<f:selectItem itemLabel="SAN BERNARDO VIENTO (Cordoba)" itemValue="SAN BERNARDO VIENTO"/>
+									<f:selectItem itemLabel="SAN CALIXTO (N De Santander)" itemValue="SAN CALIXTO"/>
+									<f:selectItem itemLabel="SAN CARLOS (Cordoba)" itemValue="SAN CARLOS"/>
+									<f:selectItem itemLabel="SAN CARLOS (Antioquia)" itemValue="SAN CARLOS"/>
+									<f:selectItem itemLabel="SAN CARLOS GUAROA (Meta)" itemValue="SAN CARLOS GUAROA"/>
+									<f:selectItem itemLabel="SAN CAYETANO (Cundinamarca)" itemValue="SAN CAYETANO"/>
+									<f:selectItem itemLabel="SAN CAYETANO (N De Santander)" itemValue="SAN CAYETANO"/>
+									<f:selectItem itemLabel="SAN CRISTOBAL (Bolivar)" itemValue="SAN CRISTOBAL"/>
+									<f:selectItem itemLabel="SAN DIEGO (Cesar)" itemValue="SAN DIEGO"/>
+									<f:selectItem itemLabel="SAN EDUARDO (Boyaca)" itemValue="SAN EDUARDO"/>
+									<f:selectItem itemLabel="SAN ESTANISLAO (Bolivar)" itemValue="SAN ESTANISLAO"/>
+									<f:selectItem itemLabel="SAN FERNANDO (Bolivar)" itemValue="SAN FERNANDO"/>
+									<f:selectItem itemLabel="SAN FRANCISCO (Cundinamarca)" itemValue="SAN FRANCISCO"/>
+									<f:selectItem itemLabel="SAN FRANCISCO (Antioquia)" itemValue="SAN FRANCISCO"/>
+									<f:selectItem itemLabel="SAN FRANCISCO (Putumayo)" itemValue="SAN FRANCISCO"/>
+									<f:selectItem itemLabel="SAN GIL (Santander)" itemValue="SAN GIL"/>
+									<f:selectItem itemLabel="SAN JACINTO (Bolivar)" itemValue="SAN JACINTO"/>
+									<f:selectItem itemLabel="SAN JACINTO DEL CAUCA (Bolivar)" itemValue="SAN JACINTO DEL CAUCA"/>
+									<f:selectItem itemLabel="SAN JERONIMO (Antioquia)" itemValue="SAN JERONIMO"/>
+									<f:selectItem itemLabel="SAN JOAQUIN (Santander)" itemValue="SAN JOAQUIN"/>
+									<f:selectItem itemLabel="SAN JOSE (Caldas)" itemValue="SAN JOSE"/>
+									<f:selectItem itemLabel="SAN JOSE DE FRAGUA (Caqueta)" itemValue="SAN JOSE DE FRAGUA"/>
+									<f:selectItem itemLabel="SAN JOSE DE LA MONTAÑA (Antioquia)" itemValue="SAN JOSE DE LA MONTAÑA"/>
+									<f:selectItem itemLabel="SAN JOSE DE MIRANDA (Santander)" itemValue="SAN JOSE DE MIRANDA"/>
+									<f:selectItem itemLabel="SAN JOSE DE PARE (Boyaca)" itemValue="SAN JOSE DE PARE"/>
+									<f:selectItem itemLabel="SAN JOSE DEL GUAVIARE (Guaviare)" itemValue="SAN JOSE DEL GUAVIARE"/>
+									<f:selectItem itemLabel="SAN JOSE DEL PALMAR (Choco)" itemValue="SAN JOSE DEL PALMAR"/>
+									<f:selectItem itemLabel="SAN JUAN DE BETULIA (Sucre)" itemValue="SAN JUAN DE BETULIA"/>
+									<f:selectItem itemLabel="SAN JUAN DE RIOSECO (Cundinamarca)" itemValue="SAN JUAN DE RIOSECO"/>
+									<f:selectItem itemLabel="SAN JUAN DE URABA (Antioquia)" itemValue="SAN JUAN DE URABA"/>
+									<f:selectItem itemLabel="SAN JUAN DEL CESAR (Guajira)" itemValue="SAN JUAN DEL CESAR"/>
+									<f:selectItem itemLabel="SAN JUAN NEPOMUCENO (Bolivar)" itemValue="SAN JUAN NEPOMUCENO"/>
+									<f:selectItem itemLabel="SAN JUANITO (Meta)" itemValue="SAN JUANITO"/>
+									<f:selectItem itemLabel="SAN LORENZO (Nariño)" itemValue="SAN LORENZO"/>
+									<f:selectItem itemLabel="SAN LUIS (Antioquia)" itemValue="SAN LUIS"/>
+									<f:selectItem itemLabel="SAN LUIS (Tolima)" itemValue="SAN LUIS"/>
+									<f:selectItem itemLabel="SAN LUIS DE GACENO (Boyaca)" itemValue="SAN LUIS DE GACENO"/>
+									<f:selectItem itemLabel="SAN LUIS DE PALENQUE (Casanare)" itemValue="SAN LUIS DE PALENQUE"/>
+									<f:selectItem itemLabel="SAN MARCOS (Sucre)" itemValue="SAN MARCOS"/>
+									<f:selectItem itemLabel="SAN MARTIN (Cesar)" itemValue="SAN MARTIN"/>
+									<f:selectItem itemLabel="SAN MARTIN (Meta)" itemValue="SAN MARTIN"/>
+									<f:selectItem itemLabel="SAN MARTIN DE LOBA (Bolivar)" itemValue="SAN MARTIN DE LOBA"/>
+									<f:selectItem itemLabel="SAN MATEO (Boyaca)" itemValue="SAN MATEO"/>
+									<f:selectItem itemLabel="SAN MIGUEL (Santander)" itemValue="SAN MIGUEL"/>
+									<f:selectItem itemLabel="SAN MIGUEL (Putumayo)" itemValue="SAN MIGUEL"/>
+									<f:selectItem itemLabel="SAN MIGUEL DE SEMA (Boyaca)" itemValue="SAN MIGUEL DE SEMA"/>
+									<f:selectItem itemLabel="SAN ONOFRE (Sucre)" itemValue="SAN ONOFRE"/>
+									<f:selectItem itemLabel="SAN PABLO (Bolivar)" itemValue="SAN PABLO"/>
+									<f:selectItem itemLabel="SAN PABLO (Nariño)" itemValue="SAN PABLO"/>
+									<f:selectItem itemLabel="SAN PABLO DE BORBUR (Boyaca)" itemValue="SAN PABLO DE BORBUR"/>
+									<f:selectItem itemLabel="SAN PEDRO (Antioquia)" itemValue="SAN PEDRO"/>
+									<f:selectItem itemLabel="SAN PEDRO (Sucre)" itemValue="SAN PEDRO"/>
+									<f:selectItem itemLabel="SAN PEDRO (Valle Del Cauca)" itemValue="SAN PEDRO"/>
+									<f:selectItem itemLabel="SAN PEDRO DE CARTAGO (Nariño)" itemValue="SAN PEDRO DE CARTAGO"/>
+									<f:selectItem itemLabel="SAN PEDRO DE URABA (Antioquia)" itemValue="SAN PEDRO DE URABA"/>
+									<f:selectItem itemLabel="SAN PELAYO (Cordoba)" itemValue="SAN PELAYO"/>
+									<f:selectItem itemLabel="SAN RAFAEL (Antioquia)" itemValue="SAN RAFAEL"/>
+									<f:selectItem itemLabel="SAN ROQUE (Antioquia)" itemValue="SAN ROQUE"/>
+									<f:selectItem itemLabel="SAN SEBASTIAN (Cauca)" itemValue="SAN SEBASTIAN"/>
+									<f:selectItem itemLabel="SAN SEBASTIAN DE BUENAVIS (Magdalena)" itemValue="SAN SEBASTIAN DE BUENAVIS"/>
+									<f:selectItem itemLabel="SAN VICENTE (Antioquia)" itemValue="SAN VICENTE"/>
+									<f:selectItem itemLabel="SAN VICENTE DE CHUCURI (Santander)" itemValue="SAN VICENTE DE CHUCURI"/>
+									<f:selectItem itemLabel="SAN ZENON (Magdalena)" itemValue="SAN ZENON"/>
+									<f:selectItem itemLabel="SANDONA (Nariño)" itemValue="SANDONA"/>
+									<f:selectItem itemLabel="SANTA ANA (Magdalena)" itemValue="SANTA ANA"/>
+									<f:selectItem itemLabel="SANTA BARBARA (Nariño)" itemValue="SANTA BARBARA"/>
+									<f:selectItem itemLabel="SANTA BARBARA (Antioquia)" itemValue="SANTA BARBARA"/>
+									<f:selectItem itemLabel="SANTA BARBARA (Santander)" itemValue="SANTA BARBARA"/>
+									<f:selectItem itemLabel="SANTA BARBARA DE PINTO (Magdalena)" itemValue="SANTA BARBARA DE PINTO"/>
+									<f:selectItem itemLabel="SANTA CATALINA (Bolivar)" itemValue="SANTA CATALINA"/>
+									<f:selectItem itemLabel="SANTA HELENA (Santander)" itemValue="SANTA HELENA"/>
+									<f:selectItem itemLabel="SANTA ISABEL (Tolima)" itemValue="SANTA ISABEL"/>
+									<f:selectItem itemLabel="SANTA LUCIA (Atlantico)" itemValue="SANTA LUCIA"/>
+									<f:selectItem itemLabel="SANTA MARIA (Boyaca)" itemValue="SANTA MARIA"/>
+									<f:selectItem itemLabel="SANTA MARIA (Huila)" itemValue="SANTA MARIA"/>
+									<f:selectItem itemLabel="SANTA MARTA (Magdalena)" itemValue="SANTA MARTA"/>
+									<f:selectItem itemLabel="SANTA ROSA (Bolivar)" itemValue="SANTA ROSA"/>
+									<f:selectItem itemLabel="SANTA ROSA DE CABAL (Risaralda)" itemValue="SANTA ROSA DE CABAL"/>
+									<f:selectItem itemLabel="SANTA ROSA DE OSOS (Antioquia)" itemValue="SANTA ROSA DE OSOS"/>
+									<f:selectItem itemLabel="SANTA ROSA DE VITERBO (Boyaca)" itemValue="SANTA ROSA DE VITERBO"/>
+									<f:selectItem itemLabel="SANTA ROSA DEL SUR (Bolivar)" itemValue="SANTA ROSA DEL SUR"/>
+									<f:selectItem itemLabel="SANTA ROSALIA (Vichada)" itemValue="SANTA ROSALIA"/>
+									<f:selectItem itemLabel="SANTA SOFIA (Boyaca)" itemValue="SANTA SOFIA"/>
+									<f:selectItem itemLabel="SANTACRUZ (Nariño)" itemValue="SANTACRUZ"/>
+									<f:selectItem itemLabel="SANTANA (Boyaca)" itemValue="SANTANA"/>
+									<f:selectItem itemLabel="SANTANDER DE QUILICHAO (Cauca)" itemValue="SANTANDER DE QUILICHAO"/>
+									<f:selectItem itemLabel="SANTIAGO (N De Santander)" itemValue="SANTIAGO"/>
+									<f:selectItem itemLabel="SANTIAGO (Putumayo)" itemValue="SANTIAGO"/>
+									<f:selectItem itemLabel="SANTO DOMINGO (Antioquia)" itemValue="SANTO DOMINGO"/>
+									<f:selectItem itemLabel="SANTO TOMAS (Atlantico)" itemValue="SANTO TOMAS"/>
+									<f:selectItem itemLabel="SANTUARIO (Antioquia)" itemValue="SANTUARIO"/>
+									<f:selectItem itemLabel="SANTUARIO (Risaralda)" itemValue="SANTUARIO"/>
+									<f:selectItem itemLabel="SAPUYES (Nariño)" itemValue="SAPUYES"/>
+									<f:selectItem itemLabel="SARAVENA (Arauca)" itemValue="SARAVENA"/>
+									<f:selectItem itemLabel="SARDINATA (N De Santander)" itemValue="SARDINATA"/>
+									<f:selectItem itemLabel="SASAIMA (Cundinamarca)" itemValue="SASAIMA"/>
+									<f:selectItem itemLabel="SATIVANORTE (Boyaca)" itemValue="SATIVANORTE"/>
+									<f:selectItem itemLabel="SATIVASUR (Boyaca)" itemValue="SATIVASUR"/>
+									<f:selectItem itemLabel="SEGOVIA (Antioquia)" itemValue="SEGOVIA"/>
+									<f:selectItem itemLabel="SESQUILE (Cundinamarca)" itemValue="SESQUILE"/>
+									<f:selectItem itemLabel="SEVILLA (Valle Del Cauca)" itemValue="SEVILLA"/>
+									<f:selectItem itemLabel="SIACHOQUE (Boyaca)" itemValue="SIACHOQUE"/>
+									<f:selectItem itemLabel="SIBATE (Cundinamarca)" itemValue="SIBATE"/>
+									<f:selectItem itemLabel="SIBUNDOY (Putumayo)" itemValue="SIBUNDOY"/>
+									<f:selectItem itemLabel="SILOS (N De Santander)" itemValue="SILOS"/>
+									<f:selectItem itemLabel="SILVANIA (Cundinamarca)" itemValue="SILVANIA"/>
+									<f:selectItem itemLabel="SILVIA (Cauca)" itemValue="SILVIA"/>
+									<f:selectItem itemLabel="SIMACOTA (Santander)" itemValue="SIMACOTA"/>
+									<f:selectItem itemLabel="SIMIJACA (Cundinamarca)" itemValue="SIMIJACA"/>
+									<f:selectItem itemLabel="SIMITI (Bolivar)" itemValue="SIMITI"/>
+									<f:selectItem itemLabel="SINCE (Sucre)" itemValue="SINCE"/>
+									<f:selectItem itemLabel="SINCELEJO (Sucre)" itemValue="SINCELEJO"/>
+									<f:selectItem itemLabel="SIPI (Choco)" itemValue="SIPI"/>
+									<f:selectItem itemLabel="SITIONUEVO (Magdalena)" itemValue="SITIONUEVO"/>
+									<f:selectItem itemLabel="SOACHA (Cundinamarca)" itemValue="SOACHA"/>
+									<f:selectItem itemLabel="SOATA (Boyaca)" itemValue="SOATA"/>
+									<f:selectItem itemLabel="SOCHA (Boyaca)" itemValue="SOCHA"/>
+									<f:selectItem itemLabel="SOCORRO (Santander)" itemValue="SOCORRO"/>
+									<f:selectItem itemLabel="SOCOTA (Boyaca)" itemValue="SOCOTA"/>
+									<f:selectItem itemLabel="SOGAMOSO (Boyaca)" itemValue="SOGAMOSO"/>
+									<f:selectItem itemLabel="SOLANO (Caqueta)" itemValue="SOLANO"/>
+									<f:selectItem itemLabel="SOLEDAD (Atlantico)" itemValue="SOLEDAD"/>
+									<f:selectItem itemLabel="SOLITA (Caqueta)" itemValue="SOLITA"/>
+									<f:selectItem itemLabel="SOMONDOCO (Boyaca)" itemValue="SOMONDOCO"/>
+									<f:selectItem itemLabel="SONSON (Antioquia)" itemValue="SONSON"/>
+									<f:selectItem itemLabel="SOPETRAN (Antioquia)" itemValue="SOPETRAN"/>
+									<f:selectItem itemLabel="SOPLAVIENTO (Bolivar)" itemValue="SOPLAVIENTO"/>
+									<f:selectItem itemLabel="SOPO (Cundinamarca)" itemValue="SOPO"/>
+									<f:selectItem itemLabel="SORA (Boyaca)" itemValue="SORA"/>
+									<f:selectItem itemLabel="SORACA (Boyaca)" itemValue="SORACA"/>
+									<f:selectItem itemLabel="SOTAQUIRA (Boyaca)" itemValue="SOTAQUIRA"/>
+									<f:selectItem itemLabel="SOTARA (Cauca)" itemValue="SOTARA"/>
+									<f:selectItem itemLabel="STA ROSA (Cauca)" itemValue="STA ROSA"/>
+									<f:selectItem itemLabel="SUAITA (Santander)" itemValue="SUAITA"/>
+									<f:selectItem itemLabel="SUAN (Atlantico)" itemValue="SUAN"/>
+									<f:selectItem itemLabel="SUAREZ (Cauca)" itemValue="SUAREZ"/>
+									<f:selectItem itemLabel="SUAREZ (Tolima)" itemValue="SUAREZ"/>
+									<f:selectItem itemLabel="SUAZA (Huila)" itemValue="SUAZA"/>
+									<f:selectItem itemLabel="SUBACHOQUE (Cundinamarca)" itemValue="SUBACHOQUE"/>
+									<f:selectItem itemLabel="SUCRE (Cauca)" itemValue="SUCRE"/>
+									<f:selectItem itemLabel="SUCRE (Santander)" itemValue="SUCRE"/>
+									<f:selectItem itemLabel="SUCRE (Sucre)" itemValue="SUCRE"/>
+									<f:selectItem itemLabel="SUESCA (Cundinamarca)" itemValue="SUESCA"/>
+									<f:selectItem itemLabel="SUPATA (Cundinamarca)" itemValue="SUPATA"/>
+									<f:selectItem itemLabel="SUPIA (Caldas)" itemValue="SUPIA"/>
+									<f:selectItem itemLabel="SURATA (Santander)" itemValue="SURATA"/>
+									<f:selectItem itemLabel="SUSA (Cundinamarca)" itemValue="SUSA"/>
+									<f:selectItem itemLabel="SUSACON (Boyaca)" itemValue="SUSACON"/>
+									<f:selectItem itemLabel="SUTAMARCHAN (Boyaca)" itemValue="SUTAMARCHAN"/>
+									<f:selectItem itemLabel="SUTATAUSA (Cundinamarca)" itemValue="SUTATAUSA"/>
+									<f:selectItem itemLabel="SUTATENZA (Boyaca)" itemValue="SUTATENZA"/>
+									<f:selectItem itemLabel="TABIO (Cundinamarca)" itemValue="TABIO"/>
+									<f:selectItem itemLabel="TADO (Choco)" itemValue="TADO"/>
+									<f:selectItem itemLabel="TALAIGUA NUEVO (Bolivar)" itemValue="TALAIGUA NUEVO"/>
+									<f:selectItem itemLabel="TAMALAMEQUE (Cesar)" itemValue="TAMALAMEQUE"/>
+									<f:selectItem itemLabel="TAMARA (Casanare)" itemValue="TAMARA"/>
+									<f:selectItem itemLabel="TAME (Arauca)" itemValue="TAME"/>
+									<f:selectItem itemLabel="TAMESIS (Antioquia)" itemValue="TAMESIS"/>
+									<f:selectItem itemLabel="TAMINANGO (Nariño)" itemValue="TAMINANGO"/>
+									<f:selectItem itemLabel="TANGUA (Nariño)" itemValue="TANGUA"/>
+									<f:selectItem itemLabel="TARAIRA (Vaupes)" itemValue="TARAIRA"/>
+									<f:selectItem itemLabel="TARAZA (Antioquia)" itemValue="TARAZA"/>
+									<f:selectItem itemLabel="TARQUI (Huila)" itemValue="TARQUI"/>
+									<f:selectItem itemLabel="TARSO (Antioquia)" itemValue="TARSO"/>
+									<f:selectItem itemLabel="TASCO (Boyaca)" itemValue="TASCO"/>
+									<f:selectItem itemLabel="TAURAMENA (Casanare)" itemValue="TAURAMENA"/>
+									<f:selectItem itemLabel="TAUSA (Cundinamarca)" itemValue="TAUSA"/>
+									<f:selectItem itemLabel="TELLO (Huila)" itemValue="TELLO"/>
+									<f:selectItem itemLabel="TENA (Cundinamarca)" itemValue="TENA"/>
+									<f:selectItem itemLabel="TENERIFE (Magdalena)" itemValue="TENERIFE"/>
+									<f:selectItem itemLabel="TENJO (Cundinamarca)" itemValue="TENJO"/>
+									<f:selectItem itemLabel="TENZA (Boyaca)" itemValue="TENZA"/>
+									<f:selectItem itemLabel="TEORAMA (N De Santander)" itemValue="TEORAMA"/>
+									<f:selectItem itemLabel="TERUEL (Huila)" itemValue="TERUEL"/>
+									<f:selectItem itemLabel="TESALIA (Huila)" itemValue="TESALIA"/>
+									<f:selectItem itemLabel="TIBACUY (Cundinamarca)" itemValue="TIBACUY"/>
+									<f:selectItem itemLabel="TIBANA (Boyaca)" itemValue="TIBANA"/>
+									<f:selectItem itemLabel="TIBASOSA (Boyaca)" itemValue="TIBASOSA"/>
+									<f:selectItem itemLabel="TIBIRITA (Cundinamarca)" itemValue="TIBIRITA"/>
+									<f:selectItem itemLabel="TIBU (N De Santander)" itemValue="TIBU"/>
+									<f:selectItem itemLabel="TIERRALTA (Cordoba)" itemValue="TIERRALTA"/>
+									<f:selectItem itemLabel="TIMANA (Huila)" itemValue="TIMANA"/>
+									<f:selectItem itemLabel="TIMBIO (Cauca)" itemValue="TIMBIO"/>
+									<f:selectItem itemLabel="TIMBIQUI (Cauca)" itemValue="TIMBIQUI"/>
+									<f:selectItem itemLabel="TINJACA (Boyaca)" itemValue="TINJACA"/>
+									<f:selectItem itemLabel="TIPACOQUE (Boyaca)" itemValue="TIPACOQUE"/>
+									<f:selectItem itemLabel="TIQUISIO (Bolivar)" itemValue="TIQUISIO"/>
+									<f:selectItem itemLabel="TITIRIBI (Antioquia)" itemValue="TITIRIBI"/>
+									<f:selectItem itemLabel="TOCA (Boyaca)" itemValue="TOCA"/>
+									<f:selectItem itemLabel="TOCAIMA (Cundinamarca)" itemValue="TOCAIMA"/>
+									<f:selectItem itemLabel="TOCANCIPA (Cundinamarca)" itemValue="TOCANCIPA"/>
+									<f:selectItem itemLabel="TOGUI (Boyaca)" itemValue="TOGUI"/>
+									<f:selectItem itemLabel="TOLEDO (N De Santander)" itemValue="TOLEDO"/>
+									<f:selectItem itemLabel="TOLEDO (Antioquia)" itemValue="TOLEDO"/>
+									<f:selectItem itemLabel="TOLU (Sucre)" itemValue="TOLU"/>
+									<f:selectItem itemLabel="TOLUVIEJO (Sucre)" itemValue="TOLUVIEJO"/>
+									<f:selectItem itemLabel="TONA (Santander)" itemValue="TONA"/>
+									<f:selectItem itemLabel="TOPAGA (Boyaca)" itemValue="TOPAGA"/>
+									<f:selectItem itemLabel="TOPAIPI (Cundinamarca)" itemValue="TOPAIPI"/>
+									<f:selectItem itemLabel="TORIBIO (Cauca)" itemValue="TORIBIO"/>
+									<f:selectItem itemLabel="TORO (Valle Del Cauca)" itemValue="TORO"/>
+									<f:selectItem itemLabel="TOTA (Boyaca)" itemValue="TOTA"/>
+									<f:selectItem itemLabel="TOTORO (Cauca)" itemValue="TOTORO"/>
+									<f:selectItem itemLabel="TRINIDAD (Casanare)" itemValue="TRINIDAD"/>
+									<f:selectItem itemLabel="TRUJILLO (Valle Del Cauca)" itemValue="TRUJILLO"/>
+									<f:selectItem itemLabel="TUBARA (Atlantico)" itemValue="TUBARA"/>
+									<f:selectItem itemLabel="TULUA (Valle Del Cauca)" itemValue="TULUA"/>
+									<f:selectItem itemLabel="TUMACO (Nariño)" itemValue="TUMACO"/>
+									<f:selectItem itemLabel="TUNJA (Boyaca)" itemValue="TUNJA"/>
+									<f:selectItem itemLabel="TUNUNGUA (Boyaca)" itemValue="TUNUNGUA"/>
+									<f:selectItem itemLabel="TUQUERRES (Nariño)" itemValue="TUQUERRES"/>
+									<f:selectItem itemLabel="TURBACO (Bolivar)" itemValue="TURBACO"/>
+									<f:selectItem itemLabel="TURBANA (Bolivar)" itemValue="TURBANA"/>
+									<f:selectItem itemLabel="TURBO (Antioquia)" itemValue="TURBO"/>
+									<f:selectItem itemLabel="TURMEQUE (Boyaca)" itemValue="TURMEQUE"/>
+									<f:selectItem itemLabel="TUTA (Boyaca)" itemValue="TUTA"/>
+									<f:selectItem itemLabel="TUTASA (Boyaca)" itemValue="TUTASA"/>
+									<f:selectItem itemLabel="UBALA (Cundinamarca)" itemValue="UBALA"/>
+									<f:selectItem itemLabel="UBAQUE (Cundinamarca)" itemValue="UBAQUE"/>
+									<f:selectItem itemLabel="UBATE (Cundinamarca)" itemValue="UBATE"/>
+									<f:selectItem itemLabel="ULLOA (Valle Del Cauca)" itemValue="ULLOA"/>
+									<f:selectItem itemLabel="UMBITA (Boyaca)" itemValue="UMBITA"/>
+									<f:selectItem itemLabel="UNE (Cundinamarca)" itemValue="UNE"/>
+									<f:selectItem itemLabel="UNGUIA (Choco)" itemValue="UNGUIA"/>
+									<f:selectItem itemLabel="UNION PANAMERICANA (Choco)" itemValue="UNION PANAMERICANA"/>
+									<f:selectItem itemLabel="URAMITA (Antioquia)" itemValue="URAMITA"/>
+									<f:selectItem itemLabel="URIBIA (Guajira)" itemValue="URIBIA"/>
+									<f:selectItem itemLabel="URRAO (Antioquia)" itemValue="URRAO"/>
+									<f:selectItem itemLabel="URUMITA (Guajira)" itemValue="URUMITA"/>
+									<f:selectItem itemLabel="USIACURI (Atlantico)" itemValue="USIACURI"/>
+									<f:selectItem itemLabel="UTICA (Cundinamarca)" itemValue="UTICA"/>
+									<f:selectItem itemLabel="VALDIVIA (Antioquia)" itemValue="VALDIVIA"/>
+									<f:selectItem itemLabel="VALENCIA (Cordoba)" itemValue="VALENCIA"/>
+									<f:selectItem itemLabel="VALLE DE S JUAN (Tolima)" itemValue="VALLE DE S JUAN"/>
+									<f:selectItem itemLabel="VALLE DEL GUAMUEZ (Putumayo)" itemValue="VALLE DEL GUAMUEZ"/>
+									<f:selectItem itemLabel="VALLE SAN JOSE (Santander)" itemValue="VALLE SAN JOSE"/>
+									<f:selectItem itemLabel="VALLEDUPAR (Cesar)" itemValue="VALLEDUPAR"/>
+									<f:selectItem itemLabel="VALPARAISO (Caqueta)" itemValue="VALPARAISO"/>
+									<f:selectItem itemLabel="VALPARAISO (Antioquia)" itemValue="VALPARAISO"/>
+									<f:selectItem itemLabel="VEGACHI (Antioquia)" itemValue="VEGACHI"/>
+									<f:selectItem itemLabel="VELEZ (Santander)" itemValue="VELEZ"/>
+									<f:selectItem itemLabel="VENADILLO (Tolima)" itemValue="VENADILLO"/>
+									<f:selectItem itemLabel="VENECIA (Antioquia)" itemValue="VENECIA"/>
+									<f:selectItem itemLabel="VENECIA (OSPINA PEREZ) (Cundinamarca)" itemValue="VENECIA (OSPINA PEREZ)"/>
+									<f:selectItem itemLabel="VENTAQUEMADA (Boyaca)" itemValue="VENTAQUEMADA"/>
+									<f:selectItem itemLabel="VERGARA (Cundinamarca)" itemValue="VERGARA"/>
+									<f:selectItem itemLabel="VERSALLES (Valle Del Cauca)" itemValue="VERSALLES"/>
+									<f:selectItem itemLabel="VETAS (Santander)" itemValue="VETAS"/>
+									<f:selectItem itemLabel="VIANI (Cundinamarca)" itemValue="VIANI"/>
+									<f:selectItem itemLabel="VICTORIA (Caldas)" itemValue="VICTORIA"/>
+									<f:selectItem itemLabel="VIGIA DEL FUERTE (Antioquia)" itemValue="VIGIA DEL FUERTE"/>
+									<f:selectItem itemLabel="VIJES (Valle Del Cauca)" itemValue="VIJES"/>
+									<f:selectItem itemLabel="VILLA DEL ROSARIO (N De Santander)" itemValue="VILLA DEL ROSARIO"/>
+									<f:selectItem itemLabel="VILLA RICA (Cauca)" itemValue="VILLA RICA"/>
+									<f:selectItem itemLabel="VILLACARO (N De Santander)" itemValue="VILLACARO"/>
+									<f:selectItem itemLabel="VILLAGARZON (Putumayo)" itemValue="VILLAGARZON"/>
+									<f:selectItem itemLabel="VILLAGOMEZ (Cundinamarca)" itemValue="VILLAGOMEZ"/>
+									<f:selectItem itemLabel="VILLAHERMOSA (Tolima)" itemValue="VILLAHERMOSA"/>
+									<f:selectItem itemLabel="VILLAMARIA (Caldas)" itemValue="VILLAMARIA"/>
+									<f:selectItem itemLabel="VILLANUEVA (Bolivar)" itemValue="VILLANUEVA"/>
+									<f:selectItem itemLabel="VILLANUEVA (Guajira)" itemValue="VILLANUEVA"/>
+									<f:selectItem itemLabel="VILLANUEVA (Santander)" itemValue="VILLANUEVA"/>
+									<f:selectItem itemLabel="VILLANUEVA (Casanare)" itemValue="VILLANUEVA"/>
+									<f:selectItem itemLabel="VILLAPINZON (Cundinamarca)" itemValue="VILLAPINZON"/>
+									<f:selectItem itemLabel="VILLARRICA (Tolima)" itemValue="VILLARRICA"/>
+									<f:selectItem itemLabel="VILLAVICENCIO (Meta)" itemValue="VILLAVICENCIO"/>
+									<f:selectItem itemLabel="VILLAVIEJA (Huila)" itemValue="VILLAVIEJA"/>
+									<f:selectItem itemLabel="VILLETA (Cundinamarca)" itemValue="VILLETA"/>
+									<f:selectItem itemLabel="VIOTA (Cundinamarca)" itemValue="VIOTA"/>
+									<f:selectItem itemLabel="VIRACACHA (Boyaca)" itemValue="VIRACACHA"/>
+									<f:selectItem itemLabel="VISTA HERMOSA (Meta)" itemValue="VISTA HERMOSA"/>
+									<f:selectItem itemLabel="VITERBO (Caldas)" itemValue="VITERBO"/>
+									<f:selectItem itemLabel="YACOPI (Cundinamarca)" itemValue="YACOPI"/>
+									<f:selectItem itemLabel="YACUANQUER (Nariño)" itemValue="YACUANQUER"/>
+									<f:selectItem itemLabel="YAGUARA (Huila)" itemValue="YAGUARA"/>
+									<f:selectItem itemLabel="YALI (Antioquia)" itemValue="YALI"/>
+									<f:selectItem itemLabel="YARUMAL (Antioquia)" itemValue="YARUMAL"/>
+									<f:selectItem itemLabel="YOLOMBO (Antioquia)" itemValue="YOLOMBO"/>
+									<f:selectItem itemLabel="YONDO (Antioquia)" itemValue="YONDO"/>
+									<f:selectItem itemLabel="YOPAL (Casanare)" itemValue="YOPAL"/>
+									<f:selectItem itemLabel="YOTOCO (Valle Del Cauca)" itemValue="YOTOCO"/>
+									<f:selectItem itemLabel="YUMBO (Valle Del Cauca)" itemValue="YUMBO"/>
+									<f:selectItem itemLabel="ZAMBRANO (Bolivar)" itemValue="ZAMBRANO"/>
+									<f:selectItem itemLabel="ZAPATOCA (Santander)" itemValue="ZAPATOCA"/>
+									<f:selectItem itemLabel="ZAPAYAN (Magdalena)" itemValue="ZAPAYAN"/>
+									<f:selectItem itemLabel="ZARAGOZA (Antioquia)" itemValue="ZARAGOZA"/>
+									<f:selectItem itemLabel="ZARZAL (Valle Del Cauca)" itemValue="ZARZAL"/>
+									<f:selectItem itemLabel="ZETAQUIRA (Boyaca)" itemValue="ZETAQUIRA"/>
+									<f:selectItem itemLabel="ZIPACON (Cundinamarca)" itemValue="ZIPACON"/>
+									<f:selectItem itemLabel="ZIPAQUIRA (Cundinamarca)" itemValue="ZIPAQUIRA"/>
+									<f:selectItem itemLabel="ZONA BANANERA (Magdalena)" itemValue="ZONA BANANERA"/>
+									
+                                </p:selectOneMenu>
+								                                
+                                <p:outputLabel for="emailid" value="Email" />
+								<p:inputText id="emailid" value="#{afiliadoBeanEdit.afiliadoSelected.email}" />
+								
+                                <p:outputLabel for="celularid" value="Celular" />
+								<p:inputText id="celularid" value="#{afiliadoBeanEdit.afiliadoSelected.celular}" />				
+
+								<p:outputLabel for="telefonoid" value="Telefono" />
+								<p:inputText id="telefonoid" value="#{afiliadoBeanEdit.afiliadoSelected.telefonofijo}" />
+                                
+                                <p:outputLabel for="sucursalid" value="Sucursal" />
+								<p:selectOneMenu id="sucursalid" value="#{afiliadoBeanEdit.afiliadoSelected.sucursal}">
+									<f:selectItems value="#{afiliadoBeanEdit.sucursalList}" var="suc"
+										itemLabel="#{suc.nombreSucursal}" itemValue="#{suc}" />
+									<f:converter binding="#{sucursalConverter}" />
+									
+								</p:selectOneMenu>
+															
+							</p:panelGrid>
+							<p:separator style="height:10px"/>
+							<h2>Datos adicionales del Afiliado</h2>
+							<p:separator style="height:5px"/>
+							<p:panelGrid columns="4" id="afiliadoAdiForm"
+								columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+
+								<p:outputLabel for="nacionalidadid" value="Nacionalidad"/>
+                                <p:selectOneMenu id="nacionalidadid" value="#{afiliado.nacionalidad}">
+                                    <f:selectItem itemLabel="Colombia" itemValue="c" />
+                                    <f:selectItem itemLabel="Venezuela" itemValue="v" />
+                                    <f:selectItem itemLabel="Otro" itemValue="o" />
+                                </p:selectOneMenu>	
+                                
+                                <p:outputLabel for="departamentoid" value="Departamento - Estado"/>
+                                <p:selectOneMenu id="departamentoid" value="#{afiliado.departamento}">
+                                    <f:selectItem itemLabel="Norte de Santander" itemValue="n" />
+                                    <f:selectItem itemLabel="Santander" itemValue="s" />
+                                    <f:selectItem itemLabel="Otro" itemValue="o" />
+                                </p:selectOneMenu>
+                                
+                                <p:outputLabel for="twitterid" value="Twitter Perfil" />
+								<p:inputText id="twitterid" value="#{afiliado.twitterperfil}" />
+								
+								<p:outputLabel for="facebookid" value="Facebook Perfil" />
+								<p:inputText id="facebookid" value="#{afiliado.facebookperfil}" />
+
+
+								<p:commandButton value="Crear" id="crearbutton"
+									action="#{afiliadoService.colocarValores}"
+									update="afiliadoForm" />
+							
+							</p:panelGrid><!-- end panel Datos Adicionales -->
+							<p:separator style="height:20px"/>						
+						</div>
+                    </div>
+                </div>
+            </div>          
+        </h:form>
+    </ui:define>
+    
+</ui:composition>

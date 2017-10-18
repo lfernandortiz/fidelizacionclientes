@@ -36,6 +36,11 @@ public class AfiliadoBeanEdit {
 	private List<Tipodocumento> tipodocList; // list para select one menu tipodocumento
 	private List<Sucursal> sucursalList;
 	
+	private String street1;
+	private String street1Valor;
+	private String street2;
+	private String street2Valor;
+	
 	public AfiliadoBeanEdit(){
 		
 	}//constructor por defecto 
@@ -44,11 +49,9 @@ public class AfiliadoBeanEdit {
 	public void init(){
 		this.afiliadoSelected = new Afiliado();
 		this.tipodocList = tipodocService.findAllTipodocumento();
-		this.sucursalList = sucursalService.findAllSucursals();
-		
+		this.sucursalList = sucursalService.findAllSucursals();		
 	}
-	
-	
+		
 	public List<Tipodocumento> getTipodocList() {
 		return tipodocList;
 	}
@@ -71,6 +74,38 @@ public class AfiliadoBeanEdit {
 
 	public void setSucursalList(List<Sucursal> sucursalList) {
 		this.sucursalList = sucursalList;
+	}
+
+	public String getStreet1() {
+		return street1;
+	}
+
+	public void setStreet1(String street1) {
+		this.street1 = street1;
+	}
+
+	public String getStreet1Valor() {
+		return street1Valor;
+	}
+
+	public void setStreet1Valor(String street1Valor) {
+		this.street1Valor = street1Valor;
+	}
+
+	public String getStreet2() {
+		return street2;
+	}
+
+	public void setStreet2(String street2) {
+		this.street2 = street2;
+	}
+
+	public String getStreet2Valor() {
+		return street2Valor;
+	}
+
+	public void setStreet2Valor(String street2Valor) {
+		this.street2Valor = street2Valor;
 	}
 	
 	

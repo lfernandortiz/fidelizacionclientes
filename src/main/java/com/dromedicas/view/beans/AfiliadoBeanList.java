@@ -69,7 +69,8 @@ public class AfiliadoBeanList {
 	}
 	
 	public String crearAfiliado(){
-		return null;	
+		FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("afiliadoBeanEdit");
+		return "afiliadocrear?faces-redirect=true";	
 	}
 	
 	public void buscarAfiliado(){

@@ -10,7 +10,7 @@ public interface TipodocumentoDao {
 
 	public Tipodocumento obtenerTipodocumentoById(Tipodocumento instance);
 	
-	public Tipodocumento obtenerTipodocumentoByIdString(String instance);	
+	public Tipodocumento obtenerTipodocumentoByIdString(Integer instance);	
 
 	public void insertTipodocumento(Tipodocumento instance);
 

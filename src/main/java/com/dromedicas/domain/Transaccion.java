@@ -23,6 +23,8 @@ public class Transaccion implements Serializable {
 	private Date fechatransaccion;
 
 	private String nrofactura;
+	
+	private int puntostransaccion;
 
 	private int valortotaltx;
 
@@ -177,5 +179,15 @@ public class Transaccion implements Serializable {
 	public void setTipotransaccion(Tipotransaccion tipotransaccion) {
 		this.tipotransaccion = tipotransaccion;
 	}
+
+	public int getPuntostransaccion() {
+		return puntostransaccion;
+	}
+
+	public void setPuntostransaccion(int puntostransaccion) {
+		this.puntostransaccion = puntostransaccion;
+	}
+	
+	
 
 }

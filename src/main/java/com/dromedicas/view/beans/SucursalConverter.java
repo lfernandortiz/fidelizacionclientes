@@ -1,6 +1,5 @@
 package com.dromedicas.view.beans;
 
-
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -12,24 +11,23 @@ import javax.faces.convert.ConverterException;
 import javax.faces.convert.FacesConverter;
 
 import com.dromedicas.domain.Empresa;
-import com.dromedicas.service.EmpresaService;
+import com.dromedicas.domain.Sucursal;
+import com.dromedicas.service.SucursalService;
 
 
 @ManagedBean
 @RequestScoped
 @FacesConverter("sucursalConverter")
-public class SucursalConverter implements Converter {
-	
+public class SucursalConverter implements Converter{
 	@EJB
-	private EmpresaService service;
+	private SucursalService service;
  
 	@Override
     public Object getAsObject(FacesContext fc, UIComponent uic, String value) {
         if(value != null && value.trim().length() > 0) {
             try { 
-            	Empresa emp = service.obtenerEmpresaById(value);
-            	
-                return emp;
+            	Sucursal suc = service.obtenerSucursalById(value);            	
+                return suc;
             } catch(NumberFormatException e) {
                 throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Conversion Error", "Not a valid theme."));
             }
@@ -44,10 +42,12 @@ public class SucursalConverter implements Converter {
 	@Override
     public String getAsString(FacesContext fc, UIComponent uic, Object object) {
         if(object != null) {    
-        	return String.valueOf( ((Empresa) object).getIdempresa()    );
+        	return String.valueOf(  ((Sucursal) object).getIdsucursal()  );
         }
         else {
             return null;
         }
     }   
+	
+
 }

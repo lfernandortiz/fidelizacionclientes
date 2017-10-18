@@ -20,7 +20,7 @@ public class TipoDocumentoService {
 		return dao.findAllTipodocumentos();
 	}
 	
-	public Tipodocumento obtenerTipodocumentoByIdString(String instance){
+	public Tipodocumento obtenerTipodocumentoByIdString(Integer instance){
 		return dao.obtenerTipodocumentoByIdString(instance);
 	}
 

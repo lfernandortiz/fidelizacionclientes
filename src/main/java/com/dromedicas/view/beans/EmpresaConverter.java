@@ -1,5 +1,6 @@
 package com.dromedicas.view.beans;
 
+
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -10,23 +11,25 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 import javax.faces.convert.FacesConverter;
 
-import com.dromedicas.domain.Tipodocumento;
-import com.dromedicas.service.TipoDocumentoService;
+import com.dromedicas.domain.Empresa;
+import com.dromedicas.service.EmpresaService;
+
 
 @ManagedBean
 @RequestScoped
-@FacesConverter("tipoDocumentoConverter")
-public class TipoDocumentoConverter implements Converter {
+@FacesConverter("empresaConverter")
+public class EmpresaConverter implements Converter {
 	
 	@EJB
-	private TipoDocumentoService service ;
+	private EmpresaService service;
  
 	@Override
     public Object getAsObject(FacesContext fc, UIComponent uic, String value) {
         if(value != null && value.trim().length() > 0) {
-            try {             	  	
-                System.out.println("****------" + service.obtenerTipodocumentoByIdString( Integer.parseInt(value) ).getDescripcion());                
-                return service.obtenerTipodocumentoByIdString(Integer.parseInt(value));
+            try { 
+            	Empresa emp = service.obtenerEmpresaById(value);
+            	
+                return emp;
             } catch(NumberFormatException e) {
                 throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Conversion Error", "Not a valid theme."));
             }
@@ -36,10 +39,12 @@ public class TipoDocumentoConverter implements Converter {
         }
     }
  
+	
+	
 	@Override
     public String getAsString(FacesContext fc, UIComponent uic, Object object) {
-        if(object != null) {
-            return String.valueOf(((Tipodocumento) object).getIdtipodocumento());
+        if(object != null) {    
+        	return String.valueOf( ((Empresa) object).getIdempresa()    );
         }
         else {
             return null;

@@ -27,7 +27,7 @@ public class TipodocumentoDaoImp implements TipodocumentoDao {
 		return em.find(Tipodocumento.class, instance.getIdtipodocumento());
 	}
 		
-	public Tipodocumento obtenerTipodocumentoByIdString(String id) {
+	public Tipodocumento obtenerTipodocumentoByIdString(Integer id) {
 		String queryString = "from Tipodocumento d where d.idtipodocumento='" + id + "'";
 		Query query = em.createQuery(queryString);
 		Tipodocumento temp = null;		

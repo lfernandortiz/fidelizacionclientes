@@ -65,4 +65,27 @@ public class Tipodocumento implements Serializable {
 		return afiliado;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + idtipodocumento;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Tipodocumento other = (Tipodocumento) obj;
+		if (idtipodocumento != other.idtipodocumento)
+			return false;
+		return true;
+	}
+
+	
 }

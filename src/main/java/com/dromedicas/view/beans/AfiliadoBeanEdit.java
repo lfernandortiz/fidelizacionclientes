@@ -8,8 +8,10 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
 import com.dromedicas.domain.Afiliado;
+import com.dromedicas.domain.Sucursal;
 import com.dromedicas.domain.Tipodocumento;
 import com.dromedicas.service.AfiliadoService;
+import com.dromedicas.service.SucursalService;
 import com.dromedicas.service.TipoDocumentoService;
 
 @ManagedBean(name="afiliadoBeanEdit")
@@ -27,8 +29,12 @@ public class AfiliadoBeanEdit {
 	@EJB
 	private TipoDocumentoService tipodocService;
 	
+	@EJB
+	private SucursalService sucursalService;
+	
 	private Afiliado afiliadoSelected;
 	private List<Tipodocumento> tipodocList; // list para select one menu tipodocumento
+	private List<Sucursal> sucursalList;
 	
 	public AfiliadoBeanEdit(){
 		
@@ -38,6 +44,8 @@ public class AfiliadoBeanEdit {
 	public void init(){
 		this.afiliadoSelected = new Afiliado();
 		this.tipodocList = tipodocService.findAllTipodocumento();
+		this.sucursalList = sucursalService.findAllSucursals();
+		
 	}
 	
 	
@@ -56,5 +64,15 @@ public class AfiliadoBeanEdit {
 	public void setAfiliadoSelected(Afiliado afiliadoSelected) {
 		this.afiliadoSelected = afiliadoSelected;
 	}
+
+	public List<Sucursal> getSucursalList() {
+		return sucursalList;
+	}
+
+	public void setSucursalList(List<Sucursal> sucursalList) {
+		this.sucursalList = sucursalList;
+	}
+	
+	
 
 }

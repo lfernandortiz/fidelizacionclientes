@@ -194,4 +194,28 @@ public class Sucursal implements Serializable {
 		return transaccion;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + idsucursal;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Sucursal other = (Sucursal) obj;
+		if (idsucursal != other.idsucursal)
+			return false;
+		return true;
+	}
+	
+	
+
 }

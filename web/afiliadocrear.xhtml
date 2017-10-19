@@ -9,7 +9,7 @@
     <ui:define name="title">Crear Afiliado</ui:define>
 
     <ui:define name="content">    
-        <h:form>
+        <h:form id="afiliadoformppal">
         <p:growl id="growl" showDetail="true" sticky="true" /> 
         <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
             <div class="ui-fluid">
@@ -60,7 +60,7 @@
 								
 								<p:outputLabel for="street1" value="Direccion" />
                                 <p:selectOneMenu id="street1" value="#{afiliadoBeanEdit.street1}">
-                                    <f:selectItem itemLabel="AVENIDA" itemValue="AVENIDA"/>
+                               		<f:selectItem itemLabel="AVENIDA" itemValue="AVENIDA" />
 									<f:selectItem itemLabel="AUTOPISTA" itemValue="AUTOPISTA"/>
 									<f:selectItem itemLabel="BLOQUE" itemValue="BLOQUE"/>
 									<f:selectItem itemLabel="BOULEVAR" itemValue="BOULEVAR"/>
@@ -83,8 +83,11 @@
 									<f:selectItem itemLabel="URBANIZACION" itemValue="URBANIZACION"/>
 									<f:selectItem itemLabel="VEREDA" itemValue="VEREDA"/>
 									<f:selectItem itemLabel="VIA" itemValue="VIA"/>
+										<p:ajax event="change" update="out" listener="#{afiliadoBeanEdit.concatenarDireccion()}"   />  
                                 </p:selectOneMenu>	
-								<p:inputText id="street1valor" value="#{afiliadoBeanEdit.street1Valor}" />
+								<p:inputText id="street1valor" value="#{afiliadoBeanEdit.street1Valor}">
+										<p:ajax event="keyup" update="out" listener="#{afiliadoBeanEdit.concatenarDireccion()}" />
+								</p:inputText>
 								
 								<p:outputLabel for="street2" value="Complemento Direccion" />
 								<p:selectOneMenu id="street2" value="#{afiliadoBeanEdit.street2}">
@@ -111,14 +114,18 @@
 									<f:selectItem itemLabel="URBANIZACION" itemValue="URBANIZACION"/>
 									<f:selectItem itemLabel="VEREDA" itemValue="VEREDA"/>
 									<f:selectItem itemLabel="VIA" itemValue="VIA"/>
+										<p:ajax event="change" update="out" listener="#{afiliadoBeanEdit.concatenarDireccion()}"   />  
                                 </p:selectOneMenu>
-								<p:inputText id="street2valor" value="#{afiliadoBeanEdit.street2Valor}" />
+								<p:inputText id="street2valor" value="#{afiliadoBeanEdit.street2Valor}">
+									<p:ajax event="keyup" update="out" listener="#{afiliadoBeanEdit.concatenarDireccion()}" />
+								</p:inputText>
 							</p:panelGrid> 
-							<p:panelGrid columns="1" id="dircompletaForm"
-								columnClasses="ui-grid-col-12"
+							<p:panelGrid columns="2" id="dircompletaForm"
+								columnClasses="ui-grid-col-2, ui-grid-col-10"
 								layout="grid" styleClass="ui-panelgrid-blank"
 								style="border:0px none; background-color:transparent;">
-							<div class="dircompleta">#{afiliadoBeanEdit.street1}</div>
+							<p:outputLabel for="out" value="" />
+							<h:outputText id="out" value="#{afiliadoBeanEdit.direccionCompleta}" />							
 							</p:panelGrid> 	
 							<p:panelGrid columns="4" id="anotherdataForm"
 								columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
@@ -1243,45 +1250,39 @@
 															
 							</p:panelGrid>
 							<p:separator style="height:10px"/>
-							<h2>Datos adicionales del Afiliado</h2>
-							<p:separator style="height:5px"/>
-							<p:panelGrid columns="4" id="afiliadoAdiForm"
-								columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+							<p:panelGrid columns="6" id="buttons"
+								columnClasses="ui-grid-col-2,"
 								layout="grid" styleClass="ui-panelgrid-blank"
-								style="border:0px none; background-color:transparent;">
-
-								<p:outputLabel for="nacionalidadid" value="Nacionalidad"/>
-                                <p:selectOneMenu id="nacionalidadid" value="#{afiliado.nacionalidad}">
-                                    <f:selectItem itemLabel="Colombia" itemValue="c" />
-                                    <f:selectItem itemLabel="Venezuela" itemValue="v" />
-                                    <f:selectItem itemLabel="Otro" itemValue="o" />
-                                </p:selectOneMenu>	
-                                
-                                <p:outputLabel for="departamentoid" value="Departamento - Estado"/>
-                                <p:selectOneMenu id="departamentoid" value="#{afiliado.departamento}">
-                                    <f:selectItem itemLabel="Norte de Santander" itemValue="n" />
-                                    <f:selectItem itemLabel="Santander" itemValue="s" />
-                                    <f:selectItem itemLabel="Otro" itemValue="o" />
-                                </p:selectOneMenu>
-                                
-                                <p:outputLabel for="twitterid" value="Twitter Perfil" />
-								<p:inputText id="twitterid" value="#{afiliado.twitterperfil}" />
-								
-								<p:outputLabel for="facebookid" value="Facebook Perfil" />
-								<p:inputText id="facebookid" value="#{afiliado.facebookperfil}" />
-
-
-								<p:commandButton value="Crear" id="crearbutton"
-									action="#{afiliadoService.colocarValores}"
-									update="afiliadoForm" />
-							
-							</p:panelGrid><!-- end panel Datos Adicionales -->
+								style="border:0px none; background-color:transparent;">	
+										
+								<p:commandButton value="Crear" id="crearAfiliadoid"
+												 action="#{afiliadoBeanEdit.crearAfiliado()}"
+												 update="afiliadoformppal"/>
+											 
+								 
+								<p:commandButton value="Cancelar" 
+												 id="cancelarAfiliadoid"
+												 action="#{afiliadoBeanEdit.cancelarAfiliado()}"
+												 process="@this"
+												 update="afiliadoformppal" />	
+												 
+												 
+								<p:commandButton value="Volver" 
+												 id="volverid"
+												 action="#{afiliadoBeanEdit.volverListAfiliado()}"
+												 process="@this"/>
+															
+							</p:panelGrid>
 							<p:separator style="height:20px"/>						
 						</div>
                     </div>
                 </div>
             </div>          
         </h:form>
-    </ui:define>
-    
+        <h:outputScript target="body">
+        	window.addEventListener("load",function(){
+        			document.getElementById('afiliadoformppal:nombreid').focus();
+        		},false);        	
+        </h:outputScript>
+    </ui:define>   
 </ui:composition>

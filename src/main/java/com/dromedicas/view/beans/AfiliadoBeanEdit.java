@@ -36,10 +36,11 @@ public class AfiliadoBeanEdit {
 	private List<Tipodocumento> tipodocList; // list para select one menu tipodocumento
 	private List<Sucursal> sucursalList;
 	
-	private String street1;
-	private String street1Valor;
-	private String street2;
-	private String street2Valor;
+	private String street1 = "AVENIDA";
+	private String street1Valor = "";
+	private String street2 = "No.";
+	private String street2Valor = "";
+	private String direccionCompleta;
 	
 	public AfiliadoBeanEdit(){
 		
@@ -49,7 +50,8 @@ public class AfiliadoBeanEdit {
 	public void init(){
 		this.afiliadoSelected = new Afiliado();
 		this.tipodocList = tipodocService.findAllTipodocumento();
-		this.sucursalList = sucursalService.findAllSucursals();		
+		this.sucursalList = sucursalService.findAllSucursals();	
+		
 	}
 		
 	public List<Tipodocumento> getTipodocList() {
@@ -108,6 +110,36 @@ public class AfiliadoBeanEdit {
 		this.street2Valor = street2Valor;
 	}
 	
+	public String getDireccionCompleta() {
+		return direccionCompleta;
+	}
+
+	public void setDireccionCompleta(String direccionCompleta) {
+		this.direccionCompleta = direccionCompleta;
+	}
+	
+	//metodos de control de la interfaz
+	
+	
+	public void concatenarDireccion(){
+		StringBuilder str = new StringBuilder();
+		str.append(this.getStreet1().toUpperCase()).append(" ").append(this.getStreet1Valor().trim().toUpperCase()).append(" ")
+					.append(this.getStreet2().toUpperCase()).append(" ").append(this.getStreet2Valor().trim().toUpperCase());
+		this.setDireccionCompleta(str.toString());
+		System.out.println(this.direccionCompleta);
+	}
+	
+	public String crearAfiliado(){
+		return null;
+	}
+	
+	public String cancelarAfiliado(){
+		return null;
+	}
+	
+	public String volverListAfiliado(){
+		return "afiliadolist?faces-redirect=true";
+	}
 	
 
 }

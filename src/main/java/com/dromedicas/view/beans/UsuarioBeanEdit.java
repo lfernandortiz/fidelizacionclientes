@@ -5,12 +5,16 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
+import javax.faces.context.Flash;
 
 import org.primefaces.model.DualListModel;
 
 import com.dromedicas.domain.Rol;
+import com.dromedicas.domain.Tipousuario;
 import com.dromedicas.domain.Usuarioweb;
 import com.dromedicas.service.RolService;
 import com.dromedicas.service.TipoUsuarioService;
@@ -87,6 +91,11 @@ public class UsuarioBeanEdit {
 	 * Metodos de acciones de la vista usuarioEdit
 	 * 
 	 */	
+	
+	public String editarUsuario(Usuarioweb instance){
+		this.activo = instance.getActivo() == 1 ? true : false;
+		return "usuarioedit?faces-redirect=true";
+	}
 
 	public String actualizarUsuario(){
 		return null;
@@ -94,8 +103,27 @@ public class UsuarioBeanEdit {
 	
 	public String crearUsuario(){
 		//primero crea el usuario y el tipo de usuario
+		this.usurioSelected.setNombreusuario(this.usurioSelected.getNombreusuario().trim().toUpperCase());
+		this.usurioSelected.setUsuario(this.usurioSelected.getUsuario().trim().toUpperCase());
+		this.usurioSelected.setClave(this.usurioSelected.getClave());
+		byte temp = (byte) (this.activo== true ? 1 : 0);
+		this.usurioSelected.setActivo(temp);
+		this.usurioSelected.setEmailusuario(this.usurioSelected.getEmailusuario());
 		
-		return null;
+		Tipousuario tipoUsuario = this.tipUService.obtenerTipousuarioById(1);
+		
+		this.usurioSelected.setTipousuario(tipoUsuario);
+		
+		this.uwebService.updateUsuarioweb(this.usurioSelected);
+		
+		FacesContext.getCurrentInstance().addMessage("messages", new FacesMessage(FacesMessage.SEVERITY_INFO,
+				"Registro Exitoso!", "Usuario creado Exitosamente"));
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		@SuppressWarnings("static-access")
+		Flash flash = facesContext.getCurrentInstance().getExternalContext().getFlash();
+		flash.setKeepMessages(true);
+		
+		return "usuariolist?faces-redirect=true";
 	}
 	
 	public String cancelarEdit(){
@@ -115,10 +143,11 @@ public class UsuarioBeanEdit {
 			e.printStackTrace();
 		}
 		
-		
-			
-		
 	}
+	
+	
+	
+	
 	
 	
 }

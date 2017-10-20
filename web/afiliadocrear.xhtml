@@ -1234,10 +1234,6 @@
 									<f:selectItem itemLabel="ZONA BANANERA (Magdalena)" itemValue="ZONA BANANERA"/>
 									
                                 </p:selectOneMenu>
-								                                
-                                <p:outputLabel for="emailid" value="Email" />
-								<p:inputText id="emailid" value="#{afiliadoBeanEdit.afiliadoSelected.email}"
-									styleClass="#{afiliadoBeanEdit.emailValid ? '' : 'ui-state-error'}"/>	
 																
                                 <p:outputLabel for="celularid" value="Celular" />
 								<p:inputText id="celularid" mask="9*" value="#{afiliadoBeanEdit.afiliadoSelected.celular}">
@@ -1256,6 +1252,10 @@
 									<f:converter binding="#{sucursalConverter}" />
 									
 								</p:selectOneMenu>
+								
+								<p:outputLabel for="emailid" value="Email" />
+								<p:inputText id="emailid" value="#{afiliadoBeanEdit.afiliadoSelected.email}"
+									styleClass="#{afiliadoBeanEdit.emailValid ? '' : 'ui-state-error'}"/>
 															
 							</p:panelGrid>
 							<p:separator style="height:10px"/>

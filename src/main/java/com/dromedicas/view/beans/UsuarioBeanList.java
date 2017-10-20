@@ -7,6 +7,7 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 
 import org.primefaces.model.DualListModel;
 
@@ -62,6 +63,7 @@ public class UsuarioBeanList {
 	 */
 
 	public String crearUsuario(){
+		FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("usuarioBeanEdit");
 		return "usuarioedit?faces-redirect=true";
 	}
 	
@@ -73,9 +75,7 @@ public class UsuarioBeanList {
 		
 	}
 	
-	public String editarUsuario(){
-		return "usuarioedit?faces-redirect=true";
-	}
+	
 	
 
 }

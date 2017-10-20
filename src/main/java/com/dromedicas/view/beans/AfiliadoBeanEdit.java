@@ -173,7 +173,9 @@ public class AfiliadoBeanEdit {
 		this.afiliadoSelected.setDocumento(this.afiliadoSelected.getDocumento());
 		this.afiliadoSelected.setSexo(this.afiliadoSelected.getSexo());
 		this.afiliadoSelected.setFechanacimiento(this.afiliadoSelected.getFechanacimiento());
-		this.afiliadoSelected.setStreet(this.removerAcentosNtildes(this.getDireccionCompleta()));
+		
+		this.afiliadoSelected.setStreet(
+				this.removerAcentosNtildes(this.getDireccionCompleta()).replaceAll("#", "NO."));
 		this.afiliadoSelected.setStreetdos(this.removerAcentosNtildes(this.afiliadoSelected.getStreetdos().trim().toUpperCase()));
 		this.afiliadoSelected.setCiudad(this.afiliadoSelected.getCiudad());
 			//aca validar Email
@@ -200,7 +202,7 @@ public class AfiliadoBeanEdit {
 		System.out.println("-----validando edad");
 		if(this.getAge(this.afiliadoSelected.getFechanacimiento()) < 18 ){
 			FacesContext.getCurrentInstance().addMessage("fechanacid", 
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Menor de Edad!"));			
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "MENOR DE EDAD!"));			
 			return null;
 		}
 		this.afiliadoSelected.setEdad(this.getAge(this.afiliadoSelected.getFechanacimiento()));
@@ -208,14 +210,17 @@ public class AfiliadoBeanEdit {
 		Sucursal sucursal  = this.sucursalService.obtenerSucursalById(this.afiliadoSelected.getSucursal());
 		this.afiliadoSelected.setSucursal(sucursal);
 		
-		//Obtiene el usuario que registra...
+		//Obtiene el usuario que registra..........Faltaaaaa
 		Usuarioweb user = this.usuarioService.obtenerUsuariowebById(5);
 		this.afiliadoSelected.setUsuariowebBean(user);
 		
 		//Persiste el nuevo afiliado
-		System.out.println("-----PERSISITIENDO AFILIADO");
 		afiliadoService.updateAfiliado(this.afiliadoSelected);
 		
+		//Envia correo de notificacion de afiliacion
+		
+		
+		//Despliega Callout sucess				
 		FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("afiliadoBeanEdit");
 		
 		FacesContext.getCurrentInstance().addMessage("messages", new FacesMessage(FacesMessage.SEVERITY_INFO,
@@ -224,12 +229,6 @@ public class AfiliadoBeanEdit {
 		@SuppressWarnings("static-access")
 		Flash flash = facesContext.getCurrentInstance().getExternalContext().getFlash();
 		flash.setKeepMessages(true);
-		
-		
-		//Envia correo de notificacion de afiliacion
-		
-		//Despliega Callout sucess				
-		
 		
 		return "afiliadocrear?faces-redirect=true";
 	}

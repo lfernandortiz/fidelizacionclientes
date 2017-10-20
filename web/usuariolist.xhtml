@@ -59,10 +59,7 @@
 								</p:column>
 								<p:column headerText="Estado" sortBy="#{user.activo}">
 									<h:outputText value="#{user.activo == 1 ? 'Activo' : 'Inactivo'}" />
-								</p:column>
-								<p:column headerText="Direccion" sortBy="#{emp.direccion}">
-									<h:outputText value="#{emp.direccion}" />
-								</p:column>
+								</p:column>								
 								<p:column headerText="Ultimo Acceso" sortBy="#{user.ultacceso}">
 									<h:outputText value="#{user.ultacceso}" />
 								</p:column>
@@ -73,9 +70,9 @@
 									<p:commandButton  icon="fa fa-pencil"
 													  title="Editar #{user.nombreusuario}"
 													  id="editarrowid"
-													  action="#{usuarioBeanList.editarUsuario()}"
+													  action="#{usuarioBeanEdit.editarUsuario(user)}"
 													  immediate="true">										
-										<f:setPropertyActionListener value="#{emp}" target="#{empresaBeanEdit.selectedEmpresa}" /> 
+										<f:setPropertyActionListener value="#{user}" target="#{usuarioBeanEdit.usurioSelected}" /> 
 									</p:commandButton>	
 								</p:column>		
 							</p:dataTable>	

@@ -30,13 +30,13 @@
 								<p:outputLabel for="usuarioid" value="Usuario" />
 								<p:inputText id="usuarioid"
 									value="#{usuarioBeanEdit.usurioSelected.usuario}" required="true" />
-
 								<p:outputLabel for="pwd1" value="Clave" />
-								<p:password id="pwd1" value="#{passwordView.password5}" match="pwd2" 
-									feedback="true" inline="true" required="true" />
+								<p:password id="pwd1" value="#{usuarioBeanEdit.usurioSelected.clave}" match="pwd2" 
+									feedback="true" inline="true" required="true" redisplay="true" />
 									
 								<p:outputLabel for="pwd2" value="Verificacion Clave" />
-								<p:password id="pwd2" value="#{passwordView.password5}" feedback="true" inline="true" required="true" />
+								<p:password id="pwd2" value="#{usuarioBeanEdit.usurioSelected.clave}" 
+									feedback="true" inline="true" required="true" redisplay="true" />
 								
 								<p:outputLabel for="activoid" value="Usuario Activo" />
         						<p:selectBooleanCheckbox id="activoid" value="#{usuarioBeanEdit.activo}" />
@@ -52,14 +52,14 @@
 								columnClasses="ui-grid-col-2,"
 								layout="grid" styleClass="ui-panelgrid-blank"
 								style="border:0px none; background-color:transparent;">	
-										
+								
 								<p:commandButton value="Crear" id="crearnuevaid"
-												 action="#{sucursalEdit.crearSucursal()}"
-												 rendered="#{sucursalEdit.sucSelected.idsucursal == null || sucursalEdit.sucSelected.idsucursal == 0}" />
-											 
+												 action="#{usuarioBeanEdit.crearUsuario()}"
+												 rendered="#{usuarioBeanEdit.usurioSelected.idusuarioweb == null || usuarioBeanEdit.usurioSelected.idusuarioweb == 0}" />
+										 
 								<p:commandButton value="Actualizar" id="actualizarid"
-												 action="#{sucursalEdit.actualizarSucursal()}"
-												 rendered="#{sucursalEdit.sucSelected.idsucursal != null &amp;&amp;sucursalEdit.sucSelected.idsucursal != 0}" />
+												 action="#{usuarioBeanEdit.actualizarUsuario()}"
+												 rendered="#{usuarioBeanEdit.usurioSelected.idusuarioweb != null &amp;&amp; usuarioBeanEdit.usurioSelected.idusuarioweb != 0}" />
 								 
 								<p:commandButton value="Cancelar" 
 												 id="cancelarnuevaid"

@@ -25,7 +25,6 @@ public class TipoDocumentoConverter implements Converter {
     public Object getAsObject(FacesContext fc, UIComponent uic, String value) {
         if(value != null && value.trim().length() > 0) {
             try {             	  	
-                System.out.println("****------" + service.obtenerTipodocumentoByIdString( Integer.parseInt(value) ).getDescripcion());                
                 return service.obtenerTipodocumentoByIdString(Integer.parseInt(value));
             } catch(NumberFormatException e) {
                 throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Conversion Error", "Not a valid theme."));

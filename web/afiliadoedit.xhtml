@@ -50,9 +50,9 @@
 								
 								<p:outputLabel for="fechanacid" value="Fecha de nacimiento" />
 								<p:calendar id="fechanacid" value="#{afiliadoBeanEdit.afiliadoSelected.fechanacimiento}"
-									pattern = "dd/MM/yyyy"
+									pattern = "dd/MM/yyyy" 
 									navigator="true" popupIconOnly="false" mode="popup"
-									showOn="button" yearRange="c-100:c+0">
+									showOn="button" yearRange="c-100:c-18">
 									<f:convertDateTime pattern = "dd/MM/yyyy" />
 								</p:calendar>
 								

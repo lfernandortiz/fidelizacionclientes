@@ -1,9 +1,10 @@
-package com.dromedicas.eis;
+ package com.dromedicas.eis;
 
 import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
@@ -19,8 +20,7 @@ public class AfiliadoDaoImpl implements AfiliadoDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Afiliado> findAllAfiliados() {
-		return em.createNamedQuery("Afiliado.findAll").getResultList();
-				
+		return em.createNamedQuery("Afiliado.findAll").getResultList();				
 	}
 
 	@Override
@@ -34,6 +34,21 @@ public class AfiliadoDaoImpl implements AfiliadoDao {
 		queryString.setParameter("docu", instance.getDocumento());
 		return (Afiliado) queryString.getSingleResult();
 	}
+	
+	@Override
+	public Afiliado obtenerAfiliadoByDocumento(String documento) {
+		Query query = em.createQuery("FROM Afiliado a WHERE a.documento = :docu");
+		query.setParameter("docu", documento);
+		Afiliado temp = null;		
+		try {
+			temp = (Afiliado) query.getSingleResult();
+		} catch (NoResultException e) {
+			System.out.println("Elemento no encontrado");
+			
+		}		
+		return temp;
+	}
+	
 
 	@Override
 	public void insertAfiliado(Afiliado instance) {

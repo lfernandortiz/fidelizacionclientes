@@ -33,6 +33,10 @@ public class AfiliadoService {
 		return this.afiliadoDao.obtenerAfiliadoByDocumento(instance);
 	}
 	
+	public Afiliado obtenerAfiliadoByDocumento(String documento){
+		return this.afiliadoDao.obtenerAfiliadoByDocumento(documento);
+	}
+	
 	public void insertAfiliado(Afiliado instance){
 		this.afiliadoDao.insertAfiliado(instance);
 	}

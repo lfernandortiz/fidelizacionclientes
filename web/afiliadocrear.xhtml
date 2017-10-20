@@ -8,9 +8,9 @@
 
     <ui:define name="title">Crear Afiliado</ui:define>
 
-    <ui:define name="content">    
+    <ui:define name="content">
         <h:form id="afiliadoformppal">
-        <p:growl id="growl" showDetail="true" sticky="true" /> 
+        <!-- <p:growl id="growl" showDetail="true" sticky="true" />  -->
         <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
             <div class="ui-fluid">
                 <div class="ui-g">
@@ -36,7 +36,9 @@
 								</p:selectOneMenu>
 	
 								<p:outputLabel for="cedulaid" value="Documento" />
-								<p:inputText id="cedulaid" value="#{afiliadoBeanEdit.afiliadoSelected.documento}" />
+								<p:spinner id="cedulaid" value="#{afiliadoBeanEdit.afiliadoSelected.documento}" required="true">
+									<p:ajax event="blur" update="cedulaid" listener="#{afiliadoBeanEdit.validarCedula()}" />
+								</p:spinner>
 
 								<p:outputLabel for="sexomenu" value="Sexo"/>
                                 <p:selectOneMenu id="sexomenu" value="#{afiliadoBeanEdit.afiliadoSelected.sexo}">
@@ -47,10 +49,11 @@
 								
 								<p:outputLabel for="fechanacid" value="Fecha de nacimiento" />
 								<p:calendar id="fechanacid" value="#{afiliadoBeanEdit.afiliadoSelected.fechanacimiento}"
-									pattern = "dd/MM/yyyy"
+									pattern = "dd/MM/yyyy" mask="true"
 									navigator="true" popupIconOnly="false" mode="popup"
-									showOn="button" yearRange="c-100:c+0">
+									showOn="button" yearRange="c-100:c-18">
 									<f:convertDateTime pattern = "dd/MM/yyyy" />
+									<p:ajax event="blur" update="cedulaid" listener="#{afiliadoBeanEdit.validarEdad()}" />
 								</p:calendar>
 							</p:panelGrid> 
 							<p:panelGrid columns="12" id="direccionForm"
@@ -1232,8 +1235,8 @@
                                 </p:selectOneMenu>
 								                                
                                 <p:outputLabel for="emailid" value="Email" />
-								<p:inputText id="emailid" value="#{afiliadoBeanEdit.afiliadoSelected.email}" />
-								
+								<p:inputText id="emailid" value="#{afiliadoBeanEdit.afiliadoSelected.email}"
+									styleClass="#{afiliadoBeanEdit.emailValid ? '' : 'ui-state-error'}"/>								
                                 <p:outputLabel for="celularid" value="Celular" />
 								<p:inputText id="celularid" value="#{afiliadoBeanEdit.afiliadoSelected.celular}" />				
 
@@ -1257,7 +1260,7 @@
 										
 								<p:commandButton value="Crear" id="crearAfiliadoid"
 												 action="#{afiliadoBeanEdit.crearAfiliado()}"
-												 update="afiliadoformppal"/>
+												 update="afiliadoformppal anotherdataForm"/>
 											 
 								 
 								<p:commandButton value="Cancelar" 

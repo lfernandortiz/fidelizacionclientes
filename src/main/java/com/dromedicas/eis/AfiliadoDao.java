@@ -12,6 +12,8 @@ public interface AfiliadoDao {
 	
 	public Afiliado obtenerAfiliadoByDocumento(Afiliado instance);
 	
+	public Afiliado obtenerAfiliadoByDocumento(String documento);
+	
 	public void insertAfiliado(Afiliado instance);
 	
 	public void updateAfiliado(Afiliado instance);

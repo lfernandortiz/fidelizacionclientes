@@ -9,6 +9,8 @@ public interface UsuariowebDao {
 	public List<Usuarioweb> findAllUsuariowebs();
 
 	public Usuarioweb obtenerUsuariowebById(Usuarioweb instance);
+	
+	public Usuarioweb obtenerUsuariowebById(int id);
 
 	public void insertUsuarioweb(Usuarioweb instance);
 

@@ -24,6 +24,11 @@ public class UsuariowebDaoImpl implements UsuariowebDao {
 	public Usuarioweb obtenerUsuariowebById(Usuarioweb instance) {
 		return em.find(Usuarioweb.class, instance.getIdusuarioweb());
 	}
+	
+	@Override
+	public Usuarioweb obtenerUsuariowebById(int id) {
+		return em.find(Usuarioweb.class, id);
+	}
 
 	@Override
 	public void insertUsuarioweb(Usuarioweb instance) {

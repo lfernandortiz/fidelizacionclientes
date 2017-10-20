@@ -28,6 +28,12 @@ public class UsuarioWebService {
 	public Usuarioweb obtenerUsuariowebById(Usuarioweb instance){
 		return dao.obtenerUsuariowebById(instance);
 	}
+	
+	public Usuarioweb obtenerUsuariowebById(int id){
+		return dao.obtenerUsuariowebById(id);
+	}
+	
+	
 
 	public void insertUsuarioweb(Usuarioweb instance){
 		dao.insertUsuarioweb(instance);

@@ -36,9 +36,10 @@
 								</p:selectOneMenu>
 	
 								<p:outputLabel for="cedulaid" value="Documento" />
-								<p:spinner id="cedulaid" value="#{afiliadoBeanEdit.afiliadoSelected.documento}" required="true">
+								<p:inputText id="cedulaid" value="#{afiliadoBeanEdit.afiliadoSelected.documento}" required="true">
 									<p:ajax event="blur" update="cedulaid" listener="#{afiliadoBeanEdit.validarCedula()}" />
-								</p:spinner>
+									<p:keyFilter regEx="/[\d\-\.]/"/>
+								</p:inputText>
 
 								<p:outputLabel for="sexomenu" value="Sexo"/>
                                 <p:selectOneMenu id="sexomenu" value="#{afiliadoBeanEdit.afiliadoSelected.sexo}">
@@ -1236,12 +1237,17 @@
 								                                
                                 <p:outputLabel for="emailid" value="Email" />
 								<p:inputText id="emailid" value="#{afiliadoBeanEdit.afiliadoSelected.email}"
-									styleClass="#{afiliadoBeanEdit.emailValid ? '' : 'ui-state-error'}"/>								
+									styleClass="#{afiliadoBeanEdit.emailValid ? '' : 'ui-state-error'}"/>	
+																
                                 <p:outputLabel for="celularid" value="Celular" />
-								<p:inputText id="celularid" value="#{afiliadoBeanEdit.afiliadoSelected.celular}" />				
+								<p:inputText id="celularid" mask="9*" value="#{afiliadoBeanEdit.afiliadoSelected.celular}">
+									 <p:keyFilter regEx="/[\d\-\.]/"/>
+								</p:inputText>				
 
 								<p:outputLabel for="telefonoid" value="Telefono" />
-								<p:inputText id="telefonoid" value="#{afiliadoBeanEdit.afiliadoSelected.telefonofijo}" />
+								<p:inputText id="telefonoid"  mask="9*" value="#{afiliadoBeanEdit.afiliadoSelected.telefonofijo}">
+									<p:keyFilter regEx="/[\d\-\.]/"/>
+								</p:inputText>
                                 
                                 <p:outputLabel for="sucursalid" value="Sucursal" />
 								<p:selectOneMenu id="sucursalid" value="#{afiliadoBeanEdit.afiliadoSelected.sucursal}">

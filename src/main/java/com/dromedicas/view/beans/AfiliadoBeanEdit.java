@@ -1,5 +1,6 @@
 package com.dromedicas.view.beans;
 
+import java.text.Normalizer;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -153,8 +154,10 @@ public class AfiliadoBeanEdit {
 	public String crearAfiliado(){
 		
 		//Establece los valores
-		this.afiliadoSelected.setNombres(this.afiliadoSelected.getNombres().trim().toUpperCase());
-		this.afiliadoSelected.setApellidos(this.afiliadoSelected.getApellidos().trim().toUpperCase());
+		this.afiliadoSelected.setNombres(
+					this.removerAcentosNtildes(this.afiliadoSelected.getNombres().trim().toUpperCase()));
+		this.afiliadoSelected.setApellidos(
+					this.removerAcentosNtildes(this.afiliadoSelected.getApellidos().trim().toUpperCase()));
 		this.afiliadoSelected.setTipodocumentoBean(this.afiliadoSelected.getTipodocumentoBean());
 			//**Valida si ya esta registrada la cedula
 		
@@ -166,35 +169,38 @@ public class AfiliadoBeanEdit {
 			System.out.println("Cedula ya registrada: " );	
 			return null;
 		}
-		System.out.println("-----completando datos");
-		this.afiliadoSelected.setDocumento(this.afiliadoSelected.getDocumento());
+		
 		this.afiliadoSelected.setDocumento(this.afiliadoSelected.getDocumento());
 		this.afiliadoSelected.setSexo(this.afiliadoSelected.getSexo());
 		this.afiliadoSelected.setFechanacimiento(this.afiliadoSelected.getFechanacimiento());
-		this.afiliadoSelected.setStreet(this.getDireccionCompleta());
-		this.afiliadoSelected.setStreetdos(this.afiliadoSelected.getStreetdos().trim().toUpperCase());
+		this.afiliadoSelected.setStreet(this.removerAcentosNtildes(this.getDireccionCompleta()));
+		this.afiliadoSelected.setStreetdos(this.removerAcentosNtildes(this.afiliadoSelected.getStreetdos().trim().toUpperCase()));
 		this.afiliadoSelected.setCiudad(this.afiliadoSelected.getCiudad());
 			//aca validar Email
 		System.out.println("-----validando Email");
-		if(validateEmail(this.afiliadoSelected.getEmail())){
-			this.afiliadoSelected.setEmail(this.afiliadoSelected.getEmail());
-			this.setEmailValid(true);
+		if( !this.afiliadoSelected.getEmail().equals("") ){
+			if(validateEmail(this.afiliadoSelected.getEmail())){
+				this.afiliadoSelected.setEmail(this.afiliadoSelected.getEmail());
+				this.setEmailValid(true);
+			}else{
+				FacesContext.getCurrentInstance().addMessage("emailid", 
+						new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Direccion de Email no valida"));
+				this.setEmailValid(false);
+				System.out.println("Correo no valido: " );
+				return null;
+			}
 		}else{
-			FacesContext.getCurrentInstance().addMessage("emailid", 
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Direccion de Email no valida"));
-			this.setEmailValid(false);
-			System.out.println("Correo no valido: " );
-			return null;
-		}		
+			this.afiliadoSelected.setEmail("");
+		}
 		this.afiliadoSelected.setCelular(this.afiliadoSelected.getCelular().trim());
-		this.afiliadoSelected.setTelefonofijo(this.afiliadoSelected.getCelular().trim());
+		this.afiliadoSelected.setTelefonofijo(this.afiliadoSelected.getTelefonofijo().trim());
 		this.afiliadoSelected.setDepartamento("");	
 		this.afiliadoSelected.setNacionalidad("COL");
 			//**calcular la edad	
 		System.out.println("-----validando edad");
 		if(this.getAge(this.afiliadoSelected.getFechanacimiento()) < 18 ){
 			FacesContext.getCurrentInstance().addMessage("fechanacid", 
-					new FacesMessage(FacesMessage.SEVERITY_WARN, "Error", "Menor de Edad!"));			
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Menor de Edad!"));			
 			return null;
 		}
 		this.afiliadoSelected.setEdad(this.getAge(this.afiliadoSelected.getFechanacimiento()));
@@ -295,5 +301,12 @@ public class AfiliadoBeanEdit {
 	    return age;
 	}
 	
+	//Metodo de Utilidad para reemplazar acentos y ntildes
+	public String removerAcentosNtildes(String src) {
+		String result = Normalizer
+				.normalize(src, Normalizer.Form.NFD)
+				.replaceAll("[^\\p{ASCII}]", "");
+		return result.toUpperCase().replace("Ñ", "N");
+	}
 
 }

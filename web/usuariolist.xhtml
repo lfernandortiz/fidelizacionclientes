@@ -27,7 +27,7 @@
 									style="border:0px none; background-color:transparent;">
 									
 									<p:outputLabel for="nitid" value="Nombre Usuario" />
-									<p:inputText id="nitid" value="#{empresaBeanList.nit}"/>
+									<p:inputText id="nitid" value="#{usuarioBeanList.nombreUsuario}"/>
 																			
 								</p:panelGrid>
 								
@@ -39,9 +39,10 @@
 									style="border:0px none; background-color:transparent;">								
 									<p:commandButton value="Buscar" id="buscarbutton"
 										actionListener="#{usuarioBeanList.buscarUsuarioList()}"
-										/>
+										update="usuariodetail"/>
 									<p:commandButton value="Cancelar" id="cancelarbutton"
-										action="#{usuarioBeanList.cancelarList()}"/>
+										action="#{usuarioBeanList.cancelarList()}"
+										update=":formppal:usuarioForm, :formppal:usuariodetail"/>
 									<p:commandButton value="Crear" id="crearbutton"
 										action="#{usuarioBeanList.crearUsuario()}" />
 								</p:panelGrid>				

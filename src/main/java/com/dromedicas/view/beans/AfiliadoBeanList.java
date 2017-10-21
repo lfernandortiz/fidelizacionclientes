@@ -60,7 +60,7 @@ public class AfiliadoBeanList {
 
 		// Reset DataTable Object (reestablecer la paginacion)
 		DataTable dataTable = (DataTable) FacesContext.getCurrentInstance().getViewRoot()
-				.findComponent("formppal:sucursalDetail");
+				.findComponent("formppal:afiliadoDetail");
 		dataTable.reset();
 		
 		//Consulta nuevamente el List

@@ -41,10 +41,10 @@
 								style="border:0px none; background-color:transparent;">								
 								<p:commandButton value="Buscar" id="buscarbutton"
 									actionListener="#{afiliadoBeanList.buscarAfiliado()}"
-									update="sucursalDetail"/>
+									update="afiliadoDetail"/>
 								<p:commandButton value="Cancelar" id="cancelarbutton"
 									action="#{afiliadoBeanList.cancelarList()}"
-									update=":formppal:sucursalDetail, :formppal:sucursalForm"/>
+									update=":formppal:afiliadoDetail, :formppal:sucursalForm"/>
 								<p:commandButton value="Crear" id="crearbutton"
 												 action="#{afiliadoBeanList.crearAfiliado()}" />
 							</p:panelGrid>						
@@ -52,7 +52,7 @@
                         	
                         	<p:spacer height="40px"/>
                         	<!-- tabla detalle sucursal -->
-                        	<p:dataTable id="sucursalDetail" var="af" value="#{afiliadoBeanList.afiliadoList}" 
+                        	<p:dataTable id="afiliadoDetail" var="af" value="#{afiliadoBeanList.afiliadoList}" 
                         			rowKey="#{af.documento}" selectionMode="single"  paginator="true" rows="20">
 								<f:facet name="header">Afiliados - #{afiliadoBeanList.afiliadoList.size()}</f:facet>
 								<p:column headerText="Documento" sortby="#{af.documento}">

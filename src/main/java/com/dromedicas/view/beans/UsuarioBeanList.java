@@ -9,6 +9,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
+import org.primefaces.component.datatable.DataTable;
 import org.primefaces.model.DualListModel;
 
 import com.dromedicas.domain.Rol;
@@ -42,7 +43,7 @@ public class UsuarioBeanList {
 	}
 
 	public void setNombreUsuario(String nombreUsuario) {
-		this.nombreUsuario = nombreUsuario;
+		this.nombreUsuario = nombreUsuario.toUpperCase();
 	}
 
 	public List<Usuarioweb> getUsuarioList() {
@@ -52,10 +53,6 @@ public class UsuarioBeanList {
 	public void setUsuarioList(List<Usuarioweb> usuarioList) {
 		this.usuarioList = usuarioList;
 	}
-	
-	
-	
-	
 	
 	
 	/*
@@ -69,9 +66,20 @@ public class UsuarioBeanList {
 	
 	public void cancelarList(){
 		
+		this.setNombreUsuario("");
+		
+		// Reset DataTable Object (reestablecer la paginacion)
+		DataTable dataTable = (DataTable) FacesContext.getCurrentInstance().getViewRoot()
+				.findComponent("formppal:usuariodetail");
+		dataTable.reset();
+		
+		this.usuarioList = this.usuarioService.findAllUsuariowebs();
+		
 	}
 	
 	public void buscarUsuarioList(){
+		
+		this.usuarioList = this.usuarioService.buscarUsuarioPorCampo(this.getNombreUsuario());
 		
 	}
 	

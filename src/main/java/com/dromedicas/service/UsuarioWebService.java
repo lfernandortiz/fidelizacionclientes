@@ -49,19 +49,16 @@ public class UsuarioWebService {
 	
 	@SuppressWarnings("unchecked")
 	public List<Usuarioweb> buscarUsuarioPorCampo( String nombre ){		
+		System.out.println("Nombre recivido: "  + nombre);
+		String queryString = "SELECT u FROM Usuarioweb u WHERE u.usuario like CONCAT('%', :user, '%') or "
+				+ "u.nombreusuario like  CONCAT('%', :username, '%') order by u.nombreusuario";
+		Query query = em.createQuery(queryString);
+		query.setParameter("user", nombre);
+		query.setParameter("username", nombre);
 		
-		String queryString = "SELECT u FROM Usuarioweb u WHERE 1=1 ";
+		System.out.println("Query String: " + query.unwrap(org.hibernate.Query.class).getQueryString() );
 		
-		if( !"".equals(nombre) && nombre != null && !" ".equals(nombre) ){
-			queryString += "and u.usuario like  '%"+ nombre.trim() + "%' or "
-					+ " u.nombreusuario like  '%"+ nombre.trim() + "%'"; 
-		}
-		
-		queryString += " order by u.nombreusuario";
-		
-		System.out.println("Query String: " + queryString);
-		Query q = em.createQuery(queryString);
-		return q.getResultList();
+		return query.getResultList();
 	}
 
 }

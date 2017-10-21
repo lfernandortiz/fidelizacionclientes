@@ -2,11 +2,13 @@ package com.dromedicas.util;
 
 import java.util.StringTokenizer;
 
+import javax.ejb.Stateless;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
 @ManagedBean(name="regex")
 @SessionScoped
+@Stateless
 public class ExpresionesRegulares {
 	/**
 	 * Pasa la primera letra a mayuscula si recibe un valor booleano
@@ -14,14 +16,14 @@ public class ExpresionesRegulares {
 	 * <code>false</code> solo elimina los espacios en blanco y deja la cadena
 	 * en minuscula
 	 */
-	public static String eliminarEspacios(String texto, boolean flag) {
+	public String nombrePropio(String texto, boolean flag) {
 		StringTokenizer tokens = new StringTokenizer(texto.toLowerCase());
 		StringBuilder textoFinal = new StringBuilder();
 
 		while (tokens.hasMoreTokens()) {
 			String palabra = tokens.nextToken();
 			if (flag)
-				textoFinal.append(" ").append(aMayusculaPrimera(palabra));
+				textoFinal.append(" ").append(nombrePropioAux(palabra));
 			else
 				textoFinal.append(" ").append(palabra);
 		}
@@ -35,7 +37,7 @@ public class ExpresionesRegulares {
 	 * @param palabra
 	 * @return
 	 */
-	public static String aMayusculaPrimera(String palabra) {
+	public  String nombrePropioAux(String palabra) {
 		StringBuilder palabraFinal = new StringBuilder();
 		Character letra = palabra.charAt(0);
 
@@ -52,7 +54,7 @@ public class ExpresionesRegulares {
 	 * @param String
 	 * @return String con solo digitos
 	 */
-	public static String getDigitsOnly(String s) {
+	public  String getDigitsOnly(String s) {
 		StringBuffer digitsOnly = new StringBuffer();
 		char c;
 
@@ -76,7 +78,7 @@ public class ExpresionesRegulares {
 	 * @param mail
 	 * @return
 	 */
-	public static boolean validateEmail(String mail){
+	public  boolean validateEmail(String mail){
 		
 		if (!mail
 				.matches("\\w+([-+.']\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*")) {
@@ -85,6 +87,38 @@ public class ExpresionesRegulares {
 			return true;
 		}		
 		
+	}
+	
+	/**
+	 * Abrevia la segunda palabara de un nombre, si la longitud de este
+	 * es mayor o igual a tres palabras
+	 * @param texto
+	 * @return
+	 */
+	public String puntoSegundoNombre(String texto){
+		StringTokenizer tokens = new StringTokenizer(texto.toLowerCase());
+		int numTokens = tokens.countTokens();
+		StringBuilder textoFinal = new StringBuilder();
+		
+		if(numTokens >= 3){
+			int flag = 0;
+			while (tokens.hasMoreTokens()) {
+				String palabra = tokens.nextToken();
+				flag++;
+				if(flag == 2){
+					StringBuilder segPalabra = new StringBuilder();
+					Character letra = palabra.charAt(0);
+
+					segPalabra.append(Character.toUpperCase(letra));
+					segPalabra.append(".");
+					textoFinal.append(" ").append(segPalabra);
+				}else{
+					textoFinal.append(" ").append(nombrePropioAux(palabra));
+				}					
+			}
+		}
+		
+		return textoFinal.toString().trim();
 	}
 
 }

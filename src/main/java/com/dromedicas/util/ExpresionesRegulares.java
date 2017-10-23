@@ -1,5 +1,8 @@
 package com.dromedicas.util;
 
+import java.text.Normalizer;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.StringTokenizer;
 
 import javax.ejb.Stateless;
@@ -116,9 +119,52 @@ public class ExpresionesRegulares {
 					textoFinal.append(" ").append(nombrePropioAux(palabra));
 				}					
 			}
-		}
-		
+		}else{
+			while (tokens.hasMoreTokens()) {
+				String palabra = tokens.nextToken();
+				textoFinal.append(" ").append(nombrePropioAux(palabra));
+			}		
+		}		
 		return textoFinal.toString().trim();
+	}
+	
+	
+	/**
+	 * Reemplaza los acentos por vocales simples, y la letra
+	 * N tildel po "n" Simple
+	 */	
+	public String removerAcentosNtildes(String src) {
+		String result = Normalizer.normalize(src, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
+		return result.toUpperCase().replace("Ñ", "N");
+	}
+	
+	
+	public int getAge(Date dateOfBirth) {
+	    Calendar today = Calendar.getInstance();
+	    Calendar birthDate = Calendar.getInstance();
+	    birthDate.setTime(dateOfBirth);
+	    if (birthDate.after(today)) {
+	        throw new IllegalArgumentException("You don't exist yet");
+	    }
+	    int todayYear = today.get(Calendar.YEAR);
+	    int birthDateYear = birthDate.get(Calendar.YEAR);
+	    int todayDayOfYear = today.get(Calendar.DAY_OF_YEAR);
+	    int birthDateDayOfYear = birthDate.get(Calendar.DAY_OF_YEAR);
+	    int todayMonth = today.get(Calendar.MONTH);
+	    int birthDateMonth = birthDate.get(Calendar.MONTH);
+	    int todayDayOfMonth = today.get(Calendar.DAY_OF_MONTH);
+	    int birthDateDayOfMonth = birthDate.get(Calendar.DAY_OF_MONTH);
+	    int age = todayYear - birthDateYear;
+
+	    // If birth date is greater than todays date (after 2 days adjustment of leap year) then decrement age one year
+	    if ((birthDateDayOfYear - todayDayOfYear > 3) || (birthDateMonth > todayMonth)){
+	        age--;
+	    
+	    // If birth date and todays date are of same month and birth day of month is greater than todays day of month then decrement age
+	    } else if ((birthDateMonth == todayMonth) && (birthDateDayOfMonth > todayDayOfMonth)){
+	        age--;
+	    }
+	    return age;
 	}
 
 }

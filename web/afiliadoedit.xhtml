@@ -3,13 +3,14 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
+                xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
                 template="/WEB-INF/template.xhtml">
 
-    <ui:define name="title">#{afiliadoBeanEdit.afiliadoSelected.idafiliado == 0 ? 'Crear' : 'Editar'} Afiliado</ui:define>
+    <ui:define name="title">Crear Afiliado</ui:define>
 
-    <ui:define name="content">    
-        <h:form>
-        <p:growl id="growl" showDetail="true" sticky="true" /> 
+    <ui:define name="content">
+        <h:form id="afiliadoformppal">
+        <!-- <p:growl id="growl" showDetail="true" sticky="true" />  -->
         <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
             <div class="ui-fluid">
                 <div class="ui-g">
@@ -22,24 +23,23 @@
 								style="border:0px none; background-color:transparent;">
 								
 								<p:outputLabel for="nombreid" value="Nombres" />
-								<p:inputText id="nombreid" value="#{afiliadoBeanEdit.afiliadoSelected.nombres}" required="true"/>
+								<p:inputText id="nombreid"  value="#{afiliadoBeanEdit.afiliadoSelected.nombres}" required="true"/>
 							
 								<p:outputLabel for="apellidoid" value="Apellidos" />
 								<p:inputText id="apellidoid" value="#{afiliadoBeanEdit.afiliadoSelected.apellidos}" required="true"/>
-								
-								
 
 								<p:outputLabel for="tipodocid" value="Tipo Documento" />
 								<p:selectOneMenu id="tipodocid" value="#{afiliadoBeanEdit.afiliadoSelected.tipodocumentoBean}">
 									<f:selectItems value="#{afiliadoBeanEdit.tipodocList}" var="tp"
 										itemLabel="#{tp.descripcion}" itemValue="#{tp}" />
-									<f:converter binding="#{tipoDocumentoConverter}" />
-									
+									<f:converter binding="#{tipoDocumentoConverter}" />									
 								</p:selectOneMenu>
-
 	
 								<p:outputLabel for="cedulaid" value="Documento" />
-								<p:inputText id="cedulaid" value="#{afiliadoBeanEdit.afiliadoSelected.documento}" />
+								<p:inputText id="cedulaid" value="#{afiliadoBeanEdit.afiliadoSelected.documento}" required="true">
+									<p:ajax event="blur" update="cedulaid" listener="#{afiliadoBeanEdit.validarCedula()}" />
+									<p:keyFilter regEx="/[\d\-\.]/"/>
+								</p:inputText>
 
 								<p:outputLabel for="sexomenu" value="Sexo"/>
                                 <p:selectOneMenu id="sexomenu" value="#{afiliadoBeanEdit.afiliadoSelected.sexo}">
@@ -50,14 +50,14 @@
 								
 								<p:outputLabel for="fechanacid" value="Fecha de nacimiento" />
 								<p:calendar id="fechanacid" value="#{afiliadoBeanEdit.afiliadoSelected.fechanacimiento}"
-									pattern = "dd/MM/yyyy" mask=""
+									pattern = "dd/MM/yyyy" mask="true" required="true"
 									navigator="true" popupIconOnly="false" mode="popup"
-									showOn="button" yearRange="c-100:c+0">
+									showOn="button" yearRange="c-100:c-18">
 									<f:convertDateTime pattern = "dd/MM/yyyy" />
+									<p:ajax event="blur" update="cedulaid" listener="#{afiliadoBeanEdit.validarEdad()}" />
 								</p:calendar>
 								
-								
-								<p:outputLabel for="direccionid" value="Direccion" />
+								<p:outputLabel for="direccionid" value="Barrio" />
 								<p:inputText id="direccionid" value="#{afiliadoBeanEdit.afiliadoSelected.street}" />								
 
 								<p:outputLabel for="barrioid" value="Barrio" />
@@ -1158,15 +1158,16 @@
 									<f:selectItem itemLabel="ZONA BANANERA (Magdalena)" itemValue="ZONA BANANERA"/>
 									
                                 </p:selectOneMenu>
-								                                
-                                <p:outputLabel for="emailid" value="Email" />
-								<p:inputText id="emailid" value="#{afiliadoBeanEdit.afiliadoSelected.email}" />
-								
+																
                                 <p:outputLabel for="celularid" value="Celular" />
-								<p:inputText id="celularid" value="#{afiliadoBeanEdit.afiliadoSelected.celular}" />				
+								<p:inputText id="celularid" mask="9*" value="#{afiliadoBeanEdit.afiliadoSelected.celular}" required="true">
+									 <p:keyFilter regEx="/[\d\-\.]/"/>
+								</p:inputText>				
 
 								<p:outputLabel for="telefonoid" value="Telefono" />
-								<p:inputText id="telefonoid" value="#{afiliadoBeanEdit.afiliadoSelected.telefonofijo}" />
+								<p:inputText id="telefonoid"  mask="9*" value="#{afiliadoBeanEdit.afiliadoSelected.telefonofijo}">
+									<p:keyFilter regEx="/[\d\-\.]/"/>
+								</p:inputText>
                                 
                                 <p:outputLabel for="sucursalid" value="Sucursal" />
 								<p:selectOneMenu id="sucursalid" value="#{afiliadoBeanEdit.afiliadoSelected.sucursal}">
@@ -1175,48 +1176,39 @@
 									<f:converter binding="#{sucursalConverter}" />
 									
 								</p:selectOneMenu>
+								
+								<p:outputLabel for="emailid" value="Email" />
+								<p:inputText id="emailid" value="#{afiliadoBeanEdit.afiliadoSelected.email}"
+									styleClass="#{afiliadoBeanEdit.emailValid ? '' : 'ui-state-error'}"/>
 															
 							</p:panelGrid>
 							<p:separator style="height:10px"/>
-							<h2>Datos adicionales del Afiliado</h2>
-							<p:separator style="height:5px"/>
-							<p:panelGrid columns="4" id="afiliadoAdiForm"
-								columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+							<p:panelGrid columns="6" id="buttons"
+								columnClasses="ui-grid-col-2,"
 								layout="grid" styleClass="ui-panelgrid-blank"
-								style="border:0px none; background-color:transparent;">
-
-								<p:outputLabel for="nacionalidadid" value="Nacionalidad"/>
-                                <p:selectOneMenu id="nacionalidadid" value="#{afiliado.nacionalidad}">
-                                    <f:selectItem itemLabel="Colombia" itemValue="c" />
-                                    <f:selectItem itemLabel="Venezuela" itemValue="v" />
-                                    <f:selectItem itemLabel="Otro" itemValue="o" />
-                                </p:selectOneMenu>	
-                                
-                                <p:outputLabel for="departamentoid" value="Departamento - Estado"/>
-                                <p:selectOneMenu id="departamentoid" value="#{afiliado.departamento}">
-                                    <f:selectItem itemLabel="Norte de Santander" itemValue="n" />
-                                    <f:selectItem itemLabel="Santander" itemValue="s" />
-                                    <f:selectItem itemLabel="Otro" itemValue="o" />
-                                </p:selectOneMenu>
-                                
-                                <p:outputLabel for="twitterid" value="Twitter Perfil" />
-								<p:inputText id="twitterid" value="#{afiliado.twitterperfil}" />
-								
-								<p:outputLabel for="facebookid" value="Facebook Perfil" />
-								<p:inputText id="facebookid" value="#{afiliado.facebookperfil}" />
-
-
-								<p:commandButton value="Crear" id="crearbutton"
-									action="#{afiliadoService.colocarValores}"
-									update="afiliadoForm" />
-							
-							</p:panelGrid><!-- end panel Datos Adicionales -->
+								style="border:0px none; background-color:transparent;">	
+										
+								<p:commandButton value="Actualizar" id="actualizarafiliadoid"
+												 action="#{afiliadoBeanEdit.actualiz()}"
+												 update="afiliadoformppal afiliadoForm"/>
+											 
+								 
+								<p:commandButton value="Cancelar" 
+												 id="cancelarAfiliadoid"
+												 action="#{afiliadoBeanEdit.cancelarAfiliado()}"
+												 process="@this"/>	
+												 												 
+								<p:commandButton value="Volver" 
+												 id="volverid"
+												 action="#{afiliadoBeanEdit.volverListAfiliado()}"
+												 process="@this"/>
+															
+							</p:panelGrid>
 							<p:separator style="height:20px"/>						
 						</div>
                     </div>
                 </div>
             </div>          
-        </h:form>
-    </ui:define>
-    
+        </h:form>        
+    </ui:define>   
 </ui:composition>

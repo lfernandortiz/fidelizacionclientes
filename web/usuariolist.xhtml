@@ -62,7 +62,9 @@
 									<h:outputText value="#{user.activo == 1 ? 'Activo' : 'Inactivo'}" />
 								</p:column>								
 								<p:column headerText="Ultimo Acceso" sortBy="#{user.ultacceso}">
-									<h:outputText value="#{user.ultacceso}" />
+									<h:outputText value="#{user.ultacceso}">
+										<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+									</h:outputText>
 								</p:column>
 								<p:column headerText="Ultimo Cambio Clave" sortBy="#{user.ultcamioclave}">
 									<h:outputText value="#{user.ultcamioclave}" />

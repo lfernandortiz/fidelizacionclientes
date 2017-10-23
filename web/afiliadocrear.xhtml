@@ -50,7 +50,7 @@
 								
 								<p:outputLabel for="fechanacid" value="Fecha de nacimiento" />
 								<p:calendar id="fechanacid" value="#{afiliadoBeanEdit.afiliadoSelected.fechanacimiento}"
-									pattern = "dd/MM/yyyy" mask="true"
+									pattern = "dd/MM/yyyy" mask="true" required="true"
 									navigator="true" popupIconOnly="false" mode="popup"
 									showOn="button" yearRange="c-100:c-18">
 									<f:convertDateTime pattern = "dd/MM/yyyy" />
@@ -1236,7 +1236,7 @@
                                 </p:selectOneMenu>
 																
                                 <p:outputLabel for="celularid" value="Celular" />
-								<p:inputText id="celularid" mask="9*" value="#{afiliadoBeanEdit.afiliadoSelected.celular}">
+								<p:inputText id="celularid" mask="9*" value="#{afiliadoBeanEdit.afiliadoSelected.celular}" required="true">
 									 <p:keyFilter regEx="/[\d\-\.]/"/>
 								</p:inputText>				
 

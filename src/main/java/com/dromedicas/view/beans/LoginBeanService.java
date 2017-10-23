@@ -1,5 +1,8 @@
 package com.dromedicas.view.beans;
 
+import java.io.Serializable;
+import java.util.Date;
+
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -15,13 +18,14 @@ import com.dromedicas.util.ExpresionesRegulares;
 
 @ManagedBean(name = "loginService")
 @SessionScoped
-public class LoginBeanService {
+public class LoginBeanService implements Serializable {
 
 	@SuppressWarnings("unused")
 	private static final long serialVersionUID = -2152389656664659476L;
 	private String username;
 	private String password;
 	private boolean logeado = false;
+	private Usuarioweb user;
 	
 	private String NombreUsuario;
 	
@@ -32,6 +36,7 @@ public class LoginBeanService {
 	
 	@EJB
 	private ExpresionesRegulares rgx;
+	
 
 	public boolean estaLogeado() {
 		return logeado;
@@ -63,20 +68,31 @@ public class LoginBeanService {
 	public void setNombreUsuario(String nombreUsuario) {
 		NombreUsuario = nombreUsuario;
 	}
+	
+	public Usuarioweb getUser() {
+		return user;
+	}
+
+	public void setUser(Usuarioweb user) {
+		this.user = user;
+	}
 
 	@SuppressWarnings("unused")
 	public void login() {
 		
 		RequestContext context = RequestContext.getCurrentInstance();
 		FacesMessage msg = null;				
-		//Aca proceso de busqueda de credenciales enla base de datos
 		
-		Usuarioweb user = this.usuarioService.validarUsuario(this.getUsername(), this.getPassword());
+		//Valida que el usuario exista obteniendo su instancia
+		this.user = this.usuarioService.validarUsuario(this.getUsername(), this.getPassword());
 				
-		if (user != null) {
+		if (this.user != null) {
 			logeado = true;
 			this.setNombreUsuario( this.rgx.puntoSegundoNombre( 
 										this.rgx.nombrePropio(user.getNombreusuario(), true)) );
+			this.user.setUltacceso(new Date());
+			//registra el auditor para el usuario
+			this.usuarioService.updateUsuarioweb(user);
 			msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Bienvenido", this.getNombreUsuario());
 		} else {
 			logeado = false;

@@ -1,7 +1,6 @@
 package com.dromedicas.view.beans;
 
-import java.text.Normalizer;
-import java.util.Calendar;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -9,6 +8,7 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.context.Flash;
@@ -16,15 +16,16 @@ import javax.faces.context.Flash;
 import com.dromedicas.domain.Afiliado;
 import com.dromedicas.domain.Sucursal;
 import com.dromedicas.domain.Tipodocumento;
-import com.dromedicas.domain.Usuarioweb;
+import com.dromedicas.mailservice.EnviarEmailAlertas;
 import com.dromedicas.service.AfiliadoService;
 import com.dromedicas.service.SucursalService;
 import com.dromedicas.service.TipoDocumentoService;
 import com.dromedicas.service.UsuarioWebService;
+import com.dromedicas.util.ExpresionesRegulares;
 
 @ManagedBean(name="afiliadoBeanEdit")
 @SessionScoped
-public class AfiliadoBeanEdit {
+public class AfiliadoBeanEdit implements Serializable{
 	
 	/**
 	 * 
@@ -42,6 +43,15 @@ public class AfiliadoBeanEdit {
 	
 	@EJB
 	private UsuarioWebService usuarioService;
+	
+	@EJB
+	private ExpresionesRegulares regex;
+	
+	@EJB
+	private EnviarEmailAlertas mailAlert;
+	
+	@ManagedProperty(value = "#{loginService}")
+	private LoginBeanService loginBean;
 		
 	private Afiliado afiliadoSelected;
 	private List<Tipodocumento> tipodocList; // list para select one menu tipodocumento
@@ -66,6 +76,14 @@ public class AfiliadoBeanEdit {
 		
 	}
 		
+	public LoginBeanService getLoginBean() {
+		return loginBean;
+	}
+
+	public void setLoginBean(LoginBeanService loginBean) {
+		this.loginBean = loginBean;
+	}
+
 	public List<Tipodocumento> getTipodocList() {
 		return tipodocList;
 	}
@@ -155,9 +173,9 @@ public class AfiliadoBeanEdit {
 		
 		//Establece los valores
 		this.afiliadoSelected.setNombres(
-					this.removerAcentosNtildes(this.afiliadoSelected.getNombres().trim().toUpperCase()));
+					regex.removerAcentosNtildes(this.afiliadoSelected.getNombres().trim().toUpperCase()));
 		this.afiliadoSelected.setApellidos(
-					this.removerAcentosNtildes(this.afiliadoSelected.getApellidos().trim().toUpperCase()));
+					regex.removerAcentosNtildes(this.afiliadoSelected.getApellidos().trim().toUpperCase()));
 		this.afiliadoSelected.setTipodocumentoBean(this.afiliadoSelected.getTipodocumentoBean());
 			//**Valida si ya esta registrada la cedula
 		
@@ -165,7 +183,7 @@ public class AfiliadoBeanEdit {
 		
 		if(afTempo != null ){
 			FacesContext.getCurrentInstance().addMessage("cedulaid", 
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Numero de Cedula Ya Registrado!"));			
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Numero de Documento Ya Registrado!"));			
 			System.out.println("Cedula ya registrada: " );	
 			return null;
 		}
@@ -175,18 +193,19 @@ public class AfiliadoBeanEdit {
 		this.afiliadoSelected.setFechanacimiento(this.afiliadoSelected.getFechanacimiento());
 		
 		this.afiliadoSelected.setStreet(
-				this.removerAcentosNtildes(this.getDireccionCompleta()).replaceAll("#", "NO."));
-		this.afiliadoSelected.setStreetdos(this.removerAcentosNtildes(this.afiliadoSelected.getStreetdos().trim().toUpperCase()));
+				regex.removerAcentosNtildes(this.getDireccionCompleta()).replaceAll("#", "NO."));
+		this.afiliadoSelected.setStreetdos(regex.removerAcentosNtildes(
+								this.afiliadoSelected.getStreetdos().trim().toUpperCase()));
 		this.afiliadoSelected.setCiudad(this.afiliadoSelected.getCiudad());
 			//aca validar Email
-		System.out.println("-----validando Email");
 		if( !this.afiliadoSelected.getEmail().equals("") ){
-			if(validateEmail(this.afiliadoSelected.getEmail())){
+			if(regex.validateEmail(this.afiliadoSelected.getEmail())){
 				this.afiliadoSelected.setEmail(this.afiliadoSelected.getEmail());
 				this.setEmailValid(true);
 			}else{
 				FacesContext.getCurrentInstance().addMessage("emailid", 
-						new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Direccion de Email no valida"));
+						new FacesMessage(FacesMessage.SEVERITY_ERROR, 
+								"Error", "Direccion de Email no valida"));
 				this.setEmailValid(false);
 				System.out.println("Correo no valido: " );
 				return null;
@@ -200,24 +219,29 @@ public class AfiliadoBeanEdit {
 		this.afiliadoSelected.setNacionalidad("COL");
 			//**calcular la edad	
 		System.out.println("-----validando edad");
-		if(this.getAge(this.afiliadoSelected.getFechanacimiento()) < 18 ){
+		if(regex.getAge(this.afiliadoSelected.getFechanacimiento()) < 18 ){
 			FacesContext.getCurrentInstance().addMessage("fechanacid", 
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "MENOR DE EDAD!"));			
 			return null;
 		}
-		this.afiliadoSelected.setEdad(this.getAge(this.afiliadoSelected.getFechanacimiento()));
+		this.afiliadoSelected.setEdad(regex.getAge(this.afiliadoSelected.getFechanacimiento()));
 		this.afiliadoSelected.setMomento(new Date());		
-		Sucursal sucursal  = this.sucursalService.obtenerSucursalById(this.afiliadoSelected.getSucursal());
+		Sucursal sucursal  = 
+				this.sucursalService.obtenerSucursalById(this.afiliadoSelected.getSucursal());
 		this.afiliadoSelected.setSucursal(sucursal);
 		
-		//Obtiene el usuario que registra..........Faltaaaaa
-		Usuarioweb user = this.usuarioService.obtenerUsuariowebById(5);
-		this.afiliadoSelected.setUsuariowebBean(user);
+		//Obtiene el usuario que registra..........Faltaaaaa		
+		this.afiliadoSelected.setUsuariowebBean( this.loginBean.getUser() );
 		
 		//Persiste el nuevo afiliado
 		afiliadoService.updateAfiliado(this.afiliadoSelected);
 		
 		//Envia correo de notificacion de afiliacion
+		boolean enviado = mailAlert.enviarEmailAlertaVentas(this.afiliadoSelected);
+		
+		if(enviado){
+			
+		}
 		
 		
 		//Despliega Callout sucess				
@@ -237,75 +261,28 @@ public class AfiliadoBeanEdit {
 		Afiliado afTemp = afiliadoService.obtenerAfiliadoByDocumento(this.afiliadoSelected.getDocumento());
 		if(afTemp != null ){
 			FacesContext.getCurrentInstance().addMessage("cedulaid", 
-					new FacesMessage(FacesMessage.SEVERITY_WARN, "Error", "Numero de CEDULA YA REGISTRADA!"));			
+					new FacesMessage(FacesMessage.SEVERITY_WARN, "Error", "Numero de DOCUMENTO YA REGISTRADA!"));			
 			System.out.println("Cedula ya registrada: " );			
 		}
 	}
 	
 	public void validarEdad(){
-		if(this.getAge(this.afiliadoSelected.getFechanacimiento()) < 18 ){
+		if(regex.getAge(this.afiliadoSelected.getFechanacimiento()) < 18 ){
 			FacesContext.getCurrentInstance().addMessage("fechanacid", 
 					new FacesMessage(FacesMessage.SEVERITY_WARN, "Error", "Menor de Edad!"));			
 			System.out.println("Menor de edad: " );		
-		}
-		
+		}		
 	}
 	
 	
 	public String cancelarAfiliado(){
-		return null;
+		return "afiliadolist?faces-redirect=true";
 	}
 	
 	public String volverListAfiliado(){
 		return "afiliadolist?faces-redirect=true";
 	}
-	
-	public boolean validateEmail(String mail){
 		
-		if (!mail
-				.matches("\\w+([-+.']\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*")) {
-			return false;
-		} else {
-			return true;
-		}		
 		
-	}
 	
-	
-	public int getAge(Date dateOfBirth) {
-	    Calendar today = Calendar.getInstance();
-	    Calendar birthDate = Calendar.getInstance();
-	    birthDate.setTime(dateOfBirth);
-	    if (birthDate.after(today)) {
-	        throw new IllegalArgumentException("You don't exist yet");
-	    }
-	    int todayYear = today.get(Calendar.YEAR);
-	    int birthDateYear = birthDate.get(Calendar.YEAR);
-	    int todayDayOfYear = today.get(Calendar.DAY_OF_YEAR);
-	    int birthDateDayOfYear = birthDate.get(Calendar.DAY_OF_YEAR);
-	    int todayMonth = today.get(Calendar.MONTH);
-	    int birthDateMonth = birthDate.get(Calendar.MONTH);
-	    int todayDayOfMonth = today.get(Calendar.DAY_OF_MONTH);
-	    int birthDateDayOfMonth = birthDate.get(Calendar.DAY_OF_MONTH);
-	    int age = todayYear - birthDateYear;
-
-	    // If birth date is greater than todays date (after 2 days adjustment of leap year) then decrement age one year
-	    if ((birthDateDayOfYear - todayDayOfYear > 3) || (birthDateMonth > todayMonth)){
-	        age--;
-	    
-	    // If birth date and todays date are of same month and birth day of month is greater than todays day of month then decrement age
-	    } else if ((birthDateMonth == todayMonth) && (birthDateDayOfMonth > todayDayOfMonth)){
-	        age--;
-	    }
-	    return age;
-	}
-	
-	//Metodo de Utilidad para reemplazar acentos y ntildes
-	public String removerAcentosNtildes(String src) {
-		String result = Normalizer
-				.normalize(src, Normalizer.Form.NFD)
-				.replaceAll("[^\\p{ASCII}]", "");
-		return result.toUpperCase().replace("Ñ", "N");
-	}
-
 }

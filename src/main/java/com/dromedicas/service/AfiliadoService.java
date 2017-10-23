@@ -55,6 +55,8 @@ public class AfiliadoService {
 		String queryString = "from Afiliado a where  a.documento like '%" + criterio.trim() + "%' " +		
 			" OR a.nombres like '%" + criterio.trim().toUpperCase() + "%' " +
 			" OR a.apellidos like '%" + criterio.trim().toUpperCase() + "%' " +		
+			" OR upper( concat( replace(a.nombres,' ','%'), '%', replace(a.apellidos,' ','%')) ) like  upper('%"+ criterio.trim().replace(" ", "%") + "%') " +
+			" OR upper( concat( replace(a.apellidos,' ','%'), '%', replace(a.nombres,' ','%')) ) like  upper('%"+ criterio.trim().replace(" ", "%") + "%') " +
 			" OR a.email like '%" + criterio.trim() + "%' " +
 			" ORDER BY a.nombres, a.apellidos";
 			

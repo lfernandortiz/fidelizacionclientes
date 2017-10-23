@@ -37,7 +37,6 @@
 	
 								<p:outputLabel for="cedulaid" value="Documento" />
 								<p:inputText id="cedulaid" value="#{afiliadoBeanEdit.afiliadoSelected.documento}" required="true">
-									<p:ajax event="blur" update="cedulaid" listener="#{afiliadoBeanEdit.validarCedula()}" />
 									<p:keyFilter regEx="/[\d\-\.]/"/>
 								</p:inputText>
 
@@ -57,7 +56,7 @@
 									<p:ajax event="blur" update="cedulaid" listener="#{afiliadoBeanEdit.validarEdad()}" />
 								</p:calendar>
 								
-								<p:outputLabel for="direccionid" value="Barrio" />
+								<p:outputLabel for="direccionid" value="Direccion" />
 								<p:inputText id="direccionid" value="#{afiliadoBeanEdit.afiliadoSelected.street}" />								
 
 								<p:outputLabel for="barrioid" value="Barrio" />
@@ -1183,13 +1182,47 @@
 															
 							</p:panelGrid>
 							<p:separator style="height:10px"/>
+							<h1>Informacion Adicional</h1>
+							<p:panelGrid columns="4" id="adicionalpanel"
+								columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+								
+								<p:outputLabel for="direccion2id" value="Direccion 2" />
+								<p:inputText id="direccion2id"
+									value="#{afiliadoBeanEdit.afiliadoSelected.streetvalor}" />
+								
+								<p:outputLabel for="fechacreacionid" value="Fecha de creacion" />
+								<p:calendar id="fechacreacionid" value="#{afiliadoBeanEdit.afiliadoSelected.momento}"
+									pattern = "dd/MM/yyyy" mask="true" readOnlyInput="true">
+									<f:convertDateTime pattern = "dd/MM/yyyy" />
+								</p:calendar>
+								
+								<p:outputLabel for="emailvalidoid" value="Email validado" />
+        						<p:selectBooleanCheckbox id="emailvalidoid" value="#{afiliadoBeanEdit.emailValid}" />
+        						
+        						<p:outputLabel for="creadorid" value="Usuario que registro" />
+								<p:inputText id="creadorid"
+									value="#{afiliadoBeanEdit.afiliadoSelected.usuariowebBean.nombreusuario}" />
+ 								
+ 								<p:outputLabel for="reenvioemail" value="" />
+        						<p:commandButton value="Reenviar email de confirmacion" 
+												 id="reenvioemail"
+												 styleClass="green-button"
+												 action="#{sucursalEdit.generarCodigoApi()}" 
+												 process="@this"
+												 update="emailvalidoid" />
+        						        						
+							</p:panelGrid>
+							
+							<p:separator style="height:10px"/>
 							<p:panelGrid columns="6" id="buttons"
 								columnClasses="ui-grid-col-2,"
 								layout="grid" styleClass="ui-panelgrid-blank"
 								style="border:0px none; background-color:transparent;">	
 										
 								<p:commandButton value="Actualizar" id="actualizarafiliadoid"
-												 action="#{afiliadoBeanEdit.actualiz()}"
+												 action="#{afiliadoBeanEdit.actualizar()}"
 												 update="afiliadoformppal afiliadoForm"/>
 											 
 								 

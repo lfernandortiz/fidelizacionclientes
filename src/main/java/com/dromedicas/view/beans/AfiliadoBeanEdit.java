@@ -274,6 +274,15 @@ public class AfiliadoBeanEdit implements Serializable{
 		}		
 	}
 	
+	public String editarAfiliado(){
+		this.emailValid = this.afiliadoSelected.getEmailvalidado() == 1 ? true : false;
+		return "afiliadoedit?faces-redirect=true";
+	}
+	
+	public String actualizar(){
+		return "";
+	}
+	
 	
 	public String cancelarAfiliado(){
 		return "afiliadolist?faces-redirect=true";

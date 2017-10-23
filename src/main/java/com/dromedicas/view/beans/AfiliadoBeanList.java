@@ -77,9 +77,6 @@ public class AfiliadoBeanList {
 		this.afiliadoList = afiliadoService.bucarAfiliadoByFields(valorABuscar);
 	}
 	
-	public String editarAfiliado(){
-		return "afiliadoedit?faces-redirect=true";
-	}
 	
 	
 }

@@ -134,6 +134,8 @@ public class ExpresionesRegulares {
 	 * N tildel po "n" Simple
 	 */	
 	public String removerAcentosNtildes(String src) {
+		System.out.println("Cadena Recibida en RGX: " + src);
+		src = src.toLowerCase();
 		String result = Normalizer.normalize(src, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
 		return result.toUpperCase().replace("Ñ", "N");
 	}

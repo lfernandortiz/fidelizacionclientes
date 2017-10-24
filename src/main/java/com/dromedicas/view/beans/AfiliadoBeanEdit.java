@@ -280,7 +280,81 @@ public class AfiliadoBeanEdit implements Serializable{
 	}
 	
 	public String actualizar(){
-		return "";
+		System.out.println("Nombre: " + this.afiliadoSelected.getNombres().trim().toUpperCase());
+		System.out.println("Apellidos: " + this.afiliadoSelected.getApellidos().trim().toUpperCase());
+		this.afiliadoSelected.setNombres(
+				regex.removerAcentosNtildes(this.afiliadoSelected.getNombres().trim().toUpperCase()));
+		this.afiliadoSelected.setApellidos(
+				regex.removerAcentosNtildes(this.afiliadoSelected.getApellidos().trim().toUpperCase()));
+		this.afiliadoSelected.setTipodocumentoBean(this.afiliadoSelected.getTipodocumentoBean());
+		this.afiliadoSelected.setDocumento(this.afiliadoSelected.getDocumento());
+		this.afiliadoSelected.setSexo(this.afiliadoSelected.getSexo());
+		this.afiliadoSelected.setFechanacimiento(this.afiliadoSelected.getFechanacimiento());
+		
+		this.afiliadoSelected.setStreet(regex.removerAcentosNtildes(this.afiliadoSelected.getStreet()).replaceAll("#", "NO."));
+		this.afiliadoSelected.setStreetdos(regex.removerAcentosNtildes(
+								this.afiliadoSelected.getStreetdos().trim().toUpperCase()));
+		this.afiliadoSelected.setCiudad(this.afiliadoSelected.getCiudad());
+		if( !this.afiliadoSelected.getEmail().equals("") ){
+			if(regex.validateEmail(this.afiliadoSelected.getEmail())){
+				this.afiliadoSelected.setEmail(this.afiliadoSelected.getEmail());
+				this.setEmailValid(true);
+			}else{
+				FacesContext.getCurrentInstance().addMessage("emailid", 
+						new FacesMessage(FacesMessage.SEVERITY_ERROR, 
+								"Error", "Direccion de Email no valida"));
+				this.setEmailValid(false);
+				System.out.println("Correo no valido: " );
+				return null;
+			}
+		}else{
+			this.afiliadoSelected.setEmail("");
+		}
+		if(regex.getAge(this.afiliadoSelected.getFechanacimiento()) < 18 ){
+			FacesContext.getCurrentInstance().addMessage("fechanacid", 
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "MENOR DE EDAD!"));			
+			return null;
+		}
+		this.afiliadoSelected.setEdad(regex.getAge(this.afiliadoSelected.getFechanacimiento()));
+		//this.afiliadoSelected.setMomento(new Date());		
+		Sucursal sucursal  = 
+				this.sucursalService.obtenerSucursalById(this.afiliadoSelected.getSucursal());
+		this.afiliadoSelected.setSucursal(sucursal);
+		
+		//Obtiene el usuario que registra..........Faltaaaaa		
+		this.afiliadoSelected.setUsuariowebBean( this.loginBean.getUser() );
+		
+		//Persiste el nuevo afiliado
+		afiliadoService.updateAfiliado(this.afiliadoSelected);
+		
+		FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("afiliadoBeanEdit");
+		
+		FacesContext.getCurrentInstance().addMessage("messages", new FacesMessage(FacesMessage.SEVERITY_INFO,
+				"Registro Actualizado!", "Afilado Actualizado Exitosamente"));
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		@SuppressWarnings("static-access")
+		Flash flash = facesContext.getCurrentInstance().getExternalContext().getFlash();
+		flash.setKeepMessages(true);
+		
+		return "afiliadolist?faces-redirect=true";
+	}
+	
+	public void reenvioEmailAfiliacion(){
+		
+		boolean enviado = mailAlert.enviarEmailAlertaVentas(this.afiliadoSelected);
+		
+		if(enviado){
+			FacesContext.getCurrentInstance().addMessage("messages", 
+					new FacesMessage(FacesMessage.SEVERITY_INFO, "Envio Exitoso!", "Un nuevo email de confirmacion "
+							+ "de suscripcion a Puntos Farmanorte fue enviando."));
+			byte valid = 0 ;
+			this.afiliadoSelected.setEmailvalidado(valid);
+			this.afiliadoService.updateAfiliado(afiliadoSelected);
+		}else{
+			FacesContext.getCurrentInstance().addMessage("messages", 
+					new FacesMessage(FacesMessage.SEVERITY_WARN, "Error", "No fue posible el envio de confirmacion"));
+		}
+		
 	}
 	
 	

@@ -51,7 +51,7 @@
 								<p:calendar id="fechanacid" value="#{afiliadoBeanEdit.afiliadoSelected.fechanacimiento}"
 									pattern = "dd/MM/yyyy" mask="true" required="true"
 									navigator="true" popupIconOnly="false" mode="popup"
-									showOn="button" yearRange="c-100:c-18">
+									showOn="button" yearRange="c-20:c20">
 									<f:convertDateTime pattern = "dd/MM/yyyy" />
 									<p:ajax event="blur" update="cedulaid" listener="#{afiliadoBeanEdit.validarEdad()}" />
 								</p:calendar>
@@ -1193,23 +1193,24 @@
 									value="#{afiliadoBeanEdit.afiliadoSelected.streetvalor}" />
 								
 								<p:outputLabel for="fechacreacionid" value="Fecha de creacion" />
-								<p:calendar id="fechacreacionid" value="#{afiliadoBeanEdit.afiliadoSelected.momento}"
-									pattern = "dd/MM/yyyy" mask="true" readOnlyInput="true">
+								<p:inputText id="fechacreacionid" readonly="true"
+									value="#{afiliadoBeanEdit.afiliadoSelected.momento}">
 									<f:convertDateTime pattern = "dd/MM/yyyy" />
-								</p:calendar>
-								
+								</p:inputText>
+																
 								<p:outputLabel for="emailvalidoid" value="Email validado" />
-        						<p:selectBooleanCheckbox id="emailvalidoid" value="#{afiliadoBeanEdit.emailValid}" />
+        						<p:selectBooleanCheckbox id="emailvalidoid" disabled="true"
+        									value="#{afiliadoBeanEdit.emailValid}" />
         						
         						<p:outputLabel for="creadorid" value="Usuario que registro" />
-								<p:inputText id="creadorid"
+								<p:inputText id="creadorid" readonly="true"
 									value="#{afiliadoBeanEdit.afiliadoSelected.usuariowebBean.nombreusuario}" />
  								
  								<p:outputLabel for="reenvioemail" value="" />
         						<p:commandButton value="Reenviar email de confirmacion" 
 												 id="reenvioemail"
 												 styleClass="green-button"
-												 action="#{sucursalEdit.generarCodigoApi()}" 
+												 action="#{afiliadoBeanEdit.reenvioEmailAfiliacion()}" 
 												 process="@this"
 												 update="emailvalidoid" />
         						        						

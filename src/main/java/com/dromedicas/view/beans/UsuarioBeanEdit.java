@@ -98,7 +98,26 @@ public class UsuarioBeanEdit {
 	}
 
 	public String actualizarUsuario(){
-		return null;
+		this.usurioSelected.setNombreusuario(this.usurioSelected.getNombreusuario().trim().toUpperCase());
+		this.usurioSelected.setUsuario(this.usurioSelected.getUsuario().trim().toUpperCase());
+		this.usurioSelected.setClave(this.usurioSelected.getClave());
+		byte temp = (byte) (this.activo== true ? 1 : 0);
+		this.usurioSelected.setActivo(temp);
+		this.usurioSelected.setEmailusuario(this.usurioSelected.getEmailusuario());
+		
+		Tipousuario tipoUsuario = this.tipUService.obtenerTipousuarioById(1);
+		
+		this.usurioSelected.setTipousuario(tipoUsuario);
+		
+		this.uwebService.updateUsuarioweb(this.usurioSelected);
+		
+		FacesContext.getCurrentInstance().addMessage("globalMessagex", new FacesMessage(FacesMessage.SEVERITY_INFO,
+				"Actualizacion Exitosa!", "Usuario actualizado Exitosamente"));
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		@SuppressWarnings("static-access")
+		Flash flash = facesContext.getCurrentInstance().getExternalContext().getFlash();
+		flash.setKeepMessages(true);
+		return "usuariolist?faces-redirect=true";
 	}
 	
 	public String crearUsuario(){

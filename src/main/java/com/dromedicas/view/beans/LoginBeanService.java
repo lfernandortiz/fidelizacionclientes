@@ -102,7 +102,7 @@ public class LoginBeanService implements Serializable {
 		FacesContext.getCurrentInstance().addMessage(null, msg);
 		context.addCallbackParam("estaLogeado", logeado);
 		if (logeado)
-			context.addCallbackParam("view", "dashboard.xhtml");		
+			context.addCallbackParam("view", "afiliadolist.xhtml");		
 	}
 	
 	

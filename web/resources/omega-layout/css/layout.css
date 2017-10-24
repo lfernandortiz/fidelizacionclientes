@@ -3204,7 +3204,7 @@ h2 {
     content: ""; }
 
 .ui-growl-message p{
-	text-shadow: 0px 0px 1px #000000!important;	
+	/* text-shadow: 0px 0px 1px #000000!important; */	
 }
 .ui-growl .ui-growl-item .ui-growl-image {
   background: none;

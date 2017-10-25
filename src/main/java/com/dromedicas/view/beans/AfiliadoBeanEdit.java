@@ -72,8 +72,7 @@ public class AfiliadoBeanEdit implements Serializable{
 	public void init(){
 		this.afiliadoSelected = new Afiliado();
 		this.tipodocList = tipodocService.findAllTipodocumento();
-		this.sucursalList = sucursalService.findAllSucursals();	
-		
+		this.sucursalList = sucursalService.findAllSucursals();			
 	}
 		
 	public LoginBeanService getLoginBean() {
@@ -355,6 +354,18 @@ public class AfiliadoBeanEdit implements Serializable{
 					new FacesMessage(FacesMessage.SEVERITY_WARN, "Error", "No fue posible el envio de confirmacion"));
 		}
 		
+	}
+	
+	public void limpiarForm(){
+		this.afiliadoSelected = null;
+		this.setStreet1("AVENIDA");
+		this.setStreet1Valor("");
+		this.setStreet2("No.");
+		this.setStreet2Valor("");
+		this.setDireccionCompleta("");
+		this.afiliadoSelected = new Afiliado();
+		this.tipodocList = tipodocService.findAllTipodocumento();
+		this.sucursalList = sucursalService.findAllSucursals();			
 	}
 	
 	

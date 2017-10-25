@@ -1267,19 +1267,18 @@
 								<p:commandButton value="Crear" id="crearAfiliadoid"
 												 action="#{afiliadoBeanEdit.crearAfiliado()}"
 												 update="afiliadoformppal anotherdataForm"/>
-											 
-								 
+											 								 
 								<p:commandButton value="Cancelar" 
 												 id="cancelarAfiliadoid"
 												 action="#{afiliadoBeanEdit.cancelarAfiliado()}"
 												 process="@this"
 												 update="afiliadoformppal" />	
-												 
-												 
-								<p:commandButton value="Volver" 
-												 id="volverid"
-												 action="#{afiliadoBeanEdit.volverListAfiliado()}"
-												 process="@this"/>
+												
+								<p:commandButton value="Limpiar" 
+												 id="limpiarFormid"
+												 action="#{afiliadoBeanEdit.limpiarForm()}"
+												 process="@this"
+												 update="afiliadoformppal" />
 															
 							</p:panelGrid>
 							<p:separator style="height:20px"/>						

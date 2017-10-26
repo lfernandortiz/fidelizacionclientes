@@ -16,10 +16,14 @@ import javax.faces.context.Flash;
 import com.dromedicas.domain.Afiliado;
 import com.dromedicas.domain.Sucursal;
 import com.dromedicas.domain.Tipodocumento;
+import com.dromedicas.domain.Tipotransaccion;
+import com.dromedicas.domain.Transaccion;
 import com.dromedicas.mailservice.EnviarEmailAlertas;
 import com.dromedicas.service.AfiliadoService;
 import com.dromedicas.service.SucursalService;
 import com.dromedicas.service.TipoDocumentoService;
+import com.dromedicas.service.TipoTransaccionService;
+import com.dromedicas.service.TransaccionService;
 import com.dromedicas.service.UsuarioWebService;
 import com.dromedicas.util.ExpresionesRegulares;
 
@@ -50,6 +54,12 @@ public class AfiliadoBeanEdit implements Serializable{
 	@EJB
 	private EnviarEmailAlertas mailAlert;
 	
+	@EJB
+	private TipoTransaccionService tipoTxService;
+	
+	@EJB
+	private TransaccionService txService;
+	
 	@ManagedProperty(value = "#{loginService}")
 	private LoginBeanService loginBean;
 		
@@ -62,7 +72,10 @@ public class AfiliadoBeanEdit implements Serializable{
 	private String street2 = "No.";
 	private String street2Valor = "";
 	private String direccionCompleta;
-	private boolean emailValid = true;
+	//variable de control para validacion de entrada de correo
+	private boolean emailValid = true; 
+	//varialbe para gui par
+	private boolean emailValidated;
 	
 	public AfiliadoBeanEdit(){
 		
@@ -72,7 +85,8 @@ public class AfiliadoBeanEdit implements Serializable{
 	public void init(){
 		this.afiliadoSelected = new Afiliado();
 		this.tipodocList = tipodocService.findAllTipodocumento();
-		this.sucursalList = sucursalService.findAllSucursals();			
+		this.sucursalList = sucursalService.findAllSucursals();	
+		this.afiliadoSelected.setCiudad("CUCUTA");
 	}
 		
 	public LoginBeanService getLoginBean() {
@@ -154,10 +168,17 @@ public class AfiliadoBeanEdit implements Serializable{
 	public void setEmailValid(boolean emailValid) {
 		this.emailValid = emailValid;
 	}
-	
+		
+	public boolean isEmailValidated() {
+		return emailValidated;
+	}
+
+	public void setEmailValidated(boolean emailValidated) {
+		this.emailValidated = emailValidated;
+	}
 	
 	//metodos de control de la interfaz
-	
+
 	public void concatenarDireccion(){
 		StringBuilder str = new StringBuilder();
 		str.append(this.getStreet1().toUpperCase()).append(" ")
@@ -170,7 +191,7 @@ public class AfiliadoBeanEdit implements Serializable{
 	
 	public String crearAfiliado(){
 		
-		//Establece los valores
+		//1 Establece los valores
 		this.afiliadoSelected.setNombres(
 					regex.removerAcentosNtildes(this.afiliadoSelected.getNombres().trim().toUpperCase()));
 		this.afiliadoSelected.setApellidos(
@@ -191,15 +212,18 @@ public class AfiliadoBeanEdit implements Serializable{
 		this.afiliadoSelected.setSexo(this.afiliadoSelected.getSexo());
 		this.afiliadoSelected.setFechanacimiento(this.afiliadoSelected.getFechanacimiento());
 		
-		this.afiliadoSelected.setStreet(
-				regex.removerAcentosNtildes(this.getDireccionCompleta()).replaceAll("#", "NO."));
-		this.afiliadoSelected.setStreetdos(regex.removerAcentosNtildes(
-								this.afiliadoSelected.getStreetdos().trim().toUpperCase()));
+		if(this.getDireccionCompleta()!= null && !this.getDireccionCompleta().equals("")){
+			this.afiliadoSelected.setStreet(
+					regex.removerAcentosNtildes(this.getDireccionCompleta()).replaceAll("#", "NO."));
+			this.afiliadoSelected.setStreetdos(regex.removerAcentosNtildes(
+									this.afiliadoSelected.getStreetdos().trim().toUpperCase()));
+		}
+				
 		this.afiliadoSelected.setCiudad(this.afiliadoSelected.getCiudad());
 			//aca validar Email
 		if( !this.afiliadoSelected.getEmail().equals("") ){
 			if(regex.validateEmail(this.afiliadoSelected.getEmail())){
-				this.afiliadoSelected.setEmail(this.afiliadoSelected.getEmail());
+				this.afiliadoSelected.setEmail(this.afiliadoSelected.getEmail().toLowerCase());
 				this.setEmailValid(true);
 			}else{
 				FacesContext.getCurrentInstance().addMessage("emailid", 
@@ -229,21 +253,45 @@ public class AfiliadoBeanEdit implements Serializable{
 				this.sucursalService.obtenerSucursalById(this.afiliadoSelected.getSucursal());
 		this.afiliadoSelected.setSucursal(sucursal);
 		
-		//Obtiene el usuario que registra..........Faltaaaaa		
+		//2 Obtiene el usuario que registra..........Faltaaaaa		
 		this.afiliadoSelected.setUsuariowebBean( this.loginBean.getUser() );
 		
-		//Persiste el nuevo afiliado
+		//3 Persiste el nuevo afiliado
 		afiliadoService.updateAfiliado(this.afiliadoSelected);
 		
-		//Envia correo de notificacion de afiliacion
-		boolean enviado = mailAlert.enviarEmailAlertaVentas(this.afiliadoSelected);
+		//4 Acumula los 100 puntos inciales del afiliado y busca si es un referedio
+		//para asignar 100 al afiliado que lo refirio 
 		
-		if(enviado){
-			
+		
+		
+		Afiliado afTemp = this.afiliadoService.obtenerAfiliadoByDocumento(this.afiliadoSelected.getDocumento());
+		
+		int id = 1;
+		Tipotransaccion tipoTx = tipoTxService.obtenerTipoTransaccioById(id);
+		Transaccion tx = new Transaccion(); 
+		tx.setAfiliado(afTemp);
+		tx.setSucursal(this.afiliadoSelected.getSucursal());
+		tx.setFechatransaccion(new Date());
+		tx.setNrofactura("REGINI");
+		tx.setValortotaltx(0);
+		tx.setTipotransaccion(tipoTx);
+		tx.setPuntostransaccion(100);
+			//graba los puntos iniciales
+		txService.updateTransaccion(tx);
+		
+				
+		//5 Envia correo de notificacion de afiliacion
+		boolean enviado = false;
+		if(this.afiliadoSelected.getEmail() != null && !this.afiliadoSelected.getEmail().equals("")){
+			enviado = mailAlert.enviarEmailAlertaVentas(this.afiliadoSelected);
 		}
 		
 		
-		//Despliega Callout sucess				
+		if(enviado){
+		//6 Registro del Email para tracking	
+		}
+		
+		//7 Despliega Callout sucess				
 		FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("afiliadoBeanEdit");
 		
 		FacesContext.getCurrentInstance().addMessage("messages", new FacesMessage(FacesMessage.SEVERITY_INFO,
@@ -274,7 +322,8 @@ public class AfiliadoBeanEdit implements Serializable{
 	}
 	
 	public String editarAfiliado(){
-		this.emailValid = this.afiliadoSelected.getEmailvalidado() == 1 ? true : false;
+		this.emailValidated = this.afiliadoSelected.getEmailvalidado() == 1 ? true : false;
+		this.emailValid = true;
 		return "afiliadoedit?faces-redirect=true";
 	}
 	
@@ -296,7 +345,7 @@ public class AfiliadoBeanEdit implements Serializable{
 		this.afiliadoSelected.setCiudad(this.afiliadoSelected.getCiudad());
 		if( !this.afiliadoSelected.getEmail().equals("") ){
 			if(regex.validateEmail(this.afiliadoSelected.getEmail())){
-				this.afiliadoSelected.setEmail(this.afiliadoSelected.getEmail());
+				this.afiliadoSelected.setEmail(this.afiliadoSelected.getEmail().toLowerCase());
 				this.setEmailValid(true);
 			}else{
 				FacesContext.getCurrentInstance().addMessage("emailid", 
@@ -364,6 +413,7 @@ public class AfiliadoBeanEdit implements Serializable{
 		this.setStreet2Valor("");
 		this.setDireccionCompleta("");
 		this.afiliadoSelected = new Afiliado();
+		this.afiliadoSelected.setCiudad("CUCUTA");
 		this.tipodocList = tipodocService.findAllTipodocumento();
 		this.sucursalList = sucursalService.findAllSucursals();			
 	}

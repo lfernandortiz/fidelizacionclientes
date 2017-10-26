@@ -26,7 +26,7 @@ import com.dromedicas.domain.Afiliado;
 @Stateless
 public class EnviarEmailAlertas {
 	
-	public static boolean enviarEmailAlertaVentas(Afiliado afiliado) {
+	public boolean enviarEmailAlertaVentas(Afiliado afiliado) {
 		
 		String urlConfirmacion = "http://www.puntosfarmanorte.com.co/seccion/actualizacion.html?documento=" + afiliado.getDocumento();
 		

@@ -1169,17 +1169,18 @@
 								</p:inputText>
                                 
                                 <p:outputLabel for="sucursalid" value="Sucursal" />
-								<p:selectOneMenu id="sucursalid" value="#{afiliadoBeanEdit.afiliadoSelected.sucursal}">
+								<p:selectOneMenu id="sucursalid" value="#{afiliadoBeanEdit.afiliadoSelected.sucursal}"
+								filter="true" filterMatchMode="contains">
 									<f:selectItems value="#{afiliadoBeanEdit.sucursalList}" var="suc"
 										itemLabel="#{suc.nombreSucursal}" itemValue="#{suc}" />
-									<f:converter binding="#{sucursalConverter}" />
-									
+									<h:outputText value="#{suc.nombreSucursal}" />
+									<f:converter binding="#{sucursalConverter}" />									
 								</p:selectOneMenu>
 								
 								<p:outputLabel for="emailid" value="Email" />
 								<p:inputText id="emailid" value="#{afiliadoBeanEdit.afiliadoSelected.email}"
 									styleClass="#{afiliadoBeanEdit.emailValid ? '' : 'ui-state-error'}"/>
-															
+									#{afiliadoBeanEdit.emailValid}								
 							</p:panelGrid>
 							<p:separator style="height:10px"/>
 							<h1>Informacion Adicional</h1>
@@ -1200,7 +1201,7 @@
 																
 								<p:outputLabel for="emailvalidoid" value="Email validado" />
         						<p:selectBooleanCheckbox id="emailvalidoid" disabled="true"
-        									value="#{afiliadoBeanEdit.emailValid}" />
+        									value="#{afiliadoBeanEdit.emailValidated}" />
         						
         						<p:outputLabel for="creadorid" value="Usuario que registro" />
 								<p:inputText id="creadorid" readonly="true"

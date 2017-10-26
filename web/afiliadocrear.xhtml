@@ -113,6 +113,7 @@
 									<f:selectItem itemLabel="KILOMETRO" itemValue="KILOMETRO"/>
 									<f:selectItem itemLabel="LOTE" itemValue="LOTE"/>
 									<f:selectItem itemLabel="MANZANA" itemValue="MANZANA"/>
+									<f:selectItem itemLabel="TORRE" itemValue="TORRE"/>
 									<f:selectItem itemLabel="TRANSVERSAL" itemValue="TRANSVERSAL"/>
 									<f:selectItem itemLabel="TRONCAL" itemValue="TRONCAL"/>
 									<f:selectItem itemLabel="URBANIZACION" itemValue="URBANIZACION"/>
@@ -1246,17 +1247,18 @@
 								</p:inputText>
                                 
                                 <p:outputLabel for="sucursalid" value="Sucursal" />
-								<p:selectOneMenu id="sucursalid" value="#{afiliadoBeanEdit.afiliadoSelected.sucursal}">
+								<p:selectOneMenu id="sucursalid" value="#{afiliadoBeanEdit.afiliadoSelected.sucursal}"
+								filter="true" filterMatchMode="contains">
 									<f:selectItems value="#{afiliadoBeanEdit.sucursalList}" var="suc"
 										itemLabel="#{suc.nombreSucursal}" itemValue="#{suc}" />
-									<f:converter binding="#{sucursalConverter}" />
-									
+									<h:outputText value="#{suc.nombreSucursal}" />
+									<f:converter binding="#{sucursalConverter}" />									
 								</p:selectOneMenu>
 								
 								<p:outputLabel for="emailid" value="Email" />
 								<p:inputText id="emailid" value="#{afiliadoBeanEdit.afiliadoSelected.email}"
 									styleClass="#{afiliadoBeanEdit.emailValid ? '' : 'ui-state-error'}"/>
-															
+											
 							</p:panelGrid>
 							<p:separator style="height:10px"/>
 							<p:panelGrid columns="6" id="buttons"

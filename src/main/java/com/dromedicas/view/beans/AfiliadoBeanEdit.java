@@ -14,12 +14,14 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.Flash;
 
 import com.dromedicas.domain.Afiliado;
+import com.dromedicas.domain.Referido;
 import com.dromedicas.domain.Sucursal;
 import com.dromedicas.domain.Tipodocumento;
 import com.dromedicas.domain.Tipotransaccion;
 import com.dromedicas.domain.Transaccion;
 import com.dromedicas.mailservice.EnviarEmailAlertas;
 import com.dromedicas.service.AfiliadoService;
+import com.dromedicas.service.ReferidoService;
 import com.dromedicas.service.SucursalService;
 import com.dromedicas.service.TipoDocumentoService;
 import com.dromedicas.service.TipoTransaccionService;
@@ -59,6 +61,9 @@ public class AfiliadoBeanEdit implements Serializable{
 	
 	@EJB
 	private TransaccionService txService;
+	
+	@EJB
+	private ReferidoService referidoService;
 	
 	@ManagedProperty(value = "#{loginService}")
 	private LoginBeanService loginBean;
@@ -262,11 +267,9 @@ public class AfiliadoBeanEdit implements Serializable{
 		//4 Acumula los 100 puntos inciales del afiliado y busca si es un referedio
 		//para asignar 100 al afiliado que lo refirio 
 		
-		
-		
 		Afiliado afTemp = this.afiliadoService.obtenerAfiliadoByDocumento(this.afiliadoSelected.getDocumento());
 		
-		int id = 1;
+		int id = 4;
 		Tipotransaccion tipoTx = tipoTxService.obtenerTipoTransaccioById(id);
 		Transaccion tx = new Transaccion(); 
 		tx.setAfiliado(afTemp);
@@ -279,11 +282,38 @@ public class AfiliadoBeanEdit implements Serializable{
 			//graba los puntos iniciales
 		txService.updateTransaccion(tx);
 		
+			//Se busca si el nuevo afiliado es un referido
+		if (this.afiliadoSelected.getEmail() != null && !this.afiliadoSelected.getEmail().equals("")) {
+			Referido ref = this.referidoService.obtenerReferidoPorEmail(this.afiliadoSelected.getEmail());
+			
+			System.out.println("Referido: "+ ref.getAfiliado().getNombres());
+			
+			// si el nuevo es un referente graba 100 puntos al afiliado que lo
+			// refirio
+			System.out.println("Referido es diferente de null: " + (ref != null));
+			
+			if (ref != null) {
+				Afiliado afiReferente = ref.getAfiliado();
+
+				int idTipo = 5;
+				Tipotransaccion tipoTxRef = tipoTxService.obtenerTipoTransaccioById(idTipo);
+				Transaccion txRef = new Transaccion();
+				txRef.setAfiliado(afiReferente);
+				txRef.setSucursal(this.afiliadoSelected.getSucursal());
+				txRef.setFechatransaccion(new Date());
+				txRef.setNrofactura("REGREF");
+				txRef.setValortotaltx(0);
+				txRef.setTipotransaccion(tipoTxRef);
+				txRef.setPuntostransaccion(100);
+				// graba los puntos iniciales
+				txService.updateTransaccion(txRef);
+			}
+		} // end if validacion afiliado		
 				
 		//5 Envia correo de notificacion de afiliacion
 		boolean enviado = false;
 		if(this.afiliadoSelected.getEmail() != null && !this.afiliadoSelected.getEmail().equals("")){
-			enviado = mailAlert.enviarEmailAlertaVentas(this.afiliadoSelected);
+			//enviado = mailAlert.enviarEmailAlertaVentas(this.afiliadoSelected);
 		}
 		
 		

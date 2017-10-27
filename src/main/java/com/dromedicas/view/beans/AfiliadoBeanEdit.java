@@ -264,8 +264,7 @@ public class AfiliadoBeanEdit implements Serializable{
 		//3 Persiste el nuevo afiliado
 		afiliadoService.updateAfiliado(this.afiliadoSelected);
 		
-		//4 Acumula los 100 puntos inciales del afiliado y busca si es un referedio
-		//para asignar 100 al afiliado que lo refirio 
+		//4 Acumula los 100 puntos inciales del afiliado 
 		
 		Afiliado afTemp = this.afiliadoService.obtenerAfiliadoByDocumento(this.afiliadoSelected.getDocumento());
 		
@@ -286,11 +285,8 @@ public class AfiliadoBeanEdit implements Serializable{
 		if (this.afiliadoSelected.getEmail() != null && !this.afiliadoSelected.getEmail().equals("")) {
 			Referido ref = this.referidoService.obtenerReferidoPorEmail(this.afiliadoSelected.getEmail());
 			
-			System.out.println("Referido: "+ ref.getAfiliado().getNombres());
-			
-			// si el nuevo es un referente graba 100 puntos al afiliado que lo
+			// si el nuevo es un referido graba 100 puntos al afiliado que lo
 			// refirio
-			System.out.println("Referido es diferente de null: " + (ref != null));
 			
 			if (ref != null) {
 				Afiliado afiReferente = ref.getAfiliado();
@@ -313,7 +309,7 @@ public class AfiliadoBeanEdit implements Serializable{
 		//5 Envia correo de notificacion de afiliacion
 		boolean enviado = false;
 		if(this.afiliadoSelected.getEmail() != null && !this.afiliadoSelected.getEmail().equals("")){
-			//enviado = mailAlert.enviarEmailAlertaVentas(this.afiliadoSelected);
+			enviado = mailAlert.enviarEmailAlertaVentas(this.afiliadoSelected);
 		}
 		
 		
@@ -418,6 +414,7 @@ public class AfiliadoBeanEdit implements Serializable{
 	}
 	
 	public void reenvioEmailAfiliacion(){
+		
 		
 		boolean enviado = mailAlert.enviarEmailAlertaVentas(this.afiliadoSelected);
 		

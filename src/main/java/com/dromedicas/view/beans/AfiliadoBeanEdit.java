@@ -21,7 +21,7 @@ import com.dromedicas.domain.Tipotransaccion;
 import com.dromedicas.domain.Transaccion;
 import com.dromedicas.mailservice.EnviarEmailAlertas;
 import com.dromedicas.service.AfiliadoService;
-import com.dromedicas.service.CalculoPuntosService;
+import com.dromedicas.service.OperacionPuntosService;
 import com.dromedicas.service.ReferidoService;
 import com.dromedicas.service.SucursalService;
 import com.dromedicas.service.TipoDocumentoService;
@@ -67,7 +67,7 @@ public class AfiliadoBeanEdit implements Serializable{
 	private ReferidoService referidoService;
 	
 	@EJB
-	private CalculoPuntosService calculoService;
+	private OperacionPuntosService calculoService;
 	
 	@ManagedProperty(value = "#{loginService}")
 	private LoginBeanService loginBean;
@@ -223,7 +223,7 @@ public class AfiliadoBeanEdit implements Serializable{
 		
 		if(this.getDireccionCompleta()!= null && !this.getDireccionCompleta().equals("")){
 			this.afiliadoSelected.setStreet(
-					regex.removerAcentosNtildes(this.getDireccionCompleta()).replaceAll("#", "NO."));
+					regex.removerAcentosNtildes(this.getDireccionCompleta()).replaceAll("#", "NO. "));
 			this.afiliadoSelected.setStreetdos(regex.removerAcentosNtildes(
 									this.afiliadoSelected.getStreetdos().trim().toUpperCase()));
 		}
@@ -371,7 +371,7 @@ public class AfiliadoBeanEdit implements Serializable{
 		this.afiliadoSelected.setSexo(this.afiliadoSelected.getSexo());
 		this.afiliadoSelected.setFechanacimiento(this.afiliadoSelected.getFechanacimiento());
 		
-		this.afiliadoSelected.setStreet(regex.removerAcentosNtildes(this.afiliadoSelected.getStreet()).replaceAll("#", "NO."));
+		this.afiliadoSelected.setStreet(regex.removerAcentosNtildes(this.afiliadoSelected.getStreet()).replaceAll("#", "NO. "));
 		this.afiliadoSelected.setStreetdos(regex.removerAcentosNtildes(
 								this.afiliadoSelected.getStreetdos().trim().toUpperCase()));
 		this.afiliadoSelected.setCiudad(this.afiliadoSelected.getCiudad());

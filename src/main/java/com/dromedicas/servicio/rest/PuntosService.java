@@ -13,16 +13,19 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import com.dromedicas.domain.Afiliado;
+import com.dromedicas.domain.BanlancePuntos;
 import com.dromedicas.domain.Sucursal;
 import com.dromedicas.domain.Tipotransaccion;
 import com.dromedicas.domain.Transaccion;
 import com.dromedicas.service.AfiliadoService;
-import com.dromedicas.service.CalculoPuntosService;
+import com.dromedicas.service.OperacionPuntosService;
 import com.dromedicas.service.SucursalService;
 import com.dromedicas.service.TipoTransaccionService;
 import com.dromedicas.service.TransaccionService;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @Path("/puntos")
 @Stateless
@@ -41,7 +44,7 @@ public class PuntosService {
 	private SucursalService sucursalService;
 	
 	@EJB
-	private CalculoPuntosService calculoService;
+	private OperacionPuntosService calculoService;
 	
 	
 	//Grabar transaccion de ACUMULACION puntos - Devolviendo balance de puntos
@@ -57,81 +60,53 @@ public class PuntosService {
 	 * @return
 	 */
 	@Path("/acumularpuntos/{codsucursal}/{momento}/{nrofactua}/{valortx}/{documento}/{puntos}")
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)	
-	public Map<String, Object> registrarTransaccion(@PathParam("codsucursal") String codsucursal,
-													@PathParam("momento") String momento,
-													@PathParam("nrofactua") String nrofactua,													
-													@PathParam("valortx") Integer valortx,
-													@PathParam("documento") String documento,
-													@PathParam("puntos") int puntos){
+	@GET	
+	@Produces(MediaType.APPLICATION_JSON)
+	@JsonPropertyOrder({ "code", "status", "balance"})
+	public Response registrarTransaccion(@PathParam("codsucursal") String codsucursal,
+										 @PathParam("momento") String momento,
+										 @PathParam("nrofactua") String nrofactura,													
+										 @PathParam("valortx") Integer valortx,
+										 @PathParam("documento") String documento,
+										 @PathParam("puntos") int puntos){
 		
 		Map<String, Object> mapResponse = new HashMap<>();
 		
 		//se validan todos los parametros
-		if( !codsucursal.equals("") && !momento.equals("") && !nrofactua.equals("") && valortx != 0 
+		if( !codsucursal.equals("") && !momento.equals("") && !nrofactura.equals("") && valortx != 0 
 					&& !documento.equals("") && puntos!= 0){
+			
+			Sucursal sucursal = this.sucursalService.obtenerSucursalPorIdIterno(codsucursal);
+			
 			//se reciben parametros y se crean los objetos necesarios			
 			//se obtiene el afiliado	
 			Afiliado afiliado = this.afiliadoService.obtenerAfiliadoByDocumento(documento);
 			
 			if(afiliado != null){				
-				//establece la sucursal de la Tx
-				Sucursal sucursal = this.sucursalService.obtenerSucursalPorIdIterno(codsucursal);
-				
-				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				
-				Date momentotx  = new Date();
-				
-				try {
-					momentotx = sdf.parse(momento);
+				if (sucursal != null) {	
+					//invoca al metodo de registro Tx del Bean Balance puntos
+					BanlancePuntos balance = calculoService.registrarTransaccion(sucursal, momento, nrofactura,
+										valortx, afiliado, puntos);
 					
-					System.out.println("Fecha Recibida: " + momento);
-					
-				} catch (ParseException e) {					
-					e.printStackTrace();
-				}
-				
-				if( sucursal != null ){
-					
-					int idTipoTx = 1;
-					Tipotransaccion tipoTx = tipoTxService.obtenerTipoTransaccioById(idTipoTx);
-					Transaccion tx = new Transaccion(); 
-					tx.setAfiliado(afiliado);
-					tx.setSucursal(sucursal);
-					tx.setFechatransaccion(momentotx);
-					tx.setNrofactura(nrofactua);
-					tx.setValortotaltx(valortx);
-					Date fechavencimientopuntos = this.calculoService.addDays(momentotx, 365);
-					tx.setVencen(fechavencimientopuntos);
-					tx.setTipotransaccion(tipoTx);
-					tx.setPuntostransaccion(puntos);
-						//graba los puntos iniciales
-					txService.updateTransaccion(tx);
-					
-					
-					mapResponse.put("status","200");
-					mapResponse.put("message","Transaccion exitosa");
-					mapResponse.put("fechavence",sdf.format(fechavencimientopuntos));
-					
-					
+					return Response.status(200).entity(mapResponse).build();
 				}else{ // si no se halla la sucursal			
-					mapResponse.put("status","401");
+					mapResponse.put("code","401");
 					mapResponse.put("message","Sucursal no encontrada");
+					return Response.status(401).entity(mapResponse).build();
 				}
 			}else{ //Si no se halla el afiliado
-				mapResponse.put("status","401");
+				mapResponse.put("code","401");
 				mapResponse.put("message","Afilaido no encontrado");
+				return Response.status(401).entity(mapResponse).build();
 			}			
 		}else{ //Faltan datos en la solicitud
-			mapResponse.put("status","400");
+			mapResponse.put("code","400");
 			mapResponse.put("message","El servidor no pudo entender la solicitud debido a una sintaxis mal formada");
-		}
-		return mapResponse;
+			
+			return Response.status(401).entity(mapResponse).build();
+		}		
 	}///Fin del metodo Acumular puntos
 		
-	
-	
 	
 	
 	

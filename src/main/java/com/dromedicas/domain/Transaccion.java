@@ -11,7 +11,7 @@ import java.util.Set;
  * 
  */
 @Entity
-@NamedQueries({@NamedQuery(name="Transaccion.findAll", query="SELECT t FROM Transaccion t")})
+@NamedQuery(name="Transaccion.findAll", query="SELECT t FROM Transaccion t")
 public class Transaccion implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -23,10 +23,17 @@ public class Transaccion implements Serializable {
 	private Date fechatransaccion;
 
 	private String nrofactura;
-	
+
 	private int puntostransaccion;
 
+	private byte redimidos;
+
+	private int saldo;
+
 	private int valortotaltx;
+
+	@Temporal(TemporalType.DATE)
+	private Date vencen;
 
 	//bi-directional many-to-one association to Detransaccion
 	@OneToMany(mappedBy="transaccion")
@@ -37,7 +44,7 @@ public class Transaccion implements Serializable {
 	private Set<Emailenvio> emailenvios;
 
 	//bi-directional many-to-one association to Punto
-	@OneToMany(mappedBy="transaccion", cascade={CascadeType.ALL})
+	@OneToMany(mappedBy="transaccion")
 	private Set<Punto> puntos;
 
 	//bi-directional many-to-one association to Afiliado
@@ -82,12 +89,44 @@ public class Transaccion implements Serializable {
 		this.nrofactura = nrofactura;
 	}
 
+	public int getPuntostransaccion() {
+		return this.puntostransaccion;
+	}
+
+	public void setPuntostransaccion(int puntostransaccion) {
+		this.puntostransaccion = puntostransaccion;
+	}
+
+	public byte getRedimidos() {
+		return this.redimidos;
+	}
+
+	public void setRedimidos(byte redimidos) {
+		this.redimidos = redimidos;
+	}
+
+	public int getSaldo() {
+		return this.saldo;
+	}
+
+	public void setSaldo(int saldo) {
+		this.saldo = saldo;
+	}
+
 	public int getValortotaltx() {
 		return this.valortotaltx;
 	}
 
 	public void setValortotaltx(int valortotaltx) {
 		this.valortotaltx = valortotaltx;
+	}
+
+	public Date getVencen() {
+		return this.vencen;
+	}
+
+	public void setVencen(Date vencen) {
+		this.vencen = vencen;
 	}
 
 	public Set<Detransaccion> getDetransaccions() {
@@ -179,15 +218,5 @@ public class Transaccion implements Serializable {
 	public void setTipotransaccion(Tipotransaccion tipotransaccion) {
 		this.tipotransaccion = tipotransaccion;
 	}
-
-	public int getPuntostransaccion() {
-		return puntostransaccion;
-	}
-
-	public void setPuntostransaccion(int puntostransaccion) {
-		this.puntostransaccion = puntostransaccion;
-	}
-	
-	
 
 }

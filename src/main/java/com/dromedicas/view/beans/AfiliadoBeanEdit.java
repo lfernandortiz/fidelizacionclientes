@@ -21,6 +21,7 @@ import com.dromedicas.domain.Tipotransaccion;
 import com.dromedicas.domain.Transaccion;
 import com.dromedicas.mailservice.EnviarEmailAlertas;
 import com.dromedicas.service.AfiliadoService;
+import com.dromedicas.service.CalculoPuntosService;
 import com.dromedicas.service.ReferidoService;
 import com.dromedicas.service.SucursalService;
 import com.dromedicas.service.TipoDocumentoService;
@@ -64,6 +65,9 @@ public class AfiliadoBeanEdit implements Serializable{
 	
 	@EJB
 	private ReferidoService referidoService;
+	
+	@EJB
+	private CalculoPuntosService calculoService;
 	
 	@ManagedProperty(value = "#{loginService}")
 	private LoginBeanService loginBean;
@@ -276,6 +280,7 @@ public class AfiliadoBeanEdit implements Serializable{
 		tx.setFechatransaccion(new Date());
 		tx.setNrofactura("REGINI");
 		tx.setValortotaltx(0);
+		tx.setVencen(this.calculoService.addDays(new Date(), 365));
 		tx.setTipotransaccion(tipoTx);
 		tx.setPuntostransaccion(100);
 			//graba los puntos iniciales
@@ -299,6 +304,7 @@ public class AfiliadoBeanEdit implements Serializable{
 				txRef.setFechatransaccion(new Date());
 				txRef.setNrofactura("REGREF");
 				txRef.setValortotaltx(0);
+				txRef.setVencen( this.calculoService.addDays(new Date(), 365));
 				txRef.setTipotransaccion(tipoTxRef);
 				txRef.setPuntostransaccion(100);
 				// graba los puntos iniciales

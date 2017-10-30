@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
 import com.dromedicas.domain.Sucursal;
 import com.dromedicas.service.SucursalService;
@@ -20,7 +21,7 @@ public class SucursalServiceRS {
 	
 	
 	@GET
-	@Produces("application/json")
+	@Produces(MediaType.APPLICATION_JSON)
 	public List<Sucursal> listarSucursaels(){
 		
 		List<Sucursal> s =  this.sServices.findAllSucursals();

@@ -13,15 +13,14 @@ import javax.ejb.Stateless;
  */
 @Stateless
 public class CalculoPuntosService {
-	
-	
+		
 	/**
 	 * Suma dias a una objeto Date
 	 * @param date
 	 * @param days
 	 * @return
 	 */
-	public static Date addDays(Date date, int days)
+	public Date addDays(Date date, int days)
     {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);

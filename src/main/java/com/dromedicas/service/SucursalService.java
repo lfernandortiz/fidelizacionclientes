@@ -4,13 +4,13 @@ import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.faces.bean.ManagedProperty;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-import com.dromedicas.domain.Empresa;
 import com.dromedicas.domain.Sucursal;
+import com.dromedicas.domain.Tipotransaccion;
 import com.dromedicas.eis.SucursalDao;
 
 @Stateless
@@ -61,5 +61,18 @@ public class SucursalService {
 		Query query = em.createQuery(queryString);
 		return query.getResultList();
 	}
+	
+	
+	public Sucursal obtenerSucursalPorIdIterno( String id ){
+		Query query = em.createQuery("select s FROM Sucursal s where s.codigointerno = :id");
+		query.setParameter("id", id);
+		Sucursal temp = null;		
+		try {
+			temp = (Sucursal) query.getSingleResult();
+		} catch (NoResultException e) {
+			System.out.println("Usuario No encontrado");			
+		}		
+		return temp;
+	} 
 
 }

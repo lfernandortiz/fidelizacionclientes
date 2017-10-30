@@ -9,7 +9,6 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import com.dromedicas.domain.Afiliado;
-import com.dromedicas.domain.Empresa;
 import com.dromedicas.eis.AfiliadoDao;
 
 @Stateless
@@ -66,5 +65,12 @@ public class AfiliadoService {
 		Query query = em.createQuery(queryString);
 		return query.getResultList();
 	}
+	
+	
+	public boolean crearAfiliado(){
+		return false;
+	}
+	
+	
 	
 }

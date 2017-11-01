@@ -219,4 +219,12 @@ public class Transaccion implements Serializable {
 		this.tipotransaccion = tipotransaccion;
 	}
 
+	@Override
+	public String toString() {
+		return "Transaccion [idtransaccion=" + idtransaccion + ", fechatransaccion=" + fechatransaccion
+				+ ", nrofactura=" + nrofactura + ", puntostransaccion=" + puntostransaccion + ", redimidos=" + redimidos
+				+ ", saldo=" + saldo + ", valortotaltx=" + valortotaltx + ", vencen=" + vencen + "]";
+	}
+
+	
 }

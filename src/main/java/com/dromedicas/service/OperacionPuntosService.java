@@ -3,8 +3,10 @@ package com.dromedicas.service;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -87,8 +89,11 @@ public class OperacionPuntosService {
 		Date fechavencimientopuntos = addDays(momentotx, 365);
 		tx.setVencen(fechavencimientopuntos);
 		tx.setTipotransaccion(tipoTx);
-		//Aca se debe traer el parametros por 
-		tx.setPuntostransaccion(puntos);
+		//Aca se debe traer el parametros por consulta de base de datos del factor de acumulacion 
+		int mathPuntos = (valortx/100);		
+		System.out.println("----Puntos acumulados: "+ mathPuntos);
+				
+		tx.setPuntostransaccion(mathPuntos);
 		// graba los puntos iniciales
 		txService.updateTransaccion(tx);
 
@@ -100,13 +105,53 @@ public class OperacionPuntosService {
 		balance.setFechavencimiento(sdf.format(this.getFechaVencimiento(afiliado)));
 		balance.setDisponibles(this.getPuntosDisponibles(afiliado));
 
+		
+		//falta el envio de correo por registro de transaccion
+		
+		
 		return balance;
 	}
 	
 	
-	public BanlancePuntos redencionPuntos(){
+	public BanlancePuntos redencionPuntos(Sucursal sucursal, String momento, String nrofactura, Integer valortx,
+			Afiliado afiliado, int puntosARedimir){
+		//comienza lo bueno :-P
+		
+		//obtengo todas las transaccion conpuntos redimibles
+		List<Transaccion> txList = this.getListransaccionesARedimir(afiliado);
+		
+		int total =0;		
+		for(Transaccion tx:  txList){			
+			if( tx.getRedimidos() == 1 ){				
+				total += tx.getSaldo();
+			}else{
+				total += tx.getPuntostransaccion();
+			}					
+			
+			if( total <= puntosARedimir ){
+				byte r = 1;
+				tx.setRedimidos(r);
+				this.txService.updateTransaccion(tx);				
+			}else{
+				int dif = total - puntosARedimir;
+				byte r = 1;
+				tx.setRedimidos(r);
+				tx.setSaldo(dif);
+				this.txService.updateTransaccion(tx);
+				break;
+			}
+			
+		}
+		
+		System.out.println("Total Puntos disponibles a redimir " + total );
+		
+		
 		return null;
 	} 
+	
+	
+	
+	
 	
 	public BanlancePuntos consultaPuntos( Afiliado afiliado){
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -118,9 +163,10 @@ public class OperacionPuntosService {
 		balance.setAvencer(this.getPuntosAVencer(afiliado));
 		balance.setFechavencimiento(sdf.format(this.getFechaVencimiento(afiliado)));
 		balance.setDisponibles(this.getPuntosDisponibles(afiliado));
-
+		
 		return balance;
 	}
+	
 	
 	
 	//Metodos auxiliares de balance
@@ -152,8 +198,7 @@ public class OperacionPuntosService {
 			puntos =  (Long) query.getSingleResult();
 		} catch (NoResultException e) {
 			System.out.println("Puntos acumulados no encontrados...");
-			return puntos.intValue();
-			
+			return puntos.intValue();			
 		}		
 		return puntos != null ? puntos.intValue() : 0;
 	}
@@ -172,7 +217,6 @@ public class OperacionPuntosService {
 			System.out.println("Puntos acumulados no encontrados...");
 			return puntos.intValue();			
 		}		
-		System.out.println("-------------||------ " + puntos );
 		return puntos != null ? (puntos.intValue()*-1) : 0;
 	}
 	
@@ -213,11 +257,11 @@ public class OperacionPuntosService {
 		}
 		return total.intValue();
 	}
-	
+
 	
 	
 	private int getPuntosAVencer(Afiliado instance) {
-
+		
 		String queryStringA = "select sum(t.puntostransaccion) from transaccion t "
 				+ "where t.puntostransaccion > 0 and " + "t.vencen >=  CURRENT_DATE  and "
 				+ "t.vencen <= DATE_ADD(CURRENT_DATE, INTERVAL 30 DAY) and t.redimidos = 0 and "
@@ -250,9 +294,10 @@ public class OperacionPuntosService {
 		if( puntosB != null){
 			total = total.add(puntosB);
 		}
-		return total.intValue();
-		
+		return total.intValue();		
 	}
+	
+	
 	
 	private int getPuntosDisponibles(Afiliado instance) {
 		String queryStringA = "select sum(t.puntostransaccion) from transaccion t "
@@ -285,7 +330,7 @@ public class OperacionPuntosService {
 		if( puntosB != null){
 			total = total.add(puntosB);
 		}
-		return total.intValue() >= 3000 ? total.intValue() : 0; 
+		return total.intValue() >= 8000 ? total.intValue() : 0; 
 	}
 	
 	
@@ -301,9 +346,30 @@ public class OperacionPuntosService {
 		} catch (NoResultException e) {			
 			System.out.println("Puntos acumulados no encontrados...");			
 		}		
-		return date;
+		return date; 
 	}
 	
+	
+	private List<Transaccion> getListransaccionesARedimir(Afiliado instance){
+		//Se buscan todas la Tx's con puntos para redimir, incluyendo saldos de Tx anteriores
+		//que aun esta vigentes
+		String queryString = "from Transaccion t " +
+				 "where (t.puntostransaccion > 0 and t.vencen >= CURRENT_DATE  and t.redimidos = 0 and "+
+				 "t.afiliado.idafiliado = :idAf1 ) OR" +
+				 "( t.saldo > 0 and t.vencen >= CURRENT_DATE  and "+
+				 " t.redimidos = 1 and t.afiliado.idafiliado = :idAf2 ) order by t.vencen asc";
+		
+		Query query = em.createQuery( queryString );		
+		query.setParameter("idAf1", instance.getIdafiliado());
+		query.setParameter("idAf2", instance.getIdafiliado());		
+		List<Transaccion> txList = null;	
+		try {			
+			txList =   query.getResultList();
+		} catch (NoResultException e) {
+			System.out.println("sin pupntos para redimir");
+		}		
+		return txList;
+	}
 	
 
 }

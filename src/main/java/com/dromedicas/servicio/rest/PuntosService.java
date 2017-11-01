@@ -116,6 +116,11 @@ public class PuntosService {
 	}///Fin del metodo Acumular puntos
 		
 	
+	/**
+	 * Consulta de Balance de puntos
+	 * @param documento
+	 * @return
+	 */
 	@Path("/consultapuntos/{documento}")
 	@GET	
 	@Produces(MediaType.APPLICATION_JSON)
@@ -138,20 +143,70 @@ public class PuntosService {
 			return Response.status(401).entity(mapResponse).build();
 		}		
 	}
-	
-	
-	
-	
+		
+		
 	
 	//Grabar transaccion de REDENCION de puntos - Devolviendo balance de puntos
+	@Path("/redimirpuntos/{codsucursal}/{momento}/{nrofactua}/{valortx}/{documento}/{puntosredimidos}")
+	@GET	
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response registrarRedendcion(@PathParam("codsucursal") String codsucursal,
+									 	@PathParam("momento") String momento,    
+									 	@PathParam("nrofactua") String nrofactura,													
+									 	@PathParam("valortx") Integer valortx,
+									 	@PathParam("documento") String documento,
+									 	@PathParam("puntosredimidos") int puntosRedimidos){
+		Map<String, Object> mapResponse = new HashMap<>();
+		
+		//se validan todos los parametros
+		if( !codsucursal.equals("") && !momento.equals("") && !nrofactura.equals("") && valortx != 0 
+					&& !documento.equals("") && puntosRedimidos!= 0){
+			
+			Sucursal sucursal = this.sucursalService.obtenerSucursalPorIdIterno(codsucursal);
+			
+			//se obtiene el afiliado	
+			Afiliado afiliado = this.afiliadoService.obtenerAfiliadoByDocumento(documento);
+			
+			if(afiliado != null){				
+				if (sucursal != null) {	
+					//invoca al metodo de registro Tx del Bean Balance puntos
+					try {
+						BanlancePuntos balance = calculoService.redencionPuntos(sucursal, momento, nrofactura,
+								valortx, afiliado, puntosRedimidos);
+						mapResponse.put("code","200");
+						mapResponse.put("message","Transaccion exitosa");
+						mapResponse.put("balance",balance);
+					} catch (Exception e) {
+						e.printStackTrace();
+						mapResponse.put("code","500");
+						mapResponse.put("message","Error general en el servidor");
+						return Response.status(500).entity(mapResponse).build();
+					}
+					return Response.status(200).entity(mapResponse).build();
+				}else{ // si no se halla la sucursal			
+					mapResponse.put("code","401");
+					mapResponse.put("message","Sucursal no encontrada");
+					return Response.status(401).entity(mapResponse).build();
+				}
+			}else{ //Si no se halla el afiliado
+				mapResponse.put("code","401");
+				mapResponse.put("message","Afilaido no encontrado");
+				return Response.status(401).entity(mapResponse).build();
+			}			
+			
+		}else{
+			mapResponse.put("code","400");
+			mapResponse.put("message","El servidor no pudo entender la solicitud debido a una sintaxis mal formada");
+		}
+		
+		return null;
+	}
 	
 	
 	
-	//Consulta de Balance de puntos
 	
 	
-	
-	//Consulta de afiliado 
+	//Consulta de afiliado | Retorna la infomracion basica del afiliado y su balance de puntos.
 	
 
 }

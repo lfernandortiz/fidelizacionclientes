@@ -85,8 +85,9 @@ public class PuntosService {
 				if (sucursal != null) {	
 					//invoca al metodo de registro Tx del Bean Balance puntos
 					try {
-						BanlancePuntos balance = calculoService.registrarTransaccion(sucursal, momento, nrofactura,
+						calculoService.registrarTransaccion(sucursal, momento, nrofactura,
 								valortx, afiliado, puntos);
+						BanlancePuntos balance = calculoService.consultaPuntos(afiliado);
 						mapResponse.put("code","200");
 						mapResponse.put("message","Transaccion exitosa");
 						mapResponse.put("balance",balance);
@@ -171,18 +172,31 @@ public class PuntosService {
 				if (sucursal != null) {	
 					//invoca al metodo de registro Tx del Bean Balance puntos
 					try {
-						BanlancePuntos balance = calculoService.redencionPuntos(sucursal, momento, nrofactura,
-								valortx, afiliado, puntosRedimidos);
-						mapResponse.put("code","200");
-						mapResponse.put("message","Transaccion exitosa");
-						mapResponse.put("balance",balance);
+						BanlancePuntos bTemp = calculoService.consultaPuntos(afiliado);
+						
+						if(bTemp.getDisponibles() > puntosRedimidos ){
+							
+							calculoService.redencionPuntos(sucursal, momento, nrofactura,
+									valortx, afiliado, puntosRedimidos);
+							BanlancePuntos balance =  calculoService.consultaPuntos(afiliado);
+							mapResponse.put("code","200");
+							mapResponse.put("message","Transaccion exitosa");
+							mapResponse.put("balance",balance);
+							
+							return Response.status(200).entity(mapResponse).build();
+						}else{							
+							mapResponse.put("code","400");
+							mapResponse.put("message","No Tiene los puntos suficiente para esta rededencio");
+							return Response.status(400).entity(mapResponse).build();
+						}
+						
 					} catch (Exception e) {
 						e.printStackTrace();
 						mapResponse.put("code","500");
 						mapResponse.put("message","Error general en el servidor");
 						return Response.status(500).entity(mapResponse).build();
 					}
-					return Response.status(200).entity(mapResponse).build();
+					
 				}else{ // si no se halla la sucursal			
 					mapResponse.put("code","401");
 					mapResponse.put("message","Sucursal no encontrada");
@@ -197,9 +211,10 @@ public class PuntosService {
 		}else{
 			mapResponse.put("code","400");
 			mapResponse.put("message","El servidor no pudo entender la solicitud debido a una sintaxis mal formada");
+			return Response.status(400).entity(mapResponse).build();
 		}
 		
-		return null;
+		
 	}
 	
 	

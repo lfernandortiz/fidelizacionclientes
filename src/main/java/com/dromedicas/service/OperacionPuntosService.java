@@ -59,7 +59,7 @@ public class OperacionPuntosService {
 	 * @param puntos
 	 * @return
 	 */
-	public BanlancePuntos registrarTransaccion(Sucursal sucursal, String momento, String nrofactura, Integer valortx,
+	public void registrarTransaccion(Sucursal sucursal, String momento, String nrofactura, Integer valortx,
 			Afiliado afiliado, int puntos) {
 
 		BanlancePuntos balance = new BanlancePuntos();
@@ -96,32 +96,25 @@ public class OperacionPuntosService {
 		tx.setPuntostransaccion(mathPuntos);
 		// graba los puntos iniciales
 		txService.updateTransaccion(tx);
-
-		// Aca se obtiene el balance
-		balance.setAcumulados( this.getPuntosAcumulados(afiliado) );
-		balance.setRedimidos( this.getPuntosRedemidos(afiliado));		
-		balance.setVencidos(this.getPuntosVencidos(afiliado));
-		balance.setAvencer(this.getPuntosAVencer(afiliado));
-		balance.setFechavencimiento(sdf.format(this.getFechaVencimiento(afiliado)));
-		balance.setDisponibles(this.getPuntosDisponibles(afiliado));
-
-		
-		//falta el envio de correo por registro de transaccion
-		
-		
-		return balance;
 	}
 	
 	
-	public BanlancePuntos redencionPuntos(Sucursal sucursal, String momento, String nrofactura, Integer valortx,
+	public void redencionPuntos(Sucursal sucursal, String momento, String nrofactura, Integer valortx,
 			Afiliado afiliado, int puntosARedimir){
 		//comienza lo bueno :-P
 		
+		BanlancePuntos balance = null;
 		//obtengo todas las transaccion conpuntos redimibles
 		List<Transaccion> txList = this.getListransaccionesARedimir(afiliado);
 		
+		//Aca proceso de redencion de puntos
+		//Se iteran todas las tx disponibles a redimir y se acumulan los puntos
+		// en la variable total mientras que se compara con los puntos a redimir
+		// en caso se exceder los puntos en una Tx se deja el excedente disponible
+		// en el campo saldo
 		int total =0;		
-		for(Transaccion tx:  txList){			
+		for(Transaccion tx:  txList){
+			//
 			if( tx.getRedimidos() == 1 ){				
 				total += tx.getSaldo();
 			}else{
@@ -130,26 +123,60 @@ public class OperacionPuntosService {
 			
 			if( total <= puntosARedimir ){
 				byte r = 1;
-				tx.setRedimidos(r);
-				this.txService.updateTransaccion(tx);				
+				if( tx.getRedimidos() == 1 ){
+					tx.setRedimidos(r);
+					tx.setSaldo(0);
+					this.txService.updateTransaccion(tx);					
+				}else{
+					tx.setRedimidos(r);
+					this.txService.updateTransaccion(tx);
+				}	
 			}else{
 				int dif = total - puntosARedimir;
 				byte r = 1;
 				tx.setRedimidos(r);
 				tx.setSaldo(dif);
 				this.txService.updateTransaccion(tx);
-				break;
-			}
-			
+				break;// cuando se llega al limite se interrumpe la iteracion
+			}			
 		}
 		
-		System.out.println("Total Puntos disponibles a redimir " + total );
+		//Graba la Transaccion de redencion
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		
+		Date momentotx = new Date();
+
+		try {
+			momentotx = sdf.parse(momento);
+			
+			System.out.println("Fecha Recibida Redencion: " + momento);
+
+		} catch (ParseException e) {
+			e.printStackTrace();
+		} // end catch
+
+		int idTipoTx = 2;
+		Tipotransaccion tipoTx = tipoTxService.obtenerTipoTransaccioById(idTipoTx);
+		Transaccion tx = new Transaccion();
+		tx.setAfiliado(afiliado);
+		tx.setSucursal(sucursal);
+		tx.setFechatransaccion(momentotx);
+		tx.setNrofactura(nrofactura);
+		tx.setValortotaltx(valortx);
+		tx.setTipotransaccion(tipoTx);		
+		tx.setPuntostransaccion(puntosARedimir);
+		// graba los puntos iniciales
+		txService.updateTransaccion(tx);
 		
-		return null;
+		//Proceso de acumulacion de puntos del saldo restante entre el total de la 
+		//factura y los pesos redimidos en puntos
+		int nuevoValorTx =  valortx - puntosARedimir;
+		int mathPuntos = (nuevoValorTx/100);
+		
+		// llamada al metodo registrarTransaccion con el nuevo valor a acumular
+		this.registrarTransaccion(sucursal, momento, nrofactura, nuevoValorTx, afiliado, mathPuntos);
+		
 	} 
-	
-	
 	
 	
 	

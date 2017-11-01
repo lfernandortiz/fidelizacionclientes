@@ -62,7 +62,6 @@ public class PuntosService {
 	@Path("/acumularpuntos/{codsucursal}/{momento}/{nrofactua}/{valortx}/{documento}/{puntos}")
 	@GET	
 	@Produces(MediaType.APPLICATION_JSON)
-	@JsonPropertyOrder({ "code", "status", "balance"})
 	public Response registrarTransaccion(@PathParam("codsucursal") String codsucursal,
 										 @PathParam("momento") String momento,
 										 @PathParam("nrofactua") String nrofactura,													
@@ -85,9 +84,18 @@ public class PuntosService {
 			if(afiliado != null){				
 				if (sucursal != null) {	
 					//invoca al metodo de registro Tx del Bean Balance puntos
-					BanlancePuntos balance = calculoService.registrarTransaccion(sucursal, momento, nrofactura,
-										valortx, afiliado, puntos);
-					
+					try {
+						BanlancePuntos balance = calculoService.registrarTransaccion(sucursal, momento, nrofactura,
+								valortx, afiliado, puntos);
+						mapResponse.put("code","200");
+						mapResponse.put("message","Transaccion exitosa");
+						mapResponse.put("balance",balance);
+					} catch (Exception e) {
+						e.printStackTrace();
+						mapResponse.put("code","500");
+						mapResponse.put("message","Error general en el servidor");
+						return Response.status(500).entity(mapResponse).build();
+					}
 					return Response.status(200).entity(mapResponse).build();
 				}else{ // si no se halla la sucursal			
 					mapResponse.put("code","401");
@@ -108,8 +116,28 @@ public class PuntosService {
 	}///Fin del metodo Acumular puntos
 		
 	
-	
-	
+	@Path("/consultapuntos/{documento}")
+	@GET	
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response consultaBalancePuntos(@PathParam("documento") String documento){
+		Map<String, Object> mapResponse = new HashMap<>();
+		
+		Afiliado afiliado = this.afiliadoService.obtenerAfiliadoByDocumento(documento);
+		
+		if(afiliado != null){
+			
+			BanlancePuntos balance = calculoService.consultaPuntos(afiliado);
+			
+			mapResponse.put("code","200");
+			mapResponse.put("message","Transaccion exitosa");
+			mapResponse.put("balance",balance);
+			return Response.status(200).entity(mapResponse).build();
+		}else{
+			mapResponse.put("code","401");
+			mapResponse.put("message","Afilaido no encontrado");
+			return Response.status(401).entity(mapResponse).build();
+		}		
+	}
 	
 	
 	

@@ -86,11 +86,11 @@ public class OperacionPuntosService {
 		tx.setFechatransaccion(momentotx);
 		tx.setNrofactura(nrofactura);
 		tx.setValortotaltx(valortx);
-		Date fechavencimientopuntos = addDays(momentotx, 365);//-> Cambiar por paramatreo optenico de consulta  (365)
+		Date fechavencimientopuntos = addDays(momentotx, 365);//-> Cambiar (365) por paramatreo optenico de consulta  
 		tx.setVencen(fechavencimientopuntos);
 		tx.setTipotransaccion(tipoTx);
 		//Aca se debe traer el parametros por consulta de base de datos del factor de acumulacion 
-		int mathPuntos = (valortx/100);	//-> Cambiar por paramatreo optenico de consulta  (100)	
+		int mathPuntos = (valortx/100);	//-> Cambiar (100) por paramatreo optenico de consulta  
 		System.out.println("----Puntos acumulados: "+ mathPuntos);
 				
 		tx.setPuntostransaccion(mathPuntos);
@@ -120,7 +120,7 @@ public class OperacionPuntosService {
 		//Aca proceso de redencion de puntos
 		//Se iteran todas las tx disponibles a redimir y se acumulan los puntos
 		// en la variable total mientras que se compara con los puntos a redimir
-		// en caso se exceder los puntos en una Tx se deja el excedente disponible
+		// en caso de exceder los puntos en una Tx se deja el excedente disponible
 		// en el campo saldo
 		int total =0;		
 		for(Transaccion tx:  txList){
@@ -182,7 +182,7 @@ public class OperacionPuntosService {
 		//Proceso de acumulacion de puntos del saldo restante entre el total de la 
 		//factura y los pesos redimidos en puntos
 		int nuevoValorTx =  valortx - puntosARedimir;
-		int mathPuntos = (nuevoValorTx/100);//-> Cambiar por paramatreo optenico de consulta  (100)
+		int mathPuntos = (nuevoValorTx/100);//-> Cambiar (100) por paramatreo optenico de consulta
 		
 		// llamada al metodo registrarTransaccion con el nuevo valor a acumular
 		this.registrarTransaccion(sucursal, momento, nrofactura, nuevoValorTx, afiliado, mathPuntos);
@@ -190,9 +190,41 @@ public class OperacionPuntosService {
 	} 
 	
 	
-	public void devolucionDeTx(){
+	
+	
+	public void devolucionTx(Sucursal sucursal, String momento, String nrofactura, Integer valortx, Afiliado afiliado) {
+
+		// Graba la Transaccion de redencion
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+		Date momentotx = new Date();
+
+		try {
+			momentotx = sdf.parse(momento);
+
+			System.out.println("Fecha Recibida Devolucion: " + momento);
+
+		} catch (ParseException e) {
+			e.printStackTrace();
+		} // end catch
+
+		int idTipoTx = 3; // tipo 3 es devolucion
+		Tipotransaccion tipoTx = tipoTxService.obtenerTipoTransaccioById(idTipoTx);
+		Transaccion tx = new Transaccion();
+		tx.setAfiliado(afiliado);
+		tx.setSucursal(sucursal);
+		tx.setFechatransaccion(momentotx);
+		tx.setNrofactura(nrofactura);
+		tx.setValortotaltx(valortx);
+		tx.setTipotransaccion(tipoTx);
+		int mathPuntos = (valortx/100);//-> Cambiar (100) por paramatreo optenico de consulta
+		tx.setPuntostransaccion(mathPuntos);
+		// graba la Tx de redencion
+		txService.updateTransaccion(tx);
+
 		
 	}
+	
 	
 	
 	
@@ -231,8 +263,8 @@ public class OperacionPuntosService {
 	
 	
 	private Integer getPuntosAcumulados(Afiliado instance){
-		String queryString = "SELECT sum(t.puntostransaccion) FROM Transaccion t WHERE t.afiliado.documento = :documento "
-				+ " and t.tipotransaccion.idtipotransaccion <> 2 ";  
+		String queryString = "SELECT sum(t.puntostransaccion)  FROM Transaccion t WHERE t.afiliado.documento = :documento "
+				+ " and t.tipotransaccion.idtipotransaccion <> 2  and t.tipotransaccion.idtipotransaccion <> 3";  
 		
 		Query query = em.createQuery( queryString );
 		System.out.println("Documento Instance: " + instance.getDocumento());
@@ -251,7 +283,7 @@ public class OperacionPuntosService {
 	
 	private int getPuntosRedemidos(Afiliado instance){
 		String queryString = "SELECT sum(t.puntostransaccion) FROM Transaccion t WHERE t.afiliado.documento = :documento "
-				+ "and t.tipotransaccion.idtipotransaccion = 2";
+				+ "and t.tipotransaccion.idtipotransaccion = 2 and t.tipotransaccion.idtipotransaccion = 3";
 		Query query = em.createQuery( queryString );
 		query.setParameter("documento", instance.getDocumento());
 		Long puntos = 0L;		
@@ -268,12 +300,14 @@ public class OperacionPuntosService {
 	
 	private int getPuntosVencidos(Afiliado instance){
 		String queryStringA = "select sum(t.puntostransaccion) from transaccion t " +
-								"where t.puntostransaccion > 0 and " +
+								"where t.tipotransaccion.idtipotransaccion <> 2  and " +
+								"t.tipotransaccion.idtipotransaccion <> 3 and " +
 								"t.vencen < CURRENT_DATE  and t.redimidos = 0 and " +
 								"t.idafiliado = " + instance.getIdafiliado();		
 		
 		String queryStringB = "select sum(t.saldo) from transaccion t " +
-				"where t.saldo > 0 and " +
+				"where t.tipotransaccion.idtipotransaccion <> 2  and " +
+				"t.tipotransaccion.idtipotransaccion <> 3 and " +
 				"t.vencen < CURRENT_DATE  and t.redimidos = 1 and " +
 				"t.idafiliado = " + instance.getIdafiliado();
 		
@@ -307,11 +341,13 @@ public class OperacionPuntosService {
 	private int getPuntosAVencer(Afiliado instance) {
 		
 		String queryStringA = "select sum(t.puntostransaccion) from transaccion t "
-				+ "where t.puntostransaccion > 0 and " + "t.vencen >=  CURRENT_DATE  and "
+				+ "where t.tipotransaccion.idtipotransaccion <> 2  and t.tipotransaccion.idtipotransaccion <> 3 and " 
+				+ "t.vencen >=  CURRENT_DATE  and "
 				+ "t.vencen <= DATE_ADD(CURRENT_DATE, INTERVAL 30 DAY) and t.redimidos = 0 and "
-				+ "t.idafiliado = " + instance.getIdafiliado();
+				+ " and t.idafiliado = " + instance.getIdafiliado();
 
-		String queryStringB = "select sum(t.saldo) from transaccion t " + "where t.saldo > 0 and "
+		String queryStringB = "select sum(t.saldo) from transaccion t " + "where t.tipotransaccion.idtipotransaccion <> 2  and "
+				+ "t.tipotransaccion.idtipotransaccion <> 3 and "
 				+ "t.vencen >=  CURRENT_DATE and  t.vencen <= DATE_ADD(CURRENT_DATE, INTERVAL 30 DAY) and "
 				+ "t.redimidos = 1 and " + "t.idafiliado = " + instance.getIdafiliado();
 
@@ -345,10 +381,12 @@ public class OperacionPuntosService {
 	
 	private int getPuntosDisponibles(Afiliado instance) {
 		String queryStringA = "select sum(t.puntostransaccion) from transaccion t "
-				+ "where t.puntostransaccion > 0 and " + "t.vencen >= CURRENT_DATE  and t.redimidos = 0 and "
+				+ "where t.tipotransaccion.idtipotransaccion <> 2  and t.tipotransaccion.idtipotransaccion <> 3 and " 
+				+ "t.vencen >= CURRENT_DATE  and t.redimidos = 0 and "
 				+ "t.idafiliado = " + instance.getIdafiliado();
 
-		String queryStringB = "select sum(t.saldo) from transaccion t " + "where t.saldo > 0 and "
+		String queryStringB = "select sum(t.saldo) from transaccion t " 
+				+ "where t.tipotransaccion.idtipotransaccion <> 2  and t.tipotransaccion.idtipotransaccion <> 3 and "
 				+ "t.vencen >= CURRENT_DATE  and t.redimidos = 1 and " + "t.idafiliado = " + instance.getIdafiliado();
 
 		Query queryA = em.createNativeQuery(queryStringA);
@@ -375,7 +413,7 @@ public class OperacionPuntosService {
 			total = total.add(puntosB);
 		}
 		
-		//-> Cambiar por paramatreo optenico de consulta  (8000)
+		//-> Cambiar (8000) por paramatreo optenico de consulta  
 		return total.intValue() >= 8000 ? total.intValue() : 0; 
 	}
 	
@@ -400,9 +438,11 @@ public class OperacionPuntosService {
 		//Se buscan todas la Tx's con puntos para redimir, incluyendo saldos de Tx anteriores
 		//que aun esta vigentes
 		String queryString = "from Transaccion t " +
-				 "where (t.puntostransaccion > 0 and t.vencen >= CURRENT_DATE  and t.redimidos = 0 and "+
+				 "where (t.tipotransaccion.idtipotransaccion <> 2  and t.tipotransaccion.idtipotransaccion <> 3 and " +
+				 "t.vencen >= CURRENT_DATE  and t.redimidos = 0 and "+
 				 "t.afiliado.idafiliado = :idAf1 ) OR" +
-				 "( t.saldo > 0 and t.vencen >= CURRENT_DATE  and "+
+				 "( t.tipotransaccion.idtipotransaccion <> 2  and t.tipotransaccion.idtipotransaccion <> 3 and " +
+				 "t.vencen >= CURRENT_DATE  and "+
 				 " t.redimidos = 1 and t.afiliado.idafiliado = :idAf2 ) order by t.vencen asc";
 		
 		Query query = em.createQuery( queryString );		
@@ -415,6 +455,20 @@ public class OperacionPuntosService {
 			System.out.println("sin pupntos para redimir");
 		}		
 		return txList;
+	}
+	
+	
+	
+	private Transaccion obtenerFacturaDevolucion(String nroFactura) {
+		Query query = em.createQuery("FROM Transaccion t WHERE t.nrofactura = :nroFac and t.redimidos = 0");
+		query.setParameter("nroFac", nroFactura);
+		Transaccion temp = null;		
+		try {
+			temp = (Transaccion) query.getSingleResult();
+		} catch (NoResultException e) {
+			System.out.println("Factura no encontrada");			
+		}		
+		return temp;
 	}
 	
 

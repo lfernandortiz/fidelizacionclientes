@@ -218,10 +218,63 @@ public class PuntosService {
 	}
 	
 	
-	
-	
-	
-	//Consulta de afiliado | Retorna la infomracion basica del afiliado y su balance de puntos.
+	// Grabar transaccion de REDENCION de puntos - Devolviendo balance de puntos
+	@Path("/devolucion/{codsucursal}/{momento}/{nrofactua}/{valortx}/{documento}")
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response devolucionTransaccion(@PathParam("codsucursal") String codsucursal,
+			@PathParam("momento") String momento, @PathParam("nrofactua") String nrofactura,
+			@PathParam("valortx") Integer valortx, @PathParam("documento") String documento) {
+		Map<String, Object> mapResponse = new HashMap<>();
+
+		// se validan todos los parametros
+		if (!codsucursal.equals("") && !momento.equals("") && !nrofactura.equals("") && valortx != 0
+				&& !documento.equals("")) {
+
+			Sucursal sucursal = this.sucursalService.obtenerSucursalPorIdIterno(codsucursal);
+
+			// se obtiene el afiliado
+			Afiliado afiliado = this.afiliadoService.obtenerAfiliadoByDocumento(documento);
+
+			if (afiliado != null) {
+				if (sucursal != null) {
+					// invoca al metodo de registro Tx del Bean Balance puntos
+					try {
+						BanlancePuntos bTemp = calculoService.consultaPuntos(afiliado);
+
+						calculoService.devolucionTx(sucursal, momento, nrofactura, valortx, afiliado);
+						BanlancePuntos balance = calculoService.consultaPuntos(afiliado);
+						mapResponse.put("code", "200");
+						mapResponse.put("message", "Transaccion exitosa");
+						mapResponse.put("balance", balance);
+
+						return Response.status(200).entity(mapResponse).build();
+
+					} catch (Exception e) {
+						e.printStackTrace();
+						mapResponse.put("code", "500");
+						mapResponse.put("message", "Error general en el servidor");
+						return Response.status(500).entity(mapResponse).build();
+					}
+
+				} else { // si no se halla la sucursal
+					mapResponse.put("code", "401");
+					mapResponse.put("message", "Sucursal no encontrada");
+					return Response.status(401).entity(mapResponse).build();
+				}
+			} else { // Si no se halla el afiliado
+				mapResponse.put("code", "401");
+				mapResponse.put("message", "Afilaido no encontrado");
+				return Response.status(401).entity(mapResponse).build();
+			}
+
+		} else {
+			mapResponse.put("code", "400");
+			mapResponse.put("message", "El servidor no pudo entender la solicitud debido a una sintaxis mal formada");
+			return Response.status(400).entity(mapResponse).build();
+		}
+
+	}
 	
 
 }

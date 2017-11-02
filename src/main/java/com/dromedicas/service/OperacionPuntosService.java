@@ -86,11 +86,11 @@ public class OperacionPuntosService {
 		tx.setFechatransaccion(momentotx);
 		tx.setNrofactura(nrofactura);
 		tx.setValortotaltx(valortx);
-		Date fechavencimientopuntos = addDays(momentotx, 365);
+		Date fechavencimientopuntos = addDays(momentotx, 365);//-> Cambiar por paramatreo optenico de consulta  (365)
 		tx.setVencen(fechavencimientopuntos);
 		tx.setTipotransaccion(tipoTx);
 		//Aca se debe traer el parametros por consulta de base de datos del factor de acumulacion 
-		int mathPuntos = (valortx/100);		
+		int mathPuntos = (valortx/100);	//-> Cambiar por paramatreo optenico de consulta  (100)	
 		System.out.println("----Puntos acumulados: "+ mathPuntos);
 				
 		tx.setPuntostransaccion(mathPuntos);
@@ -99,6 +99,16 @@ public class OperacionPuntosService {
 	}
 	
 	
+	/**
+	 * Metodo que procesa la redencion de puntos, y acumula el saldo
+	 * restante de la Tx
+	 * @param sucursal
+	 * @param momento
+	 * @param nrofactura
+	 * @param valortx
+	 * @param afiliado
+	 * @param puntosARedimir
+	 */
 	public void redencionPuntos(Sucursal sucursal, String momento, String nrofactura, Integer valortx,
 			Afiliado afiliado, int puntosARedimir){
 		//comienza lo bueno :-P
@@ -155,7 +165,7 @@ public class OperacionPuntosService {
 			e.printStackTrace();
 		} // end catch
 
-		int idTipoTx = 2;
+		int idTipoTx = 2;//tipo 2 es redencion
 		Tipotransaccion tipoTx = tipoTxService.obtenerTipoTransaccioById(idTipoTx);
 		Transaccion tx = new Transaccion();
 		tx.setAfiliado(afiliado);
@@ -165,18 +175,23 @@ public class OperacionPuntosService {
 		tx.setValortotaltx(valortx);
 		tx.setTipotransaccion(tipoTx);		
 		tx.setPuntostransaccion(puntosARedimir);
-		// graba los puntos iniciales
+		// graba la Tx de redencion
 		txService.updateTransaccion(tx);
 		
 		//Proceso de acumulacion de puntos del saldo restante entre el total de la 
 		//factura y los pesos redimidos en puntos
 		int nuevoValorTx =  valortx - puntosARedimir;
-		int mathPuntos = (nuevoValorTx/100);
+		int mathPuntos = (nuevoValorTx/100);//-> Cambiar por paramatreo optenico de consulta  (100)
 		
 		// llamada al metodo registrarTransaccion con el nuevo valor a acumular
 		this.registrarTransaccion(sucursal, momento, nrofactura, nuevoValorTx, afiliado, mathPuntos);
 		
 	} 
+	
+	
+	public void devolucionDeTx(){
+		
+	}
 	
 	
 	
@@ -208,7 +223,7 @@ public class OperacionPuntosService {
     {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
-        cal.add(Calendar.DATE, days); //minus number would decrement the days
+        cal.add(Calendar.DATE, days); 
         return cal.getTime();
     }
 	
@@ -216,7 +231,8 @@ public class OperacionPuntosService {
 	
 	private Integer getPuntosAcumulados(Afiliado instance){
 		String queryString = "SELECT sum(t.puntostransaccion) FROM Transaccion t WHERE t.afiliado.documento = :documento "
-				+ " and t.puntostransaccion > 0 ";
+				+ " and t.tipotransaccion.idtipotransaccion <> 2 ";  
+		
 		Query query = em.createQuery( queryString );
 		System.out.println("Documento Instance: " + instance.getDocumento());
 		query.setParameter("documento", instance.getDocumento());
@@ -234,7 +250,7 @@ public class OperacionPuntosService {
 	
 	private int getPuntosRedemidos(Afiliado instance){
 		String queryString = "SELECT sum(t.puntostransaccion) FROM Transaccion t WHERE t.afiliado.documento = :documento "
-				+ "and t.puntostransaccion < 0 and t.tipotransaccion.idtipotransaccion = 2";
+				+ "and t.tipotransaccion.idtipotransaccion = 2";
 		Query query = em.createQuery( queryString );
 		query.setParameter("documento", instance.getDocumento());
 		Long puntos = 0L;		
@@ -244,7 +260,7 @@ public class OperacionPuntosService {
 			System.out.println("Puntos acumulados no encontrados...");
 			return puntos.intValue();			
 		}		
-		return puntos != null ? (puntos.intValue()*-1) : 0;
+		return puntos != null ? puntos.intValue() : 0;
 	}
 	
 	
@@ -357,6 +373,8 @@ public class OperacionPuntosService {
 		if( puntosB != null){
 			total = total.add(puntosB);
 		}
+		
+		//-> Cambiar por paramatreo optenico de consulta  (8000)
 		return total.intValue() >= 8000 ? total.intValue() : 0; 
 	}
 	

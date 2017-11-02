@@ -165,6 +165,7 @@ public class OperacionPuntosService {
 			e.printStackTrace();
 		} // end catch
 
+		
 		int idTipoTx = 2;//tipo 2 es redencion
 		Tipotransaccion tipoTx = tipoTxService.obtenerTipoTransaccioById(idTipoTx);
 		Transaccion tx = new Transaccion();
@@ -204,7 +205,7 @@ public class OperacionPuntosService {
 		balance.setVencidos(this.getPuntosVencidos(afiliado));
 		balance.setAvencer(this.getPuntosAVencer(afiliado));
 		balance.setFechavencimiento(sdf.format(this.getFechaVencimiento(afiliado)));
-		balance.setDisponibles(this.getPuntosDisponibles(afiliado));
+		balance.setDisponiblesaredimir(this.getPuntosDisponibles(afiliado));
 		
 		return balance;
 	}

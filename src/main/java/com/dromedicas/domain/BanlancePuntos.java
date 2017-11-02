@@ -17,7 +17,8 @@ public class BanlancePuntos implements Serializable {
 	private int vencidos;
 	private int avencer;
 	private String fechavencimiento;
-	private int disponibles;
+	private int disponiblesaredimir;
+	private int acumuladosnodisponibles;
 	
 	
 	public BanlancePuntos (){}
@@ -48,10 +49,7 @@ public class BanlancePuntos implements Serializable {
 	}
 
 
-	public void setVencidos(int vencidos) {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		 
-		
+	public void setVencidos(int vencidos) {		
 		this.vencidos = vencidos;
 	}
 
@@ -76,14 +74,25 @@ public class BanlancePuntos implements Serializable {
 	}
 
 
-	public int getDisponibles() {
-		return disponibles;
+	public int getDisponiblesaredimir() {
+		return disponiblesaredimir;
 	}
 
 
-	public void setDisponibles(int disponibles) {
-		this.disponibles = disponibles;
+	public void setDisponiblesaredimir(int disponiblesaredimir) {
+		this.disponiblesaredimir = disponiblesaredimir;
 	}
+
+
+	public int getAcumuladosnodisponibles() {
+		return acumuladosnodisponibles;
+	}
+
+
+	public void setAcumuladosnodisponibles(int acumuladosnodisponibles) {
+		this.acumuladosnodisponibles = acumuladosnodisponibles;
+	}
+	
 	
 	
 

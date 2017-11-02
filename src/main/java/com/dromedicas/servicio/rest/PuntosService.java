@@ -214,7 +214,6 @@ public class PuntosService {
 			return Response.status(400).entity(mapResponse).build();
 		}
 		
-		
 	}
 	
 	

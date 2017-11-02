@@ -234,8 +234,7 @@ public class OperacionPuntosService {
 		BanlancePuntos balance = new BanlancePuntos();
 		balance.setAcumulados( this.getPuntosAcumulados(afiliado) );
 		balance.setRedimidos( this.getPuntosRedemidos(afiliado));		
-		//balance.setVencidos(this.getPuntosVencidos(afiliado));
-		
+		balance.setVencidos(this.getPuntosVencidos(afiliado));		
 		balance.setAvencer(this.getPuntosAVencer(afiliado));
 		balance.setFechavencimiento(sdf.format(this.getFechaVencimiento(afiliado)));
 		balance.setDisponiblesaredimir(this.getPuntosDisponibles(afiliado));
@@ -284,7 +283,7 @@ public class OperacionPuntosService {
 	
 	private int getPuntosRedemidos(Afiliado instance){
 		String queryString = "SELECT sum(t.puntostransaccion) FROM Transaccion t WHERE t.afiliado.documento = :documento "
-				+ "and t.tipotransaccion.idtipotransaccion = 2 and t.tipotransaccion.idtipotransaccion = 3";
+				+ "and t.tipotransaccion.idtipotransaccion = 2 or t.tipotransaccion.idtipotransaccion = 3";
 		Query query = em.createQuery( queryString );
 		query.setParameter("documento", instance.getDocumento());
 		Long puntos = 0L;		
@@ -300,17 +299,17 @@ public class OperacionPuntosService {
 	
 	
 	private int getPuntosVencidos(Afiliado instance){
-		String queryStringA = "select sum(t.puntostransaccion) from Transaccion t " +
-								"where t.tipotransaccion != 2  and " +
-								"t.tipotransaccion != 3 and " +
+		String queryStringA = "select sum(t.puntostransaccion) from transaccion t " +
+								"where t.tipotx != 2  and " +
+								"t.tipotx != 3 and " +
 								"t.vencen < CURRENT_DATE  and t.redimidos = 0 and " +
-								"t.afiliado = " + instance.getIdafiliado();		
+								"t.idafiliado = " + instance.getIdafiliado();		
 		
 		String queryStringB = "select sum(t.saldo) from Transaccion t " +
-				"where t.tipotransaccion.idtipotransaccion <> 2  and " +
-				"t.tipotransaccion.idtipotransaccion <> 3 and " +
+				"where t.tipotx <> 2  and " +
+				"t.tipotx <> 3 and " +
 				"t.vencen < CURRENT_DATE  and t.redimidos = 1 and " +
-				"t.afiliado.idafiliado = " + instance.getIdafiliado();
+				"t.idafiliado = " + instance.getIdafiliado();
 				
 		Query queryA = em.createNativeQuery( queryStringA );
 		Query queryB = em.createNativeQuery( queryStringB );
@@ -318,7 +317,7 @@ public class OperacionPuntosService {
 		BigDecimal puntosA = new BigDecimal(0);	
 		BigDecimal puntosB = new BigDecimal(0);	
 		try {
-			System.out.println("---------Query: " + queryA.unwrap(org.hibernate.Query.class).getQueryString());
+			//System.out.println("---------Query: " + queryA.unwrap(org.hibernate.Query.class).getQueryString());
 			
 			puntosA =    (BigDecimal) queryA.getSingleResult();
 		} catch (Exception e) {			
@@ -339,22 +338,23 @@ public class OperacionPuntosService {
 			total = total.add(puntosB);
 		}
 		return total.intValue();
+		
 	}
 
 	
 	
 	private int getPuntosAVencer(Afiliado instance) {
 		
-		String queryStringA = "select sum(t.puntostransaccion) from Transaccion t "
-				+ "where t.tipotransaccion.idtipotransaccion <> 2  and t.tipotransaccion.idtipotransaccion <> 3 and " 
+		String queryStringA = "select sum(t.puntostransaccion) from transaccion t "
+				+ "where t.tipotx <> 2  and t.tipotx <> 3 and " 
 				+ "t.vencen >=  CURRENT_DATE  and "
 				+ "t.vencen <= DATE_ADD(CURRENT_DATE, INTERVAL 30 DAY) and t.redimidos = 0 and "
-				+ " and t.afiliado = " + instance.getIdafiliado();
+				+ "t.idafiliado = " + instance.getIdafiliado();
 
-		String queryStringB = "select sum(t.saldo) from Transaccion t " + "where t.tipotransaccion.idtipotransaccion <> 2  and "
-				+ "t.tipotransaccion.idtipotransaccion <> 3 and "
+		String queryStringB = "select sum(t.saldo) from transaccion t " + "where t.tipotx <> 2  and "
+				+ "t.tipotx <> 3 and "
 				+ "t.vencen >=  CURRENT_DATE and  t.vencen <= DATE_ADD(CURRENT_DATE, INTERVAL 30 DAY) and "
-				+ "t.redimidos = 1 and " + "t.afiliado = " + instance.getIdafiliado();
+				+ "t.redimidos = 1 and t.idafiliado = " + instance.getIdafiliado();
 
 		Query queryA = em.createNativeQuery(queryStringA);
 		Query queryB = em.createNativeQuery(queryStringB);
@@ -385,14 +385,14 @@ public class OperacionPuntosService {
 	
 	
 	private int getPuntosDisponibles(Afiliado instance) {
-		String queryStringA = "select sum(t.puntostransaccion) from Transaccion t "
-				+ "where t.tipotransaccion.idtipotransaccion <> 2  and t.tipotransaccion.idtipotransaccion <> 3 and " 
+		String queryStringA = "select sum(t.puntostransaccion) from transaccion t "
+				+ "where t.tipotx <> 2  and t.tipotx <> 3 and " 
 				+ "t.vencen >= CURRENT_DATE  and t.redimidos = 0 and "
-				+ "t.afiliado.idafiliado = " + instance.getIdafiliado();
+				+ "t.idafiliado = " + instance.getIdafiliado();
 
-		String queryStringB = "select sum(t.saldo) from Transaccion t " 
-				+ "where t.tipotransaccion.idtipotransaccion <> 2  and t.tipotransaccion.idtipotransaccion <> 3 and "
-				+ "t.vencen >= CURRENT_DATE  and t.redimidos = 1 and " + "t.afiliado.idafiliado = " + instance.getIdafiliado();
+		String queryStringB = "select sum(t.saldo) from transaccion t " 
+				+ "where t.tipotx <> 2  and t.tipotx <> 3 and "
+				+ "t.vencen >= CURRENT_DATE  and t.redimidos = 1 and " + "t.idafiliado = " + instance.getIdafiliado();
 
 		Query queryA = em.createNativeQuery(queryStringA);
 		Query queryB = em.createNativeQuery(queryStringB);

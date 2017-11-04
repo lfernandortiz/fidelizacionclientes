@@ -226,8 +226,6 @@ public class OperacionPuntosService {
 	}
 	
 	
-	
-	
 	public BanlancePuntos consultaPuntos( Afiliado afiliado){
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		
@@ -465,7 +463,8 @@ public class OperacionPuntosService {
 	
 	
 	private Transaccion obtenerFacturaDevolucion(String nroFactura) {
-		Query query = em.createQuery("FROM Transaccion t WHERE t.nrofactura = :nroFac and t.redimidos = 0");
+		String queryString ="FROM Transaccion t WHERE t.nrofactura = :nroFac and t.redimidos = 0 and t.redimidos <> 1";
+		Query query = em.createQuery(queryString);
 		query.setParameter("nroFac", nroFactura);
 		Transaccion temp = null;		
 		try {

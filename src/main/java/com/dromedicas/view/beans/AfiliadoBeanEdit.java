@@ -266,62 +266,7 @@ public class AfiliadoBeanEdit implements Serializable{
 		this.afiliadoSelected.setUsuariowebBean( this.loginBean.getUser() );
 		
 		//3 Persiste el nuevo afiliado
-		afiliadoService.updateAfiliado(this.afiliadoSelected);
-		
-		//4 Acumula los 100 puntos inciales del afiliado 
-		
-		Afiliado afTemp = this.afiliadoService.obtenerAfiliadoByDocumento(this.afiliadoSelected.getDocumento());
-		
-		int id = 4;
-		Tipotransaccion tipoTx = tipoTxService.obtenerTipoTransaccioById(id);
-		Transaccion tx = new Transaccion(); 
-		tx.setAfiliado(afTemp);
-		tx.setSucursal(this.afiliadoSelected.getSucursal());
-		tx.setFechatransaccion(new Date());
-		tx.setNrofactura("REGINI");
-		tx.setValortotaltx(0);
-		tx.setVencen(this.calculoService.addDays(new Date(), 365));
-		tx.setTipotransaccion(tipoTx);
-		tx.setPuntostransaccion(100);
-			//graba los puntos iniciales
-		txService.updateTransaccion(tx);
-		
-			//Se busca si el nuevo afiliado es un referido
-		if (this.afiliadoSelected.getEmail() != null && !this.afiliadoSelected.getEmail().equals("")) {
-			Referido ref = this.referidoService.obtenerReferidoPorEmail(this.afiliadoSelected.getEmail());
-			
-			// si el nuevo es un referido graba 100 puntos al afiliado que lo
-			// refirio
-			
-			if (ref != null) {
-				Afiliado afiReferente = ref.getAfiliado();
-
-				int idTipo = 5;
-				Tipotransaccion tipoTxRef = tipoTxService.obtenerTipoTransaccioById(idTipo);
-				Transaccion txRef = new Transaccion();
-				txRef.setAfiliado(afiReferente);
-				txRef.setSucursal(this.afiliadoSelected.getSucursal());
-				txRef.setFechatransaccion(new Date());
-				txRef.setNrofactura("REGREF");
-				txRef.setValortotaltx(0);
-				txRef.setVencen( this.calculoService.addDays(new Date(), 365));
-				txRef.setTipotransaccion(tipoTxRef);
-				txRef.setPuntostransaccion(100);
-				// graba los puntos iniciales
-				txService.updateTransaccion(txRef);
-			}
-		} // end if validacion afiliado		
-				
-		//5 Envia correo de notificacion de afiliacion
-		boolean enviado = false;
-		if(this.afiliadoSelected.getEmail() != null && !this.afiliadoSelected.getEmail().equals("")){
-			enviado = mailAlert.enviarEmailAlertaVentas(this.afiliadoSelected);
-		}
-		
-		
-		if(enviado){
-		//6 Registro del Email para tracking	
-		}
+		afiliadoService.crearAfiliado(this.afiliadoSelected);
 		
 		//7 Despliega Callout sucess				
 		FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("afiliadoBeanEdit");
@@ -405,7 +350,7 @@ public class AfiliadoBeanEdit implements Serializable{
 		this.afiliadoSelected.setUsuariowebBean( this.loginBean.getUser() );
 		
 		//Persiste el nuevo afiliado
-		afiliadoService.updateAfiliado(this.afiliadoSelected);
+		afiliadoService.crearAfiliado(this.afiliadoSelected);
 		
 		FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("afiliadoBeanEdit");
 		
@@ -419,8 +364,7 @@ public class AfiliadoBeanEdit implements Serializable{
 		return "afiliadolist?faces-redirect=true";
 	}
 	
-	public void reenvioEmailAfiliacion(){
-		
+	public void reenvioEmailAfiliacion(){		
 		
 		boolean enviado = mailAlert.enviarEmailAlertaVentas(this.afiliadoSelected);
 		

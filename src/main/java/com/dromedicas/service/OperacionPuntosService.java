@@ -114,6 +114,7 @@ public class OperacionPuntosService {
 		//comienza lo bueno :-P
 		
 		BanlancePuntos balance = null;
+		
 		//obtengo todas las transaccion conpuntos redimibles
 		List<Transaccion> txList = this.getListransaccionesARedimir(afiliado);
 		
@@ -226,15 +227,17 @@ public class OperacionPuntosService {
 	
 	
 	public BanlancePuntos consultaPuntos( Afiliado afiliado){
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		
 		BanlancePuntos balance = new BanlancePuntos();
 		balance.setAcumulados( this.getPuntosAcumulados(afiliado) );
 		balance.setRedimidos( this.getPuntosRedemidos(afiliado));		
 		balance.setVencidos(this.getPuntosVencidos(afiliado));		
 		balance.setAvencer(this.getPuntosAVencer(afiliado));
-		balance.setFechavencimiento(sdf.format(this.getFechaVencimiento(afiliado)));
+		Date tempDate = this.getFechaVencimiento(afiliado);
+		balance.setFechavencimiento(tempDate != null ? sdf.format(tempDate) : "" );
 		balance.setDisponiblesaredimir(this.getPuntosDisponibles(afiliado));
+		balance.setAcumuladosnodisponibles(this.getPuntosAcumuladosNoDisponibles(afiliado));
 		
 		return balance;
 	}
@@ -280,9 +283,11 @@ public class OperacionPuntosService {
 	
 	private int getPuntosRedemidos(Afiliado instance){
 		String queryString = "SELECT sum(t.puntostransaccion) FROM Transaccion t WHERE t.afiliado.documento = :documento "
-				+ "and t.tipotransaccion.idtipotransaccion = 2 or t.tipotransaccion.idtipotransaccion = 3";
+				+ "and (t.tipotransaccion.idtipotransaccion = 2 or t.tipotransaccion.idtipotransaccion = 3)";
 		Query query = em.createQuery( queryString );
 		query.setParameter("documento", instance.getDocumento());
+		
+		System.out.println("---------Query: " + query.unwrap(org.hibernate.Query.class).getQueryString());
 		Long puntos = 0L;		
 		try {
 			puntos =  (Long) query.getSingleResult();
@@ -432,6 +437,62 @@ public class OperacionPuntosService {
 		return total.intValue() >= 8000 ? total.intValue() : 0; 
 	}
 	
+	/**
+	 * Acumulados no disponibles son aquellos puntos acumulados, que no suman
+	 * el minimo redimible.
+	 * @param instance
+	 * @return
+	 */                         
+	private int getPuntosAcumuladosNoDisponibles(Afiliado instance) {
+		String queryStringA = "select sum(t.puntostransaccion) from transaccion t "
+				+ "where t.tipotx <> 2  and t.tipotx <> 3 and " 
+				+ "t.vencen >= CURRENT_DATE  and t.redimidos = 0 and "
+				+ "t.idafiliado = " + instance.getIdafiliado();
+
+		String queryStringB = "select sum(t.saldo) from transaccion t " 
+				+ "where t.tipotx <> 2  and t.tipotx <> 3 and "
+				+ "t.vencen >= CURRENT_DATE  and t.redimidos = 1 and " + "t.idafiliado = " + instance.getIdafiliado();
+		
+		String queryStringC = "select sum(t.puntostransaccion) from transaccion t " 
+				+ "where t.tipotx = 3 and "
+				+ "t.idafiliado = " + instance.getIdafiliado();
+
+		Query queryA = em.createNativeQuery(queryStringA);
+		Query queryB = em.createNativeQuery(queryStringB);
+		Query queryC = em.createNativeQuery(queryStringC);
+		
+		BigDecimal puntosA = new BigDecimal(0);	
+		BigDecimal puntosB = new BigDecimal(0);	
+		BigDecimal puntosC = new BigDecimal(0);	
+		try {
+			puntosA = (BigDecimal) queryA.getSingleResult();
+		} catch (NoResultException e) {
+			System.out.println("Puntos vencidos no encontrados...");
+		}
+		try {
+			puntosB = (BigDecimal) queryB.getSingleResult();
+		} catch (NoResultException e) {
+			System.out.println("Puntos vencidos Saldo no encontrados...");
+		}
+		try {
+			puntosC = (BigDecimal) queryC.getSingleResult();
+		} catch (NoResultException e) {
+			System.out.println("Puntos vencidos Devolucion encontrados...");
+		}
+		
+		BigDecimal total = new BigDecimal(0);
+		if( puntosA != null){
+			total = puntosA;
+		}
+		if( puntosB != null){
+			total = total.add(puntosB);
+		}
+		if( puntosC != null){
+			total =  total.subtract(puntosC);
+		}
+		
+		return total.intValue() ; 
+	}
 	
 	
 	private Date getFechaVencimiento(Afiliado instance){

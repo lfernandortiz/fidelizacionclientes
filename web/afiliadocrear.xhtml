@@ -52,7 +52,7 @@
 								<p:calendar id="fechanacid" value="#{afiliadoBeanEdit.afiliadoSelected.fechanacimiento}"
 									pattern = "dd/MM/yyyy" mask="true" required="true"
 									navigator="true" popupIconOnly="false" mode="popup"
-									showOn="button" yearRange="c-100:c-18">
+									showOn="button" yearRange="c-100:c0">
 									<f:convertDateTime pattern = "dd/MM/yyyy" />
 									<p:ajax event="blur" update="cedulaid" listener="#{afiliadoBeanEdit.validarEdad()}" />
 								</p:calendar>

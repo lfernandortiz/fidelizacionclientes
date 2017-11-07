@@ -149,8 +149,7 @@ public class OperacionPuntosService {
 				this.txService.updateTransaccion(tx);
 				break;// cuando se llega al limite se interrumpe la iteracion
 			}			
-		}
-		
+		}		
 		//Graba la Transaccion de redencion
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		
@@ -165,7 +164,7 @@ public class OperacionPuntosService {
 			e.printStackTrace();
 		} // end catch
 
-		
+		//se persiste la nueva transaccion de redencion
 		int idTipoTx = 2;//tipo 2 es redencion
 		Tipotransaccion tipoTx = tipoTxService.obtenerTipoTransaccioById(idTipoTx);
 		Transaccion tx = new Transaccion();
@@ -356,7 +355,7 @@ public class OperacionPuntosService {
 
 		Query queryA = em.createNativeQuery(queryStringA);
 		Query queryB = em.createNativeQuery(queryStringB);
-
+		
 		BigDecimal puntosA = new BigDecimal(0);	
 		BigDecimal puntosB = new BigDecimal(0);	
 		try {
@@ -391,12 +390,18 @@ public class OperacionPuntosService {
 		String queryStringB = "select sum(t.saldo) from transaccion t " 
 				+ "where t.tipotx <> 2  and t.tipotx <> 3 and "
 				+ "t.vencen >= CURRENT_DATE  and t.redimidos = 1 and " + "t.idafiliado = " + instance.getIdafiliado();
+		
+		String queryStringC = "select sum(t.puntostransaccion) from transaccion t " 
+				+ "where t.tipotx = 3 and "
+				+ "t.idafiliado = " + instance.getIdafiliado();
 
 		Query queryA = em.createNativeQuery(queryStringA);
 		Query queryB = em.createNativeQuery(queryStringB);
-
+		Query queryC = em.createNativeQuery(queryStringC);
+		
 		BigDecimal puntosA = new BigDecimal(0);	
 		BigDecimal puntosB = new BigDecimal(0);	
+		BigDecimal puntosC = new BigDecimal(0);	
 		try {
 			puntosA = (BigDecimal) queryA.getSingleResult();
 		} catch (NoResultException e) {
@@ -407,6 +412,11 @@ public class OperacionPuntosService {
 		} catch (NoResultException e) {
 			System.out.println("Puntos vencidos Saldo no encontrados...");
 		}
+		try {
+			puntosC = (BigDecimal) queryC.getSingleResult();
+		} catch (NoResultException e) {
+			System.out.println("Puntos vencidos Devolucion encontrados...");
+		}
 		
 		BigDecimal total = new BigDecimal(0);
 		if( puntosA != null){
@@ -415,7 +425,9 @@ public class OperacionPuntosService {
 		if( puntosB != null){
 			total = total.add(puntosB);
 		}
-		
+		if( puntosC != null){
+			total =  total.subtract(puntosC);
+		}
 		//-> Cambiar (8000) por paramatreo optenico de consulta  
 		return total.intValue() >= 8000 ? total.intValue() : 0; 
 	}
@@ -424,7 +436,7 @@ public class OperacionPuntosService {
 	
 	private Date getFechaVencimiento(Afiliado instance){
 		String queryString = "SELECT MIN(t.vencen) FROM Transaccion t WHERE t.afiliado.documento = :documento "
-				+ "and t.vencen >= CURRENT_DATE";
+				+ "and t.vencen >= CURRENT_DATE and t.redimidos <> 1";
 		Query query = em.createQuery( queryString );
 		query.setParameter("documento", instance.getDocumento());
 		Date date = null;		

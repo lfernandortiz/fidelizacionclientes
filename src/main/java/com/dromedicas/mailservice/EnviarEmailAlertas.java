@@ -19,6 +19,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import com.dromedicas.domain.Afiliado;
+import com.vdurmont.emoji.EmojiParser;
 
 
 @ManagedBean(name="mailAlert")
@@ -41,13 +42,13 @@ public class EnviarEmailAlertas {
 			Document doc = Jsoup.parse(inputHtml, "UTF-8");
 			
 			// obtengo los id's del DOM a los que deseo insertar los valores
-			// mediante el metodo append() se insertan los valores obtenidos de
-			// la consulta
+			// mediante el metodo append() se insertan los valores obtenidos del
+			// objeto obtenido como parametro
 			Element genero = doc.select("span#genero").first();
 			genero.append(afiliado.getSexo().equals("M")? "Sr.": "Sra." );
 			
 			Element nomAfiliado = doc.select("span#nombreAfiliado").first();
-			nomAfiliado.append(afiliado.getNombres()+" "+afiliado.getApellidos());
+			nomAfiliado.append(afiliado.getNombres() + " " + afiliado.getApellidos());
 
 			// Url de confirmacion de correo para el elemento buton 
 			Element btn = doc.select("a#linkconfirm").first();
@@ -57,7 +58,7 @@ public class EnviarEmailAlertas {
 			//Element img = doc.select("img#pixelcontrol").first();
 			//img.attr("src", url);
 			
-			// Propiedades de la conexión
+			// Propiedades de la conexiÃ³n
 			Properties props = new Properties();
 			props.setProperty("mail.smtp.host", "deus.wnkserver6.com");
 			props.setProperty("mail.smtp.port", "25");// puerto de salida, de
@@ -84,10 +85,16 @@ public class EnviarEmailAlertas {
 						
 			// se compone el mensaje (Asunto, cuerpo del mensaje y direccion origen)
 			MimeMessage message = new MimeMessage(session);
-			message.setFrom(new InternetAddress(
+			message.setFrom(new InternetAddress( 
 					"contacto@puntosfarmanorte.com.co"));
 			message.setRecipients(Message.RecipientType.BCC, addressTo);
-			message.setSubject("U+1F535 Puntos Farmanorte   | Confirmacion de suscripcion");
+			//Emojis :-)
+			
+			String subjectEmojiRaw = ":large_blue_circle: Puntos Farmanorte :pill:";
+			String subjectEmoji = EmojiParser.parseToUnicode(subjectEmojiRaw);
+				
+				
+			message.setSubject( subjectEmoji + " | Confirmacion de suscripcion", "UTF-8");
 			message.setContent(doc.html(), "text/html; charset=utf-8");
 
 			//Envia el correo
@@ -110,10 +117,14 @@ public class EnviarEmailAlertas {
 	
 	
 	public boolean emailAcumulacionPuntos(Afiliado afiliado) {
+		//nombrecliente
+		//puntostx
+		//acumulados
+		//redimir
 		
-		String urlConfirmacion = "http://www.puntosfarmanorte.com.co/seccion/actualizacion.html?documento=" + afiliado.getDocumento();
 		
-		System.out.println("Clase enviar Email Alerta Afilidaod");
+		
+		System.out.println("Clase enviar Email Alerta de compra ");
 		try{
 			
 			ServletContext servletContext = (ServletContext) FacesContext
@@ -132,15 +143,12 @@ public class EnviarEmailAlertas {
 			Element nomAfiliado = doc.select("span#nombreAfiliado").first();
 			nomAfiliado.append(afiliado.getNombres()+" "+afiliado.getApellidos());
 
-			// Url de confirmacion de correo para el elemento buton 
-			Element btn = doc.select("a#linkconfirm").first();
-			btn.attr("href", urlConfirmacion);
 			
 						
 			//Element img = doc.select("img#pixelcontrol").first();
 			//img.attr("src", url);
 			
-			// Propiedades de la conexión
+			// Propiedades de la conexiÃ³n
 			Properties props = new Properties();
 			props.setProperty("mail.smtp.host", "deus.wnkserver6.com");
 			props.setProperty("mail.smtp.port", "25");// puerto de salida, de

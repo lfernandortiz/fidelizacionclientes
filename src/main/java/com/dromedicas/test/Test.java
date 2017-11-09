@@ -1,18 +1,15 @@
 package com.dromedicas.test;
 
-import java.security.Key;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.Collection;
 
-import javax.json.Json;
-import javax.json.JsonObject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 
-import io.jsonwebtoken.CompressionCodecs;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.impl.crypto.MacProvider;
+import com.vdurmont.emoji.Emoji;
+import com.vdurmont.emoji.EmojiManager;
+import com.vdurmont.emoji.EmojiParser;
 
 public class Test {
 	
@@ -24,25 +21,41 @@ public class Test {
 	public static void main(String[] args) {
 
 		try {
-			long t1 = System.currentTimeMillis();
+//			String str = "An :grinning:awesome :smiley:string &#128516;with a few :wink:emojis!";
+//			String resultDecimal = EmojiParser.parseToHtmlDecimal(str);
+//			System.out.println(resultDecimal);
+			// Prints:
 			
+			
+			String str = "An 😀awesome 😃string with a few 😉emojis!";
+			Collection<Emoji> collection = new ArrayList<Emoji>();
+			collection.add(EmojiManager.getForAlias("wink")); // This is 😉
+
+			System.out.println(EmojiParser.removeAllEmojis(str));
+			System.out.println(EmojiParser.removeAllEmojisExcept(str, collection));
+			System.out.println(EmojiParser.removeEmojis(str, collection));
+			
+			String strs= "An :pill:  awesome :smiley:string &#128516;with a few :wink:emojis   :syringe:!";
+			String result = EmojiParser.parseToUnicode(strs);
+			System.out.println(result);
+	        
 //			Key k = MacProvider.generateKey();
-			String k = "CSK395";
-			String jwt = Jwts.builder()
-			 .setSubject("PuntosFarmanorte")
-			 .signWith(SignatureAlgorithm.HS256, k)
-			 .setIssuedAt(new Date(t1))
-			 .setExpiration(new Date(t1 + 900000))
-			 .claim("email", "cliente@yahoo.com")
-			 .compact();
-		
-			System.out.println("K: " + k.toString());
+//			String k = "CSK395";
+//			String jwt = Jwts.builder()
+//			 .setSubject("PuntosFarmanorte")
+//			 .signWith(SignatureAlgorithm.HS256, k)
+//			 .setIssuedAt(new Date(t1))
+//			 .setExpiration(new Date(t1 + 900000))
+//			 .claim("email", "cliente@yahoo.com")
+//			 .compact();
+//		
+//			System.out.println("K: " + k.toString());
 			
 //			JsonObject json ;
 //			json = Json.createObjectBuilder().add("JWT", compactJws).build();
 //			
 			
-			System.out.println("JWT:  " + jwt );
+			
 			
 //			Logger log = Logger.getLogger("TestPuntosFarmanorte");
 //

@@ -186,7 +186,7 @@ public class PuntosService {
 							return Response.status(200).entity(mapResponse).build();
 						}else{							
 							mapResponse.put("code","400");
-							mapResponse.put("message","No Tiene los puntos suficiente para esta rededencio");
+							mapResponse.put("message","No Tiene los puntos suficientes para esta rededencion");
 							return Response.status(400).entity(mapResponse).build();
 						}
 						

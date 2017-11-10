@@ -349,8 +349,8 @@ public class AfiliadoBeanEdit implements Serializable{
 		//Obtiene el usuario que registra..........Faltaaaaa		
 		this.afiliadoSelected.setUsuariowebBean( this.loginBean.getUser() );
 		
-		//Persiste el nuevo afiliado
-		afiliadoService.crearAfiliado(this.afiliadoSelected);
+		//Actualiza afiliado
+		afiliadoService.actualizarAfiliado(this.afiliadoSelected);
 		
 		FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("afiliadoBeanEdit");
 		

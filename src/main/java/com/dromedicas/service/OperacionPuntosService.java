@@ -20,6 +20,7 @@ import com.dromedicas.domain.BanlancePuntos;
 import com.dromedicas.domain.Sucursal;
 import com.dromedicas.domain.Tipotransaccion;
 import com.dromedicas.domain.Transaccion;
+import com.dromedicas.mailservice.EnviarEmailAlertas;
 
 
 /**
@@ -45,6 +46,9 @@ public class OperacionPuntosService {
 	
 	@EJB
 	private SucursalService sucursalService;
+	
+	@EJB
+	private EnviarEmailAlertas mailAlert;
 	
 	//Transaccion de puntos
 	
@@ -96,6 +100,10 @@ public class OperacionPuntosService {
 		tx.setPuntostransaccion(mathPuntos);
 		// graba los puntos iniciales
 		txService.updateTransaccion(tx);
+		
+		mailAlert.emailAcumulacionPuntos(afiliado, mathPuntos, this.consultaPuntos(afiliado));
+		
+		
 	}
 	
 	
@@ -287,7 +295,7 @@ public class OperacionPuntosService {
 		Query query = em.createQuery( queryString );
 		query.setParameter("documento", instance.getDocumento());
 		
-		System.out.println("---------Query: " + query.unwrap(org.hibernate.Query.class).getQueryString());
+		//System.out.println("---------Query: " + query.unwrap(org.hibernate.Query.class).getQueryString());
 		Long puntos = 0L;		
 		try {
 			puntos =  (Long) query.getSingleResult();

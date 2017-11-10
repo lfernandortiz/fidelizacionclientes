@@ -14,14 +14,13 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.Flash;
 
 import com.dromedicas.domain.Afiliado;
-import com.dromedicas.domain.Referido;
+import com.dromedicas.domain.Pais;
 import com.dromedicas.domain.Sucursal;
 import com.dromedicas.domain.Tipodocumento;
-import com.dromedicas.domain.Tipotransaccion;
-import com.dromedicas.domain.Transaccion;
 import com.dromedicas.mailservice.EnviarEmailAlertas;
 import com.dromedicas.service.AfiliadoService;
 import com.dromedicas.service.OperacionPuntosService;
+import com.dromedicas.service.PaisService;
 import com.dromedicas.service.ReferidoService;
 import com.dromedicas.service.SucursalService;
 import com.dromedicas.service.TipoDocumentoService;
@@ -69,18 +68,23 @@ public class AfiliadoBeanEdit implements Serializable{
 	@EJB
 	private OperacionPuntosService calculoService;
 	
+	@EJB
+	private PaisService paisService;
+	
 	@ManagedProperty(value = "#{loginService}")
 	private LoginBeanService loginBean;
 		
 	private Afiliado afiliadoSelected;
 	private List<Tipodocumento> tipodocList; // list para select one menu tipodocumento
 	private List<Sucursal> sucursalList;
+	private List<Pais> paisList;
 	
 	private String street1 = "AVENIDA";
 	private String street1Valor = "";
 	private String street2 = "No.";
 	private String street2Valor = "";
 	private String direccionCompleta;
+	private Pais nacionalidad;
 	//variable de control para validacion de entrada de correo
 	private boolean emailValid = true; 
 	//varialbe para gui par
@@ -94,7 +98,11 @@ public class AfiliadoBeanEdit implements Serializable{
 	public void init(){
 		this.afiliadoSelected = new Afiliado();
 		this.tipodocList = tipodocService.findAllTipodocumento();
-		this.sucursalList = sucursalService.findAllSucursals();	
+		this.sucursalList = sucursalService.findAllSucursals();
+		this.paisList = paisService.findAllPais();
+		for(Pais e: paisList){
+			System.out.println("-" + e.getNombees());
+		}
 		this.afiliadoSelected.setCiudad("CUCUTA");
 	}
 		
@@ -186,8 +194,23 @@ public class AfiliadoBeanEdit implements Serializable{
 		this.emailValidated = emailValidated;
 	}
 	
-	//metodos de control de la interfaz
+	public List<Pais> getPaisList() {
+		return paisList;
+	}
 
+	public void setPaisList(List<Pais> paisList) {
+		this.paisList = paisList;
+	}	
+
+	public Pais getNacionalidad() {
+		return nacionalidad;
+	}
+
+	public void setNacionalidad(Pais nacionalidad) {
+		this.nacionalidad = nacionalidad;
+	}
+
+	//metodos de control de la interfaz	
 	public void concatenarDireccion(){
 		StringBuilder str = new StringBuilder();
 		str.append(this.getStreet1().toUpperCase()).append(" ")

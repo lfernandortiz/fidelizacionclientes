@@ -35,22 +35,24 @@
 									<f:converter binding="#{tipoDocumentoConverter}" />									
 								</p:selectOneMenu>
 								
-								<p:outputLabel for="nacionalidadid" value="Nacionalidad" />
-								<p:selectOneMenu id="nacionalidadid" value="#{afiliadoBeanEdit.nacionalidad}"
+								<p:outputLabel for="nacioid" value="Nacionalidad" />
+								<p:selectOneMenu id="nacioid" value="#{afiliadoBeanEdit.nacionalidad}"
 								filter="true" filterMatchMode="contains" var="p">
-									<f:selectItems value="#{afiliadoBeanEdit.paisList}" var="pais"
-										itemLabel="#{pais.nombees}" itemValue="#{pais}" />
+									<f:selectItems value="#{afiliadoBeanEdit.paisList}" var="nac"
+										itemLabel="#{nac.nombees}" itemValue="#{nac}" />
 									<p:column>
-										<p:graphicImage name="images/banderas/#{p.fileflag}" library="omega-layout" />
-									</p:column>									
-									<p:column>										
-										<h:outputText value="#{p.nombees}" />
-									</p:column>	
-									<f:converter binding="#{nacionalidadConverter}" />								
-								</p:selectOneMenu>
-	
+ 										<p:graphicImage name="images/banderas/#{p.fileflag}" library="omega-layout" />
+ 									</p:column>									
+ 									<p:column>										
+ 										<h:outputText value="#{p.nombees}" />
+ 									</p:column>	
+									<f:converter binding="#{paisConverter}" />
+									<p:ajax event="change" update="@this" />											
+								</p:selectOneMenu>							
+								
+									
 								<p:outputLabel for="cedulaid" value="Documento" />
-								<p:inputText id="cedulaid" value="#{afiliadoBeanEdit.afiliadoSelected.documento}" required="true">
+								<p:inputText id="cedulaid" value="#{afiliadoBeanEdit.afiliadoSelected.documento}"  required="true">
 									<p:ajax event="blur" update="cedulaid" listener="#{afiliadoBeanEdit.validarCedula()}" />
 									<p:keyFilter regEx="/[\d\-\.]/"/>
 								</p:inputText>
@@ -144,16 +146,16 @@
 								layout="grid" styleClass="ui-panelgrid-blank"
 								style="border:0px none; background-color:transparent;">	
 								
+								<p:outputLabel for="barrioid" value="Barrio" />
+								<p:inputText id="barrioid" value="#{afiliadoBeanEdit.afiliadoSelected.streetdos}" />
+								
 								<p:outputLabel for="sexomenu" value="Sexo"/>
                                 <p:selectOneMenu id="sexomenu" value="#{afiliadoBeanEdit.afiliadoSelected.sexo}">
                                     <f:selectItem itemLabel="Femenino" itemValue="F" />
                                     <f:selectItem itemLabel="Masculino" itemValue="M" />
                                     <f:selectItem itemLabel="Otro" itemValue="o" />
                                 </p:selectOneMenu>		
-
-								<p:outputLabel for="barrioid" value="Barrio" />
-								<p:inputText id="barrioid" value="#{afiliadoBeanEdit.afiliadoSelected.streetdos}" />
-								
+                                								
 								<p:outputLabel for="ciudadid" value="Ciudad"/>
                                 <p:selectOneMenu id="ciudadid" value="#{afiliadoBeanEdit.afiliadoSelected.ciudad}">
                                     <f:selectItem itemLabel="ABREGO (N De Santander)" itemValue="ABREGO"/>
@@ -1264,7 +1266,8 @@
 									<f:selectItems value="#{afiliadoBeanEdit.sucursalList}" var="suc"
 										itemLabel="#{suc.nombreSucursal}" itemValue="#{suc}" />
 									<h:outputText value="#{suc.nombreSucursal}" />
-									<f:converter binding="#{sucursalConverter}" />									
+									<f:converter binding="#{sucursalConverter}" />	
+															
 								</p:selectOneMenu>
 								
 								<p:outputLabel for="emailid" value="Email" />
@@ -1304,7 +1307,7 @@
         <h:outputScript target="body">
         	window.addEventListener("load",function(){
         			document.getElementById('afiliadoformppal:nombreid').focus();
-        		},false);        	
+        		},false); 
         </h:outputScript>
     </ui:define>   
 </ui:composition>

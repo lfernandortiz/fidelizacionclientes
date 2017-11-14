@@ -37,10 +37,10 @@ public class PaisService {
 		return (Pais) query.getSingleResult();
 	}
 	
-	public Pais obtenerPaisById(int id){
+	public Pais obtenerPaisById(String id){
 		String queryString = "from Pais p where p.idpaises = :id";
 		Query query = em.createQuery(queryString);
-		query.setParameter("id", id);
+		query.setParameter("id", Integer.parseInt(id));		
 		return (Pais) query.getSingleResult();
 	}
 	

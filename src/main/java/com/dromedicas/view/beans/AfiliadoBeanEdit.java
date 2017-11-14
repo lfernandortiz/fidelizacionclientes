@@ -13,6 +13,9 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.context.Flash;
 
+import org.primefaces.component.datatable.DataTable;
+import org.primefaces.component.selectonemenu.SelectOneMenu;
+
 import com.dromedicas.domain.Afiliado;
 import com.dromedicas.domain.Pais;
 import com.dromedicas.domain.Sucursal;
@@ -92,18 +95,21 @@ public class AfiliadoBeanEdit implements Serializable{
 	
 	public AfiliadoBeanEdit(){
 		
+		
 	}//constructor por defecto 
 
 	@PostConstruct
 	public void init(){
-		this.afiliadoSelected = new Afiliado();
+		this.afiliadoSelected = new Afiliado();	
+		this.nacionalidad = new Pais();
 		this.tipodocList = tipodocService.findAllTipodocumento();
 		this.sucursalList = sucursalService.findAllSucursals();
 		this.paisList = paisService.findAllPais();
-		for(Pais e: paisList){
-			System.out.println("-" + e.getNombees());
-		}
-		this.afiliadoSelected.setCiudad("CUCUTA");
+		
+		this.afiliadoSelected.setCiudad("CUCUTA");		
+		this.nacionalidad = paisService.obtenerPaisPorNombre("Colombia");
+		
+		System.out.println("Pais: " + this.getNacionalidad().getNombees());
 	}
 		
 	public LoginBeanService getLoginBean() {
@@ -229,11 +235,13 @@ public class AfiliadoBeanEdit implements Serializable{
 		this.afiliadoSelected.setApellidos(
 					regex.removerAcentosNtildes(this.afiliadoSelected.getApellidos().trim().toUpperCase()));
 		this.afiliadoSelected.setTipodocumentoBean(this.afiliadoSelected.getTipodocumentoBean());
+		this.afiliadoSelected.setNacionalidad(this.getNacionalidad().getNombees());
 			//**Valida si ya esta registrada la cedula
 		
 		Afiliado afTempo = afiliadoService.obtenerAfiliadoByDocumento(this.afiliadoSelected.getDocumento());
-		
-		if(afTempo != null ){
+		System.out.println("Nacionalidad: " + this.getNacionalidad().getNombees());
+		System.out.println("--------" + (afTempo != null && afTempo.getNacionalidad().equals(this.getNacionalidad().getNombees())));
+		if(afTempo != null && afTempo.getNacionalidad().equals(this.getNacionalidad().getNombees())  ){
 			FacesContext.getCurrentInstance().addMessage("cedulaid", 
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Numero de Documento Ya Registrado!"));			
 			System.out.println("Cedula ya registrada: " );	
@@ -271,7 +279,7 @@ public class AfiliadoBeanEdit implements Serializable{
 		this.afiliadoSelected.setCelular(this.afiliadoSelected.getCelular().trim());
 		this.afiliadoSelected.setTelefonofijo(this.afiliadoSelected.getTelefonofijo().trim());
 		this.afiliadoSelected.setDepartamento("");	
-		this.afiliadoSelected.setNacionalidad("COL");
+		//this.afiliadoSelected.setNacionalidad("COL");
 			//**calcular la edad	
 		System.out.println("-----validando edad");
 		if(regex.getAge(this.afiliadoSelected.getFechanacimiento()) < 18 ){
@@ -306,7 +314,9 @@ public class AfiliadoBeanEdit implements Serializable{
 	
 	public void validarCedula(){
 		Afiliado afTemp = afiliadoService.obtenerAfiliadoByDocumento(this.afiliadoSelected.getDocumento());
-		if(afTemp != null ){
+		System.out.println("Nacionalidad: " + this.getNacionalidad().getNombees());
+		System.out.println("--------" + (afTemp != null && afTemp.getNacionalidad().equals(this.getNacionalidad().getNombees())));
+		if(afTemp != null && afTemp.getNacionalidad().equals(this.getNacionalidad().getNombees()) ){
 			FacesContext.getCurrentInstance().addMessage("cedulaid", 
 					new FacesMessage(FacesMessage.SEVERITY_WARN, "Error", "Numero de DOCUMENTO YA REGISTRADA!"));			
 			System.out.println("Cedula ya registrada: " );			
@@ -323,7 +333,9 @@ public class AfiliadoBeanEdit implements Serializable{
 	
 	public String editarAfiliado(){
 		this.emailValidated = this.afiliadoSelected.getEmailvalidado() == 1 ? true : false;
-		this.emailValid = true;
+		//variable de control para validacion de correo se usa para aplicar el css en la vista
+		this.emailValid = true;		
+		this.nacionalidad = this.paisService.obtenerPaisPorNombre(this.afiliadoSelected.getNacionalidad());		
 		return "afiliadoedit?faces-redirect=true";
 	}
 	

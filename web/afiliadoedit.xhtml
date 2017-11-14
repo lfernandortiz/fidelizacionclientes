@@ -34,6 +34,21 @@
 										itemLabel="#{tp.descripcion}" itemValue="#{tp}" />
 									<f:converter binding="#{tipoDocumentoConverter}" />									
 								</p:selectOneMenu>
+								
+								<p:outputLabel for="nacioid" value="Nacionalidad" />
+								<p:selectOneMenu id="nacioid" value="#{afiliadoBeanEdit.nacionalidad}"
+								filter="true" filterMatchMode="contains" var="p">
+									<f:selectItems value="#{afiliadoBeanEdit.paisList}" var="nac"
+										itemLabel="#{nac.nombees}" itemValue="#{nac}" />
+									<p:column>
+ 										<p:graphicImage name="images/banderas/#{p.fileflag}" library="omega-layout" />
+ 									</p:column>									
+ 									<p:column>										
+ 										<h:outputText value="#{p.nombees}" />
+ 									</p:column>	
+									<f:converter binding="#{paisConverter}" />
+									<p:ajax event="change" update="@this" />											
+								</p:selectOneMenu>		
 	
 								<p:outputLabel for="cedulaid" value="Documento" />
 								<p:inputText id="cedulaid" value="#{afiliadoBeanEdit.afiliadoSelected.documento}" required="true">
@@ -1180,7 +1195,7 @@
 								<p:outputLabel for="emailid" value="Email" />
 								<p:inputText id="emailid" value="#{afiliadoBeanEdit.afiliadoSelected.email}"
 									styleClass="#{afiliadoBeanEdit.emailValid ? '' : 'ui-state-error'}"/>
-									#{afiliadoBeanEdit.emailValid}								
+													
 							</p:panelGrid>
 							<p:separator style="height:10px"/>
 							<h1>Informacion Adicional</h1>

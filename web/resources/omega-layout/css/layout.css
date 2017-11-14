@@ -3531,3 +3531,8 @@ hr{
 		display: block;
 	}	
 }
+
+.ui-selectonemenu-panel .ui-selectonemenu-table td {
+   
+    padding: 2px 4px 2px 4px!important;
+}

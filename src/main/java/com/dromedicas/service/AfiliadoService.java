@@ -6,6 +6,7 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
@@ -87,13 +88,30 @@ public class AfiliadoService {
 	}
 	
 	
+	public Afiliado obtenerAfiliadoNacionalidad(Afiliado instance) {
+		Query query = em.createQuery("FROM Afiliado a WHERE a.documento = :docu and a.nacionalidad = :nacionalidad");
+		query.setParameter("docu", instance.getDocumento());
+		query.setParameter("nacionalidad", instance.getNacionalidad());
+		
+		Afiliado temp = null;		
+		try {
+			temp = (Afiliado) query.getSingleResult();
+		} catch (NoResultException e) {
+			System.out.println("Elemento no encontrado");
+			
+		}		
+		return temp;
+	}
+	
+	
+	
 	public void crearAfiliado(Afiliado instance) {
 
 		// persiste el afialiado
 		updateAfiliado(instance);
 
 		// Acumula los 100 puntos inciales del afiliado
-		Afiliado afTemp = obtenerAfiliadoByDocumento(instance.getDocumento());
+		Afiliado afTemp = obtenerAfiliadoNacionalidad(instance);
 
 		int id = 4;
 		Tipotransaccion tipoTx = tipoTxService.obtenerTipoTransaccioById(id);

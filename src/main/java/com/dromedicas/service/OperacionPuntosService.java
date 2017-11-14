@@ -17,6 +17,7 @@ import javax.persistence.Query;
 
 import com.dromedicas.domain.Afiliado;
 import com.dromedicas.domain.BanlancePuntos;
+import com.dromedicas.domain.Referido;
 import com.dromedicas.domain.Sucursal;
 import com.dromedicas.domain.Tipotransaccion;
 import com.dromedicas.domain.Transaccion;
@@ -49,6 +50,9 @@ public class OperacionPuntosService {
 	
 	@EJB
 	private EnviarEmailAlertas mailAlert;
+	
+	@EJB
+	private ReferidoService referidoService;
 	
 	//Transaccion de puntos
 	
@@ -229,8 +233,54 @@ public class OperacionPuntosService {
 		tx.setPuntostransaccion(mathPuntos);
 		// graba la Tx de redencion
 		txService.updateTransaccion(tx);
+	}
+	
+	
+	public void puntosInicialesRegistro(Afiliado instance) {
+		// Acumula los 100 puntos inciales del afiliado
+		Afiliado afTemp = afiliadoService.obtenerAfiliadoNacionalidad(instance);
 
-		
+		int id = 4;
+		Tipotransaccion tipoTx = tipoTxService.obtenerTipoTransaccioById(id);
+		Transaccion tx = new Transaccion();
+		tx.setAfiliado(afTemp);
+		tx.setSucursal(instance.getSucursal());
+		tx.setFechatransaccion(new Date());
+		tx.setNrofactura("REGINI");
+		tx.setValortotaltx(0);
+		tx.setVencen(addDays(new Date(), 365));
+		tx.setTipotransaccion(tipoTx);
+		tx.setPuntostransaccion(100);
+		// graba los puntos iniciales
+		txService.updateTransaccion(tx);
+
+		// Se busca si el nuevo afiliado es un referido
+		if (instance.getEmail() != null && !instance.getEmail().equals("")) {
+
+			Referido ref = this.referidoService.obtenerReferidoPorEmail(instance.getEmail());
+
+			// si el nuevo es un referido graba 100 puntos al afiliado que lo
+			// refirio
+
+			if (ref != null) {
+				Afiliado afiReferente = ref.getAfiliado();
+
+				int idTipo = 5;
+				Tipotransaccion tipoTxRef = tipoTxService.obtenerTipoTransaccioById(idTipo);
+				Transaccion txRef = new Transaccion();
+				txRef.setAfiliado(afiReferente);
+				txRef.setSucursal(instance.getSucursal());
+				txRef.setFechatransaccion(new Date());
+				txRef.setNrofactura("REGREF");
+				txRef.setValortotaltx(0);
+				txRef.setVencen(addDays(new Date(), 365));
+				txRef.setTipotransaccion(tipoTxRef);
+				txRef.setPuntostransaccion(100);
+				// graba los puntos iniciales
+				txService.updateTransaccion(txRef);
+			}
+		} // end if validacion afiliado
+
 	}
 	
 	

@@ -103,57 +103,31 @@ public class AfiliadoService {
 		return temp;
 	}
 	
+	public Afiliado obtenerAfiliadoDocumentoNacionalidad(String documento, String nacionalidad) {
+		System.out.println(">>>"+ documento +">>" + nacionalidad);
+		Query query = em.createQuery("FROM Afiliado a WHERE a.documento = :docu and a.nacionalidad = :nacionalidad");
+		query.setParameter("docu", documento);
+		query.setParameter("nacionalidad", nacionalidad);
+		
+		Afiliado temp = null;		
+		try {
+			temp = (Afiliado) query.getSingleResult();
+		} catch (NoResultException e) {
+			System.out.println("Elemento no encontrado");
+			
+		}		
+		return temp;
+	}
 	
 	
 	public void crearAfiliado(Afiliado instance) {
 
 		// persiste el afialiado
 		updateAfiliado(instance);
-
-		// Acumula los 100 puntos inciales del afiliado
-		Afiliado afTemp = obtenerAfiliadoNacionalidad(instance);
-
-		int id = 4;
-		Tipotransaccion tipoTx = tipoTxService.obtenerTipoTransaccioById(id);
-		Transaccion tx = new Transaccion();
-		tx.setAfiliado(afTemp);
-		tx.setSucursal(instance.getSucursal());
-		tx.setFechatransaccion(new Date());
-		tx.setNrofactura("REGINI");
-		tx.setValortotaltx(0);
-		tx.setVencen(this.calculoService.addDays(new Date(), 365));
-		tx.setTipotransaccion(tipoTx);
-		tx.setPuntostransaccion(100);
-		// graba los puntos iniciales
-		txService.updateTransaccion(tx);
-
-		// Se busca si el nuevo afiliado es un referido
-		if (instance.getEmail() != null && !instance.getEmail().equals("")) {
-
-			Referido ref = this.referidoService.obtenerReferidoPorEmail(instance.getEmail());
-
-			// si el nuevo es un referido graba 100 puntos al afiliado que lo
-			// refirio
-
-			if (ref != null) {
-				Afiliado afiReferente = ref.getAfiliado();
-
-				int idTipo = 5;
-				Tipotransaccion tipoTxRef = tipoTxService.obtenerTipoTransaccioById(idTipo);
-				Transaccion txRef = new Transaccion();
-				txRef.setAfiliado(afiReferente);
-				txRef.setSucursal(instance.getSucursal());
-				txRef.setFechatransaccion(new Date());
-				txRef.setNrofactura("REGREF");
-				txRef.setValortotaltx(0);
-				txRef.setVencen(this.calculoService.addDays(new Date(), 365));
-				txRef.setTipotransaccion(tipoTxRef);
-				txRef.setPuntostransaccion(100);
-				// graba los puntos iniciales
-				txService.updateTransaccion(txRef);
-			}
-		} // end if validacion afiliado
-
+		
+		//ser cargan los puntos iniciales del afiliado
+		this.calculoService.puntosInicialesRegistro(instance);
+		
 		// 5 Envia correo de notificacion de afiliacion
 		boolean enviado = false;
 		if (instance.getEmail() != null && !instance.getEmail().equals("")) {

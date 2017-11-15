@@ -31,6 +31,8 @@ public class PaisService {
 	}
 	
 	public Pais obtenerPaisPorNombre(String nombre){
+		//System.out.println("Pais Recibido: " + nombre);
+		
 		String queryString = "from Pais p where p.nombees = :nombre";
 		Query query = em.createQuery(queryString);
 		query.setParameter("nombre", nombre);

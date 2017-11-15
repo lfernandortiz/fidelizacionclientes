@@ -238,9 +238,12 @@ public class AfiliadoBeanEdit implements Serializable{
 		this.afiliadoSelected.setNacionalidad(this.getNacionalidad().getNombees());
 			//**Valida si ya esta registrada la cedula
 		
-		Afiliado afTempo = afiliadoService.obtenerAfiliadoDocumentoNacionalidad(this.afiliadoSelected.getDocumento(), 
-				this.getNacionalidad().getNombees());
-		if(afTempo != null && afTempo.getNacionalidad().equals(this.getNacionalidad().getNombees())  ){
+		Afiliado afTempo = afiliadoService.obtenerAfiliadoByDocumento(this.afiliadoSelected.getDocumento());
+ 		if(afTempo != null ){
+//		Afiliado afTempo = afiliadoService.obtenerAfiliadoDocumentoNacionalidad(this.afiliadoSelected.getDocumento(), 
+//				this.getNacionalidad().getNombees());
+//		if(afTempo != null && afTempo.getNacionalidad().equals(this.getNacionalidad().getNombees())  ){
+			
 			FacesContext.getCurrentInstance().addMessage("cedulaid", 
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Numero de Documento Ya Registrado!"));			
 			System.out.println("Cedula ya registrada: " );	
@@ -312,10 +315,13 @@ public class AfiliadoBeanEdit implements Serializable{
 	}
 	
 	public void validarCedula(){
-		Afiliado afTemp = 
-				afiliadoService.obtenerAfiliadoDocumentoNacionalidad(this.afiliadoSelected.getDocumento(), 
-						this.getNacionalidad().getNombees());
-		if(afTemp != null && afTemp.getNacionalidad().equals(this.getNacionalidad().getNombees()) ){
+		Afiliado afTemp = afiliadoService.obtenerAfiliadoByDocumento(this.afiliadoSelected.getDocumento());
+ 		if(afTemp != null ){
+//		Afiliado afTemp = 
+//				afiliadoService.obtenerAfiliadoDocumentoNacionalidad(this.afiliadoSelected.getDocumento(), 
+//						this.getNacionalidad().getNombees());
+//		if(afTemp != null && afTemp.getNacionalidad().equals(this.getNacionalidad().getNombees()) ){
+			
 			FacesContext.getCurrentInstance().addMessage("cedulaid", 
 					new FacesMessage(FacesMessage.SEVERITY_WARN, "Error", "Numero de DOCUMENTO YA REGISTRADA!"));			
 			System.out.println("Cedula ya registrada: " );			

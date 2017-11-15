@@ -43,8 +43,7 @@ public class AfiliadoDaoImpl implements AfiliadoDao {
 		try {
 			temp = (Afiliado) query.getSingleResult();
 		} catch (NoResultException e) {
-			System.out.println("Elemento no encontrado");
-			
+			System.out.println("Elemento no encontrado");			
 		}		
 		return temp;
 	}

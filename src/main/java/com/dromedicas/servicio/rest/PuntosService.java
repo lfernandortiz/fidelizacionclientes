@@ -174,7 +174,7 @@ public class PuntosService {
 					try {
 						BanlancePuntos bTemp = calculoService.consultaPuntos(afiliado);
 						
-						if(bTemp.getDisponiblesaredimir() > puntosRedimidos ){ 
+						if( puntosRedimidos >= bTemp.getDisponiblesaredimir()){ 
 							
 							calculoService.redencionPuntos(sucursal, momento, nrofactura,
 									valortx, afiliado, puntosRedimidos);

@@ -24,11 +24,13 @@ public class QuartzListener implements ServletContextListener {
 	//Schedule para Notificaciones de acumulacion de puntos <0 0/2 * 1/1 * ? *> cada 30 min
 	Scheduler schNotiCompra = null;
 	
-	//Schedule para envio SMS de cumpleanos <0 0 8 ? * MON-FRI *> Todos los dias a las 8am
+	//Schedule para envio SMS & Email de cumpleanos <0 0 8 ? * MON-FRI *> Todos los dias a las 8am
 	
 	//Schedule para actualizar edad de los afiliados <0 0 5 ? * MON-FRI *> Todos los dias a las 5am
 	
 	//Schedule  <0 0 0/1 1/1 * ? *> Cada hora
+	
+	//Schedule consulta de saldo SMS <	0 0 7 ? * MON-FRI *> Todos los dias a las 7am
 
 	@Override
 	public void contextInitialized(ServletContextEvent servletContext) {
@@ -40,8 +42,7 @@ public class QuartzListener implements ServletContextListener {
 			// Trigger para Notificaciones de acumulacion de puntos cada 30 minutos
 			// Son usadas expresiones cron
 			Trigger trigger = newTrigger().withIdentity("NotificacionAcum", "Group")
-//					.withSchedule(CronScheduleBuilder.cronSchedule("0 0/30 * * * ?"))  
-					.withSchedule(CronScheduleBuilder.cronSchedule("0 0/2 * 1/1 * ? *")) 
+					.withSchedule(CronScheduleBuilder.cronSchedule("0 0/30 * 1/1 * ? *")) 
 					.build();
 			
 			

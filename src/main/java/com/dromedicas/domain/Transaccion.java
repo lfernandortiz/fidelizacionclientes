@@ -31,6 +31,8 @@ public class Transaccion implements Serializable {
 	private int saldo;
 
 	private int valortotaltx;
+	
+	private Byte envionotificacion;
 
 	@Temporal(TemporalType.DATE)
 	private Date vencen;
@@ -217,6 +219,14 @@ public class Transaccion implements Serializable {
 
 	public void setTipotransaccion(Tipotransaccion tipotransaccion) {
 		this.tipotransaccion = tipotransaccion;
+	}
+	
+	public Byte getEnvionotificacion() {
+		return envionotificacion;
+	}
+
+	public void setEnvionotificacion(Byte envionotificacion) {
+		this.envionotificacion = envionotificacion;
 	}
 
 	@Override

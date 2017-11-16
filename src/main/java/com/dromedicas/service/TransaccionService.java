@@ -3,16 +3,17 @@ package com.dromedicas.service;
 import java.util.List;
 
 import javax.ejb.EJB;
+import javax.ejb.Remote;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-import com.dromedicas.domain.Afiliado;
 import com.dromedicas.domain.Transaccion;
 import com.dromedicas.eis.TransaccionDao;
 
+@Remote
 @Stateless
 public class TransaccionService {
 	
@@ -21,6 +22,8 @@ public class TransaccionService {
 	
 	@EJB
 	TransaccionDao dao;	
+	
+	private String v = "Prueba de service";
 	
 	public List<Transaccion> findAllTransaccions(){
 		return dao.findAllTransaccions();
@@ -55,5 +58,35 @@ public class TransaccionService {
 		}		
 		return temp;
 	}
+	
+	
+	public List<Transaccion> obtenerTxSinNotificacion(){
+		
+		List<Transaccion> txList = null;
+		System.out.println("Consulta txs....");
+		
+		Query query = em.createQuery("FROM Transaccion t  WHERE  t.tipotransaccion.idtipotransaccion = 1 and "
+				+ "t.envionotificacion = 0 and t.redimidos = 0 and t.afiliado.email != '' ");			
+		try {
+			txList = query.getResultList();			
+			System.out.println("--------" +  txList.size());
+			
+		} catch (NoResultException e) {
+			System.out.println("Factura no encontrada");			
+		}		
+		return txList;
+	}
+	
 
+	public String getV() {
+		return v;
+	}
+
+	public void setV(String v) {
+		this.v = v;
+	}
+
+	
+	
+	
 }

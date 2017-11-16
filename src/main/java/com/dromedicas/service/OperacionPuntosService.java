@@ -97,6 +97,7 @@ public class OperacionPuntosService {
 		Date fechavencimientopuntos = addDays(momentotx, 365);//-> Cambiar (365) por paramatreo optenico de consulta  
 		tx.setVencen(fechavencimientopuntos);
 		tx.setTipotransaccion(tipoTx);
+		tx.setEnvionotificacion((byte)0);
 		//Aca se debe traer el parametros por consulta de base de datos del factor de acumulacion 
 		int mathPuntos = (valortx/100);	//-> Cambiar (100) por paramatreo optenico de consulta  
 		System.out.println("----Puntos acumulados: "+ mathPuntos);
@@ -105,7 +106,8 @@ public class OperacionPuntosService {
 		// graba los puntos iniciales
 		txService.updateTransaccion(tx);
 		
-		mailAlert.emailAcumulacionPuntos(afiliado, mathPuntos, this.consultaPuntos(afiliado));
+		//se deja el envio de correo de tx a un scheduling
+		//mailAlert.emailAcumulacionPuntos(afiliado, mathPuntos, this.consultaPuntos(afiliado));
 		
 		
 	}
@@ -188,6 +190,7 @@ public class OperacionPuntosService {
 		tx.setValortotaltx(valortx);
 		tx.setTipotransaccion(tipoTx);		
 		tx.setPuntostransaccion(puntosARedimir);
+		tx.setEnvionotificacion((byte)0);
 		// graba la Tx de redencion
 		txService.updateTransaccion(tx);
 		
@@ -231,6 +234,7 @@ public class OperacionPuntosService {
 		tx.setTipotransaccion(tipoTx);
 		int mathPuntos = (valortx/100);//-> Cambiar (100) por paramatreo optenico de consulta
 		tx.setPuntostransaccion(mathPuntos);
+		tx.setEnvionotificacion((byte)0);
 		// graba la Tx de redencion
 		txService.updateTransaccion(tx);
 	}
@@ -251,6 +255,7 @@ public class OperacionPuntosService {
 		tx.setVencen(addDays(new Date(), 365));
 		tx.setTipotransaccion(tipoTx);
 		tx.setPuntostransaccion(100);
+		tx.setEnvionotificacion((byte)0);
 		// graba los puntos iniciales
 		txService.updateTransaccion(tx);
 
@@ -276,6 +281,7 @@ public class OperacionPuntosService {
 				txRef.setVencen(addDays(new Date(), 365));
 				txRef.setTipotransaccion(tipoTxRef);
 				txRef.setPuntostransaccion(100);
+				txRef.setEnvionotificacion((byte)0);
 				// graba los puntos iniciales
 				txService.updateTransaccion(txRef);
 			}

@@ -23,7 +23,7 @@ public class NotificacionCompraJob implements Job {
 		Context jndi;
 		try {
 			//Dado que el framework de Quartz se ejecuta en su propio contenedor
-			//no es posible inyectar EJB fuera de este contexto.
+			//no es posible inyectar EJB dentro de este contexto.
 			//Por lo tanto se hace un  lookup via JNDI de los  EJB necesarios 
 			//en el Objeto Job del scheduling.
 			jndi = new InitialContext();
@@ -33,9 +33,8 @@ public class NotificacionCompraJob implements Job {
 					jndi.lookup("java:global/puntosfarmanorte/EnviarEmailAlertas!com.dromedicas.mailservice.EnviarEmailAlertas");
 			
 			//Se buscan todas las Tx's que no han sido notificadas el afiliado debe tener correo
-			List<Transaccion>  txList = txService.obtenerTxSinNotificacion();
+			List<Transaccion>  txList = txService.obtenerTxSinNotificacion();			
 			
-			System.out.println("------------------------------------" +  (txList.size() > 0));
 			if( txList.size() > 0 ){
 				email.emailNotificacionCompra(txList);
 				
@@ -45,9 +44,6 @@ public class NotificacionCompraJob implements Job {
 					txService.updateTransaccion(tx);
 				}
 			}		
-			
-			
-			
 			
 			
 		} catch (Exception e) {

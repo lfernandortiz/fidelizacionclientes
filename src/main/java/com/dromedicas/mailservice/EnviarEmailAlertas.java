@@ -102,7 +102,7 @@ public class EnviarEmailAlertas {
 			// se compone el mensaje (Asunto, cuerpo del mensaje y direccion origen)
 			final MimeMessage message = new MimeMessage(session);
 			message.setFrom(new InternetAddress( 
-					"contacto@puntosfarmanorte.com.co"));
+					"contacto@puntosfarmanorte.com.co", "Puntos Farmanorte"));
 			message.setRecipients(Message.RecipientType.BCC, addressTo);
 			//Emojis :-)			
 			String subjectEmojiRaw = ":large_blue_circle: Puntos Farmanorte :pill:";
@@ -204,7 +204,7 @@ public class EnviarEmailAlertas {
 			// se compone el mensaje (Asunto, cuerpo del mensaje y direccion origen)
 			final MimeMessage message = new MimeMessage(session);
 			message.setFrom(new InternetAddress(
-					"contacto@puntosfarmanorte.com.co"));
+					"contacto@puntosfarmanorte.com.co" , "Puntos Farmanorte"));
 			message.setRecipient(Message.RecipientType.TO, addressTo);			
 			//Emojis :-)			
 			String subjectEmojiRaw = ":pill: Puntos Farmanorte :syringe:";
@@ -307,20 +307,19 @@ public class EnviarEmailAlertas {
 				
 				InternetAddress addressTo = 
 						new InternetAddress(afiliado.getEmail());	
-				
-//				InternetAddress addressTo = 
-//						new InternetAddress("lfernandortiz@gmail.com");		
+
 							
 				// se compone el mensaje (Asunto, cuerpo del mensaje y direccion origen)
 				final MimeMessage message = new MimeMessage(session);
 				message.setFrom(new InternetAddress(
-						"contacto@puntosfarmanorte.com.co"));
+						"contacto@puntosfarmanorte.com.co" , "Puntos Farmanorte"));
 				message.setRecipient(Message.RecipientType.TO, addressTo);			
 				//Emojis :-)			
-				String subjectEmojiRaw = ":pill: Puntos Farmanorte :syringe:";
+				String subjectEmojiRaw = 
+						":pill: Acumulaste: " + tx.getPuntostransaccion() +" Puntos :large_blue_circle:";
 				String subjectEmoji = EmojiParser.parseToUnicode(subjectEmojiRaw);
 				
-				message.setSubject(subjectEmoji  + "| Acumulaste: " + tx.getPuntostransaccion() , "UTF-8");
+				message.setSubject(subjectEmoji , "UTF-8");
 				message.setContent(doc.html(), "text/html; charset=utf-8");
 
 				t.sendMessage(message, message.getAllRecipients());

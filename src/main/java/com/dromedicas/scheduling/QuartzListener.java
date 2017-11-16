@@ -13,33 +13,43 @@ import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.quartz.impl.StdSchedulerFactory;
 
+/**
+ * Clase Listener para el contexto de Quartz
+ * En esta clase se declaran todos los triggers para scheduling de la aplicacion
+ * @author Softdromedicas
+ *
+ */
 public class QuartzListener implements ServletContextListener {
 
-	Scheduler scheduler = null;
+	//Schedule para Notificaciones de acumulacion de puntos <0 0/2 * 1/1 * ? *> cada 30 min
+	Scheduler schNotiCompra = null;
+	
+	//Schedule para envio SMS de cumpleanos <0 0 8 ? * MON-FRI *> Todos los dias a las 8am
+	
+	//Schedule para actualizar edad de los afiliados <0 0 5 ? * MON-FRI *> Todos los dias a las 5am
+	
+	//Schedule  <0 0 0/1 1/1 * ? *> Cada hora
 
 	@Override
 	public void contextInitialized(ServletContextEvent servletContext) {
 		
-		System.out.println("Context Initialized");
-		
-		
 		try {
-			// Setup the Job class and the Job group
+			// Job para Notificaciones de acumulacion de puntos
 			JobDetail job = newJob(NotificacionCompraJob.class).withIdentity("NotificacionAcum", "Group").build();
 			
-
+			// Trigger para Notificaciones de acumulacion de puntos cada 30 minutos
+			// Son usadas expresiones cron
 			Trigger trigger = newTrigger().withIdentity("NotificacionAcum", "Group")
-//					.withSchedule(CronScheduleBuilder.cronSchedule("0 0/10 * * * ?")) // cada 10 minutos
-//					.withSchedule(CronScheduleBuilder.cronSchedule("0/5 * * * * ?"))  // cada 5 segundos
-					.withSchedule(CronScheduleBuilder.cronSchedule("0 0/2 * * * ?"))  // cada minuto
+//					.withSchedule(CronScheduleBuilder.cronSchedule("0 0/30 * * * ?"))  
+					.withSchedule(CronScheduleBuilder.cronSchedule("0 0/2 * 1/1 * ? *")) 
 					.build();
 			
 			
 			
 			// Setup the Job and Trigger with Scheduler & schedule jobs
-			scheduler = new StdSchedulerFactory().getScheduler();
-			scheduler.start();
-			scheduler.scheduleJob(job, trigger);
+			schNotiCompra = new StdSchedulerFactory().getScheduler();
+			schNotiCompra.start();
+			schNotiCompra.scheduleJob(job, trigger);
 	
 			
 		} catch (SchedulerException e) {
@@ -51,7 +61,7 @@ public class QuartzListener implements ServletContextListener {
 	public void contextDestroyed(ServletContextEvent servletContext) {
 		System.out.println("Context Destroyed");
 		try {
-			scheduler.shutdown();			
+			schNotiCompra.shutdown();			
 
 		} catch (SchedulerException e) {
 			e.printStackTrace();

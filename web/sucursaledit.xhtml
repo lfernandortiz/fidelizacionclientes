@@ -27,7 +27,7 @@
 						        <p:selectOneMenu id="empresaid" value="#{sucursalEdit.sucSelected.empresa}" >
 						            <f:selectItems value="#{sucursalEdit.empresList}" var="emp" itemLabel="#{emp.nombreEmpresa}" 
 						            			   itemValue="#{emp}"/>
-						            <f:converter binding="#{sucursalConverter}" />
+						            <f:converter binding="#{empresaConverter}" />
 									
 								</p:selectOneMenu>
 

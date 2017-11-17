@@ -255,8 +255,11 @@ public class EnviarEmailAlertas {
 			
 		System.out.println("Clase enviar Email Alerta de compra scheduling ");
 		try{
-			ServletContext servletContext = null;
 			
+			//se optiene el contexto de la aplicacion
+			//para calificar la ruta de acceso del archivo 
+			//template HTML del email
+			ServletContext servletContext = null;			
 			try {
 				servletContext = (ServletContext) FacesContext
 				        .getCurrentInstance().getExternalContext().getContext();
@@ -283,7 +286,7 @@ public class EnviarEmailAlertas {
 			for(Transaccion tx : txList){
 				Afiliado afiliado = tx.getAfiliado();
 				BanlancePuntos balance = puntosService.consultaPuntos(afiliado);
-						
+				
 				File inputHtml = new File(servletContext.getRealPath("emailhtml/emailcompra.html"));
 				// Asginamos el archivo al objeto analizador Document
 				Document doc = Jsoup.parse(inputHtml, "UTF-8");

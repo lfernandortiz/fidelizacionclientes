@@ -133,7 +133,7 @@ public class SucursalBeanEdit {
 	
 	public void generarCodigoApi(){
 		UUID uniqueKey = UUID.randomUUID();
-		this.sucSelected.setApikey(uniqueKey.toString());
+		this.sucSelected.setApikey(uniqueKey.toString().replace("-", ""));
 		System.out.println(uniqueKey);
 	}
 	

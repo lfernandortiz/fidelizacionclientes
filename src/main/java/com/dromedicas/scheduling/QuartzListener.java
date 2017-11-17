@@ -36,6 +36,9 @@ public class QuartzListener implements ServletContextListener {
 	public void contextInitialized(ServletContextEvent servletContext) {
 		
 		try {
+			/*
+			 * Schedule Notificaciones compra - acumulacion de puntos
+			 */
 			// Job para Notificaciones de acumulacion de puntos
 			JobDetail job = newJob(NotificacionCompraJob.class).withIdentity("NotificacionAcum", "Group").build();
 			
@@ -45,12 +48,14 @@ public class QuartzListener implements ServletContextListener {
 					.withSchedule(CronScheduleBuilder.cronSchedule("0 0/30 * 1/1 * ? *")) 
 					.build();
 			
-			
-			
 			// Setup the Job and Trigger with Scheduler & schedule jobs
 			schNotiCompra = new StdSchedulerFactory().getScheduler();
 			schNotiCompra.start();
 			schNotiCompra.scheduleJob(job, trigger);
+			
+			/*
+			 * Schedule envio SMS diario para afiliados de cumplen anios
+			 */
 	
 			
 		} catch (SchedulerException e) {

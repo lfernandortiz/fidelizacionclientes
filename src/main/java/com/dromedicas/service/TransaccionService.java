@@ -23,7 +23,6 @@ public class TransaccionService {
 	@EJB
 	TransaccionDao dao;	
 	
-	private String v = "Prueba de service";
 	
 	public List<Transaccion> findAllTransaccions(){
 		return dao.findAllTransaccions();
@@ -76,17 +75,6 @@ public class TransaccionService {
 		}		
 		return txList;
 	}
-	
 
-	public String getV() {
-		return v;
-	}
-
-	public void setV(String v) {
-		this.v = v;
-	}
-
-	
-	
 	
 }

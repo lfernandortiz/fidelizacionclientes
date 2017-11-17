@@ -43,6 +43,10 @@ public class SucursalBeanList implements Serializable{
 	public List<Sucursal> afiliadoBeanList() {
 		return sucursalList;
 	}
+	
+	public List<Sucursal> getSucursalList() {
+		return sucursalList;
+	}
 
 	public void setSucursalList(List<Sucursal> sucursalList) {
 		this.sucursalList = sucursalList;
@@ -91,7 +95,7 @@ public class SucursalBeanList implements Serializable{
 	}
 	
 	public String editarSucursal(){
-		return "sucursaledit";
+		return "sucursaledit?faces-redirect=true";
 	}
 	
 

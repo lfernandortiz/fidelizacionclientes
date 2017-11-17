@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class BanlancePuntos implements Serializable {
+public class BalancePuntos implements Serializable {
 	
 	/**
 	 * 
@@ -21,7 +21,7 @@ public class BanlancePuntos implements Serializable {
 	private int acumuladosnodisponibles;
 	
 	
-	public BanlancePuntos (){}
+	public BalancePuntos (){}
 
 
 	public int getAcumulados() {

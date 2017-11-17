@@ -16,7 +16,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import com.dromedicas.domain.Afiliado;
-import com.dromedicas.domain.BanlancePuntos;
+import com.dromedicas.domain.BalancePuntos;
 import com.dromedicas.domain.Referido;
 import com.dromedicas.domain.Sucursal;
 import com.dromedicas.domain.Tipotransaccion;
@@ -70,7 +70,7 @@ public class OperacionPuntosService {
 	public void registrarTransaccion(Sucursal sucursal, String momento, String nrofactura, Integer valortx,
 			Afiliado afiliado, int puntos) {
 
-		BanlancePuntos balance = new BanlancePuntos();
+		BalancePuntos balance = new BalancePuntos();
 
 		// se reciben parametros y se crean los objetos necesarios		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -127,7 +127,7 @@ public class OperacionPuntosService {
 			Afiliado afiliado, int puntosARedimir){
 		//comienza lo bueno :-P
 		
-		BanlancePuntos balance = null;
+		BalancePuntos balance = null;
 		
 		//obtengo todas las transaccion conpuntos redimibles
 		List<Transaccion> txList = this.getListransaccionesARedimir(afiliado);
@@ -290,10 +290,10 @@ public class OperacionPuntosService {
 	}
 	
 	
-	public BanlancePuntos consultaPuntos( Afiliado afiliado){
+	public BalancePuntos consultaPuntos( Afiliado afiliado){
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		
-		BanlancePuntos balance = new BanlancePuntos();
+		BalancePuntos balance = new BalancePuntos();
 		balance.setAcumulados( this.getPuntosAcumulados(afiliado) );
 		balance.setRedimidos( this.getPuntosRedemidos(afiliado));		
 		balance.setVencidos(this.getPuntosVencidos(afiliado));		

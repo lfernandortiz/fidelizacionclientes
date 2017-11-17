@@ -23,7 +23,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import com.dromedicas.domain.Afiliado;
-import com.dromedicas.domain.BanlancePuntos;
+import com.dromedicas.domain.BalancePuntos;
 import com.dromedicas.domain.Transaccion;
 import com.dromedicas.service.OperacionPuntosService;
 import com.dromedicas.util.ExpresionesRegulares;
@@ -143,7 +143,7 @@ public class EnviarEmailAlertas {
 	}
 	
 	
-	public boolean emailAcumulacionPuntos(Afiliado afiliado, int ganados, BanlancePuntos balance ) {
+	public boolean emailAcumulacionPuntos(Afiliado afiliado, int ganados, BalancePuntos balance ) {
 		//nombrecliente
 		//puntostx
 		//acumulados
@@ -285,7 +285,7 @@ public class EnviarEmailAlertas {
 			
 			for(Transaccion tx : txList){
 				Afiliado afiliado = tx.getAfiliado();
-				BanlancePuntos balance = puntosService.consultaPuntos(afiliado);
+				BalancePuntos balance = puntosService.consultaPuntos(afiliado);
 				
 				File inputHtml = new File(servletContext.getRealPath("emailhtml/emailcompra.html"));
 				// Asginamos el archivo al objeto analizador Document

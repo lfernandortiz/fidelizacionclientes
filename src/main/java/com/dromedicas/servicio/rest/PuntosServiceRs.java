@@ -1,8 +1,5 @@
 package com.dromedicas.servicio.rest;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,20 +13,25 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.dromedicas.domain.Afiliado;
-import com.dromedicas.domain.BanlancePuntos;
+import com.dromedicas.domain.BalancePuntos;
 import com.dromedicas.domain.Sucursal;
-import com.dromedicas.domain.Tipotransaccion;
-import com.dromedicas.domain.Transaccion;
 import com.dromedicas.service.AfiliadoService;
 import com.dromedicas.service.OperacionPuntosService;
 import com.dromedicas.service.SucursalService;
 import com.dromedicas.service.TipoTransaccionService;
 import com.dromedicas.service.TransaccionService;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+/**
+ * Clase que implementa JAX-RS para ofrecer 
+ * servicios rest. Contiene los Endpoint relacionados
+ * con operaciones de puntos.
+ * @author SOFTDromedicas 
+ *
+ */
 @Path("/puntos")
 @Stateless
-public class PuntosService {
+public class PuntosServiceRs {
+	
 	
 	@EJB
 	private AfiliadoService afiliadoService;
@@ -69,7 +71,7 @@ public class PuntosService {
 										 @PathParam("documento") String documento,
 										 @PathParam("puntos") int puntos){
 		
-		Map<String, Object> mapResponse = new HashMap<>();
+		ResponsePuntos responseObject = new ResponsePuntos();
 		
 		//se validan todos los parametros
 		if( !codsucursal.equals("") && !momento.equals("") && !nrofactura.equals("") && valortx != 0 
@@ -86,33 +88,31 @@ public class PuntosService {
 					//invoca al metodo de registro Tx del Bean Balance puntos
 					try {
 						calculoService.registrarTransaccion(sucursal, momento, nrofactura,
-								valortx, afiliado, puntos);
-						BanlancePuntos balance = calculoService.consultaPuntos(afiliado);
-						mapResponse.put("code","200");
-						mapResponse.put("message","Transaccion exitosa");
-						mapResponse.put("balance",balance);
+								valortx, afiliado, puntos);						
+						responseObject.setBalance( calculoService.consultaPuntos(afiliado));
+						responseObject.setCode("200");
+						responseObject.setMessage("Transaccion exitosa");						
 					} catch (Exception e) {
 						e.printStackTrace();
-						mapResponse.put("code","500");
-						mapResponse.put("message","Error general en el servidor");
-						return Response.status(500).entity(mapResponse).build();
+						responseObject.setCode("500");
+						responseObject.setMessage("Error general en el servido");
+						return Response.status(500).entity(responseObject).build();
 					}
-					return Response.status(200).entity(mapResponse).build();
-				}else{ // si no se halla la sucursal			
-					mapResponse.put("code","401");
-					mapResponse.put("message","Sucursal no encontrada");
-					return Response.status(401).entity(mapResponse).build();
+					return Response.status(200).entity(responseObject).build();
+				}else{ // si no se halla la sucursal	
+					responseObject.setCode("401");
+					responseObject.setMessage("Sucursal no encontrada");					
+					return Response.status(401).entity(responseObject).build();
 				}
 			}else{ //Si no se halla el afiliado
-				mapResponse.put("code","401");
-				mapResponse.put("message","Afilaido no encontrado");
-				return Response.status(401).entity(mapResponse).build();
+				responseObject.setCode("401");
+				responseObject.setMessage("Afilaido no encontrado");
+				return Response.status(401).entity(responseObject).build();
 			}			
 		}else{ //Faltan datos en la solicitud
-			mapResponse.put("code","400");
-			mapResponse.put("message","El servidor no pudo entender la solicitud debido a una sintaxis mal formada");
-			
-			return Response.status(401).entity(mapResponse).build();
+			responseObject.setCode("400");
+			responseObject.setMessage("El servidor no pudo entender la solicitud debido a una sintaxis mal formada");			
+			return Response.status(401).entity(responseObject).build();
 		}		
 	}///Fin del metodo Acumular puntos
 		
@@ -126,22 +126,23 @@ public class PuntosService {
 	@GET	
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response consultaBalancePuntos(@PathParam("documento") String documento){
-		Map<String, Object> mapResponse = new HashMap<>();
+		
+		ResponsePuntos responseObject = new ResponsePuntos();		
 		
 		Afiliado afiliado = this.afiliadoService.obtenerAfiliadoByDocumento(documento);
 		
 		if(afiliado != null){
 			
-			BanlancePuntos balance = calculoService.consultaPuntos(afiliado);
+			BalancePuntos balance = calculoService.consultaPuntos(afiliado);
 			
-			mapResponse.put("code","200");
-			mapResponse.put("message","Transaccion exitosa");
-			mapResponse.put("balance",balance);
-			return Response.status(200).entity(mapResponse).build();
+			responseObject.setCode("200");
+			responseObject.setMessage("Transaccion exitosa");
+			responseObject.setBalance(balance);
+			return Response.status(200).entity(responseObject).build();
 		}else{
-			mapResponse.put("code","401");
-			mapResponse.put("message","Afilaido no encontrado");
-			return Response.status(401).entity(mapResponse).build();
+			responseObject.setCode("401");
+			responseObject.setMessage("Afilaido no encontrado");
+			return Response.status(401).entity(responseObject).build();
 		}		
 	}
 		
@@ -157,7 +158,7 @@ public class PuntosService {
 									 	@PathParam("valortx") Integer valortx,
 									 	@PathParam("documento") String documento,
 									 	@PathParam("puntosredimidos") int puntosRedimidos){
-		Map<String, Object> mapResponse = new HashMap<>();
+		ResponsePuntos responseObject = new ResponsePuntos();
 		
 		//se validan todos los parametros
 		if( !codsucursal.equals("") && !momento.equals("") && !nrofactura.equals("") && valortx != 0 
@@ -172,46 +173,47 @@ public class PuntosService {
 				if (sucursal != null) {	
 					//invoca al metodo de registro Tx del Bean Balance puntos
 					try {
-						BanlancePuntos bTemp = calculoService.consultaPuntos(afiliado);
+						BalancePuntos bTemp = calculoService.consultaPuntos(afiliado);
 						
 						if(  bTemp.getDisponiblesaredimir() >= puntosRedimidos ){ 
 							
 							calculoService.redencionPuntos(sucursal, momento, nrofactura,
 									valortx, afiliado, puntosRedimidos);
-							BanlancePuntos balance =  calculoService.consultaPuntos(afiliado);
-							mapResponse.put("code","200");
-							mapResponse.put("message","Transaccion exitosa");
-							mapResponse.put("balance",balance);
+							BalancePuntos balance =  calculoService.consultaPuntos(afiliado);
+							responseObject.setCode("200");
+							responseObject.setMessage("Transaccion exitosa");
+							responseObject.setBalance(balance);
 							
-							return Response.status(200).entity(mapResponse).build();
+							return Response.status(200).entity(responseObject).build();
 						}else{							
-							mapResponse.put("code","400");
-							mapResponse.put("message","No Tiene los puntos suficientes para esta rededencion");
-							return Response.status(400).entity(mapResponse).build();
+							responseObject.setCode("400");
+							responseObject.setMessage("No Tiene los puntos suficientes para esta rededencion");
+							responseObject.setBalance(bTemp);
+							return Response.status(400).entity(responseObject).build();
 						}
 						
 					} catch (Exception e) {
 						e.printStackTrace();
-						mapResponse.put("code","500");
-						mapResponse.put("message","Error general en el servidor");
-						return Response.status(500).entity(mapResponse).build();
+						responseObject.setCode("500");
+						responseObject.setMessage("Error general en el servidor");						
+						return Response.status(500).entity(responseObject).build();
 					}
 					
 				}else{ // si no se halla la sucursal			
-					mapResponse.put("code","401");
-					mapResponse.put("message","Sucursal no encontrada");
-					return Response.status(401).entity(mapResponse).build();
+					responseObject.setCode("401");
+					responseObject.setMessage("Sucursal no encontrada");
+					return Response.status(401).entity(responseObject).build();
 				}
 			}else{ //Si no se halla el afiliado
-				mapResponse.put("code","401");
-				mapResponse.put("message","Afilaido no encontrado");
-				return Response.status(401).entity(mapResponse).build();
+				responseObject.setCode("401");
+				responseObject.setMessage("Afilaido no encontrado");
+				return Response.status(401).entity(responseObject).build();
 			}			
 			
 		}else{
-			mapResponse.put("code","400");
-			mapResponse.put("message","El servidor no pudo entender la solicitud debido a una sintaxis mal formada");
-			return Response.status(400).entity(mapResponse).build();
+			responseObject.setCode("400");
+			responseObject.setMessage("El servidor no pudo entender la solicitud debido a una sintaxis mal formada");
+			return Response.status(400).entity(responseObject).build();
 		}
 		
 	}
@@ -224,7 +226,7 @@ public class PuntosService {
 	public Response devolucionTransaccion(@PathParam("codsucursal") String codsucursal,
 			@PathParam("momento") String momento, @PathParam("nrofactua") String nrofactura,
 			@PathParam("valortx") Integer valortx, @PathParam("documento") String documento) {
-		Map<String, Object> mapResponse = new HashMap<>();
+		ResponsePuntos responseObject = new ResponsePuntos();
 
 		// se validan todos los parametros
 		if (!codsucursal.equals("") && !momento.equals("") && !nrofactura.equals("") && valortx != 0
@@ -239,38 +241,37 @@ public class PuntosService {
 				if (sucursal != null) {
 					// invoca al metodo de registro Tx del Bean Balance puntos
 					try {
-						BanlancePuntos bTemp = calculoService.consultaPuntos(afiliado);
-
+						
 						calculoService.devolucionTx(sucursal, momento, nrofactura, valortx, afiliado);
-						BanlancePuntos balance = calculoService.consultaPuntos(afiliado);
-						mapResponse.put("code", "200");
-						mapResponse.put("message", "Transaccion exitosa");
-						mapResponse.put("balance", balance);
+						BalancePuntos balance = calculoService.consultaPuntos(afiliado);
+						responseObject.setCode("200");
+						responseObject.setMessage("Transaccion exitosa");
+						responseObject.setBalance(balance);
 
-						return Response.status(200).entity(mapResponse).build();
+						return Response.status(200).entity(responseObject).build();
 
 					} catch (Exception e) {
 						e.printStackTrace();
-						mapResponse.put("code", "500");
-						mapResponse.put("message", "Error general en el servidor");
-						return Response.status(500).entity(mapResponse).build();
+						responseObject.setCode("500");
+						responseObject.setMessage("Error general en el servidor");
+						return Response.status(500).entity(responseObject).build();
 					}
 
 				} else { // si no se halla la sucursal
-					mapResponse.put("code", "401");
-					mapResponse.put("message", "Sucursal no encontrada");
-					return Response.status(401).entity(mapResponse).build();
+					responseObject.setCode("401");
+					responseObject.setMessage("Sucursal no encontrada");
+					return Response.status(401).entity(responseObject).build();
 				}
 			} else { // Si no se halla el afiliado
-				mapResponse.put("code", "401");
-				mapResponse.put("message", "Afilaido no encontrado");
-				return Response.status(401).entity(mapResponse).build();
+				responseObject.setCode("401");
+				responseObject.setMessage("Afilaido no encontrado");
+				return Response.status(401).entity(responseObject).build();
 			}
 
 		} else {
-			mapResponse.put("code", "400");
-			mapResponse.put("message", "El servidor no pudo entender la solicitud debido a una sintaxis mal formada");
-			return Response.status(400).entity(mapResponse).build();
+			responseObject.setCode("400");
+			responseObject.setMessage("El servidor no pudo entender la solicitud debido a una sintaxis mal formada");
+			return Response.status(400).entity(responseObject).build();
 		}
 
 	}

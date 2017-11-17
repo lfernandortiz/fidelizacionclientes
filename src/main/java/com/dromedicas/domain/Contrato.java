@@ -38,6 +38,8 @@ public class Contrato implements Serializable {
 	private byte enviosms;
 
 	private int factorpuntos;
+	
+	private int vrminimoredimir;
 
 	@Temporal(TemporalType.DATE)
 	private Date fechafin;
@@ -127,5 +129,15 @@ public class Contrato implements Serializable {
 	public void setEmpresa(Empresa empresa) {
 		this.empresa = empresa;
 	}
+
+	public int getVrminimoredimir() {
+		return vrminimoredimir;
+	}
+
+	public void setVrminimoredimir(int vrminimoredimir) {
+		this.vrminimoredimir = vrminimoredimir;
+	}
+	
+	
 
 }

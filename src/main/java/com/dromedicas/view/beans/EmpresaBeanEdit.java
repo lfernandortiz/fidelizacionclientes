@@ -162,8 +162,7 @@ public class EmpresaBeanEdit implements Serializable {
 		this.redensionSuc = this.contrato.getRedensionsucursales() == 1 ? true : false;
 		
 		this.setIdEmpresaSel(this.selectedEmpresa.getIdempresa());
-		this.setIdContratoSel(this.contrato.getIdcontrato());
-		
+		this.setIdContratoSel(this.contrato.getIdcontrato());		
 		
 		return "empresaedit";
 	}
@@ -186,6 +185,7 @@ public class EmpresaBeanEdit implements Serializable {
 		this.contrato.setFechafin(this.contrato.getFechafin());
 		this.contrato.setBasegravable(this.contrato.getBasegravable());
 		this.contrato.setFactorpuntos(this.contrato.getFactorpuntos());
+		this.contrato.setVrminimoredimir(this.contrato.getVrminimoredimir());
 		byte temp = (byte) (this.envioSms == true ? 1 : 0);
 		this.contrato.setEnviosms( temp	);
 		temp = (byte) (this.envioEmail == true ? 1 : 0);
@@ -204,8 +204,7 @@ public class EmpresaBeanEdit implements Serializable {
 		Flash flash = facesContext.getCurrentInstance().getExternalContext().getFlash();
 		flash.setKeepMessages(true);
 		
-		return "empresalist?faces-redirect=true";
-		
+		return "empresalist?faces-redirect=true";		
 	}
 	
 	
@@ -234,6 +233,9 @@ public class EmpresaBeanEdit implements Serializable {
 		temp = (byte) (this.isRedensionSuc()? 1 : 0);
 		this.contrato.setRedensionsucursales(temp);
 		this.contrato.setEmpresa(empTemp);		
+		this.contrato.setBasegravable(this.contrato.getBasegravable());
+		this.contrato.setVrminimoredimir(this.contrato.getVrminimoredimir());
+		this.contrato.setFactorpuntos(this.contrato.getFactorpuntos());
 				
 		empEjb.insertarContrato(this.contrato);
 		//Prepara mensaje a mostrar

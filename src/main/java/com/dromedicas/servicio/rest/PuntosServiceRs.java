@@ -147,8 +147,19 @@ public class PuntosServiceRs {
 	}
 		
 		
-	
-	//Grabar transaccion de REDENCION de puntos - Devolviendo balance de puntos
+	/**
+	 * Endpoint para la redencion de puntos.
+	 * Descuenta los puntos enviados como puntos a redimir y la diferencia
+	 * de la Tx es sujeto de acumulacion de puntos.
+	 * Devuelve balance del afiliado.
+	 * @param codsucursal
+	 * @param momento
+	 * @param nrofactura
+	 * @param valortx
+	 * @param documento
+	 * @param puntosRedimidos
+	 * @return
+	 */
 	@Path("/redimirpuntos/{codsucursal}/{momento}/{nrofactua}/{valortx}/{documento}/{puntosredimidos}")
 	@GET	
 	@Produces(MediaType.APPLICATION_JSON)
@@ -219,7 +230,17 @@ public class PuntosServiceRs {
 	}
 	
 	
-	// Grabar transaccion de REDENCION de puntos - Devolviendo balance de puntos
+	/**
+	 * Endpoint para la devolucion de una compra.
+	 * Descuenta los puntos acumulados, creando una transaccion de 
+	 * devolucion, la cual resta estos puntos en el balance del afiliado
+	 * @param codsucursal
+	 * @param momento
+	 * @param nrofactura
+	 * @param valortx
+	 * @param documento
+	 * @return
+	 */
 	@Path("/devolucion/{codsucursal}/{momento}/{nrofactua}/{valortx}/{documento}")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)

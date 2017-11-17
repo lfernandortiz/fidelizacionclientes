@@ -81,14 +81,20 @@
 								<p:inputText id="factorid"
 									value="#{empresaBeanEdit.contrato.factorpuntos}" />
 								
+								<p:outputLabel for="minredimibleid" value="Minimo valor redimible" />
+								<p:inputText id="minredimibleid"
+									value="#{empresaBeanEdit.contrato.vrminimoredimir}" />
+								
+								<p:outputLabel for="redenid" value="Redencion en Sucursal" />
+        						<p:selectBooleanCheckbox id="redenid" value="#{empresaBeanEdit.redensionSuc}" />
+								
 								<p:outputLabel for="smsid" value="Envio sms" />
         						<p:selectBooleanCheckbox id="smsid" value="#{empresaBeanEdit.envioSms}" />
  								
  								<p:outputLabel for="emailid" value="Envio email" />
         						<p:selectBooleanCheckbox id="emailid" value="#{empresaBeanEdit.envioEmail}" />
         						
-        						<p:outputLabel for="redenid" value="Redencion en Sucursal" />
-        						<p:selectBooleanCheckbox id="redenid" value="#{empresaBeanEdit.redensionSuc}" />
+        						
         						        						
 							</p:panelGrid>							
 							<p:separator style="height:5px"/>

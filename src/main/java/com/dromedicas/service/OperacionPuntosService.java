@@ -3,7 +3,6 @@ package com.dromedicas.service;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -17,6 +16,8 @@ import javax.persistence.Query;
 
 import com.dromedicas.domain.Afiliado;
 import com.dromedicas.domain.BalancePuntos;
+import com.dromedicas.domain.Contrato;
+import com.dromedicas.domain.Empresa;
 import com.dromedicas.domain.Referido;
 import com.dromedicas.domain.Sucursal;
 import com.dromedicas.domain.Tipotransaccion;
@@ -53,6 +54,9 @@ public class OperacionPuntosService {
 	
 	@EJB
 	private ReferidoService referidoService;
+	
+	@EJB
+	private EmpresaService empresaService;
 	
 	//Transaccion de puntos
 	
@@ -99,7 +103,10 @@ public class OperacionPuntosService {
 		tx.setTipotransaccion(tipoTx);
 		tx.setEnvionotificacion((byte)0);
 		//Aca se debe traer el parametros por consulta de base de datos del factor de acumulacion 
-		int mathPuntos = (valortx/100);	//-> Cambiar (100) por paramatreo optenico de consulta  
+		Contrato contrato =  empresaService.obtenerUltimoContrato(sucursal.getEmpresa());
+		int baseAc = contrato.getBasegravable();
+		
+		int mathPuntos = (valortx/ baseAc);	//-> Cambiar (100) por paramatreo optenico de consulta  
 		System.out.println("----Puntos acumulados: "+ mathPuntos);
 				
 		tx.setPuntostransaccion(mathPuntos);
@@ -196,8 +203,11 @@ public class OperacionPuntosService {
 		
 		//Proceso de acumulacion de puntos del saldo restante entre el total de la 
 		//factura y los pesos redimidos en puntos
+		Contrato contrato =  empresaService.obtenerUltimoContrato(sucursal.getEmpresa());
+		int baseAc = contrato.getBasegravable();
+		
 		int nuevoValorTx =  valortx - puntosARedimir;
-		int mathPuntos = (nuevoValorTx/100);//-> Cambiar (100) por paramatreo optenico de consulta
+		int mathPuntos = (nuevoValorTx/baseAc);//-> Cambiar (100) por paramatreo optenico de consulta
 		
 		// llamada al metodo registrarTransaccion con el nuevo valor a acumular
 		this.registrarTransaccion(sucursal, momento, nrofactura, nuevoValorTx, afiliado, mathPuntos);
@@ -232,7 +242,11 @@ public class OperacionPuntosService {
 		tx.setNrofactura(nrofactura);
 		tx.setValortotaltx(valortx);
 		tx.setTipotransaccion(tipoTx);
-		int mathPuntos = (valortx/100);//-> Cambiar (100) por paramatreo optenico de consulta
+		
+		Contrato contrato =  empresaService.obtenerUltimoContrato(sucursal.getEmpresa());
+		int baseAc = contrato.getBasegravable();
+		
+		int mathPuntos = (valortx/baseAc);//-> Cambiar (100) por paramatreo optenico de consulta
 		tx.setPuntostransaccion(mathPuntos);
 		tx.setEnvionotificacion((byte)0);
 		// graba la Tx de redencion
@@ -254,7 +268,7 @@ public class OperacionPuntosService {
 		tx.setValortotaltx(0);
 		tx.setVencen(addDays(new Date(), 365));
 		tx.setTipotransaccion(tipoTx);
-		tx.setPuntostransaccion(100);
+		tx.setPuntostransaccion(100); //-> Cambiar (100) por paramatreo optenico de consulta este es un nuevo parametro x crear
 		tx.setEnvionotificacion((byte)0);
 		// graba los puntos iniciales
 		txService.updateTransaccion(tx);
@@ -497,8 +511,16 @@ public class OperacionPuntosService {
 		if( puntosC != null){
 			total =  total.subtract(puntosC);
 		}
+		//para obtener el valor minimo redimible del afiliado se obtiene:
+		//La Sucursal donde fue vinculado -> La Empresa -> El contrato 
+		//que es la entidad que tienen los parametros de redencion		
+		Contrato contrato =  
+				empresaService.obtenerUltimoContrato(instance.getSucursal().getEmpresa());
+		
+		int vrMinimoRedimible = contrato.getVrminimoredimir();
+		
 		//-> Cambiar (8000) por paramatreo optenico de consulta  
-		return total.intValue() >= 8000 ? total.intValue() : 0; 
+		return total.intValue() >= vrMinimoRedimible ? total.intValue() : 0; 
 	}
 	
 	/**
@@ -600,7 +622,8 @@ public class OperacionPuntosService {
 	
 	
 	private Transaccion obtenerFacturaDevolucion(String nroFactura) {
-		String queryString ="FROM Transaccion t WHERE t.nrofactura = :nroFac and t.redimidos = 0 and t.redimidos <> 1";
+		String queryString ="FROM Transaccion t WHERE t.nrofactura = :nroFac "
+				+ " and t.redimidos = 0 and t.redimidos <> 1";
 		Query query = em.createQuery(queryString);
 		query.setParameter("nroFac", nroFactura);
 		Transaccion temp = null;		

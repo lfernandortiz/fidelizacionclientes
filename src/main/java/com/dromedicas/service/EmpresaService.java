@@ -103,7 +103,6 @@ public class EmpresaService {
 		String queryString = "from Contrato c where current_date between c.fechainicio and c.fechafin "
 				+ "and c.empresa.idempresa =  '" + instance.getIdempresa() +"'" ;
 		Query query = em.createQuery(queryString);
-		System.out.println("--------"+ queryString);
 		Contrato c = (Contrato) query.getSingleResult();		
 		System.out.println("Contrato Fecha Ini: " + c.getFechainicio());
 		return c;

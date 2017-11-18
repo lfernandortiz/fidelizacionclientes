@@ -41,6 +41,7 @@ public class Afiliadopatologia implements Serializable {
 	private AfiliadopatologiaPK id;
 
 	@Temporal(TemporalType.DATE)
+	@JsonIgnore 
 	private Date fecha;
 
 	//bi-directional many-to-one association to Patologia

@@ -37,7 +37,7 @@
 								
 								<p:outputLabel for="nacioid" value="Nacionalidad" />
 								<p:selectOneMenu id="nacioid" value="#{afiliadoBeanEdit.nacionalidad}"
-								filter="true" filterMatchMode="contains" var="p">
+								filter="true" filterMatchMode="contains" var="p" autoWidth="false">
 									<f:selectItems value="#{afiliadoBeanEdit.paisList}" var="nac"
 										itemLabel="#{nac.nombees}" itemValue="#{nac}" />
 									<p:column>
@@ -72,7 +72,7 @@
 								style="border:0px none; background-color:transparent;">								
 								
 								<p:outputLabel for="street1" value="Direccion" />
-                                <p:selectOneMenu id="street1" value="#{afiliadoBeanEdit.street1}">
+                                <p:selectOneMenu id="street1" value="#{afiliadoBeanEdit.street1}" autoWidth="false">
                                		<f:selectItem itemLabel="AVENIDA" itemValue="AVENIDA" />
 									<f:selectItem itemLabel="AUTOPISTA" itemValue="AUTOPISTA"/>
 									<f:selectItem itemLabel="BLOQUE" itemValue="BLOQUE"/>
@@ -157,7 +157,7 @@
                                 </p:selectOneMenu>		
                                 								
 								<p:outputLabel for="ciudadid" value="Ciudad"/>
-                                <p:selectOneMenu id="ciudadid" value="#{afiliadoBeanEdit.afiliadoSelected.ciudad}">
+                                <p:selectOneMenu id="ciudadid" value="#{afiliadoBeanEdit.afiliadoSelected.ciudad}" autoWidth="false">
                                     <f:selectItem itemLabel="ABREGO (N De Santander)" itemValue="ABREGO"/>
 									<f:selectItem itemLabel="ABRIAQUI (Antioquia)" itemValue="ABRIAQUI"/>
 									<f:selectItem itemLabel="ACEVEDO P (Huila)" itemValue="ACEVEDO P"/>
@@ -1262,7 +1262,7 @@
                                 
                                 <p:outputLabel for="sucursalid" value="Sucursal" />
 								<p:selectOneMenu id="sucursalid" value="#{afiliadoBeanEdit.afiliadoSelected.sucursal}"
-								filter="true" filterMatchMode="contains">
+								filter="true" filterMatchMode="contains" autoWidth="false">
 									<f:selectItems value="#{afiliadoBeanEdit.sucursalList}" var="suc"
 										itemLabel="#{suc.nombreSucursal}" itemValue="#{suc}" />
 									<h:outputText value="#{suc.nombreSucursal}" />

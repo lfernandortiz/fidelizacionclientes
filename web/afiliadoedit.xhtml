@@ -1186,7 +1186,7 @@
                                 
                                 <p:outputLabel for="sucursalid" value="Sucursal" />
 								<p:selectOneMenu id="sucursalid" value="#{afiliadoBeanEdit.afiliadoSelected.sucursal}"
-								filter="true" filterMatchMode="contains">
+								filter="true" filterMatchMode="contains" autoWidth="false">
 									<f:selectItems value="#{afiliadoBeanEdit.sucursalList}" var="suc"
 										itemLabel="#{suc.nombreSucursal}" itemValue="#{suc}" />
 									<h:outputText value="#{suc.nombreSucursal}" />

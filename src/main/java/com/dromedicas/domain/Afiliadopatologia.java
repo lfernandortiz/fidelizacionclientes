@@ -16,9 +16,11 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import com.dromedicas.domain.Afiliado;
 import com.dromedicas.domain.AfiliadopatologiaPK;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 /**
@@ -27,6 +29,7 @@ import com.dromedicas.domain.AfiliadopatologiaPK;
  */
 @Entity
 @NamedQuery(name="Afiliadopatologia.findAll", query="SELECT a FROM Afiliadopatologia a")
+@XmlRootElement
 public class Afiliadopatologia implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -41,15 +44,17 @@ public class Afiliadopatologia implements Serializable {
 	private Date fecha;
 
 	//bi-directional many-to-one association to Patologia
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "idpatologia", nullable = false, insertable = false, updatable = false)
 	@NotNull
+	@JsonIgnore 
 	private Patologia patologia;
 
 	//bi-directional many-to-one association to Afiliado
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "idafiliado", nullable = false, insertable = false, updatable = false)
 	@NotNull
+	@JsonIgnore
 	private Afiliado afiliado;
 
 	public Afiliadopatologia() {

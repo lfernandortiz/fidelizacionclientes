@@ -138,6 +138,7 @@ public class PuntosServiceRs {
 			responseObject.setCode("200");
 			responseObject.setMessage("Transaccion exitosa");
 			responseObject.setBalance(balance);
+			responseObject.setAfiliado(afiliado);
 			return Response.status(200).entity(responseObject).build();
 		}else{
 			responseObject.setCode("401");

@@ -164,7 +164,7 @@ public class EmpresaBeanEdit implements Serializable {
 		this.setIdEmpresaSel(this.selectedEmpresa.getIdempresa());
 		this.setIdContratoSel(this.contrato.getIdcontrato());		
 		
-		return "empresaedit";
+		return "empresaedit?faces-redirect=true";
 	}
 	
 	

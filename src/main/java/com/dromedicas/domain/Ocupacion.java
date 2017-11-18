@@ -2,6 +2,9 @@ package com.dromedicas.domain;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.List;
 
 
@@ -22,6 +25,7 @@ public class Ocupacion implements Serializable {
 
 	//bi-directional many-to-one association to Afiliado
 	@OneToMany(mappedBy="ocupacionBean", cascade={CascadeType.ALL})
+	@JsonIgnore
 	private List<Afiliado> afiliados;
 
 	public Ocupacion() {

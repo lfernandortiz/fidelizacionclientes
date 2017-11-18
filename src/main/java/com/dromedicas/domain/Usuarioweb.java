@@ -2,6 +2,9 @@ package com.dromedicas.domain;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.Date;
 import java.util.Set;
 
@@ -59,16 +62,16 @@ public class Usuarioweb implements Serializable {
 	// bi-directional many-to-many association to Perfil
 	@ManyToMany
 	@JoinTable(name = "usuarioperfil", joinColumns = { @JoinColumn(name = "idusuario") }, inverseJoinColumns = {
-			@JoinColumn(name = "idperfil") })
+			@JoinColumn(name = "idperfil") })	
 	private Set<Perfil> perfils2;
 	
 
 	//bi-directional many-to-one association to Afiliado
-	@OneToMany(mappedBy="usuariowebBean")
+	@OneToMany(mappedBy="usuariowebBean")	
 	private Set<Afiliado> afiliados;
 
 	//bi-directional many-to-one association to Permisorol
-	@OneToMany(mappedBy="usuarioweb")
+	@OneToMany(mappedBy="usuarioweb")	
 	private Set<Permisorol> permisorols;
 
 	//bi-directional many-to-one association to Usuarioperfil

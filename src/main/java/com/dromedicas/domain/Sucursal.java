@@ -48,7 +48,7 @@ public class Sucursal implements Serializable {
 	@Column(name="nombre_sucursal")
 	private String nombreSucursal;
 	
-	@JsonIgnore
+	
 	//bi-directional many-to-one association to Afiliado
 	@OneToMany(mappedBy="sucursal", cascade={CascadeType.ALL})
 	private Set<Afiliado> afiliados;

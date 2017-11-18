@@ -1,8 +1,17 @@
 package com.dromedicas.domain;
 
 import java.io.Serializable;
-import javax.persistence.*;
 import java.util.List;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.xml.bind.annotation.XmlRootElement;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 /**
@@ -11,6 +20,7 @@ import java.util.List;
  */
 @Entity
 @NamedQuery(name="Estudioafiliado.findAll", query="SELECT e FROM Estudioafiliado e")
+@XmlRootElement
 public class Estudioafiliado implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -22,6 +32,7 @@ public class Estudioafiliado implements Serializable {
 
 	//bi-directional many-to-one association to Afiliado
 	@OneToMany(mappedBy="estudioafiliado")
+	@JsonIgnore
 	private List<Afiliado> afiliados;
 
 	public Estudioafiliado() {

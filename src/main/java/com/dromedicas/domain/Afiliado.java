@@ -9,6 +9,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -21,6 +22,11 @@ import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * The persistent class for the afiliado database table.
@@ -118,6 +124,7 @@ public class Afiliado implements Serializable {
 	//bi-directional many-to-one association to Sucursal
 	@ManyToOne(cascade={CascadeType.ALL})
 	@JoinColumn(name="idsucursal")
+	@JsonIgnore
 	private Sucursal sucursal;
 
 	//bi-directional many-to-one association to Tipodocumento
@@ -128,18 +135,21 @@ public class Afiliado implements Serializable {
 	//bi-directional many-to-one association to Usuarioweb
 	@ManyToOne
 	@JoinColumn(name="creador")
+	@JsonIgnore
 	private Usuarioweb usuariowebBean;
 
 	//bi-directional many-to-one association to Afiliadopatologia
-	@OneToMany(mappedBy="afiliado")
+	@OneToMany(mappedBy="afiliado", fetch = FetchType.EAGER)
 	private List<Afiliadopatologia> afiliadopatologias;
 
 	//bi-directional many-to-one association to Emailenvio
 	@OneToMany(mappedBy="afiliado")
+	@JsonIgnore
 	private List<Emailenvio> emailenvios;
 
 	//bi-directional many-to-one association to Nucleofamilia
 	@OneToMany(mappedBy="afiliado")
+	@JsonIgnore
 	private List<Nucleofamilia> nucleofamilias;
 
 	
@@ -154,19 +164,22 @@ public class Afiliado implements Serializable {
 			, inverseJoinColumns={
 				@JoinColumn(name="idafiliado")
 				}
-			)
+			)	
 	private List<Patologia> patologias;
 
 	//bi-directional many-to-one association to Referido
 	@OneToMany(mappedBy="afiliado")
+	@JsonIgnore
 	private List<Referido> referidos;
 
 	//bi-directional many-to-one association to Smsenvio
 	@OneToMany(mappedBy="afiliado")
+	@JsonIgnore
 	private List<Smsenvio> smsenvios;
 
 	//bi-directional many-to-one association to Transaccion
 	@OneToMany(mappedBy="afiliado")
+	@JsonIgnore
 	private List<Transaccion> transaccions;
 
 	public Afiliado() {

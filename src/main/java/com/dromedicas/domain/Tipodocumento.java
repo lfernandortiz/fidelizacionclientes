@@ -2,6 +2,9 @@ package com.dromedicas.domain;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.Set;
 
 
@@ -22,6 +25,7 @@ public class Tipodocumento implements Serializable {
 
 	//bi-directional many-to-one association to Afiliado
 	@OneToMany(mappedBy="tipodocumentoBean")
+	@JsonIgnore
 	private Set<Afiliado> afiliados;
 
 	public Tipodocumento() {

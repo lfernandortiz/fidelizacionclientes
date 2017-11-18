@@ -363,9 +363,7 @@ public class OperacionPuntosService {
 		String queryString = "SELECT sum(t.puntostransaccion) FROM Transaccion t WHERE t.afiliado.documento = :documento "
 				+ "and (t.tipotransaccion.idtipotransaccion = 2 or t.tipotransaccion.idtipotransaccion = 3)";
 		Query query = em.createQuery( queryString );
-		query.setParameter("documento", instance.getDocumento());
-		
-		//System.out.println("---------Query: " + query.unwrap(org.hibernate.Query.class).getQueryString());
+		query.setParameter("documento", instance.getDocumento());		
 		Long puntos = 0L;		
 		try {
 			puntos =  (Long) query.getSingleResult();
@@ -518,8 +516,7 @@ public class OperacionPuntosService {
 				empresaService.obtenerUltimoContrato(instance.getSucursal().getEmpresa());
 		
 		int vrMinimoRedimible = contrato.getVrminimoredimir();
-		
-		//-> Cambiar (8000) por paramatreo optenico de consulta  
+				
 		return total.intValue() >= vrMinimoRedimible ? total.intValue() : 0; 
 	}
 	

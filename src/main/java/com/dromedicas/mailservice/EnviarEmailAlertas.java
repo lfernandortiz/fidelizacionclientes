@@ -105,10 +105,10 @@ public class EnviarEmailAlertas {
 					"contacto@puntosfarmanorte.com.co", "Puntos Farmanorte"));
 			message.setRecipients(Message.RecipientType.BCC, addressTo);
 			//Emojis :-)			
-			String subjectEmojiRaw = ":large_blue_circle: Puntos Farmanorte :pill:";
-			String subjectEmoji = EmojiParser.parseToUnicode(subjectEmojiRaw);				
+			String subjectEmojiRaw = ":large_blue_circle: Confirmacion de suscripcion :pill:";
+			String subjectEmoji = EmojiParser.parseToUnicode(subjectEmojiRaw);			
 				
-			message.setSubject( subjectEmoji + " | Confirmacion de suscripcion", "UTF-8");
+			message.setSubject( subjectEmoji , "UTF-8");
 			message.setContent(doc.html(), "text/html; charset=utf-8");
 
 			//Envia el correo

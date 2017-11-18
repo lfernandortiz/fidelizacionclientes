@@ -29,7 +29,7 @@
 								<p:inputText id="apellidoid" value="#{afiliadoBeanEdit.afiliadoSelected.apellidos}" required="true"/>
 
 								<p:outputLabel for="tipodocid" value="Tipo Documento" />
-								<p:selectOneMenu id="tipodocid" value="#{afiliadoBeanEdit.afiliadoSelected.tipodocumentoBean}">
+								<p:selectOneMenu id="tipodocid" value="#{afiliadoBeanEdit.afiliadoSelected.tipodocumentoBean}" >
 									<f:selectItems value="#{afiliadoBeanEdit.tipodocList}" var="tp"
 										itemLabel="#{tp.descripcion}" itemValue="#{tp}" />
 									<f:converter binding="#{tipoDocumentoConverter}" />									
@@ -37,7 +37,7 @@
 								
 								<p:outputLabel for="nacioid" value="Nacionalidad" />
 								<p:selectOneMenu id="nacioid" value="#{afiliadoBeanEdit.nacionalidad}"
-								filter="true" filterMatchMode="contains" var="p">
+								filter="true" filterMatchMode="contains" var="p" autoWidth="false">
 									<f:selectItems value="#{afiliadoBeanEdit.paisList}" var="nac"
 										itemLabel="#{nac.nombees}" itemValue="#{nac}" />
 									<p:column>
@@ -78,7 +78,8 @@
 								<p:inputText id="barrioid" value="#{afiliadoBeanEdit.afiliadoSelected.streetdos}" />
 								
 								<p:outputLabel for="ciudadid" value="Ciudad"/>
-                                <p:selectOneMenu id="ciudadid" value="#{afiliadoBeanEdit.afiliadoSelected.ciudad}">
+                                <p:selectOneMenu id="ciudadid" value="#{afiliadoBeanEdit.afiliadoSelected.ciudad}" 
+                                		autoWidth="false">
                                     <f:selectItem itemLabel="ABREGO (N De Santander)" itemValue="ABREGO"/>
 									<f:selectItem itemLabel="ABRIAQUI (Antioquia)" itemValue="ABRIAQUI"/>
 									<f:selectItem itemLabel="ACEVEDO P (Huila)" itemValue="ACEVEDO P"/>

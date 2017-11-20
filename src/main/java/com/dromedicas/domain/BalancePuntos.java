@@ -1,11 +1,14 @@
 package com.dromedicas.domain;
 
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
 @XmlRootElement
+@JsonPropertyOrder({ "ganadostxactual", "acumulados","vencidos", "vencidos", "redimidos", 
+	"avencer","fechavencimiento", "disponiblesaredimir", "acumuladosnodisponibles"})
 public class BalancePuntos implements Serializable {
 	
 	/**
@@ -19,6 +22,7 @@ public class BalancePuntos implements Serializable {
 	private String fechavencimiento;
 	private int disponiblesaredimir;
 	private int acumuladosnodisponibles;
+	private int ganadostxactual;
 	
 	
 	public BalancePuntos (){}
@@ -92,7 +96,16 @@ public class BalancePuntos implements Serializable {
 	public void setAcumuladosnodisponibles(int acumuladosnodisponibles) {
 		this.acumuladosnodisponibles = acumuladosnodisponibles;
 	}
-	
+
+
+	public int getGanadostxactual() {
+		return ganadostxactual;
+	}
+
+
+	public void setGanadostxactual(int ganadostxactual) {
+		this.ganadostxactual = ganadostxactual;
+	}
 	
 	
 

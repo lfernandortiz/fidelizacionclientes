@@ -61,21 +61,20 @@ public class PuntosServiceRs {
 	 * @param tipotx
 	 * @return
 	 */
-	@Path("/acumularpuntos/{codsucursal}/{momento}/{nrofactua}/{valortx}/{documento}/{puntos}")
+	@Path("/acumularpuntos/{codsucursal}/{momento}/{nrofactua}/{valortx}/{documento}")
 	@GET	
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response registrarTransaccion(@PathParam("codsucursal") String codsucursal,
 										 @PathParam("momento") String momento,
 										 @PathParam("nrofactua") String nrofactura,													
 										 @PathParam("valortx") Integer valortx,
-										 @PathParam("documento") String documento,
-										 @PathParam("puntos") int puntos){
+										 @PathParam("documento") String documento){
 		
 		ResponsePuntos responseObject = new ResponsePuntos();
 		
 		//se validan todos los parametros
 		if( !codsucursal.equals("") && !momento.equals("") && !nrofactura.equals("") && valortx != 0 
-					&& !documento.equals("") && puntos!= 0){
+					&& !documento.equals("") ){
 			
 			Sucursal sucursal = this.sucursalService.obtenerSucursalPorIdIterno(codsucursal);
 			
@@ -87,9 +86,12 @@ public class PuntosServiceRs {
 				if (sucursal != null) {	
 					//invoca al metodo de registro Tx del Bean Balance puntos
 					try {
-						calculoService.registrarTransaccion(sucursal, momento, nrofactura,
-								valortx, afiliado, puntos);						
-						responseObject.setBalance( calculoService.consultaPuntos(afiliado));
+						int pTxActual = 
+								calculoService.registrarTransaccion(sucursal, momento, nrofactura,
+										valortx, afiliado);			
+						BalancePuntos balance = calculoService.consultaPuntos(afiliado);
+						balance.setGanadostxactual(pTxActual);
+						responseObject.setBalance(balance);
 						responseObject.setCode("200");
 						responseObject.setMessage("Transaccion exitosa");						
 					} catch (Exception e) {
@@ -188,10 +190,10 @@ public class PuntosServiceRs {
 						BalancePuntos bTemp = calculoService.consultaPuntos(afiliado);
 						
 						if(  bTemp.getDisponiblesaredimir() >= puntosRedimidos ){ 
-							
-							calculoService.redencionPuntos(sucursal, momento, nrofactura,
-									valortx, afiliado, puntosRedimidos);
+							int pTxActual =  calculoService.redencionPuntos(sucursal, momento, nrofactura,
+													valortx, afiliado, puntosRedimidos);
 							BalancePuntos balance =  calculoService.consultaPuntos(afiliado);
+							balance.setGanadostxactual(pTxActual);
 							responseObject.setCode("200");
 							responseObject.setMessage("Transaccion exitosa");
 							responseObject.setBalance(balance);

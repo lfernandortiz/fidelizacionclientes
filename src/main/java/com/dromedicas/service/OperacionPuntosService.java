@@ -71,10 +71,12 @@ public class OperacionPuntosService {
 	 * @param puntos
 	 * @return
 	 */
-	public void registrarTransaccion(Sucursal sucursal, String momento, String nrofactura, Integer valortx,
-			Afiliado afiliado, int puntos) {
+	public int registrarTransaccion(Sucursal sucursal, String momento, String nrofactura, Integer valortx,
+			Afiliado afiliado) {
 
 		BalancePuntos balance = new BalancePuntos();
+		
+		int acumuladosTxActual = 0;
 
 		// se reciben parametros y se crean los objetos necesarios		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -106,13 +108,16 @@ public class OperacionPuntosService {
 		Contrato contrato =  empresaService.obtenerUltimoContrato(sucursal.getEmpresa());
 		int baseAc = contrato.getBasegravable();
 		
-		int mathPuntos = (valortx/ baseAc);	//-> Cambiar (100) por paramatreo optenico de consulta  
+		int mathPuntos = (valortx / baseAc);	//-> Cambiar (100) por paramatreo optenico de consulta  
 		System.out.println("----Puntos acumulados: "+ mathPuntos);
-				
+			
+		acumuladosTxActual = mathPuntos;
 		tx.setPuntostransaccion(mathPuntos);
 		// graba los puntos iniciales
 		txService.updateTransaccion(tx);
 		
+		
+		return acumuladosTxActual;
 		//se deja el envio de correo de tx a un scheduling
 		//mailAlert.emailAcumulacionPuntos(afiliado, mathPuntos, this.consultaPuntos(afiliado));
 		
@@ -130,7 +135,7 @@ public class OperacionPuntosService {
 	 * @param afiliado
 	 * @param puntosARedimir
 	 */
-	public void redencionPuntos(Sucursal sucursal, String momento, String nrofactura, Integer valortx,
+	public int redencionPuntos(Sucursal sucursal, String momento, String nrofactura, Integer valortx,
 			Afiliado afiliado, int puntosARedimir){
 		//comienza lo bueno :-P
 		
@@ -203,14 +208,12 @@ public class OperacionPuntosService {
 		
 		//Proceso de acumulacion de puntos del saldo restante entre el total de la 
 		//factura y los pesos redimidos en puntos
-		Contrato contrato =  empresaService.obtenerUltimoContrato(sucursal.getEmpresa());
-		int baseAc = contrato.getBasegravable();
-		
 		int nuevoValorTx =  valortx - puntosARedimir;
-		int mathPuntos = (nuevoValorTx/baseAc);//-> Cambiar (100) por paramatreo optenico de consulta
 		
 		// llamada al metodo registrarTransaccion con el nuevo valor a acumular
-		this.registrarTransaccion(sucursal, momento, nrofactura, nuevoValorTx, afiliado, mathPuntos);
+		int pTxActual =  this.registrarTransaccion(sucursal, momento, nrofactura, nuevoValorTx, afiliado);
+		
+		return pTxActual;
 		
 	} 
 	

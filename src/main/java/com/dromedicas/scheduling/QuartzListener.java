@@ -48,7 +48,7 @@ public class QuartzListener implements ServletContextListener {
 					.withSchedule(CronScheduleBuilder.cronSchedule("0 0/30 * 1/1 * ? *")) 
 					.build();
 			
-			// Setup the Job and Trigger with Scheduler & schedule jobs
+			// configuracion del Setup the Job and Trigger with Scheduler & schedule jobs
 			schNotiCompra = new StdSchedulerFactory().getScheduler();
 			schNotiCompra.start();
 			schNotiCompra.scheduleJob(job, trigger);
@@ -56,7 +56,10 @@ public class QuartzListener implements ServletContextListener {
 			/*
 			 * Schedule envio SMS diario para afiliados de cumplen anios
 			 */
-	
+			
+			
+			
+			
 			
 		} catch (SchedulerException e) {
 			e.printStackTrace();

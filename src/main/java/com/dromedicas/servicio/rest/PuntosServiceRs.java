@@ -1,8 +1,5 @@
 package com.dromedicas.servicio.rest;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ws.rs.GET;
@@ -266,8 +263,10 @@ public class PuntosServiceRs {
 					// invoca al metodo de registro Tx del Bean Balance puntos
 					try {
 						
-						calculoService.devolucionTx(sucursal, momento, nrofactura, valortx, afiliado);
+						int puntosDevueltos = 
+								calculoService.devolucionTx(sucursal, momento, nrofactura, valortx, afiliado);
 						BalancePuntos balance = calculoService.consultaPuntos(afiliado);
+						balance.setGanadostxactual(puntosDevueltos);
 						responseObject.setCode("200");
 						responseObject.setMessage("Transaccion exitosa");
 						responseObject.setBalance(balance);

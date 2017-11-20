@@ -220,7 +220,7 @@ public class OperacionPuntosService {
 	
 	
 	
-	public void devolucionTx(Sucursal sucursal, String momento, String nrofactura, Integer valortx, Afiliado afiliado) {
+	public int devolucionTx(Sucursal sucursal, String momento, String nrofactura, Integer valortx, Afiliado afiliado) {
 
 		// Graba la Transaccion de redencion
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -250,10 +250,13 @@ public class OperacionPuntosService {
 		int baseAc = contrato.getBasegravable();
 		
 		int mathPuntos = (valortx/baseAc);//-> Cambiar (100) por paramatreo optenico de consulta
+		System.out.println("----Puntos descontados: "+ mathPuntos);
 		tx.setPuntostransaccion(mathPuntos);
 		tx.setEnvionotificacion((byte)0);
 		// graba la Tx de redencion
 		txService.updateTransaccion(tx);
+		
+		return mathPuntos;
 	}
 	
 	

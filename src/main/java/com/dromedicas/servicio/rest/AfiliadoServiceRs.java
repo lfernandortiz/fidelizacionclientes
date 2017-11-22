@@ -113,7 +113,6 @@ public class AfiliadoServiceRs{
 			return Response.status(Status.OK).entity(responseObject).build();
 
 		} else {
-
 			System.out.println(Response.Status.BAD_REQUEST.getStatusCode());
 			responseObject.setCode(Status.BAD_REQUEST.getStatusCode());
 			responseObject.setStatus(Status.BAD_REQUEST.getReasonPhrase());

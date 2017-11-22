@@ -235,6 +235,10 @@ public class AfiliadoBeanEdit implements Serializable{
 		this.afiliadoSelected.setApellidos(
 					regex.removerAcentosNtildes(this.afiliadoSelected.getApellidos().trim().toUpperCase()));
 		this.afiliadoSelected.setTipodocumentoBean(this.afiliadoSelected.getTipodocumentoBean());
+		
+		System.out.println("NACIONALIDAD:  " + this.getNacionalidad().getNombees()); 
+		
+		
 		this.afiliadoSelected.setNacionalidad(this.getNacionalidad().getNombees());
 			//**Valida si ya esta registrada la cedula
 		
@@ -355,7 +359,7 @@ public class AfiliadoBeanEdit implements Serializable{
 		this.afiliadoSelected.setDocumento(this.afiliadoSelected.getDocumento());
 		this.afiliadoSelected.setSexo(this.afiliadoSelected.getSexo());
 		this.afiliadoSelected.setFechanacimiento(this.afiliadoSelected.getFechanacimiento());
-		
+		this.afiliadoSelected.setNacionalidad(this.nacionalidad.getNombees());
 		this.afiliadoSelected.setStreet(regex.removerAcentosNtildes(this.afiliadoSelected.getStreet()).replaceAll("#", "NO. "));
 		this.afiliadoSelected.setStreetdos(regex.removerAcentosNtildes(
 								this.afiliadoSelected.getStreetdos().trim().toUpperCase()));

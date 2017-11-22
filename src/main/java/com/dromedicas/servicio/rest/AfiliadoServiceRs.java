@@ -75,6 +75,7 @@ public class AfiliadoServiceRs{
 		System.out.println("Documento recibido: " + tipodocumento);
 		System.out.println("Documento sexo: " + sexo);
 		System.out.println("Documento direccion: " + direccion);
+		System.out.println("Barrio: " + barrio);
 		System.out.println("Documento fechanacimiento: " + sdf.format(fecNacimiento) );	
 		System.out.println("barrio: " + barrio);
 		System.out.println("usuario: " + usuario);

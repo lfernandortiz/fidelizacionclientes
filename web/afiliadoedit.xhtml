@@ -46,9 +46,8 @@
  									<p:column>										
  										<h:outputText value="#{p.nombees}" />
  									</p:column>	
-									<f:converter binding="#{paisConverter}" />
-									<p:ajax event="change" update="@this" />											
-								</p:selectOneMenu>		
+									<f:converter binding="#{paisConverter}" />																			
+								</p:selectOneMenu>
 	
 								<p:outputLabel for="cedulaid" value="Documento" />
 								<p:inputText id="cedulaid" value="#{afiliadoBeanEdit.afiliadoSelected.documento}" required="true">

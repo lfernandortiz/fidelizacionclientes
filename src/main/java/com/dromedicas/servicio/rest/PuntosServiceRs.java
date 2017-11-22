@@ -8,6 +8,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import com.dromedicas.domain.Afiliado;
 import com.dromedicas.domain.BalancePuntos;
@@ -89,27 +90,29 @@ public class PuntosServiceRs {
 						BalancePuntos balance = calculoService.consultaPuntos(afiliado);
 						balance.setGanadostxactual(pTxActual);
 						responseObject.setBalance(balance);
-						responseObject.setCode("200");
+						responseObject.setStatus(Status.OK.getReasonPhrase());
+						responseObject.setCode(200);
 						responseObject.setMessage("Transaccion exitosa");						
 					} catch (Exception e) {
 						e.printStackTrace();
-						responseObject.setCode("500");
+						responseObject.setCode(500);
+						responseObject.setStatus(Status.INTERNAL_SERVER_ERROR.getReasonPhrase());
 						responseObject.setMessage("Error general en el servido");
 						return Response.status(500).entity(responseObject).build();
 					}
 					return Response.status(200).entity(responseObject).build();
 				}else{ // si no se halla la sucursal	
-					responseObject.setCode("401");
+					responseObject.setCode(401);
 					responseObject.setMessage("Sucursal no encontrada");					
 					return Response.status(401).entity(responseObject).build();
 				}
 			}else{ //Si no se halla el afiliado
-				responseObject.setCode("401");
+				responseObject.setCode(401);
 				responseObject.setMessage("Afilaido no encontrado");
 				return Response.status(401).entity(responseObject).build();
 			}			
 		}else{ //Faltan datos en la solicitud
-			responseObject.setCode("400");
+			responseObject.setCode(400);
 			responseObject.setMessage("El servidor no pudo entender la solicitud debido a una sintaxis mal formada");			
 			return Response.status(401).entity(responseObject).build();
 		}		
@@ -134,13 +137,14 @@ public class PuntosServiceRs {
 			
 			BalancePuntos balance = calculoService.consultaPuntos(afiliado);
 			
-			responseObject.setCode("200");
+			responseObject.setCode(200);
 			responseObject.setMessage("Transaccion exitosa");
 			responseObject.setBalance(balance);
+			responseObject.setStatus(Status.OK.getReasonPhrase());
 			responseObject.setAfiliado(afiliado);
 			return Response.status(200).entity(responseObject).build();
 		}else{
-			responseObject.setCode("401");
+			responseObject.setCode(401);
 			responseObject.setMessage("Afilaido no encontrado");
 			return Response.status(401).entity(responseObject).build();
 		}		
@@ -191,13 +195,13 @@ public class PuntosServiceRs {
 													valortx, afiliado, puntosRedimidos);
 							BalancePuntos balance =  calculoService.consultaPuntos(afiliado);
 							balance.setGanadostxactual(pTxActual);
-							responseObject.setCode("200");
+							responseObject.setCode(200);
 							responseObject.setMessage("Transaccion exitosa");
 							responseObject.setBalance(balance);
 							
 							return Response.status(200).entity(responseObject).build();
 						}else{							
-							responseObject.setCode("400");
+							responseObject.setCode(400);
 							responseObject.setMessage("No Tiene los puntos suficientes para esta rededencion");
 							responseObject.setBalance(bTemp);
 							return Response.status(400).entity(responseObject).build();
@@ -205,24 +209,24 @@ public class PuntosServiceRs {
 						
 					} catch (Exception e) {
 						e.printStackTrace();
-						responseObject.setCode("500");
+						responseObject.setCode(500);
 						responseObject.setMessage("Error general en el servidor");						
 						return Response.status(500).entity(responseObject).build();
 					}
 					
 				}else{ // si no se halla la sucursal			
-					responseObject.setCode("401");
+					responseObject.setCode(401);
 					responseObject.setMessage("Sucursal no encontrada");
 					return Response.status(401).entity(responseObject).build();
 				}
 			}else{ //Si no se halla el afiliado
-				responseObject.setCode("401");
+				responseObject.setCode(401);
 				responseObject.setMessage("Afilaido no encontrado");
 				return Response.status(401).entity(responseObject).build();
 			}			
 			
 		}else{
-			responseObject.setCode("400");
+			responseObject.setCode(400);
 			responseObject.setMessage("El servidor no pudo entender la solicitud debido a una sintaxis mal formada");
 			return Response.status(400).entity(responseObject).build();
 		}
@@ -267,7 +271,7 @@ public class PuntosServiceRs {
 								calculoService.devolucionTx(sucursal, momento, nrofactura, valortx, afiliado);
 						BalancePuntos balance = calculoService.consultaPuntos(afiliado);
 						balance.setGanadostxactual(puntosDevueltos);
-						responseObject.setCode("200");
+						responseObject.setCode(200);
 						responseObject.setMessage("Transaccion exitosa");
 						responseObject.setBalance(balance);
 
@@ -275,24 +279,24 @@ public class PuntosServiceRs {
 
 					} catch (Exception e) {
 						e.printStackTrace();
-						responseObject.setCode("500");
+						responseObject.setCode(500);
 						responseObject.setMessage("Error general en el servidor");
 						return Response.status(500).entity(responseObject).build();
 					}
 
 				} else { // si no se halla la sucursal
-					responseObject.setCode("401");
+					responseObject.setCode(401);
 					responseObject.setMessage("Sucursal no encontrada");
 					return Response.status(401).entity(responseObject).build();
 				}
 			} else { // Si no se halla el afiliado
-				responseObject.setCode("401");
+				responseObject.setCode(401);
 				responseObject.setMessage("Afilaido no encontrado");
 				return Response.status(401).entity(responseObject).build();
 			}
 
 		} else {
-			responseObject.setCode("400");
+			responseObject.setCode(400);
 			responseObject.setMessage("El servidor no pudo entender la solicitud debido a una sintaxis mal formada");
 			return Response.status(400).entity(responseObject).build();
 		}

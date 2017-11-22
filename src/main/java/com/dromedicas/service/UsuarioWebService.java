@@ -35,7 +35,6 @@ public class UsuarioWebService {
 		return dao.obtenerUsuariowebById(id);
 	}
 	
-	
 
 	public void insertUsuarioweb(Usuarioweb instance){
 		dao.insertUsuarioweb(instance);
@@ -80,6 +79,20 @@ public class UsuarioWebService {
 		System.out.println("Query String: " + query.unwrap(org.hibernate.Query.class).getQueryString() );
 		
 		return query.getResultList();
+	}
+	
+	public Usuarioweb obtenerUsuarioPorUsuario(String usuario){
+		String queryString = "SELECT u FROM Usuarioweb u WHERE u.usuario = :usuario ";
+		Query query = em.createQuery(queryString);
+		query.setParameter("usuario", usuario);
+		System.out.println("Query String: " + query.unwrap(org.hibernate.Query.class).getQueryString() );
+		Usuarioweb temp = null;		
+		try {
+			temp = (Usuarioweb) query.getSingleResult();
+		} catch (NoResultException e) {
+			System.out.println("Elemento no encontrado");			
+		}		
+		return temp;
 	}
 
 }

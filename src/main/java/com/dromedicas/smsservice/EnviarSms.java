@@ -6,6 +6,8 @@ import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 
+import com.vdurmont.emoji.EmojiParser;
+
 public class EnviarSms {
 	/**
 	 * Envia un mensaje SMS al numero y con el contenido recibidos
@@ -17,11 +19,13 @@ public class EnviarSms {
 	public static String enviarSms(String mensaje, String numero) {
 		String respuesta = "";
 		try {
+			String subjectEmojiRaw = ":large_blue_circle: Confirmacion de suscripcion :memo:";
+			String subjectEmoji = EmojiParser.parseToUnicode(subjectEmojiRaw);	
 			// Thread.sleep(5500);
 			String query = String.format("cliente=%s&api=%s&numero=%s&sms=%s", URLEncoder.encode("10010333", "UTF-8"),
 					URLEncoder.encode("4z1MlW6lsQHKiJ6x909E7zS8Rp5PRF", "UTF-8"),
-					URLEncoder.encode( numero, "UTF-8"), 
-					URLEncoder.encode(mensaje, "UTF-8"));
+					URLEncoder.encode( "3102097474", "UTF-8"), 
+					URLEncoder.encode(subjectEmoji, "UTF-8"));
 
 			URL url = new URL("https://ws.hablame.co/sms_http.php" + "?" + query);
 			System.out.println(url);

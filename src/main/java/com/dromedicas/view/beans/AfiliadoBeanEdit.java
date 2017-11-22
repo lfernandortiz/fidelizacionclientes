@@ -187,7 +187,7 @@ public class AfiliadoBeanEdit implements Serializable{
 	public boolean isEmailValid() {
 		return emailValid;
 	}
-
+	
 	public void setEmailValid(boolean emailValid) {
 		this.emailValid = emailValid;
 	}

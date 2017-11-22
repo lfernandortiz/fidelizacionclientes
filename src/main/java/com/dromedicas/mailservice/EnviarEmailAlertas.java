@@ -50,8 +50,14 @@ public class EnviarEmailAlertas {
 		System.out.println("Clase enviar Email Alerta Afilidaod");
 		try{
 			
-			ServletContext servletContext = (ServletContext) FacesContext
-			        .getCurrentInstance().getExternalContext().getContext();
+			ServletContext servletContext = null;
+						
+			try {
+				servletContext = (ServletContext) FacesContext
+				        .getCurrentInstance().getExternalContext().getContext();
+			} catch (Exception e) {
+				servletContext = context;
+			}
 			
 			File inputHtml = new File(servletContext.getRealPath("emailhtml/registropuntosf.html"));
 			// Asginamos el archivo al objeto analizador Document

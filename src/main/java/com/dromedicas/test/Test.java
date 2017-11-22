@@ -1,7 +1,12 @@
 package com.dromedicas.test;
 
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -24,21 +29,48 @@ public class Test {
 //			String str = "An :grinning:awesome :smiley:string &#128516;with a few :wink:emojis!";
 //			String resultDecimal = EmojiParser.parseToHtmlDecimal(str);
 //			System.out.println(resultDecimal);
-			// Prints:
+			// Prints:+
 			
 			
-			String str = "An 😀awesome 😃string with a few 😉emojis!";
-			Collection<Emoji> collection = new ArrayList<Emoji>();
-			collection.add(EmojiManager.getForAlias("wink")); // This is 😉
+			
+			try {
+				String subjectEmojiRaw = ":large_blue_circle: Confirmacion de suscripcion :memo:";
+				String subjectEmoji = EmojiParser.parseToUnicode(subjectEmojiRaw);	
+				System.out.println("----------->" + subjectEmoji);
+				
+				subjectEmoji = "Mensaje de pruba";
+				// Thread.sleep(5500);
+				String query = String.format("cliente=%s&api=%s&numero=%s&sms=%s", URLEncoder.encode("10010333", "UTF-8"),
+						URLEncoder.encode("4z1MlW6lsQHKiJ6x909E7zS8Rp5PRF", "UTF-8"),
+						URLEncoder.encode( "3102097474", "UTF-8"), 
+						URLEncoder.encode( subjectEmoji, "UTF-8"));
 
-			System.out.println(EmojiParser.removeAllEmojis(str));
-			System.out.println(EmojiParser.removeAllEmojisExcept(str, collection));
-			System.out.println(EmojiParser.removeEmojis(str, collection));
+				URL url = new URL("https://ws.hablame.co/sms_http.php" + "?" + query);
+				System.out.println(url);
+				HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+				conn.setRequestMethod("GET");
+				Map<String, List<String>> header = conn.getHeaderFields();
+				int responseCode = conn.getResponseCode();
+				System.out.println("Headers : " + header);
+				System.out.println("Respuesta : " + responseCode);
+				
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			
-			String strs= "An :pill:  awesome :smiley:string &#128516;with a few :wink:emojis   :syringe:!";
-			String result = EmojiParser.parseToUnicode(strs);
-			System.out.println(result);
-	        
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+		
 //			Key k = MacProvider.generateKey();
 //			String k = "CSK395";
 //			String jwt = Jwts.builder()

@@ -109,7 +109,7 @@ public class AfiliadoServiceRs{
 			System.out.println(Response.Status.OK.getStatusCode());
 			responseObject.setCode(Status.OK.getStatusCode());
 			responseObject.setStatus(Status.OK.getReasonPhrase());
-			responseObject.setMessage("Afiliado creado correctamente");
+			responseObject.setMessage("Afiliado creado correctamente.");
 			return 
 					Response.status(Status.OK).entity(responseObject).header("Access-Control-Allow-Origin", "*").build();
 
@@ -117,7 +117,7 @@ public class AfiliadoServiceRs{
 			System.out.println(Response.Status.BAD_REQUEST.getStatusCode());
 			responseObject.setCode(Status.BAD_REQUEST.getStatusCode());
 			responseObject.setStatus(Status.BAD_REQUEST.getReasonPhrase());
-			responseObject.setMessage("El documento ya se encuentra registrado");
+			responseObject.setMessage("El documento ya se encuentra registrado.");
 			return 
 					Response.status(Status.OK).entity(responseObject).header("Access-Control-Allow-Origin", "*").build();
 		}

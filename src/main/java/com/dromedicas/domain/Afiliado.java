@@ -63,6 +63,8 @@ public class Afiliado implements Serializable {
 	private byte emailvalidado;
 
 	private String facebookperfil;
+	
+	private String keycode;
 
 	@Temporal(TemporalType.DATE)
 	private Date fechanacimiento;
@@ -583,6 +585,14 @@ public class Afiliado implements Serializable {
 		referido.setAfiliado(null);
 
 		return referido;
+	}
+	
+	public String getKeycode() {
+		return this.keycode;
+	}
+
+	public void setKeycode(String keycode) {
+		this.keycode = keycode;
 	}
 
 	public List<Smsenvio> getSmsenvios() {

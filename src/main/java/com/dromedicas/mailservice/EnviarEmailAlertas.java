@@ -45,7 +45,8 @@ public class EnviarEmailAlertas {
 	
 	public boolean enviarEmailAlertaVentas(Afiliado afiliado) {
 		
-		String urlConfirmacion = "http://www.puntosfarmanorte.com.co/seccion/actualizacion.html?documento=" + afiliado.getDocumento();
+		//String urlConfirmacion = "http://www.puntosfarmanorte.com.co/seccion/actualizacion.html?documento=" + afiliado.getDocumento();
+		String urlConfirmacion = "http://www.puntosfarmanorte.com.co/seccion/actualizacion.html?id=" + afiliado.getKeycode();
 		
 		System.out.println("Clase enviar Email Alerta Afilidaod");
 		try{

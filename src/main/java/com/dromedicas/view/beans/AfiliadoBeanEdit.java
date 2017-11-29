@@ -3,6 +3,7 @@ package com.dromedicas.view.beans;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -298,6 +299,9 @@ public class AfiliadoBeanEdit implements Serializable{
 		Sucursal sucursal  = 
 				this.sucursalService.obtenerSucursalById(this.afiliadoSelected.getSucursal());
 		this.afiliadoSelected.setSucursal(sucursal);
+		
+		UUID uniqueKey = UUID.randomUUID(); // codigo usado para validaciones web
+		this.afiliadoSelected.setKeycode(uniqueKey.toString().replace("-", ""));
 		
 		//2 Obtiene el usuario que registra..........Faltaaaaa		
 		this.afiliadoSelected.setUsuariowebBean( this.loginBean.getUser() );

@@ -3,6 +3,7 @@ package com.dromedicas.servicio.rest;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.UUID;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -101,6 +102,9 @@ public class AfiliadoServiceRs{
 			afiliado.setMomento(new Date());
 			Usuarioweb user =  this.usuarioService.obtenerUsuarioPorUsuario(usuario);
 			afiliado.setUsuariowebBean(user);
+			
+			UUID uniqueKey = UUID.randomUUID(); // codigo usado para validaciones web
+			afiliado.setKeycode(uniqueKey.toString().replace("-", ""));
 			// crearAfiliado persiste el nuevo objeto Afiliado guarda los puntos 
 			// iniciales por inscripcion y envia el emial de notificacion
 			this.afiliadoService.crearAfiliado(afiliado);

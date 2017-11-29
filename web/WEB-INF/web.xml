@@ -116,6 +116,7 @@
         <servlet-name>Puntos Farmanorte</servlet-name>
         <url-pattern>/webservice/*</url-pattern>
     </servlet-mapping>	
+    
     <listener>
          <listener-class>
              org.quartz.ee.servlet.QuartzInitializerListener
@@ -123,6 +124,8 @@
      </listener>
 	<listener>
 		<listener-class>com.dromedicas.scheduling.QuartzListener</listener-class>
-	</listener>   
+	</listener> 
+	
+
 	
 </web-app>

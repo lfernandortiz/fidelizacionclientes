@@ -309,7 +309,12 @@ public class OperacionPuntosService {
 
 	}
 	
-	
+	/**
+	 * Realiza una consulta del balance de puntos del afiliado.
+	 * Retorna un objeto <code>BalancePuntos</BalancePuntos>.
+	 * @param afiliado
+	 * @return
+	 */
 	public BalancePuntos consultaPuntos( Afiliado afiliado){
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		

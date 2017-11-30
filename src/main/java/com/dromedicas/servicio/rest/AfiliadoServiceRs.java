@@ -132,14 +132,62 @@ public class AfiliadoServiceRs{
 	
 	
 	//validar correo de afiliado
+	@Path("/validacorreo")
+	@GET	
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response validarCorreoAfiliado(@QueryParam("id") String id){
+		Afiliado afiliado = this.afiliadoService.obtenerAfiliadoUUID(id);
+		
+		//se marca como validado el correo 
+		afiliado.setEmailvalidado((byte)1);
+
+		//se actualiza el cambio 
+		this.afiliadoService.actualizarAfiliado(afiliado);
+		
+		
+		ResponsePuntos responseObject = new ResponsePuntos();
+		System.out.println(Response.Status.OK.getStatusCode());
+		responseObject.setCode(Status.OK.getStatusCode());
+		responseObject.setAfiliado(afiliado);
+		responseObject.setStatus(Status.OK.getReasonPhrase());
+		responseObject.setMessage("Afiliado encontrado correctamente.");
+		return 
+				Response.status(Status.OK).entity(responseObject).header("Access-Control-Allow-Origin", "*").build();
+	}
 	
 	
 	
 	//obtener datos del formulario basico de afiliado
-	
+	@Path("/obtenerafiliado")
+	@GET	
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response datosAfiliado(@QueryParam("id") String id){
+		Afiliado afiliado = this.afiliadoService.obtenerAfiliadoUUID(id);
+		
+		ResponsePuntos responseObject = new ResponsePuntos();
+		System.out.println(Response.Status.OK.getStatusCode());
+		responseObject.setCode(Status.OK.getStatusCode());
+		responseObject.setAfiliado(afiliado);
+		responseObject.setStatus(Status.OK.getReasonPhrase());
+		responseObject.setMessage("Afiliado encontrado correctamente.");
+		
+		System.out.println("Nombre: " + afiliado.getNombres() +" "+afiliado.getApellidos() );
+		
+		
+		return 
+				Response.status(Status.OK).entity(responseObject).header("Access-Control-Allow-Origin", "*").build();
+	}
 	
 	
 	//procesar segundo formulario de afiliacion
+	
+	
+	
+	//login perfil del usuario
+	
+	
+	
+	//actualizacion de datos basicos de afiliado
 	
 	
 

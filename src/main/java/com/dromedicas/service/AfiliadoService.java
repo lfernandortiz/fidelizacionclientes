@@ -119,6 +119,20 @@ public class AfiliadoService {
 		return temp;
 	}
 	
+	public Afiliado obtenerAfiliadoUUID(String uuid){
+		Query query = em.createQuery("FROM Afiliado a WHERE a.keycode = :uuid");
+		query.setParameter("uuid", uuid);
+		Afiliado temp = null;		
+		try {
+			temp = (Afiliado) query.getSingleResult();
+		} catch (NoResultException e) {
+			System.out.println("Elemento no encontrado");
+			
+		}		
+		return temp;
+		
+	}
+	
 	
 	public void crearAfiliado(Afiliado instance) {
 

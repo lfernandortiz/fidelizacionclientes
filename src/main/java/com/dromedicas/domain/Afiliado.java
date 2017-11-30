@@ -61,9 +61,10 @@ public class Afiliado implements Serializable {
 	private String email;
 
 	private byte emailvalidado;
-
+	
 	private String facebookperfil;
 	
+	@JsonIgnore
 	private String keycode;
 
 	@Temporal(TemporalType.DATE)
@@ -157,6 +158,7 @@ public class Afiliado implements Serializable {
 	
 	
 	//bi-directional many-to-many association to Afiliado
+	@JsonIgnore
 		@ManyToMany(cascade={CascadeType.ALL})
 		@JoinTable(
 			name="afiliadopatologianucleo"

@@ -8,12 +8,16 @@ import java.util.UUID;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriInfo;
 
 import com.dromedicas.domain.Afiliado;
 import com.dromedicas.domain.Sucursal;
@@ -180,7 +184,122 @@ public class AfiliadoServiceRs{
 	
 	
 	//procesar segundo formulario de afiliacion
-	
+	@Path("/actualizarafiliadoweb")
+	@POST	
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response actualizarDatosAfiliadoWeb(@Context UriInfo ui){
+		MultivaluedMap<String, String> map = ui.getQueryParameters();
+		
+		//se obtienen todos los valores desde la peticion
+		 String documento = map.getFirst("documento");
+		 String nombres = map.getFirst("nombres");
+		 String apellidos = map.getFirst("apellidos");
+		 int tipodocumento =Integer.parseInt(map.getFirst("tipodocumento"));
+		 String sexo = map.getFirst("sexo");
+		 String direccion = map.getFirst("direccion");
+		 String fechanacimiento = map.getFirst("fechanacimiento");
+		 String telefonofijo = map.getFirst("telefonofijo");
+		 String celular = map.getFirst("celular");
+		 String ciudad = map.getFirst("ciudad");
+		 String email = map.getFirst("email");
+		 String barrio = map.getFirst("barrio");
+		 String claveweb = map.getFirst("claveweb");
+		 String estudios = map.getFirst("estudios");
+		 String ocupacion = map.getFirst("ocupacion");
+		 int cantidadmiembro =Integer.parseInt(map.getFirst("cantidadmiembro"));
+		 int tipoMiembro[] = new int[cantidadmiembro];
+		 int valIni[] = new int[cantidadmiembro];
+		 int valFin[] = new int[cantidadmiembro];
+		//el valor es fijo dado que se tienen solo 25 patologias en el formulario
+		 int patologiasAfiliado[] = new int[25], patologias[] = new int[25];
+		//obtiene los valores variables de miembros de familia
+		 for(int i = 0; i < cantidadmiembro; i++){	
+			 String tempTipo = map.getFirst( "tipomiembroval" + (i+1) );
+			 
+			 System.out.println("indice: " + i);
+			 if( tempTipo != null){
+				 tipoMiembro[i] = Integer.parseInt(tempTipo);
+				 valIni[i] = Integer.parseInt(map.getFirst( "valini" + (i+1) ));
+				 valFin[i] = Integer.parseInt(map.getFirst( "valfin" + (i+1) ));
+				 
+				 System.out.println("ValIni " + (i+1) + ": " +valIni[i]);
+			 }
+		 }
+		 
+		 for(int i = 0; i < patologiasAfiliado.length; i++){
+			 String pTemp = map.getFirst( "p" + (i+1) );			 
+			 if(pTemp != null){				 
+				 patologiasAfiliado[i] = Integer.parseInt(pTemp);
+			 }			 
+			 String pMiembreTemp = map.getFirst( "pm" + (i+1) );			
+			 if(pMiembreTemp != null){
+				 patologias[i] = Integer.parseInt(pTemp);
+			 }
+		 }
+		 String hijosmenoresde4 = map.getFirst("hijosmenoresde4");
+		 String hijosentre4y12 = map.getFirst("hijosentre4y12");
+		 String hijosentre13y18 = map.getFirst("hijosentre13y18");
+		 String hijosmayores = map.getFirst("hijosmayores");
+		 String cantreferido = map.getFirst("cantreferido");
+		 String referidos[] = null;//Email de referidos 
+		 
+		 if( cantreferido != null ){			 
+			 referidos = new String[Integer.parseInt(cantreferido)];
+			 for(int i = 0; i < referidos.length; i++){
+				 String refTemp = map.getFirst("referido" + (i+1) );
+				 referidos[i] = refTemp;
+			 }	 
+		 }
+		 
+		 //se crean las instancias respectivas
+		 Afiliado afiliado = this.afiliadoService.obtenerAfiliadoByDocumento(documento);
+		afiliado.setNombres(nombres);
+		afiliado.setApellidos(apellidos);
+
+		Tipodocumento tdocumento = tipodocService.obtenerTipodocumentoByIdString(tipodocumento);
+		afiliado.setTipodocumentoBean(tdocumento);
+		afiliado.setDocumento(documento);
+		afiliado.setNacionalidad("Colombia");
+		afiliado.setSexo(sexo);
+
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		try {
+			afiliado.setFechanacimiento(sdf.parse(fechanacimiento));
+		} catch (ParseException e) {
+
+			e.printStackTrace();
+		}
+		afiliado.setStreet(direccion);
+		afiliado.setStreetdos(barrio);
+		afiliado.setCiudad(ciudad);
+		afiliado.setDepartamento("");
+
+		Sucursal sucursal = this.sucursalService.obtenerSucursalPorIdIterno("00");
+		afiliado.setSucursal(sucursal);
+		afiliado.setTelefonofijo(telefonofijo);
+		afiliado.setCelular(celular);
+		afiliado.setEmail(email);
+		
+		this.afiliadoService.actualizarAfiliado(afiliado);
+		 
+		 //se actualizan los valores
+		 
+		 
+		 
+		 //se envia correo de refereidos
+		 
+	    
+		 
+		 
+		 
+		 
+		 
+	    System.out.println(nombres);
+	    System.out.println(apellidos);
+	    
+	    
+	    return null;
+	}
 	
 	
 	//login perfil del usuario

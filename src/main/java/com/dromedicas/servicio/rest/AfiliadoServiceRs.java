@@ -2,7 +2,9 @@ package com.dromedicas.servicio.rest;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import javax.ejb.EJB;
@@ -20,14 +22,19 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import com.dromedicas.domain.Afiliado;
+import com.dromedicas.domain.Afiliadopatologia;
+import com.dromedicas.domain.AfiliadopatologiaPK;
 import com.dromedicas.domain.Estudioafiliado;
 import com.dromedicas.domain.Ocupacion;
+import com.dromedicas.domain.Patologia;
 import com.dromedicas.domain.Sucursal;
 import com.dromedicas.domain.Tipodocumento;
 import com.dromedicas.domain.Usuarioweb;
+import com.dromedicas.service.AfiliadoPatologiaService;
 import com.dromedicas.service.AfiliadoService;
 import com.dromedicas.service.EstudioAfiliadoService;
 import com.dromedicas.service.OcupacionService;
+import com.dromedicas.service.PatologiaService;
 import com.dromedicas.service.SucursalService;
 import com.dromedicas.service.TipoDocumentoService;
 import com.dromedicas.service.UsuarioWebService;
@@ -59,6 +66,12 @@ public class AfiliadoServiceRs{
 	
 	@EJB
 	private EstudioAfiliadoService estudioService;
+	
+	@EJB
+	private PatologiaService patologiaService;
+	
+	@EJB
+	private AfiliadoPatologiaService afPatologiaService;
 	
 	//crear afiliado desde formulario web y la app
 	@Path("/crearafiliado")
@@ -220,8 +233,23 @@ public class AfiliadoServiceRs{
 		 int tipoMiembro[] = new int[cantidadmiembro];
 		 int valIni[] = new int[cantidadmiembro];
 		 int valFin[] = new int[cantidadmiembro];
-		//el valor es fijo dado que se tienen solo 25 patologias en el formulario
-		 int patologiasAfiliado[] = new int[25], patologias[] = new int[25];
+		 
+		 //Patologias		 
+		 List<Integer> patologiasAfiliado = new ArrayList<Integer>();
+		 List<Integer> patologias = new ArrayList<Integer>();
+		 
+		 
+		 for(int i = 0; i < 25; i++){
+			 String pTemp = map.getFirst( "p" + (i+1) );			 
+			 if(pTemp != null){				 
+				 patologiasAfiliado.add(Integer.parseInt(pTemp));
+			 }			 
+			 String pMiembreTemp = map.getFirst( "pm" + (i+1) );			
+			 if(pMiembreTemp != null){
+				 patologias.add(Integer.parseInt(pTemp));
+			 }
+		 }
+		 
 		//obtiene los valores variables de miembros de familia
 		 for(int i = 0; i < cantidadmiembro; i++){	
 			 String tempTipo = map.getFirst( "tipomiembroval" + (i+1) );
@@ -236,16 +264,7 @@ public class AfiliadoServiceRs{
 			 }
 		 }
 		 
-		 for(int i = 0; i < patologiasAfiliado.length; i++){
-			 String pTemp = map.getFirst( "p" + (i+1) );			 
-			 if(pTemp != null){				 
-				 patologiasAfiliado[i] = Integer.parseInt(pTemp);
-			 }			 
-			 String pMiembreTemp = map.getFirst( "pm" + (i+1) );			
-			 if(pMiembreTemp != null){
-				 patologias[i] = Integer.parseInt(pTemp);
-			 }
-		 }
+		 
 		 String hijosmenoresde4 = map.getFirst("hijosmenoresde4");
 		 String hijosentre4y12 = map.getFirst("hijosentre4y12");
 		 String hijosentre13y18 = map.getFirst("hijosentre13y18");
@@ -305,6 +324,23 @@ public class AfiliadoServiceRs{
 			
 		}
 			//Patologias afiliado
+		if( !patologiasAfiliado.isEmpty()){
+			
+			for(int e : patologiasAfiliado){
+				Patologia patologia = this.patologiaService.obtenerPatologiaById(e);
+				AfiliadopatologiaPK pk = new AfiliadopatologiaPK();
+				pk.setIdafiliado(afiliado.getIdafiliado());
+				pk.setIdpatologia(e);
+				
+				Afiliadopatologia afPatologia = new Afiliadopatologia();
+				afPatologia.setId(pk);
+				afPatologia.setFecha(new Date());
+				afPatologia.setAfiliado(afiliado);
+				afPatologia.setPatologia(patologia);
+				
+				this.afPatologiaService.updateAfiliadopatologia(afPatologia);
+			}
+		}
 		
 		
 		

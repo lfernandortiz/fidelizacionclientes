@@ -6,9 +6,12 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 import com.dromedicas.domain.Patologia;
+import com.dromedicas.domain.Tipotransaccion;
 import com.dromedicas.eis.EstudioAfiliadoDao;
 import com.dromedicas.eis.PatologiaDao;
 
@@ -29,6 +32,19 @@ public class PatologiaService  implements Serializable{
 	public Patologia obtenerPatologiaById(Patologia instance){
 		return dao.obtenerPatologiaById(instance);
 	}
+	
+	public Patologia obtenerPatologiaById(int id){
+		Query query = em.createQuery("select p FROM Patologia p where p.idpatologia = :id");
+		query.setParameter("id", id);
+		Patologia temp = null;		
+		try {
+			temp = (Patologia) query.getSingleResult();
+		} catch (NoResultException e) {
+			System.out.println("No encontrado");			
+		}		
+		return temp;
+	}
+
 	
 	public void insertPatologia(Patologia instance){
 		dao.insertPatologia(instance);

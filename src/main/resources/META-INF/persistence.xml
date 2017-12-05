@@ -6,6 +6,10 @@
 	<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 		<jta-data-source>jdbc/PuntosFDb</jta-data-source>	
 		<class>com.dromedicas.domain.Afiliado</class>
+		<class>com.dromedicas.domain.Afiliadopatologia</class>
+		<class>com.dromedicas.domain.AfiliadopatologiaPK</class>
+		<class>com.dromedicas.domain.Afiliadopatologianucleo</class>
+		<class>com.dromedicas.domain.AfiliadopatologianucloePK</class>		
 		<class>com.dromedicas.domain.Audiwebservice</class>
 		<class>com.dromedicas.domain.Campania</class>
 		<class>com.dromedicas.domain.Contrato</class>
@@ -17,13 +21,20 @@
 		<class>com.dromedicas.domain.EmailestadoPK</class>
 		<class>com.dromedicas.domain.Empresa</class>
 		<class>com.dromedicas.domain.Estadosm</class>
+		<class>com.dromedicas.domain.Estudioafiliado</class>
 		<class>com.dromedicas.domain.Eventowebservice</class>
 		<class>com.dromedicas.domain.Globalstat</class>
+		<class>com.dromedicas.domain.Nucleofamilia</class>
+		<class>com.dromedicas.domain.NucleofamiliaPK</class>
+		<class>com.dromedicas.domain.Ocupacion</class>
+		<class>com.dromedicas.domain.Pais</class>
+		<class>com.dromedicas.domain.Patologia</class>
 		<class>com.dromedicas.domain.Perfil</class>
 		<class>com.dromedicas.domain.Permisorol</class>
 		<class>com.dromedicas.domain.PermisorolPK</class>
 		<class>com.dromedicas.domain.Producto</class>
 		<class>com.dromedicas.domain.Punto</class>
+		<class>com.dromedicas.domain.Referido</class>
 		<class>com.dromedicas.domain.Rol</class>
 		<class>com.dromedicas.domain.Smscampania</class>
 		<class>com.dromedicas.domain.SmscampaniaPK</class>
@@ -33,6 +44,7 @@
 		<class>com.dromedicas.domain.Tipodocumento</class>
 		<class>com.dromedicas.domain.Tipoemail</class>
 		<class>com.dromedicas.domain.Tipoestaestadoemail</class>
+		<class>com.dromedicas.domain.Tipomiembro</class>
 		<class>com.dromedicas.domain.Tiposm</class>
 		<class>com.dromedicas.domain.Tipotransaccion</class>
 		<class>com.dromedicas.domain.Tipousuario</class>

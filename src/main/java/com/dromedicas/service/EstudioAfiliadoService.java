@@ -33,7 +33,7 @@ public class EstudioAfiliadoService {
 		return dao.obtenerEstudioafiliadoById(instance);
 	}
 	
-	public Estudioafiliado obtenerEstudioafiliadoById(String id) {
+	public Estudioafiliado obtenerEstudioafiliadoById(int id) {
 		Query query = em.createQuery("FROM Estudioafiliado e where e.idestudioafiliado = :id");
 		query.setParameter("id", id);
 		Estudioafiliado temp = null;		

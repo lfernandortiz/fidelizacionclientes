@@ -30,7 +30,7 @@ public class OcupacionService {
 		return dao.obtenerOcupacionById(instance);
 	}
 	
-	public Ocupacion obtenerOcupacionById(String id){
+	public Ocupacion obtenerOcupacionById(int id){
 		Query query = em.createQuery("FROM Ocupacion o where o.idocupacion = :id");
 		query.setParameter("id", id);
 		Ocupacion temp = null;		

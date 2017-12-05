@@ -20,10 +20,14 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import com.dromedicas.domain.Afiliado;
+import com.dromedicas.domain.Estudioafiliado;
+import com.dromedicas.domain.Ocupacion;
 import com.dromedicas.domain.Sucursal;
 import com.dromedicas.domain.Tipodocumento;
 import com.dromedicas.domain.Usuarioweb;
 import com.dromedicas.service.AfiliadoService;
+import com.dromedicas.service.EstudioAfiliadoService;
+import com.dromedicas.service.OcupacionService;
 import com.dromedicas.service.SucursalService;
 import com.dromedicas.service.TipoDocumentoService;
 import com.dromedicas.service.UsuarioWebService;
@@ -49,6 +53,12 @@ public class AfiliadoServiceRs{
 	
 	@EJB
 	private UsuarioWebService usuarioService;
+	
+	@EJB
+	private OcupacionService ocupacionService;
+	
+	@EJB
+	private EstudioAfiliadoService estudioService;
 	
 	//crear afiliado desde formulario web y la app
 	@Path("/crearafiliado")
@@ -252,7 +262,7 @@ public class AfiliadoServiceRs{
 		 }
 		 
 		 //se crean las instancias respectivas
-		 Afiliado afiliado = this.afiliadoService.obtenerAfiliadoByDocumento(documento);
+		Afiliado afiliado = this.afiliadoService.obtenerAfiliadoByDocumento(documento);
 		afiliado.setNombres(nombres);
 		afiliado.setApellidos(apellidos);
 
@@ -279,10 +289,28 @@ public class AfiliadoServiceRs{
 		afiliado.setTelefonofijo(telefonofijo);
 		afiliado.setCelular(celular);
 		afiliado.setEmail(email);
+		afiliado.setClaveweb(claveweb);
+		//informacion adicional formulario 2
+			//Ocupacion
+		if(ocupacion != null){
+			Ocupacion ocupac = this.ocupacionService.obtenerOcupacionById(Integer.parseInt(ocupacion));	
+			afiliado.setOcupacionBean(ocupac);
+		}
+			//Nivel de estudios
+		System.out.println("Estudios: " +  estudios) ;
+		if(estudios != null){
+			Estudioafiliado estudiosnivel = 
+					this.estudioService.obtenerEstudioafiliadoById(Integer.parseInt(estudios));
+			afiliado.setEstudioafiliado(estudiosnivel);
+			
+		}
+			//Patologias afiliado
 		
-		this.afiliadoService.actualizarAfiliado(afiliado);
+		
+		
 		 
-		 //se actualizan los valores
+		//se actualizan los valores
+		this.afiliadoService.actualizarAfiliado(afiliado);
 		 
 		 
 		 

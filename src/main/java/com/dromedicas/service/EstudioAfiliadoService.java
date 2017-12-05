@@ -46,7 +46,6 @@ public class EstudioAfiliadoService {
 	}
 
 	
-	
 	public void insertEstudioafiliado(Estudioafiliado instance) {
 		dao.insertEstudioafiliado(instance);
 

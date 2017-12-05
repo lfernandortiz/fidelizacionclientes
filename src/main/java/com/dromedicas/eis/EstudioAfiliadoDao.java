@@ -7,7 +7,7 @@ import com.dromedicas.domain.Estudioafiliado;
 
 public interface EstudioAfiliadoDao {
 	
-public List<Estudioafiliado> findAllEstudioafiliados();
+	public List<Estudioafiliado> findAllEstudioafiliados();
 	
 	public Estudioafiliado obtenerEstudioafiliadoById(Estudioafiliado instance);
 	

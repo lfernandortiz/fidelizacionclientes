@@ -45,8 +45,7 @@ public class EnviarEmailAlertas {
 	
 	public boolean enviarEmailAlertaVentas(Afiliado afiliado) {
 		
-		//String urlConfirmacion = "http://www.puntosfarmanorte.com.co/seccion/actualizacion.html?documento=" + afiliado.getDocumento();
-		String urlConfirmacion = "http://localhost:8003/seccion/actualizacion.html?id=" + afiliado.getKeycode();
+		String urlConfirmacion = "http://www.puntosfarmanorte.com.co/seccion/actualizacion.html?id=" + afiliado.getKeycode();
 		
 		System.out.println("Clase enviar Email Alerta Afilidaod");
 		try{
@@ -402,11 +401,10 @@ public boolean emailNotificacionReferido(final List<String> emailList ) {
 							message.setContent(doc.html(), "text/html; charset=utf-8");
 
 							t.sendMessage(message, message.getAllRecipients());
-							// Cierre de la conexion
 							
 						}
+						// Cierre de la conexion
 						t.close();
-				    
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();

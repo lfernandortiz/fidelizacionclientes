@@ -242,223 +242,242 @@ public class AfiliadoServiceRs{
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response actualizarDatosAfiliadoWeb(@Context UriInfo ui) {
+		
 		MultivaluedMap<String, String> map = ui.getQueryParameters();
-
-		// se obtienen todos los valores desde la peticion
-		String documento = map.getFirst("documento");
-		String nombres = map.getFirst("nombres");
-		String apellidos = map.getFirst("apellidos");
-		int tipodocumento = Integer.parseInt(map.getFirst("tipodocumento"));
-		String sexo = map.getFirst("sexo");
-		String direccion = map.getFirst("direccion");
-		String fechanacimiento = map.getFirst("fechanacimiento");
-		String telefonofijo = map.getFirst("telefonofijo");
-		String celular = map.getFirst("celular");
-		String ciudad = map.getFirst("ciudad");
-		String email = map.getFirst("email");
-		String barrio = map.getFirst("barrio");
-		String claveweb = map.getFirst("claveweb");
-		String estudios = map.getFirst("estudios");
-		String ocupacion = map.getFirst("ocupacion");
-		int cantidadmiembro = Integer.parseInt(map.getFirst("cantidadmiembro"));
-		int tipoMiembro[] = new int[cantidadmiembro];
-		int valIni[] = new int[cantidadmiembro];
-		int valFin[] = new int[cantidadmiembro];
-
-		// Patologias
-		List<Integer> patologiasAfiliado = new ArrayList<Integer>();
-		List<Integer> patologias = new ArrayList<Integer>();
-
-		for (int i = 0; i < 25; i++) {
-			String pTemp = map.getFirst("p" + (i + 1));
-			if (pTemp != null) {
-				patologiasAfiliado.add(Integer.parseInt(pTemp));
-			}
-			String pMiembreTemp = map.getFirst("pm" + (i + 1));
-			if (pMiembreTemp != null) {
-				patologias.add(Integer.parseInt(pMiembreTemp));
-			}
-		}
-
-		// obtiene los valores variables de miembros de familia
-
-		System.out.println("Cantidad Miembro........: " + cantidadmiembro);
-		for (int i = 0; i < cantidadmiembro; i++) {
-			String tempTipo = map.getFirst("tipomiembroval" + (i + 1));
-
-			if (tempTipo != null) {
-				tipoMiembro[i] = Integer.parseInt(tempTipo);
-				valIni[i] = Integer.parseInt(map.getFirst("valini" + (i + 1)));
-				valFin[i] = Integer.parseInt(map.getFirst("valfin" + (i + 1)));
-
-				System.out.println("ValIni " + (i + 1) + ": " + valIni[i]);
-			}
-		}
-
-		String hijosmenoresde4 = map.getFirst("hijosmenoresde4");
-		String hijosentre4y12 = map.getFirst("hijosentre4y12");
-		String hijosentre13y18 = map.getFirst("hijosentre13y18");
-		String hijosmayores = map.getFirst("hijosmayores");
-		String cantreferido = map.getFirst("cantreferido");
-		List<String> referidosList = new ArrayList<String>();
-		
-
-		if (cantreferido != null) {
-			for (int i = 0; i < Integer.parseInt(cantreferido); i++) {
-				String refTemp = map.getFirst("referido" + (i + 1));
-				Referido refPersist = this.referidoService.obtenerReferidoPorEmail(refTemp);
-				// Evita duplicidades en referidos
-				if (!"".equals(refTemp) && !" ".equals(refTemp) && refTemp != null && refPersist == null) {
-					if( regex.validateEmail(refTemp)){//usa validacion por medio de Regex de la dir de email
-						referidosList.add(refTemp);
-					}					
-				}
-			}
-		}
-
-		// --> Se crean las instancias respectivas
-		Afiliado afiliado = this.afiliadoService.obtenerAfiliadoByDocumento(documento);
-		afiliado.setNombres(nombres);
-		afiliado.setApellidos(apellidos);
-
-		Tipodocumento tdocumento = tipodocService.obtenerTipodocumentoByIdString(tipodocumento);
-		afiliado.setTipodocumentoBean(tdocumento);
-		afiliado.setDocumento(documento);
-		afiliado.setNacionalidad("Colombia");
-		afiliado.setSexo(sexo);
-
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		try {
-			afiliado.setFechanacimiento(sdf.parse(fechanacimiento));
-		} catch (ParseException e) {
-
-			e.printStackTrace();
-		}
-		afiliado.setStreet(direccion);
-		afiliado.setStreetdos(barrio);
-		afiliado.setCiudad(ciudad);
-		afiliado.setDepartamento("");
-
-		Sucursal sucursal = this.sucursalService.obtenerSucursalPorIdIterno("00");
-		afiliado.setSucursal(sucursal);
-		afiliado.setTelefonofijo(telefonofijo);
-		afiliado.setCelular(celular);
-		afiliado.setEmail(email);
-		afiliado.setClaveweb(claveweb);
-		// informacion adicional formulario 2
-		// Ocupacion
-		if (ocupacion != null) {
-			Ocupacion ocupac = this.ocupacionService.obtenerOcupacionById(Integer.parseInt(ocupacion));
-			afiliado.setOcupacionBean(ocupac);
-		}
-		// Nivel de estudios
-		if (estudios != null) {
-			Estudioafiliado estudiosnivel = this.estudioService.obtenerEstudioafiliadoById(Integer.parseInt(estudios));
-			afiliado.setEstudioafiliado(estudiosnivel);
-		}
-		// Patologias afiliado
-		if (!patologiasAfiliado.isEmpty()) {
-			for (int e : patologiasAfiliado) {
-				Patologia patologia = this.patologiaService.obtenerPatologiaById(e);
-				AfiliadopatologiaPK pk = new AfiliadopatologiaPK();
-				pk.setIdafiliado(afiliado.getIdafiliado());
-				pk.setIdpatologia(e);
-				Afiliadopatologia afPatologia = new Afiliadopatologia();
-				afPatologia.setId(pk);
-				afPatologia.setFecha(new Date());
-				afPatologia.setAfiliado(afiliado);
-				afPatologia.setPatologia(patologia);
-
-				this.afPatologiaService.updateAfiliadopatologia(afPatologia);
-			}
-		}
-		// nucleo de familia
-		if (cantidadmiembro != 0) {
-			for (int i = 0; i < tipoMiembro.length; i++) {
-				// tipo miembro
-				Tipomiembro tipoM = tipoMiembroService.obtenerTipomiembroById(tipoMiembro[i]);
-				System.out.println("tipoM: " + tipoM.getDescripcion());
-
-				// nucleofamilia
-				NucleofamiliaPK pkNucleo = new NucleofamiliaPK();
-				pkNucleo.setIdafiliado(afiliado.getIdafiliado());
-				pkNucleo.setIdtipomiembro(tipoM.getIdtipomiembro());
-
-				Nucleofamilia nucleo = new Nucleofamilia();
-				nucleo.setId(pkNucleo);
-				nucleo.setRangoinicio(valIni[i]);
-				nucleo.setRangofin(valFin[i]);
-
-				this.nucleoFamiliaService.updateNucleofamilia(nucleo);
-			}
-		}
-		// hijos
-		System.out.println("hijos menore de 4: " + hijosmenoresde4);
-
-		if (hijosmenoresde4 != null) {
-			afiliado.setHijosmenoresde4((byte) 1);
-		}
-		if (hijosentre4y12 != null) {
-			afiliado.setHijosentre4y12((byte) 1);
-		}
-		if (hijosentre13y18 != null) {
-			afiliado.setHijosentre13y18((byte) 1);
-		}
-		if (hijosmayores != null) {
-			afiliado.setHijosmayores((byte) 1);
-		}
-		// patologia nucleo
-		if (!patologias.isEmpty()) {
-			for (int e : patologias) {
-				Patologia patologia = this.patologiaService.obtenerPatologiaById(e);
-
-				System.out.println("Patologia nucleo: " + patologia.getDrescripcion());
-
-				AfiliadopatologianucloePK pk = new AfiliadopatologianucloePK();
-				pk.setIdafiliado(afiliado.getIdafiliado());
-				pk.setIdpatologia(e);
-				Afiliadopatologianucleo afPatologia = new Afiliadopatologianucleo();
-				afPatologia.setId(pk);
-				afPatologia.setAfiliado(afiliado);
-				afPatologia.setPatologia(patologia);
-				 
-				this.afpatoService.updateAfiliadopatologianucleo(afPatologia);
-			}
-		}
-			//referido
-		if ( !referidosList.isEmpty() ) {
-			for (String dir : referidosList) {
-				//Crea una nueva instancia de Referido
-				Referido referido = new Referido();
-				referido.setEmailreferido(dir);
-				referido.setAfiliado(afiliado);
-				// Persiste el objeto Referido en su tabla
-				this.referidoService.updateReferido(referido);
-			}
-		}
-		
-		// se actualizan los valores
-		this.afiliadoService.actualizarAfiliado(afiliado);
-
-		//Envia los email de referidos
-		if(!referidosList.isEmpty()){
-			this.emailAlerta.emailNotificacionReferido(referidosList);
-		}
-		
 		
 		ResponsePuntos responseObject = new ResponsePuntos();
-		System.out.println(Response.Status.OK.getStatusCode());
-		responseObject.setCode(Status.OK.getStatusCode());
-		responseObject.setAfiliado(afiliado);
-		responseObject.setStatus(Status.OK.getReasonPhrase());
-		responseObject.setMessage("Afiliado encontrado correctamente.");
 		
-		System.out.println("Nombre: " + afiliado.getNombres() +" "+afiliado.getApellidos() );
-		
-		
-		return 
-				Response.status(Status.OK).entity(responseObject).header("Access-Control-Allow-Origin", "*").build();
+		try {
+			// se obtienen todos los valores desde la peticion
+			String documento = map.getFirst("documento");
+			String nombres = map.getFirst("nombres");
+			String apellidos = map.getFirst("apellidos");
+			int tipodocumento = Integer.parseInt(map.getFirst("tipodocumento"));
+			String sexo = map.getFirst("sexo");
+			String direccion = map.getFirst("direccion");
+			String fechanacimiento = map.getFirst("fechanacimiento");
+			String telefonofijo = map.getFirst("telefonofijo");
+			String celular = map.getFirst("celular");
+			String ciudad = map.getFirst("ciudad");
+			String email = map.getFirst("email");
+			String barrio = map.getFirst("barrio");
+			String claveweb = map.getFirst("claveweb");
+			String estudios = map.getFirst("estudios");
+			String ocupacion = map.getFirst("ocupacion");
+			int cantidadmiembro = Integer.parseInt(map.getFirst("cantidadmiembro"));
+			int tipoMiembro[] = new int[cantidadmiembro];
+			int valIni[] = new int[cantidadmiembro];
+			int valFin[] = new int[cantidadmiembro];
+
+			// Patologias
+			List<Integer> patologiasAfiliado = new ArrayList<Integer>();
+			List<Integer> patologias = new ArrayList<Integer>();
+
+			for (int i = 0; i < 25; i++) {
+				String pTemp = map.getFirst("p" + (i + 1));
+				if (pTemp != null) {
+					patologiasAfiliado.add(Integer.parseInt(pTemp));
+				}
+				String pMiembreTemp = map.getFirst("pm" + (i + 1));
+				if (pMiembreTemp != null) {
+					patologias.add(Integer.parseInt(pMiembreTemp));
+				}
+			}
+
+			// obtiene los valores variables de miembros de familia
+
+			System.out.println("Cantidad Miembro........: " + cantidadmiembro);
+			for (int i = 0; i < cantidadmiembro; i++) {
+				String tempTipo = map.getFirst("tipomiembroval" + (i + 1));
+
+				if (tempTipo != null) {
+					tipoMiembro[i] = Integer.parseInt(tempTipo);
+					valIni[i] = Integer.parseInt(map.getFirst("valini" + (i + 1)));
+					valFin[i] = Integer.parseInt(map.getFirst("valfin" + (i + 1)));
+
+					System.out.println("ValIni " + (i + 1) + ": " + valIni[i]);
+				}
+			}
+
+			String hijosmenoresde4 = map.getFirst("hijosmenoresde4");
+			String hijosentre4y12 = map.getFirst("hijosentre4y12");
+			String hijosentre13y18 = map.getFirst("hijosentre13y18");
+			String hijosmayores = map.getFirst("hijosmayores");
+			String cantreferido = map.getFirst("cantreferido");
+			List<String> referidosList = new ArrayList<String>();
+			
+
+			if (cantreferido != null) {
+				for (int i = 0; i < Integer.parseInt(cantreferido); i++) {
+					String refTemp = map.getFirst("referido" + (i + 1));
+					Referido refPersist = this.referidoService.obtenerReferidoPorEmail(refTemp);
+					// Evita duplicidades en referidos
+					if (!"".equals(refTemp) && !" ".equals(refTemp) && refTemp != null && refPersist == null) {
+						if( regex.validateEmail(refTemp)){//usa validacion por medio de Regex de la dir de email
+							referidosList.add(refTemp);
+						}					
+					}
+				}
+			}
+
+			// --> Se crean las instancias respectivas
+			Afiliado afiliado = this.afiliadoService.obtenerAfiliadoByDocumento(documento);
+			afiliado.setNombres(nombres);
+			afiliado.setApellidos(apellidos);
+
+			Tipodocumento tdocumento = tipodocService.obtenerTipodocumentoByIdString(tipodocumento);
+			afiliado.setTipodocumentoBean(tdocumento);
+			afiliado.setDocumento(documento);
+			afiliado.setNacionalidad("Colombia");
+			afiliado.setSexo(sexo);
+
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			try {
+				afiliado.setFechanacimiento(sdf.parse(fechanacimiento));
+			} catch (ParseException e) {
+
+				e.printStackTrace();
+			}
+			afiliado.setStreet(direccion);
+			afiliado.setStreetdos(barrio);
+			afiliado.setCiudad(ciudad);
+			afiliado.setDepartamento("");
+
+			Sucursal sucursal = this.sucursalService.obtenerSucursalPorIdIterno("00");
+			afiliado.setSucursal(sucursal);
+			afiliado.setTelefonofijo(telefonofijo);
+			afiliado.setCelular(celular);
+			afiliado.setEmail(email);
+			afiliado.setClaveweb(claveweb);
+			// informacion adicional formulario 2
+			// Ocupacion
+			if (ocupacion != null) {
+				Ocupacion ocupac = this.ocupacionService.obtenerOcupacionById(Integer.parseInt(ocupacion));
+				afiliado.setOcupacionBean(ocupac);
+			}
+			// Nivel de estudios
+			if (estudios != null) {
+				Estudioafiliado estudiosnivel = this.estudioService.obtenerEstudioafiliadoById(Integer.parseInt(estudios));
+				afiliado.setEstudioafiliado(estudiosnivel);
+			}
+			// Patologias afiliado
+			if (!patologiasAfiliado.isEmpty()) {
+				for (int e : patologiasAfiliado) {
+					Patologia patologia = this.patologiaService.obtenerPatologiaById(e);
+					AfiliadopatologiaPK pk = new AfiliadopatologiaPK();
+					pk.setIdafiliado(afiliado.getIdafiliado());
+					pk.setIdpatologia(e);
+					Afiliadopatologia afPatologia = new Afiliadopatologia();
+					afPatologia.setId(pk);
+					afPatologia.setFecha(new Date());
+					afPatologia.setAfiliado(afiliado);
+					afPatologia.setPatologia(patologia);
+
+					this.afPatologiaService.updateAfiliadopatologia(afPatologia);
+				}
+			}
+			// nucleo de familia
+			if (cantidadmiembro != 0) {
+				for (int i = 0; i < tipoMiembro.length; i++) {
+					// tipo miembro
+					Tipomiembro tipoM = tipoMiembroService.obtenerTipomiembroById(tipoMiembro[i]);
+					System.out.println("tipoM: " + tipoM.getDescripcion());
+
+					// nucleofamilia
+					NucleofamiliaPK pkNucleo = new NucleofamiliaPK();
+					pkNucleo.setIdafiliado(afiliado.getIdafiliado());
+					pkNucleo.setIdtipomiembro(tipoM.getIdtipomiembro());
+
+					Nucleofamilia nucleo = new Nucleofamilia();
+					nucleo.setId(pkNucleo);
+					nucleo.setRangoinicio(valIni[i]);
+					nucleo.setRangofin(valFin[i]);
+
+					this.nucleoFamiliaService.updateNucleofamilia(nucleo);
+				}
+			}
+			// hijos
+			System.out.println("hijos menore de 4: " + hijosmenoresde4);
+
+			if (hijosmenoresde4 != null) {
+				afiliado.setHijosmenoresde4((byte) 1);
+			}
+			if (hijosentre4y12 != null) {
+				afiliado.setHijosentre4y12((byte) 1);
+			}
+			if (hijosentre13y18 != null) {
+				afiliado.setHijosentre13y18((byte) 1);
+			}
+			if (hijosmayores != null) {
+				afiliado.setHijosmayores((byte) 1);
+			}
+			// patologia nucleo
+			if (!patologias.isEmpty()) {
+				for (int e : patologias) {
+					Patologia patologia = this.patologiaService.obtenerPatologiaById(e);
+
+					System.out.println("Patologia nucleo: " + patologia.getDrescripcion());
+
+					AfiliadopatologianucloePK pk = new AfiliadopatologianucloePK();
+					pk.setIdafiliado(afiliado.getIdafiliado());
+					pk.setIdpatologia(e);
+					Afiliadopatologianucleo afPatologia = new Afiliadopatologianucleo();
+					afPatologia.setId(pk);
+					afPatologia.setAfiliado(afiliado);
+					afPatologia.setPatologia(patologia);
+					 
+					this.afpatoService.updateAfiliadopatologianucleo(afPatologia);
+				}
+			}
+				//referido
+			if ( !referidosList.isEmpty() ) {
+				for (String dir : referidosList) {
+					//Crea una nueva instancia de Referido
+					Referido referido = new Referido();
+					referido.setEmailreferido(dir);
+					referido.setAfiliado(afiliado);
+					// Persiste el objeto Referido en su tabla
+					this.referidoService.updateReferido(referido);
+				}
+			}
+			
+			// se actualizan los valores
+			this.afiliadoService.actualizarAfiliado(afiliado);
+
+			//Envia los email de referidos
+			if(!referidosList.isEmpty()){
+				this.emailAlerta.emailNotificacionReferido(referidosList);
+			}
+			
+			
+			
+			System.out.println(Response.Status.OK.getStatusCode());
+			responseObject.setCode(Status.OK.getStatusCode());
+			responseObject.setAfiliado(afiliado);
+			responseObject.setStatus(Status.OK.getReasonPhrase());
+			responseObject.setMessage("Afiliado encontrado correctamente.");
+			
+			System.out.println("Nombre: " + afiliado.getNombres() +" "+afiliado.getApellidos() );
+			
+			
+			return 
+					Response.status(Status.OK).entity(responseObject).header("Access-Control-Allow-Origin", "*").build();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println(Response.Status.BAD_REQUEST.getStatusCode());
+			responseObject.setCode(Status.BAD_REQUEST.getStatusCode());
+			responseObject.setStatus(Status.BAD_REQUEST.getReasonPhrase());
+			responseObject.setMessage("El documento ya se encuentra registrado.");
+			return 
+					Response.status(Status.OK).entity(responseObject).header("Access-Control-Allow-Origin", "*").build();
+		}		
 	}
+	
+	
+	
+	
+	
 
 	
 	

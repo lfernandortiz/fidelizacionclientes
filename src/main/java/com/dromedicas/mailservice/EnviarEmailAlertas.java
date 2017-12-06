@@ -344,7 +344,7 @@ public class EnviarEmailAlertas {
 	
 	
 	
-public boolean emailNotificacionReferido(List<String> emailList ) {
+public boolean emailNotificacionReferido(final List<String> emailList ) {
 		
 		System.out.println("Clase enviar Email Alerta referidos ");
 		try{
@@ -370,42 +370,54 @@ public boolean emailNotificacionReferido(List<String> emailList ) {
 			props.put("mail.transport.protocol.", "smtp");
 			
 			// Preparamos la sesion
-			Session session = Session.getDefaultInstance(props);
+			final Session session = Session.getDefaultInstance(props);
 			System.out.println("Enviando Correos....");
 			//Envia el correo
-			final Transport t = session.getTransport("smtp");
-			t.connect("contacto@puntosfarmanorte.com.co", "Dromedicas2013.");
-			
-			for(String dir : emailList){
-				
-				File inputHtml = new File(servletContext.getRealPath("emailhtml/emailreferido.html.html"));
-				// Asginamos el archivo al objeto analizador Document
-				Document doc = Jsoup.parse(inputHtml, "UTF-8");
-				
-				InternetAddress addressTo =  new InternetAddress(dir);	
+			final ServletContext servletContextFinal =servletContext;
+			new Thread(new Runnable() {
+			    public void run() {
+			    	try {
+			    		Transport t = session.getTransport("smtp");
+						t.connect("contacto@puntosfarmanorte.com.co", "Dromedicas2013.");
+						
+						for(String dir : emailList){
 							
-				// se compone el mensaje (Asunto, cuerpo del mensaje y direccion origen)
-				final MimeMessage message = new MimeMessage(session);
-				message.setFrom(new InternetAddress(
-						"contacto@puntosfarmanorte.com.co" , "Puntos Farmanorte"));
-				message.setRecipient(Message.RecipientType.TO, addressTo);			
-				//Emojis :-)			
-				String subjectEmojiRaw = 
-						":large_blue_circle: Afiliate a Puntos Farmanorte";
-				String subjectEmoji = EmojiParser.parseToUnicode(subjectEmojiRaw);
-				
-				message.setSubject(subjectEmoji , "UTF-8");
-				message.setContent(doc.html(), "text/html; charset=utf-8");
+							File inputHtml = new File(servletContextFinal.getRealPath("emailhtml/emailreferido.html"));
+							// Asginamos el archivo al objeto analizador Document
+							Document doc = Jsoup.parse(inputHtml, "UTF-8");
+							
+							InternetAddress addressTo =  new InternetAddress(dir);	
+										
+							// se compone el mensaje (Asunto, cuerpo del mensaje y direccion origen)
+							final MimeMessage message = new MimeMessage(session);
+							message.setFrom(new InternetAddress(
+									"contacto@puntosfarmanorte.com.co" , "Puntos Farmanorte"));
+							message.setRecipient(Message.RecipientType.TO, addressTo);			
+							//Emojis :-)			
+							String subjectEmojiRaw = 
+									":large_blue_circle: Afiliate a Puntos Farmanorte";
+							String subjectEmoji = EmojiParser.parseToUnicode(subjectEmojiRaw);
+							
+							message.setSubject(subjectEmoji , "UTF-8");
+							message.setContent(doc.html(), "text/html; charset=utf-8");
 
-				t.sendMessage(message, message.getAllRecipients());
-				// Cierre de la conexion
-				
-			}
-			t.close();
+							t.sendMessage(message, message.getAllRecipients());
+							// Cierre de la conexion
+							
+						}
+						t.close();
+				    
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+			    }	
+			}).start();
+			
 			System.out.println("Conexion cerrada");
 			
 		}catch(Exception e){
-			System.out.println("Falla en el envio del correo:");
+			System.out.println("Falla en el envio del correo de referidos");
 			e.printStackTrace();
 			return false;
 		}

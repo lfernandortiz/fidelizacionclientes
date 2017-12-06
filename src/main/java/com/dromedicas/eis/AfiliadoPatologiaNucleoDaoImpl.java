@@ -2,11 +2,13 @@ package com.dromedicas.eis;
 
 import java.util.List;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import com.dromedicas.domain.Afiliadopatologianucleo;
 
+@Stateless
 public class AfiliadoPatologiaNucleoDaoImpl implements AfiliadoPatologiaNucleoDao {
 	
 	@PersistenceContext(unitName="PuntosFPU")

@@ -24,21 +24,26 @@ import javax.ws.rs.core.UriInfo;
 import com.dromedicas.domain.Afiliado;
 import com.dromedicas.domain.Afiliadopatologia;
 import com.dromedicas.domain.AfiliadopatologiaPK;
+import com.dromedicas.domain.Afiliadopatologianucleo;
+import com.dromedicas.domain.AfiliadopatologianucloePK;
 import com.dromedicas.domain.Estudioafiliado;
 import com.dromedicas.domain.Nucleofamilia;
 import com.dromedicas.domain.NucleofamiliaPK;
 import com.dromedicas.domain.Ocupacion;
 import com.dromedicas.domain.Patologia;
+import com.dromedicas.domain.Referido;
 import com.dromedicas.domain.Sucursal;
 import com.dromedicas.domain.Tipodocumento;
 import com.dromedicas.domain.Tipomiembro;
 import com.dromedicas.domain.Usuarioweb;
+import com.dromedicas.service.AfiliadoPatologiaNucleoService;
 import com.dromedicas.service.AfiliadoPatologiaService;
 import com.dromedicas.service.AfiliadoService;
 import com.dromedicas.service.EstudioAfiliadoService;
 import com.dromedicas.service.NucleoFamiliaService;
 import com.dromedicas.service.OcupacionService;
 import com.dromedicas.service.PatologiaService;
+import com.dromedicas.service.ReferidoService;
 import com.dromedicas.service.SucursalService;
 import com.dromedicas.service.TipoDocumentoService;
 import com.dromedicas.service.TipoMiembroService;
@@ -74,18 +79,22 @@ public class AfiliadoServiceRs{
 	
 	@EJB
 	private PatologiaService patologiaService;
-	
+		
+	@EJB
+	private TipoMiembroService tipoMiembroService;
+		
+	@EJB	
+	private NucleoFamiliaService nucleoFamiliaService;
+		
 	@EJB
 	private AfiliadoPatologiaService afPatologiaService;
 	
 	@EJB
-	private TipoMiembroService tipoMiembroService;
-	
+	private AfiliadoPatologiaNucleoService afpatoService;
 	
 	@EJB
-	private NucleoFamiliaService nucleoFamiliaService;
-	
-	
+	private ReferidoService referidoService;
+		
 	
 	//crear afiliado desde formulario web y la app
 	@Path("/crearafiliado")
@@ -222,80 +231,78 @@ public class AfiliadoServiceRs{
 	
 	//procesar segundo formulario de afiliacion
 	@Path("/actualizarafiliadoweb")
-	@POST	
+	@POST
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response actualizarDatosAfiliadoWeb(@Context UriInfo ui){
+	public Response actualizarDatosAfiliadoWeb(@Context UriInfo ui) {
 		MultivaluedMap<String, String> map = ui.getQueryParameters();
+
+		// se obtienen todos los valores desde la peticion
+		String documento = map.getFirst("documento");
+		String nombres = map.getFirst("nombres");
+		String apellidos = map.getFirst("apellidos");
+		int tipodocumento = Integer.parseInt(map.getFirst("tipodocumento"));
+		String sexo = map.getFirst("sexo");
+		String direccion = map.getFirst("direccion");
+		String fechanacimiento = map.getFirst("fechanacimiento");
+		String telefonofijo = map.getFirst("telefonofijo");
+		String celular = map.getFirst("celular");
+		String ciudad = map.getFirst("ciudad");
+		String email = map.getFirst("email");
+		String barrio = map.getFirst("barrio");
+		String claveweb = map.getFirst("claveweb");
+		String estudios = map.getFirst("estudios");
+		String ocupacion = map.getFirst("ocupacion");
+		int cantidadmiembro = Integer.parseInt(map.getFirst("cantidadmiembro"));
+		int tipoMiembro[] = new int[cantidadmiembro];
+		int valIni[] = new int[cantidadmiembro];
+		int valFin[] = new int[cantidadmiembro];
+
+		// Patologias
+		List<Integer> patologiasAfiliado = new ArrayList<Integer>();
+		List<Integer> patologias = new ArrayList<Integer>();
+
+		for (int i = 0; i < 25; i++) {
+			String pTemp = map.getFirst("p" + (i + 1));
+			if (pTemp != null) {
+				patologiasAfiliado.add(Integer.parseInt(pTemp));
+			}
+			String pMiembreTemp = map.getFirst("pm" + (i + 1));
+			if (pMiembreTemp != null) {
+				patologias.add(Integer.parseInt(pMiembreTemp));
+			}
+		}
+
+		// obtiene los valores variables de miembros de familia
+
+		System.out.println("Cantidad Miembro........: " + cantidadmiembro);
+		for (int i = 0; i < cantidadmiembro; i++) {
+			String tempTipo = map.getFirst("tipomiembroval" + (i + 1));
+
+			if (tempTipo != null) {
+				tipoMiembro[i] = Integer.parseInt(tempTipo);
+				valIni[i] = Integer.parseInt(map.getFirst("valini" + (i + 1)));
+				valFin[i] = Integer.parseInt(map.getFirst("valfin" + (i + 1)));
+
+				System.out.println("ValIni " + (i + 1) + ": " + valIni[i]);
+			}
+		}
+
+		String hijosmenoresde4 = map.getFirst("hijosmenoresde4");
+		String hijosentre4y12 = map.getFirst("hijosentre4y12");
+		String hijosentre13y18 = map.getFirst("hijosentre13y18");
+		String hijosmayores = map.getFirst("hijosmayores");
+		String cantreferido = map.getFirst("cantreferido");
+		List<String> referidosList = new ArrayList<String>();
 		
-		//se obtienen todos los valores desde la peticion
-		 String documento = map.getFirst("documento");
-		 String nombres = map.getFirst("nombres");
-		 String apellidos = map.getFirst("apellidos");
-		 int tipodocumento =Integer.parseInt(map.getFirst("tipodocumento"));
-		 String sexo = map.getFirst("sexo");
-		 String direccion = map.getFirst("direccion");
-		 String fechanacimiento = map.getFirst("fechanacimiento");
-		 String telefonofijo = map.getFirst("telefonofijo");
-		 String celular = map.getFirst("celular");
-		 String ciudad = map.getFirst("ciudad");
-		 String email = map.getFirst("email");
-		 String barrio = map.getFirst("barrio");
-		 String claveweb = map.getFirst("claveweb");
-		 String estudios = map.getFirst("estudios");
-		 String ocupacion = map.getFirst("ocupacion");
-		 int cantidadmiembro =Integer.parseInt(map.getFirst("cantidadmiembro"));
-		 int tipoMiembro[] = new int[cantidadmiembro];
-		 int valIni[] = new int[cantidadmiembro];
-		 int valFin[] = new int[cantidadmiembro];
-		 
-		 //Patologias		 
-		 List<Integer> patologiasAfiliado = new ArrayList<Integer>();
-		 List<Integer> patologias = new ArrayList<Integer>();
-		 
-		 
-		 for(int i = 0; i < 25; i++){
-			 String pTemp = map.getFirst( "p" + (i+1) );			 
-			 if(pTemp != null){				 
-				 patologiasAfiliado.add(Integer.parseInt(pTemp));
-			 }			 
-			 String pMiembreTemp = map.getFirst( "pm" + (i+1) );			
-			 if(pMiembreTemp != null){
-				 patologias.add(Integer.parseInt(pTemp));
-			 }
-		 }
-		 
-		 //obtiene los valores variables de miembros de familia
-		 
-		 System.out.println("Cantidad Miembro........: " + cantidadmiembro);
-		 for(int i = 0; i < cantidadmiembro; i++){	
-			 String tempTipo = map.getFirst( "tipomiembroval" + (i+1) );
-			 
-			 if( tempTipo != null){
-				 tipoMiembro[i] = Integer.parseInt(tempTipo);
-				 valIni[i] = Integer.parseInt(map.getFirst( "valini" + (i+1) ));
-				 valFin[i] = Integer.parseInt(map.getFirst( "valfin" + (i+1) ));
-				 
-				 System.out.println("ValIni " + (i+1) + ": " +valIni[i]);
-			 }
-		 }
-		 
-		 String hijosmenoresde4 = map.getFirst("hijosmenoresde4");
-		 String hijosentre4y12 = map.getFirst("hijosentre4y12");
-		 String hijosentre13y18 = map.getFirst("hijosentre13y18");
-		 String hijosmayores = map.getFirst("hijosmayores");
-		 String cantreferido = map.getFirst("cantreferido");
-		 String referidos[] = null;//Email de referidos 
-		 
-		 if( cantreferido != null ){			 
-			 referidos = new String[Integer.parseInt(cantreferido)];
-			 for(int i = 0; i < referidos.length; i++){
-				 String refTemp = map.getFirst("referido" + (i+1) );
-				 referidos[i] = refTemp;
-			 }	 
-		 }
-		 
-		 
-		 //--> Se crean las instancias respectivas
+
+		if (cantreferido != null) {
+			for (int i = 0; i < Integer.parseInt(cantreferido); i++) {
+				String refTemp = map.getFirst("referido" + (i + 1));
+				referidosList.add(refTemp);
+			}
+		}
+
+		// --> Se crean las instancias respectivas
 		Afiliado afiliado = this.afiliadoService.obtenerAfiliadoByDocumento(documento);
 		afiliado.setNombres(nombres);
 		afiliado.setApellidos(apellidos);
@@ -324,21 +331,20 @@ public class AfiliadoServiceRs{
 		afiliado.setCelular(celular);
 		afiliado.setEmail(email);
 		afiliado.setClaveweb(claveweb);
-		//informacion adicional formulario 2
-			//Ocupacion
-		if(ocupacion != null){
-			Ocupacion ocupac = this.ocupacionService.obtenerOcupacionById(Integer.parseInt(ocupacion));	
+		// informacion adicional formulario 2
+		// Ocupacion
+		if (ocupacion != null) {
+			Ocupacion ocupac = this.ocupacionService.obtenerOcupacionById(Integer.parseInt(ocupacion));
 			afiliado.setOcupacionBean(ocupac);
 		}
-			//Nivel de estudios
-		if(estudios != null){
-			Estudioafiliado estudiosnivel = 
-					this.estudioService.obtenerEstudioafiliadoById(Integer.parseInt(estudios));
+		// Nivel de estudios
+		if (estudios != null) {
+			Estudioafiliado estudiosnivel = this.estudioService.obtenerEstudioafiliadoById(Integer.parseInt(estudios));
 			afiliado.setEstudioafiliado(estudiosnivel);
 		}
-			//Patologias afiliado
-		if( !patologiasAfiliado.isEmpty()){			
-			for(int e : patologiasAfiliado){
+		// Patologias afiliado
+		if (!patologiasAfiliado.isEmpty()) {
+			for (int e : patologiasAfiliado) {
 				Patologia patologia = this.patologiaService.obtenerPatologiaById(e);
 				AfiliadopatologiaPK pk = new AfiliadopatologiaPK();
 				pk.setIdafiliado(afiliado.getIdafiliado());
@@ -348,52 +354,98 @@ public class AfiliadoServiceRs{
 				afPatologia.setFecha(new Date());
 				afPatologia.setAfiliado(afiliado);
 				afPatologia.setPatologia(patologia);
-				
+
 				this.afPatologiaService.updateAfiliadopatologia(afPatologia);
 			}
-		}		
-			//nucleo de familia
-		if( cantidadmiembro != 0){			
-			for(int i = 0 ; i < tipoMiembro.length ; i++){				
-				//tipo miembro
+		}
+		// nucleo de familia
+		if (cantidadmiembro != 0) {
+			for (int i = 0; i < tipoMiembro.length; i++) {
+				// tipo miembro
 				Tipomiembro tipoM = tipoMiembroService.obtenerTipomiembroById(tipoMiembro[i]);
 				System.out.println("tipoM: " + tipoM.getDescripcion());
-				
-				//nucleofamilia
+
+				// nucleofamilia
 				NucleofamiliaPK pkNucleo = new NucleofamiliaPK();
 				pkNucleo.setIdafiliado(afiliado.getIdafiliado());
 				pkNucleo.setIdtipomiembro(tipoM.getIdtipomiembro());
-				
+
 				Nucleofamilia nucleo = new Nucleofamilia();
 				nucleo.setId(pkNucleo);
 				nucleo.setRangoinicio(valIni[i]);
 				nucleo.setRangofin(valFin[i]);
-				
-				this.nucleoFamiliaService.updateNucleofamilia(nucleo); 
-				
-								
-			}			
+
+				this.nucleoFamiliaService.updateNucleofamilia(nucleo);
+			}
+		}
+		// hijos
+		System.out.println("hijos menore de 4: " + hijosmenoresde4);
+
+		if (hijosmenoresde4 != null) {
+			afiliado.setHijosmenoresde4((byte) 1);
+		}
+		if (hijosentre4y12 != null) {
+			afiliado.setHijosentre4y12((byte) 1);
+		}
+		if (hijosentre13y18 != null) {
+			afiliado.setHijosentre13y18((byte) 1);
+		}
+		if (hijosmayores != null) {
+			afiliado.setHijosmayores((byte) 1);
+		}
+		// patologia nucleo
+		if (!patologias.isEmpty()) {
+			for (int e : patologias) {
+				Patologia patologia = this.patologiaService.obtenerPatologiaById(e);
+
+				System.out.println("Patologia nucleo: " + patologia.getDrescripcion());
+
+				AfiliadopatologianucloePK pk = new AfiliadopatologianucloePK();
+				pk.setIdafiliado(afiliado.getIdafiliado());
+				pk.setIdpatologia(e);
+				Afiliadopatologianucleo afPatologia = new Afiliadopatologianucleo();
+				afPatologia.setId(pk);
+				afPatologia.setAfiliado(afiliado);
+				afPatologia.setPatologia(patologia);
+				 
+				this.afpatoService.updateAfiliadopatologianucleo(afPatologia);
+			}
+		}
+			//referido
+		if (cantreferido != null) {
+			for (String dir: referidosList) {
+				Referido refTemp = this.referidoService.obtenerReferidoPorEmail(dir);
+				System.out.println("------------" + refTemp == null);
+				System.out.println("size:" +  referidosList.size());
+				System.out.println("****: " + dir);
+				//Crea el objeto Referido
+				if(!"".equals(dir) && !" ".equals(dir) & dir != null  && refTemp == null ){
+					Referido referido = new Referido();
+					referido.setEmailreferido(dir);
+					referido.setAfiliado(afiliado);
+					
+					
+					//Persiste el objeto Referido en su tabla
+					this.referidoService.updateReferido(referido);
+				}								
+			}
 		}
 		
-		
-		
-		 
-		//se actualizan los valores
+		// se actualizan los valores
 		this.afiliadoService.actualizarAfiliado(afiliado);
-		 
-		 
-		//se envia correo de refereidos
+
+		//Envia los email de referidos
 		
-	    return null;
+		
+
+		return null;
 	}
-	
-	
-	//login perfil del usuario
+
 	
 	
 	
-	//actualizacion de datos basicos de afiliado
-	
-	
+	// login perfil del usuario
+
+	// actualizacion de datos basicos de afiliado
 
 }

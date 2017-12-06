@@ -7,13 +7,13 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import com.dromedicas.domain.Afiliadopatologia;
+import com.dromedicas.domain.Afiliadopatologianucleo;
 
 @Stateless
 public class AfiliadoPatologiaDaoImpl implements AfiliadoPatologiaDao {
 	
 	@PersistenceContext(unitName="PuntosFPU")
 	EntityManager em;
-		
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -31,13 +31,13 @@ public class AfiliadoPatologiaDaoImpl implements AfiliadoPatologiaDao {
 	@Override
 	public void insertAfiliadopatologia(Afiliadopatologia instance) {
 		em.persist(instance);
-
+		
 	}
 
 	@Override
 	public void updateAfiliadopatologia(Afiliadopatologia instance) {
 		em.merge(instance);
-
+		
 	}
 
 	@Override
@@ -46,4 +46,8 @@ public class AfiliadoPatologiaDaoImpl implements AfiliadoPatologiaDao {
 		em.remove(instance);
 	}
 
+	
+		
+
+	
 }

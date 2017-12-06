@@ -9,10 +9,11 @@ import javax.ejb.Stateless;
 import com.dromedicas.domain.Afiliadopatologianucleo;
 import com.dromedicas.eis.AfiliadoPatologiaNucleoDao;
 
+@SuppressWarnings("serial")
 @Stateless
 public class AfiliadoPatologiaNucleoService implements Serializable {
 
-	@EJB
+	@EJB	
 	private AfiliadoPatologiaNucleoDao dao;
 	
 	public List<Afiliadopatologianucleo> findAllAfiliadopatologianucleos(){

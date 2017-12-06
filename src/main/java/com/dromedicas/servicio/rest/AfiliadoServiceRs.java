@@ -36,6 +36,7 @@ import com.dromedicas.domain.Sucursal;
 import com.dromedicas.domain.Tipodocumento;
 import com.dromedicas.domain.Tipomiembro;
 import com.dromedicas.domain.Usuarioweb;
+import com.dromedicas.mailservice.EnviarEmailAlertas;
 import com.dromedicas.service.AfiliadoPatologiaNucleoService;
 import com.dromedicas.service.AfiliadoPatologiaService;
 import com.dromedicas.service.AfiliadoService;
@@ -48,6 +49,7 @@ import com.dromedicas.service.SucursalService;
 import com.dromedicas.service.TipoDocumentoService;
 import com.dromedicas.service.TipoMiembroService;
 import com.dromedicas.service.UsuarioWebService;
+import com.dromedicas.util.ExpresionesRegulares;
 
 
 /**
@@ -94,6 +96,12 @@ public class AfiliadoServiceRs{
 	
 	@EJB
 	private ReferidoService referidoService;
+	
+	@EJB
+	private ExpresionesRegulares regex;
+	
+	@EJB
+	private EnviarEmailAlertas emailAlerta;
 		
 	
 	//crear afiliado desde formulario web y la app
@@ -298,7 +306,13 @@ public class AfiliadoServiceRs{
 		if (cantreferido != null) {
 			for (int i = 0; i < Integer.parseInt(cantreferido); i++) {
 				String refTemp = map.getFirst("referido" + (i + 1));
-				referidosList.add(refTemp);
+				Referido refPersist = this.referidoService.obtenerReferidoPorEmail(refTemp);
+				// Evita duplicidades en referidos
+				if (!"".equals(refTemp) && !" ".equals(refTemp) && refTemp != null && refPersist == null) {
+					if( regex.validateEmail(refTemp)){//usa validacion por medio de Regex de la dir de email
+						referidosList.add(refTemp);
+					}					
+				}
 			}
 		}
 
@@ -412,22 +426,14 @@ public class AfiliadoServiceRs{
 			}
 		}
 			//referido
-		if (cantreferido != null) {
-			for (String dir: referidosList) {
-				Referido refTemp = this.referidoService.obtenerReferidoPorEmail(dir);
-				System.out.println("------------" + refTemp == null);
-				System.out.println("size:" +  referidosList.size());
-				System.out.println("****: " + dir);
-				//Crea el objeto Referido
-				if(!"".equals(dir) && !" ".equals(dir) & dir != null  && refTemp == null ){
-					Referido referido = new Referido();
-					referido.setEmailreferido(dir);
-					referido.setAfiliado(afiliado);
-					
-					
-					//Persiste el objeto Referido en su tabla
-					this.referidoService.updateReferido(referido);
-				}								
+		if ( !referidosList.isEmpty() ) {
+			for (String dir : referidosList) {
+				//Crea una nueva instancia de Referido
+				Referido referido = new Referido();
+				referido.setEmailreferido(dir);
+				referido.setAfiliado(afiliado);
+				// Persiste el objeto Referido en su tabla
+				this.referidoService.updateReferido(referido);
 			}
 		}
 		
@@ -435,10 +441,23 @@ public class AfiliadoServiceRs{
 		this.afiliadoService.actualizarAfiliado(afiliado);
 
 		//Envia los email de referidos
+		if(!referidosList.isEmpty()){
+			this.emailAlerta.emailNotificacionReferido(referidosList);
+		}
 		
 		
-
-		return null;
+		ResponsePuntos responseObject = new ResponsePuntos();
+		System.out.println(Response.Status.OK.getStatusCode());
+		responseObject.setCode(Status.OK.getStatusCode());
+		responseObject.setAfiliado(afiliado);
+		responseObject.setStatus(Status.OK.getReasonPhrase());
+		responseObject.setMessage("Afiliado encontrado correctamente.");
+		
+		System.out.println("Nombre: " + afiliado.getNombres() +" "+afiliado.getApellidos() );
+		
+		
+		return 
+				Response.status(Status.OK).entity(responseObject).header("Access-Control-Allow-Origin", "*").build();
 	}
 
 	

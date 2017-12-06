@@ -250,16 +250,10 @@ public class EnviarEmailAlertas {
 		return true;		
 		
 	}
-	
-	
-	
+		
 	
 	public boolean emailNotificacionCompra(List<Transaccion> txList ) {
-		//nombrecliente
-		//puntostx
-		//acumulados
-		//redimir
-			
+		
 		System.out.println("Clase enviar Email Alerta de compra scheduling ");
 		try{
 			
@@ -348,5 +342,75 @@ public class EnviarEmailAlertas {
 		
 	}
 	
+	
+	
+public boolean emailNotificacionReferido(List<String> emailList ) {
+		
+		System.out.println("Clase enviar Email Alerta referidos ");
+		try{
+			
+			//se optiene el contexto de la aplicacion
+			//para calificar la ruta de acceso del archivo 
+			//template HTML del email
+			ServletContext servletContext = null;			
+			try {
+				servletContext = (ServletContext) FacesContext
+				        .getCurrentInstance().getExternalContext().getContext();
+			} catch (Exception e) {
+				servletContext = context;
+			}
+			
+			// Propiedades de la conexión
+			Properties props = new Properties();
+			props.setProperty("mail.smtp.host", "deus.wnkserver6.com");
+			props.setProperty("mail.smtp.port", "25");// puerto de salida, de
+			// entrada 110
+			props.setProperty("mail.smtp.user", "contacto@puntosfarmanorte.com.co");
+			props.setProperty("mail.smtp.auth", "true");
+			props.put("mail.transport.protocol.", "smtp");
+			
+			// Preparamos la sesion
+			Session session = Session.getDefaultInstance(props);
+			System.out.println("Enviando Correos....");
+			//Envia el correo
+			final Transport t = session.getTransport("smtp");
+			t.connect("contacto@puntosfarmanorte.com.co", "Dromedicas2013.");
+			
+			for(String dir : emailList){
+				
+				File inputHtml = new File(servletContext.getRealPath("emailhtml/emailreferido.html.html"));
+				// Asginamos el archivo al objeto analizador Document
+				Document doc = Jsoup.parse(inputHtml, "UTF-8");
+				
+				InternetAddress addressTo =  new InternetAddress(dir);	
+							
+				// se compone el mensaje (Asunto, cuerpo del mensaje y direccion origen)
+				final MimeMessage message = new MimeMessage(session);
+				message.setFrom(new InternetAddress(
+						"contacto@puntosfarmanorte.com.co" , "Puntos Farmanorte"));
+				message.setRecipient(Message.RecipientType.TO, addressTo);			
+				//Emojis :-)			
+				String subjectEmojiRaw = 
+						":large_blue_circle: Afiliate a Puntos Farmanorte";
+				String subjectEmoji = EmojiParser.parseToUnicode(subjectEmojiRaw);
+				
+				message.setSubject(subjectEmoji , "UTF-8");
+				message.setContent(doc.html(), "text/html; charset=utf-8");
+
+				t.sendMessage(message, message.getAllRecipients());
+				// Cierre de la conexion
+				
+			}
+			t.close();
+			System.out.println("Conexion cerrada");
+			
+		}catch(Exception e){
+			System.out.println("Falla en el envio del correo:");
+			e.printStackTrace();
+			return false;
+		}
+		return true;		
+		
+	}
 	
 }

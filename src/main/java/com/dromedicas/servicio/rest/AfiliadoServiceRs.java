@@ -25,18 +25,23 @@ import com.dromedicas.domain.Afiliado;
 import com.dromedicas.domain.Afiliadopatologia;
 import com.dromedicas.domain.AfiliadopatologiaPK;
 import com.dromedicas.domain.Estudioafiliado;
+import com.dromedicas.domain.Nucleofamilia;
+import com.dromedicas.domain.NucleofamiliaPK;
 import com.dromedicas.domain.Ocupacion;
 import com.dromedicas.domain.Patologia;
 import com.dromedicas.domain.Sucursal;
 import com.dromedicas.domain.Tipodocumento;
+import com.dromedicas.domain.Tipomiembro;
 import com.dromedicas.domain.Usuarioweb;
 import com.dromedicas.service.AfiliadoPatologiaService;
 import com.dromedicas.service.AfiliadoService;
 import com.dromedicas.service.EstudioAfiliadoService;
+import com.dromedicas.service.NucleoFamiliaService;
 import com.dromedicas.service.OcupacionService;
 import com.dromedicas.service.PatologiaService;
 import com.dromedicas.service.SucursalService;
 import com.dromedicas.service.TipoDocumentoService;
+import com.dromedicas.service.TipoMiembroService;
 import com.dromedicas.service.UsuarioWebService;
 
 
@@ -72,6 +77,15 @@ public class AfiliadoServiceRs{
 	
 	@EJB
 	private AfiliadoPatologiaService afPatologiaService;
+	
+	@EJB
+	private TipoMiembroService tipoMiembroService;
+	
+	
+	@EJB
+	private NucleoFamiliaService nucleoFamiliaService;
+	
+	
 	
 	//crear afiliado desde formulario web y la app
 	@Path("/crearafiliado")
@@ -250,11 +264,12 @@ public class AfiliadoServiceRs{
 			 }
 		 }
 		 
-		//obtiene los valores variables de miembros de familia
+		 //obtiene los valores variables de miembros de familia
+		 
+		 System.out.println("Cantidad Miembro........: " + cantidadmiembro);
 		 for(int i = 0; i < cantidadmiembro; i++){	
 			 String tempTipo = map.getFirst( "tipomiembroval" + (i+1) );
 			 
-			 System.out.println("indice: " + i);
 			 if( tempTipo != null){
 				 tipoMiembro[i] = Integer.parseInt(tempTipo);
 				 valIni[i] = Integer.parseInt(map.getFirst( "valini" + (i+1) ));
@@ -263,7 +278,6 @@ public class AfiliadoServiceRs{
 				 System.out.println("ValIni " + (i+1) + ": " +valIni[i]);
 			 }
 		 }
-		 
 		 
 		 String hijosmenoresde4 = map.getFirst("hijosmenoresde4");
 		 String hijosentre4y12 = map.getFirst("hijosentre4y12");
@@ -280,7 +294,8 @@ public class AfiliadoServiceRs{
 			 }	 
 		 }
 		 
-		 //se crean las instancias respectivas
+		 
+		 //--> Se crean las instancias respectivas
 		Afiliado afiliado = this.afiliadoService.obtenerAfiliadoByDocumento(documento);
 		afiliado.setNombres(nombres);
 		afiliado.setApellidos(apellidos);
@@ -316,22 +331,18 @@ public class AfiliadoServiceRs{
 			afiliado.setOcupacionBean(ocupac);
 		}
 			//Nivel de estudios
-		System.out.println("Estudios: " +  estudios) ;
 		if(estudios != null){
 			Estudioafiliado estudiosnivel = 
 					this.estudioService.obtenerEstudioafiliadoById(Integer.parseInt(estudios));
 			afiliado.setEstudioafiliado(estudiosnivel);
-			
 		}
 			//Patologias afiliado
-		if( !patologiasAfiliado.isEmpty()){
-			
+		if( !patologiasAfiliado.isEmpty()){			
 			for(int e : patologiasAfiliado){
 				Patologia patologia = this.patologiaService.obtenerPatologiaById(e);
 				AfiliadopatologiaPK pk = new AfiliadopatologiaPK();
 				pk.setIdafiliado(afiliado.getIdafiliado());
 				pk.setIdpatologia(e);
-				
 				Afiliadopatologia afPatologia = new Afiliadopatologia();
 				afPatologia.setId(pk);
 				afPatologia.setFecha(new Date());
@@ -340,6 +351,28 @@ public class AfiliadoServiceRs{
 				
 				this.afPatologiaService.updateAfiliadopatologia(afPatologia);
 			}
+		}		
+			//nucleo de familia
+		if( cantidadmiembro != 0){			
+			for(int i = 0 ; i < tipoMiembro.length ; i++){				
+				//tipo miembro
+				Tipomiembro tipoM = tipoMiembroService.obtenerTipomiembroById(tipoMiembro[i]);
+				System.out.println("tipoM: " + tipoM.getDescripcion());
+				
+				//nucleofamilia
+				NucleofamiliaPK pkNucleo = new NucleofamiliaPK();
+				pkNucleo.setIdafiliado(afiliado.getIdafiliado());
+				pkNucleo.setIdtipomiembro(tipoM.getIdtipomiembro());
+				
+				Nucleofamilia nucleo = new Nucleofamilia();
+				nucleo.setId(pkNucleo);
+				nucleo.setRangoinicio(valIni[i]);
+				nucleo.setRangofin(valFin[i]);
+				
+				this.nucleoFamiliaService.updateNucleofamilia(nucleo); 
+				
+								
+			}			
 		}
 		
 		
@@ -349,19 +382,8 @@ public class AfiliadoServiceRs{
 		this.afiliadoService.actualizarAfiliado(afiliado);
 		 
 		 
-		 
-		 //se envia correo de refereidos
-		 
-	    
-		 
-		 
-		 
-		 
-		 
-	    System.out.println(nombres);
-	    System.out.println(apellidos);
-	    
-	    
+		//se envia correo de refereidos
+		
 	    return null;
 	}
 	

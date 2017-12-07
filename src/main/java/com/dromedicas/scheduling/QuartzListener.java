@@ -45,7 +45,7 @@ public class QuartzListener implements ServletContextListener {
 			// Trigger para Notificaciones de acumulacion de puntos cada 30 minutos
 			// Son usadas expresiones cron
 			Trigger trigger = newTrigger().withIdentity("NotificacionAcum", "Group")
-					.withSchedule(CronScheduleBuilder.cronSchedule("0 0/50 * 1/1 * ? *")) 
+					.withSchedule(CronScheduleBuilder.cronSchedule("0 0 0/1 1/1 * ? *")) //cada hora
 					.build();
 			
 			// configuracion del Setup the Job and Trigger with Scheduler & schedule jobs
@@ -56,8 +56,6 @@ public class QuartzListener implements ServletContextListener {
 			/*
 			 * Schedule envio SMS diario para afiliados de cumplen anios
 			 */
-			
-			
 			
 			
 			

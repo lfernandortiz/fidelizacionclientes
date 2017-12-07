@@ -449,6 +449,11 @@ public class AfiliadoServiceRs{
 				this.emailAlerta.emailNotificacionReferido(referidosList);
 			}
 			
+			//Envia email de confirmacion de suscripcion
+			if( !afiliado.getEmail().equals("") && afiliado.getEmail() != null){
+				this.emailAlerta.emailConfirmacionFinalSuscripcion(afiliado);
+			}
+			
 			
 			
 			System.out.println(Response.Status.OK.getStatusCode());

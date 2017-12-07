@@ -38,6 +38,7 @@ public class AfiliadoBeanList {
 	public void init(){
 		System.out.println("Function PostConstruct");
 		this.afiliadoList = afiliadoService.findAllAfiliadosMenor();		
+		this.totalAfiliados = afiliadoService.totalAfiliados();
 	}
 
 	public List<Afiliado> getAfiliadoList() {
@@ -69,6 +70,7 @@ public class AfiliadoBeanList {
 		
 		//Consulta nuevamente el List
 		this.afiliadoList = this.afiliadoService.findAllAfiliadosMenor();
+		this.totalAfiliados = this.afiliadoService.totalAfiliados();
 
 	}
 	
@@ -79,10 +81,11 @@ public class AfiliadoBeanList {
 	
 	public void buscarAfiliado(){
 		this.afiliadoList = afiliadoService.bucarAfiliadoByFields(valorABuscar);
+		this.totalAfiliados = this.afiliadoList.size();
 	}
 
 	public Integer getTotalAfiliados() {
-		return totalAfiliados = afiliadoService.totalAfiliados();
+		return totalAfiliados;
 	}
 
 	public void setTotalAfiliados(Integer totalAfiliados) {

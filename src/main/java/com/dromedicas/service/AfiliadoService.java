@@ -49,7 +49,7 @@ public class AfiliadoService {
 	@SuppressWarnings("unchecked")
 	public List<Afiliado> findAllAfiliadosMenor(){
 		Query query = em.createQuery("SELECT a FROM Afiliado a  ORDER BY a.momento DESC");
-		query.setMaxResults(1000);
+		query.setMaxResults(500);
 		List<Afiliado> temp = null;
 		try {
 			temp =  query.getResultList();
@@ -82,6 +82,12 @@ public class AfiliadoService {
 	public void deleteAfiliado(Afiliado instance){
 		this.afiliadoDao.deleteAfiliado(instance);
 	}
+	
+	public void actualizarAfiliado(Afiliado instance){
+		updateAfiliado(instance);
+	}
+	
+	//consultas personalizadas
 	
 	@SuppressWarnings("unchecked")
 	public List<Afiliado> bucarAfiliadoByFields(String criterio){
@@ -186,14 +192,6 @@ public class AfiliadoService {
 		Query query = em.createQuery(queryString);
 		return query.getResultList();			
 	}
-	
-	
-	public void actualizarAfiliado(Afiliado instance){
-		updateAfiliado(instance);
-	}
-	
-	
-	
 	
 	
 }

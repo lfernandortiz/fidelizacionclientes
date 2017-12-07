@@ -14,6 +14,7 @@ import com.dromedicas.domain.Afiliado;
 import com.dromedicas.domain.Referido;
 import com.dromedicas.domain.Tipotransaccion;
 import com.dromedicas.domain.Transaccion;
+import com.dromedicas.domain.Usuarioweb;
 import com.dromedicas.eis.AfiliadoDao;
 import com.dromedicas.mailservice.EnviarEmailAlertas;
 
@@ -43,6 +44,19 @@ public class AfiliadoService {
 	
 	public List<Afiliado> findAllAfiliados(){
 		return this.afiliadoDao.findAllAfiliados();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Afiliado> findAllAfiliadosMenor(){
+		Query query = em.createQuery("SELECT a FROM Afiliado a  ORDER BY a.momento DESC");
+		query.setMaxResults(1000);
+		List<Afiliado> temp = null;
+		try {
+			temp =  query.getResultList();
+		} catch (NoResultException e) {
+			System.out.println("Usuario No encontrado");			
+		}		
+		return temp;
 	}
 	
 	public Afiliado obtenerAfiliadoById(Afiliado instance){
@@ -147,16 +161,35 @@ public class AfiliadoService {
 		if (instance.getEmail() != null && !instance.getEmail().equals("")) {
 			enviado = mailAlert.enviarEmailAlertaVentas(instance);
 		}
-
 		if (enviado) {
 			// -- Registro del Email para tracking
 		}
 	}
 	
 	
+	public Integer totalAfiliados(){
+		Query query = em.createQuery("SELECT COUNT(a.idafiliado) FROM Afiliado a");		
+		Long temp = null;		
+		try {
+			temp =  (Long) query.getSingleResult();
+		} catch (NoResultException e) {
+			System.out.println("Elemento no encontrado");
+		}		
+		return temp.intValue(); 
+	}	
+	
+	@SuppressWarnings("unchecked")
+	public List<Afiliado> obtenerAfiliadosSinUUID(){
+		String queryString = "SELECT a FROM Afiliado a where a.keycode is null";	
+		
+		System.out.println("QueryString:" + queryString);
+		Query query = em.createQuery(queryString);
+		return query.getResultList();			
+	}
+	
+	
 	public void actualizarAfiliado(Afiliado instance){
 		updateAfiliado(instance);
-		
 	}
 	
 	

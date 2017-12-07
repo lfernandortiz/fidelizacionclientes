@@ -7,13 +7,13 @@
 
     <ui:define name="title">Editar / Crear Afiliado</ui:define>	
     <ui:define name="content">
-		<div class="message">
+		<!-- <div class="message">
 			<h:form>
 				<p:messages id="globalMessagex" showDetail="true" closable="true" />
 			</h:form>
-		</div>
+		</div> -->
 		<h:form id="formppal">
-        
+        	<p:messages id="globalMessagex" showDetail="true" closable="true" />
             <div class="ui-fluid">
                 <div class="ui-g">
                     <div class="ui-g-12">
@@ -47,6 +47,11 @@
 									update=":formppal:afiliadoDetail, :formppal:sucursalForm"/>
 								<p:commandButton value="Crear" id="crearbutton"
 												 action="#{afiliadoBeanList.crearAfiliado()}" />
+												 
+								<p:commandButton value="UUID" id="uuidbutton" styleClass="green-button"
+												 update=":formppal"
+												 rendered="#{loginService.user.usuario.equals('LFERNANDORTIZ')}"
+												 action="#{afiliadoBeanList.crearUUIDPendiente()}" />
 							</p:panelGrid>						
                         	</p:fieldset>
                         	
@@ -54,7 +59,7 @@
                         	<!-- tabla detalle sucursal -->
                         	<p:dataTable id="afiliadoDetail" var="af" value="#{afiliadoBeanList.afiliadoList}" 
                         			rowKey="#{af.documento}" selectionMode="single"  paginator="true" rows="20">
-								<f:facet name="header">Afiliados - #{afiliadoBeanList.afiliadoList.size()}</f:facet>
+								<f:facet name="header">Afiliados - #{afiliadoBeanList.totalAfiliados}</f:facet>
 								<p:column headerText="Documento" sortby="#{af.documento}">
 									<h:outputText value="#{af.documento}" /> 
 								</p:column>

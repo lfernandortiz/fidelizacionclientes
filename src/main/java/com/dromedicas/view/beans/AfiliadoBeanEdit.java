@@ -14,9 +14,6 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.context.Flash;
 
-import org.primefaces.component.datatable.DataTable;
-import org.primefaces.component.selectonemenu.SelectOneMenu;
-
 import com.dromedicas.domain.Afiliado;
 import com.dromedicas.domain.Pais;
 import com.dromedicas.domain.Sucursal;

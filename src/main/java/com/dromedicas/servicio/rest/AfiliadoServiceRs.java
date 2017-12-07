@@ -455,7 +455,6 @@ public class AfiliadoServiceRs{
 			}
 			
 			
-			
 			System.out.println(Response.Status.OK.getStatusCode());
 			responseObject.setCode(Status.OK.getStatusCode());
 			responseObject.setAfiliado(afiliado);

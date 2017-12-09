@@ -13,6 +13,7 @@ import javax.ws.rs.core.Response.Status;
 import com.dromedicas.domain.Afiliado;
 import com.dromedicas.domain.BalancePuntos;
 import com.dromedicas.domain.Sucursal;
+import com.dromedicas.domain.Transaccion;
 import com.dromedicas.service.AfiliadoService;
 import com.dromedicas.service.OperacionPuntosService;
 import com.dromedicas.service.SucursalService;
@@ -251,11 +252,20 @@ public class PuntosServiceRs {
 	public Response devolucionTransaccion(@PathParam("codsucursal") String codsucursal,
 			@PathParam("momento") String momento, @PathParam("nrofactua") String nrofactura,
 			@PathParam("valortx") Integer valortx, @PathParam("documento") String documento) {
+		
 		ResponsePuntos responseObject = new ResponsePuntos();
 
 		// se validan todos los parametros
 		if (!codsucursal.equals("") && !momento.equals("") && !nrofactura.equals("") && valortx != 0
 				&& !documento.equals("")) {
+			
+			//primero valida si la tx acumulo puntos
+			Transaccion txADevolver =  this.txService.obtenerTransaccionPorFactura(nrofactura);
+			if(txADevolver == null){
+				responseObject.setCode(401);
+				responseObject.setMessage("Factura no acumula puntos");
+				return Response.status(401).entity(responseObject).build();
+			}
 
 			Sucursal sucursal = this.sucursalService.obtenerSucursalPorIdIterno(codsucursal);
 

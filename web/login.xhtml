@@ -68,11 +68,11 @@
  <script type="text/javascript">
  //<![CDATA[
  function manejarLogin(xhr, status, args) {
-	  console.log("-->"+args.validationFailed);
+	  console.log("-->"+ args.view);
 	    if (!args.validationFailed && args.estaLogeado) {
 	      setTimeout(function() {
 	        window.location = args.view;
-	      }, 700);
+	      }, 600);
 	    }
 	  }
 //]]>

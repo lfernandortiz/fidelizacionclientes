@@ -80,8 +80,14 @@ public class AfiliadoBeanList {
 	}
 	
 	public void buscarAfiliado(){
-		this.afiliadoList = afiliadoService.bucarAfiliadoByFields(valorABuscar);
-		this.totalAfiliados = this.afiliadoList.size();
+		if( "".equals(this.valorABuscar) || " ".equals(this.valorABuscar) || this.valorABuscar == null ){
+			this.afiliadoList = afiliadoService.findAllAfiliadosMenor();		
+			this.totalAfiliados = afiliadoService.totalAfiliados();
+		}else{
+			this.afiliadoList = afiliadoService.bucarAfiliadoByFields(this.valorABuscar);
+			this.totalAfiliados = this.afiliadoList.size();
+		}
+		
 	}
 
 	public Integer getTotalAfiliados() {

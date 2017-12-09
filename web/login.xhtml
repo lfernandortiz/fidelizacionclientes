@@ -15,12 +15,13 @@
 	</f:facet>
 	<title>Login Puntos Farmanorte</title>
 	<link rel="shortcut icon" type="image/x-icon" href="#{resource['omega-layout/images/favicon.ico']}"/>
+	<h:outputStylesheet name="css/layout.css" library="omega-layout" />
 </h:head>
 
 <h:body styleClass="login-body">
 	<p:growl id="mensajes" showDetail="true" life="2000" />
-	<h:form>	
 	
+	<h:form>
 	<div id="login-wrapper">
 		<p:graphicImage class="imaglogin" name="images/loginLogoFP2x.png" library="omega-layout" />
 
@@ -55,14 +56,14 @@
                 </script>.
 		</div>		
 	</div>	
-	<h:outputStylesheet name="css/layout.css" library="omega-layout" />
+	
 	</h:form>
-	<div class="logofooter">
-		<a href="http://www.dromedicas.com.co" target="_blank">
+	<footer class="logofooter">
+		<a href="http://www.dromedicas.com.co" target="_blank" class="img-logo">
 			<!-- A little logo of mark -->
 			<p:graphicImage name="images/isologoDromedicasBN.svg" library="omega-layout" width="18"/>
-		</a> 
-	</div>
+		</a>
+	</footer>	
 </h:body>
  <script type="text/javascript">
  //<![CDATA[

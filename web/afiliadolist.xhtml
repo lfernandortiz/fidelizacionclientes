@@ -57,7 +57,8 @@
                         	<p:spacer height="40px"/>
                         	<!-- tabla detalle sucursal -->
                         	<p:dataTable id="afiliadoDetail" var="af" value="#{afiliadoBeanList.afiliadoList}" 
-                        			rowKey="#{af.documento}" selectionMode="single"  paginator="true" rows="20">
+                        			rowKey="#{af.documento}" selectionMode="single"  paginator="true" 
+                        			emptyMessage="Registros no encontrados :-(" rows="20">
 								<f:facet name="header">Afiliados - #{afiliadoBeanList.totalAfiliados}</f:facet>
 								<p:column headerText="Documento" sortby="#{af.documento}">
 									<h:outputText value="#{af.documento}" /> 

@@ -2075,7 +2075,8 @@ html {
   #login-wrapper .login-footer {
     color: #ffffff;
     font-size: 14px;
-    margin-top: 50px; }
+    margin-top: 50px;
+    margin-bottom: 15px;}
 
 @media (max-width: 40em) {
   .login-body {
@@ -3510,15 +3511,15 @@ hr{
 } 
   
 .logofooter{
-	color:white;
-	position: absolute;
-	bottom: 0;
-	left: 0;
-	display: none;
-}
+	display:none;
+	width: 100%;
+    position: absolute!important; 
+    bottom: 0;
+}	
 
 .logofooter img{
-	padding: 8px;	
+	padding: 8px;
+	float: left;
 }
 
 .separator{
@@ -3526,11 +3527,15 @@ hr{
 }
 
 /* Large and up */
-@media screen and (min-width: 64em) {
-	.logofooter {
-		display: block;
-	}	
-}
+@media screen and (min-width: 64em)  {
+	
+}	
+	/*Only logofooter class*/
+	@media screen and (min-width: 64em) and (min-height: 700px) {
+		.logofooter {
+			display: block;
+		}	
+	}
 
 .ui-selectonemenu-panel .ui-selectonemenu-table td {
    

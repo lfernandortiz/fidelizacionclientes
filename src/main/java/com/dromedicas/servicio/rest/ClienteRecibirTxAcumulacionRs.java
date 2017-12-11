@@ -11,6 +11,8 @@ import org.apache.log4j.Logger;
 import com.dromedicas.domain.Sucursal;
 import com.dromedicas.domain.Transaccion;
 import com.dromedicas.service.SucursalService;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.WebResource;
 
 
 @Stateless
@@ -36,6 +38,8 @@ public class ClienteRecibirTxAcumulacionRs {
 				
 				List<Transaccion> nuevasTxsList = obtenerTxFromWS(sucursal);
 				
+				//persiste las nuevas transacciones de acumulacion
+				
 			}else{				
 			}
 		}//fin for itera sucursales		
@@ -44,8 +48,31 @@ public class ClienteRecibirTxAcumulacionRs {
 	
 	private List<Transaccion> obtenerTxFromWS( Sucursal  sucursal){
 		List<Transaccion> nuevasTxList = new ArrayList<Transaccion>();
+		Client client = Client.create();
+		WebResource webResource = client.resource(sucursal.getRutaweb() + this.servicio);
+		TransaccionWrap response = webResource.accept("application/json").get(TransaccionWrap.class);
+		try { 
+//			List<VentaAlInstanteDetalle> detalle = response.getMessage().getData();
+//			if (detalle != null) {
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 		
 		return null;
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 }

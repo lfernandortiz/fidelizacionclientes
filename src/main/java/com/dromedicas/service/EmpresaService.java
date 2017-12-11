@@ -104,7 +104,6 @@ public class EmpresaService {
 				+ "and c.empresa.idempresa =  '" + instance.getIdempresa() +"'" ;
 		Query query = em.createQuery(queryString);
 		Contrato c = (Contrato) query.getSingleResult();		
-		System.out.println("Contrato Fecha Ini: " + c.getFechainicio());
 		return c;
 		
 	}

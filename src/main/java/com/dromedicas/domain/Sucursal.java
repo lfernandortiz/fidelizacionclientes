@@ -34,14 +34,18 @@ public class Sucursal implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@JsonIgnore
 	private int idsucursal;
 
+	@JsonIgnore
 	private String apikey;
 
 	private String codigointerno;
 
+	@JsonIgnore
 	private String direccion;
-
+	
+	@JsonIgnore
 	private String email;
 	
 	
@@ -51,11 +55,13 @@ public class Sucursal implements Serializable {
 	
 	//bi-directional many-to-one association to Afiliado
 	@OneToMany(mappedBy="sucursal", cascade={CascadeType.ALL})
+	@JsonIgnore
 	private Set<Afiliado> afiliados;
 
-	@JsonIgnore
+
 	//bi-directional many-to-one association to Audiwebservice
 	@OneToMany(mappedBy="sucursal")
+	@JsonIgnore
 	private Set<Audiwebservice> audiwebservices;
 
 	@JsonIgnore
@@ -64,9 +70,10 @@ public class Sucursal implements Serializable {
 	@JoinColumn(name="idempresa")
 	private Empresa empresa;
 
-	@JsonIgnore
+	
 	//bi-directional many-to-one association to Transaccion
 	@OneToMany(mappedBy="sucursal")
+	@JsonIgnore
 	private Set<Transaccion> transaccions;
 
 	public Sucursal() {

@@ -2,6 +2,9 @@ package com.dromedicas.domain;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.Set;
 
 
@@ -16,12 +19,14 @@ public class Tipotransaccion implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@JsonIgnore
 	private int idtipotransaccion;
 
 	private String descripcion;
 
 	//bi-directional many-to-one association to Transaccion
 	@OneToMany(mappedBy="tipotransaccion")
+	@JsonIgnore
 	private Set<Transaccion> transaccions;
 
 	public Tipotransaccion() {

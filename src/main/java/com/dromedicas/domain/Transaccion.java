@@ -2,6 +2,9 @@ package com.dromedicas.domain;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.Date;
 import java.util.Set;
 
@@ -39,19 +42,23 @@ public class Transaccion implements Serializable {
 
 	//bi-directional many-to-one association to Detransaccion
 	@OneToMany(mappedBy="transaccion")
+	@JsonIgnore
 	private Set<Detransaccion> detransaccions;
 
 	//bi-directional many-to-one association to Emailenvio
 	@OneToMany(mappedBy="transaccion")
+	@JsonIgnore
 	private Set<Emailenvio> emailenvios;
 
 	//bi-directional many-to-one association to Punto
 	@OneToMany(mappedBy="transaccion")
+	@JsonIgnore
 	private Set<Punto> puntos;
 
 	//bi-directional many-to-one association to Afiliado
 	@ManyToOne
 	@JoinColumn(name="idafiliado")
+	@JsonIgnore
 	private Afiliado afiliado;
 
 	//bi-directional many-to-one association to Sucursal

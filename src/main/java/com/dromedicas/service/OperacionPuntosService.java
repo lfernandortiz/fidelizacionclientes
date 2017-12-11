@@ -144,11 +144,11 @@ public class OperacionPuntosService {
 		//obtengo todas las transaccion conpuntos redimibles
 		List<Transaccion> txList = this.getListransaccionesARedimir(afiliado);
 		
-		//Aca proceso de redencion de puntos
+		//Aca es el proceso de redencion de puntos
 		//Se iteran todas las tx disponibles a redimir y se acumulan los puntos
-		// en la variable total mientras que se compara con los puntos a redimir
+		// en la variable "total" mientras que se compara con los puntos a redimir
 		// en caso de exceder los puntos en una Tx se deja el excedente disponible
-		// en el campo saldo
+		// en el campo "saldo"
 		int total =0;		
 		for(Transaccion tx:  txList){
 			//

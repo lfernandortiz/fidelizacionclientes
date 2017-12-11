@@ -27,6 +27,7 @@ import com.dromedicas.domain.BalancePuntos;
 import com.dromedicas.domain.Transaccion;
 import com.dromedicas.service.OperacionPuntosService;
 import com.dromedicas.util.ExpresionesRegulares;
+import com.sun.mail.imap.protocol.FLAGS;
 import com.vdurmont.emoji.EmojiParser;
 
 @Remote
@@ -48,8 +49,7 @@ public class EnviarEmailAlertas {
 		String urlConfirmacion = "http://www.puntosfarmanorte.com.co/seccion/actualizacion.html?id=" + afiliado.getKeycode();
 		
 		System.out.println("Clase enviar Email Alerta Afilidaod");
-		try{
-			
+		try{			
 			ServletContext servletContext = null;
 						
 			try {
@@ -109,13 +109,15 @@ public class EnviarEmailAlertas {
 			final MimeMessage message = new MimeMessage(session);
 			message.setFrom(new InternetAddress( 
 					"contacto@puntosfarmanorte.com.co", "Puntos Farmanorte"));
-			message.setRecipients(Message.RecipientType.BCC, addressTo);
+			message.setRecipients(Message.RecipientType.TO, addressTo);
 			//Emojis :-)			
 			String subjectEmojiRaw = ":large_blue_circle: Confirmacion de suscripcion :memo:";
 			String subjectEmoji = EmojiParser.parseToUnicode(subjectEmojiRaw);			
 				
 			message.setSubject( subjectEmoji , "UTF-8");
 			message.setContent(doc.html(), "text/html; charset=utf-8");
+			
+			message.setFlag(FLAGS.Flag.RECENT, true);
 
 			//Envia el correo
 			final Transport t = session.getTransport("smtp");			
@@ -144,8 +146,7 @@ public class EnviarEmailAlertas {
 			e.printStackTrace();
 			return false;
 		}
-		return true;		
-		
+		return true;	
 	}
 	
 	

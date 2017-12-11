@@ -1,12 +1,23 @@
 package com.dromedicas.domain;
 
 import java.io.Serializable;
-import javax.persistence.*;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import java.util.Date;
 import java.util.Set;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.xml.bind.annotation.XmlRootElement;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 /**
@@ -15,6 +26,7 @@ import java.util.Set;
  */
 @Entity
 @NamedQuery(name="Transaccion.findAll", query="SELECT t FROM Transaccion t")
+@XmlRootElement
 public class Transaccion implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -23,18 +35,22 @@ public class Transaccion implements Serializable {
 	private int idtransaccion;
 
 	@Temporal(TemporalType.TIMESTAMP)
+	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm",  timezone = "GMT-5" )
 	private Date fechatransaccion;
 
 	private String nrofactura;
 
 	private int puntostransaccion;
 
+	@JsonIgnore
 	private byte redimidos;
 
+	@JsonIgnore
 	private int saldo;
 
 	private int valortotaltx;
 	
+	@JsonIgnore
 	private Byte envionotificacion;
 
 	@Temporal(TemporalType.DATE)

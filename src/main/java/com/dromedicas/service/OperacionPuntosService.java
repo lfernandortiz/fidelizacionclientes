@@ -124,6 +124,20 @@ public class OperacionPuntosService {
 		
 	}
 	
+	/**
+	 * Recibe un List de transacciones y los persiste en la base
+	 * @param txList
+	 */
+	public void registrarListTransacciones(List<Transaccion> txList) {		
+		try {
+			for(Transaccion tx: txList){
+				txService.updateTransaccion(tx);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	
 	/**
 	 * Metodo que procesa la redencion de puntos, y acumula el saldo
@@ -642,6 +656,12 @@ public class OperacionPuntosService {
 		}		
 		return temp;
 	}
+	
+	
+	
+	
+	
+	
 	
 
 }

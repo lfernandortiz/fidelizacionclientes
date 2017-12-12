@@ -2,6 +2,7 @@ package com.dromedicas.servicio.rest;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -9,40 +10,39 @@ import javax.xml.bind.annotation.XmlRootElement;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 
 @XmlRootElement
-public class TransaccionWrap implements Serializable {
+public class MessageTxWrap implements Serializable {
 
-	@JsonProperty("status")
-	private String status;
-	@JsonProperty("message")
-	private MessageTxWrap message;
+	@JsonProperty("code")
+	private String code;
+	@JsonProperty("data")
+	private List<TransaccionWrapDatum> data = null;
 	@JsonIgnore
 	private Map<String, Object> additionalProperties = new HashMap<String, Object>();
-	private final static long serialVersionUID = -8894524017120636872L;
+	private final static long serialVersionUID = 1887576205516538316L;
 
-	@JsonProperty("status")
-	public String getStatus() {
-		return status;
+	@JsonProperty("code")
+	public String getCode() {
+		return code;
 	}
 
-	@JsonProperty("status")
-	public void setStatus(String status) {
-		this.status = status;
+	@JsonProperty("code")
+	public void setCode(String code) {
+		this.code = code;
 	}
 
-	@JsonProperty("message")
-	public MessageTxWrap getMessage() {
-		return message;
+	@JsonProperty("data")
+	public List<TransaccionWrapDatum> getData() {
+		return data;
 	}
 
-	@JsonProperty("message")
-	public void setMessage(MessageTxWrap message) {
-		this.message = message;
+	@JsonProperty("data")
+	public void setData(List<TransaccionWrapDatum> data) {
+		this.data = data;
 	}
 
 	@JsonAnyGetter

@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -11,11 +13,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({ "dni", "docuid", "tipodoc", "prefijo", "numero", "periodo", "fechadoc", "fecvence", "fecasentado",
-		"fecanulado", "formapago", "nrodocref", "importado", "terid1", "terid2", "terid3", "codigo1", "codigo2",
-		"codigo3", "observacion", "observacion2", "retefuente", "descuentogen", "base", "iva", "total", "impreso",
-		"totalitems", "sucursalid", "creador", "momento" })
+
+@XmlRootElement
 public class TransaccionWrapDatum implements Serializable {
 
 	@JsonProperty("dni")
@@ -64,25 +63,35 @@ public class TransaccionWrapDatum implements Serializable {
 	private String retefuente;
 	@JsonProperty("descuentogen")
 	private String descuentogen;
+	@JsonProperty("ajustebase")
+	private String ajustebase;
+	@JsonProperty("ajusteiva")
+	private String ajusteiva;
+	@JsonProperty("ajusteneto")
+	private String ajusteneto;
 	@JsonProperty("base")
 	private String base;
 	@JsonProperty("iva")
 	private String iva;
 	@JsonProperty("total")
 	private String total;
+	@JsonProperty("saldo")
+	private String saldo;
 	@JsonProperty("impreso")
 	private String impreso;
 	@JsonProperty("totalitems")
 	private String totalitems;
 	@JsonProperty("sucursalid")
 	private String sucursalid;
+	@JsonProperty("documentojson")
+	private Object documentojson;
 	@JsonProperty("creador")
 	private String creador;
 	@JsonProperty("momento")
 	private String momento;
 	@JsonIgnore
 	private Map<String, Object> additionalProperties = new HashMap<String, Object>();
-	private final static long serialVersionUID = 6954442956966922802L;
+	private final static long serialVersionUID = 7105849166087446898L;
 
 	@JsonProperty("dni")
 	public String getDni() {
@@ -314,6 +323,36 @@ public class TransaccionWrapDatum implements Serializable {
 		this.descuentogen = descuentogen;
 	}
 
+	@JsonProperty("ajustebase")
+	public String getAjustebase() {
+		return ajustebase;
+	}
+
+	@JsonProperty("ajustebase")
+	public void setAjustebase(String ajustebase) {
+		this.ajustebase = ajustebase;
+	}
+
+	@JsonProperty("ajusteiva")
+	public String getAjusteiva() {
+		return ajusteiva;
+	}
+
+	@JsonProperty("ajusteiva")
+	public void setAjusteiva(String ajusteiva) {
+		this.ajusteiva = ajusteiva;
+	}
+
+	@JsonProperty("ajusteneto")
+	public String getAjusteneto() {
+		return ajusteneto;
+	}
+
+	@JsonProperty("ajusteneto")
+	public void setAjusteneto(String ajusteneto) {
+		this.ajusteneto = ajusteneto;
+	}
+
 	@JsonProperty("base")
 	public String getBase() {
 		return base;
@@ -344,6 +383,16 @@ public class TransaccionWrapDatum implements Serializable {
 		this.total = total;
 	}
 
+	@JsonProperty("saldo")
+	public String getSaldo() {
+		return saldo;
+	}
+
+	@JsonProperty("saldo")
+	public void setSaldo(String saldo) {
+		this.saldo = saldo;
+	}
+
 	@JsonProperty("impreso")
 	public String getImpreso() {
 		return impreso;
@@ -372,6 +421,16 @@ public class TransaccionWrapDatum implements Serializable {
 	@JsonProperty("sucursalid")
 	public void setSucursalid(String sucursalid) {
 		this.sucursalid = sucursalid;
+	}
+
+	@JsonProperty("documentojson")
+	public Object getDocumentojson() {
+		return documentojson;
+	}
+
+	@JsonProperty("documentojson")
+	public void setDocumentojson(Object documentojson) {
+		this.documentojson = documentojson;
 	}
 
 	@JsonProperty("creador")

@@ -143,6 +143,7 @@ public class Afiliado implements Serializable {
 
 	//bi-directional many-to-one association to Afiliadopatologia
 	@OneToMany(mappedBy="afiliado", fetch = FetchType.EAGER)
+	@JsonIgnore
 	private List<Afiliadopatologia> afiliadopatologias;
 
 	//bi-directional many-to-one association to Emailenvio

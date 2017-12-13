@@ -1,6 +1,7 @@
 package com.dromedicas.domain;
 
 import java.io.Serializable;
+import java.sql.Time;
 import java.util.Set;
 
 import javax.faces.bean.ManagedBean;
@@ -30,6 +31,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class Sucursal implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	@JsonIgnore
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int idsucursal;
@@ -37,7 +39,7 @@ public class Sucursal implements Serializable {
 	@JsonIgnore
 	private String apikey;
 
-	@JsonIgnore
+	
 	private String codigointerno;
 
 	@JsonIgnore
@@ -49,6 +51,18 @@ public class Sucursal implements Serializable {
 	@Column(name="nombre_sucursal")
 	private String nombreSucursal;
 	
+	@JsonIgnore
+	private String es24horas;
+	@JsonIgnore
+	private Time horacierrees;
+	@JsonIgnore
+	private Time horacierregen;
+	@JsonIgnore
+	private Time horaperturaes;
+	@JsonIgnore
+	private Time horaperturagen;
+	@JsonIgnore
+	private String rutaweb;
 	
 	//bi-directional many-to-one association to Afiliado
 	@JsonIgnore
@@ -167,6 +181,54 @@ public class Sucursal implements Serializable {
 
 		return audiwebservice;
 	}
+	
+	public String getEs24horas() {
+		return this.es24horas;
+	}
+
+	public void setEs24horas(String es24horas) {
+		this.es24horas = es24horas;
+	}
+
+	public Time getHoracierrees() {
+		return this.horacierrees;
+	}
+
+	public void setHoracierrees(Time horacierrees) {
+		this.horacierrees = horacierrees;
+	}
+
+	public Time getHoracierregen() {
+		return this.horacierregen;
+	}
+
+	public void setHoracierregen(Time horacierregen) {
+		this.horacierregen = horacierregen;
+	}
+
+	public Time getHoraperturaes() {
+		return this.horaperturaes;
+	}
+
+	public void setHoraperturaes(Time horaperturaes) {
+		this.horaperturaes = horaperturaes;
+	}
+
+	public Time getHoraperturagen() {
+		return this.horaperturagen;
+	}
+
+	public void setHoraperturagen(Time horaperturagen) {
+		this.horaperturagen = horaperturagen;
+	}
+	
+	public String getRutaweb() {
+		return this.rutaweb;
+	}
+
+	public void setRutaweb(String rutaweb) {
+		this.rutaweb = rutaweb;
+	}	
 
 	public Empresa getEmpresa() {
 		return this.empresa;

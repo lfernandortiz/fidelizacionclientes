@@ -67,9 +67,7 @@ public class TransaccionService {
 		Query query = em.createQuery("FROM Transaccion t  WHERE  t.tipotransaccion.idtipotransaccion = 1 and "
 				+ "t.envionotificacion = 0 and t.redimidos = 0 and t.afiliado.email != '' ");			
 		try {
-			txList = query.getResultList();			
-			System.out.println("--------" +  txList.size());
-			
+			txList = query.getResultList();
 		} catch (NoResultException e) {
 			System.out.println("Factura no encontrada");			
 		}		

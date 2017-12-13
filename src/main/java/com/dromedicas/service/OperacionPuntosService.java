@@ -131,7 +131,9 @@ public class OperacionPuntosService {
 	public void registrarListTransacciones(List<Transaccion> txList) {		
 		try {
 			for(Transaccion tx: txList){
-				txService.updateTransaccion(tx);
+				if(txService.obtenerTransaccionPorFactura(tx.getNrofactura()) == null){
+					txService.updateTransaccion(tx);
+				}				
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -370,7 +372,7 @@ public class OperacionPuntosService {
 				+ " and t.tipotransaccion.idtipotransaccion <> 2  and t.tipotransaccion.idtipotransaccion <> 3";  
 		
 		Query query = em.createQuery( queryString );
-		System.out.println("Documento Instance: " + instance.getDocumento());
+		System.out.println("Consultando puntos acumulados de: " + instance.getDocumento());
 		query.setParameter("documento", instance.getDocumento());
 		Long puntos = 0L;		
 		try {

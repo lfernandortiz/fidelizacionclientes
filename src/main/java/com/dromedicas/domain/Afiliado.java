@@ -19,12 +19,10 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -184,6 +182,7 @@ public class Afiliado implements Serializable {
 
 	//bi-directional many-to-one association to Transaccion
 	@OneToMany(fetch = FetchType.EAGER, mappedBy="afiliado", cascade = CascadeType.ALL)
+	@OrderBy("fechatransaccion desc")
 	private List<Transaccion> transaccions;
 
 	public Afiliado() {

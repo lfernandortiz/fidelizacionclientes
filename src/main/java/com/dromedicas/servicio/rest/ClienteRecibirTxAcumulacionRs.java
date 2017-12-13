@@ -134,6 +134,9 @@ public class ClienteRecibirTxAcumulacionRs {
 		
 		//Objeto cliente que consume el servicio
 		Client client = Client.create();
+		
+		System.out.println("URL:" +sucursal.getRutaweb() + this.servicio);
+		
 		WebResource webResource = client.resource(sucursal.getRutaweb() + this.servicio);
 		
 		//Consumiendo el serivicio

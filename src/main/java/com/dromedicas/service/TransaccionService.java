@@ -52,8 +52,7 @@ public class TransaccionService {
 		try {
 			temp = (Transaccion) query.getSingleResult();
 		} catch (NoResultException e) {
-			System.out.println("Factura no encontrada");
-			
+			System.out.println("Factura no encontrada");			
 		}		
 		return temp;
 	}

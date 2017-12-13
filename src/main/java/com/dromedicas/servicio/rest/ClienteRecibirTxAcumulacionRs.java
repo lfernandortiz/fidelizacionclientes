@@ -1,6 +1,5 @@
 package com.dromedicas.servicio.rest;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -51,6 +50,10 @@ public class ClienteRecibirTxAcumulacionRs {
 	private EmpresaService empresaService;
 
 	private String servicio = "wsjson/fptransacciones";
+	private String servicioAct = "wsjson/fptransacciones";
+	
+	
+	
 	/**
 	 * 
 	 */
@@ -68,14 +71,21 @@ public class ClienteRecibirTxAcumulacionRs {
 				
 				//obtiene las transacciones pendientes por reportar a puntos para 
 				//la sucursal actual asignandolas a un list de transacciones
-				List<Transaccion> nuevasTxsList = obtenerTxFromWS(sucursal);
-
-				// persiste las nuevas transacciones de acumulacion
-				// en un metodo del EJB de operaciones de puntos
-				if( !nuevasTxsList.isEmpty() ){
-					this.puntosService.registrarListTransacciones(nuevasTxsList);					
-				}
+				UtilTransactionWrap txWrap = obtenerTxFromWS(sucursal);
 				
+				if( txWrap != null ){
+					List<Transaccion> nuevasTxsList = txWrap.getTxList();
+
+					// persiste las nuevas transacciones de acumulacion
+					// en un metodo del EJB de operaciones de puntos
+					if( !nuevasTxsList.isEmpty() ){
+						this.puntosService.registrarListTransacciones(nuevasTxsList);	
+						
+						//consumir servicio de actualizacion						
+						this.updateTxs( txWrap.getIdsList(), sucursal );
+						
+					}
+				}
 
 			} else {//no es 24 horas
 				try {					
@@ -84,12 +94,20 @@ public class ClienteRecibirTxAcumulacionRs {
 						
 						//obtiene las transacciones pendientes por reportar a puntos para 
 						//la sucursal actual asignandolas a un list de transacciones
-						List<Transaccion> nuevasTxsList = obtenerTxFromWS(sucursal);
+						UtilTransactionWrap txWrap = obtenerTxFromWS(sucursal);
+						
+						if( txWrap != null ){
+							List<Transaccion> nuevasTxsList = txWrap.getTxList();
 
-						// persiste las nuevas transacciones de acumulacion
-						// en un metodo del EJB de operaciones de puntos
-						if( !nuevasTxsList.isEmpty() ){
-							this.puntosService.registrarListTransacciones(nuevasTxsList);					
+							// persiste las nuevas transacciones de acumulacion
+							// en un metodo del EJB de operaciones de puntos
+							if( !nuevasTxsList.isEmpty() ){
+								this.puntosService.registrarListTransacciones(nuevasTxsList);	
+								
+								//consumir servicio de actualizacion						
+								this.updateTxs( txWrap.getIdsList(), sucursal );
+								
+							}
 						}
 					}
 				} catch (Exception e) {
@@ -106,16 +124,20 @@ public class ClienteRecibirTxAcumulacionRs {
 	 * @param sucursal
 	 * @return
 	 */
-	private List<Transaccion> obtenerTxFromWS(Sucursal sucursal) {
-		//Lista de transacciona a persistir
-		List<Transaccion> txList = new ArrayList<Transaccion>();
+	private UtilTransactionWrap obtenerTxFromWS(Sucursal sucursal) {
+		
+		//objeto de utilidad creado para devolver dos colecciones
+		// una coleccion son las Transacciones de la sucursal
+		// la segunda coleccion son los id's de las Tx que se actualizaran 
+		// en el servicio  de la sucursal como recibidas en Puntos F
+		UtilTransactionWrap txWrap = null;
 		
 		//Objeto cliente que consume el servicio
 		Client client = Client.create();
 		WebResource webResource = client.resource(sucursal.getRutaweb() + this.servicio);
 		
 		//Consumiendo el serivicio
-		System.out.println("SUCURSAL------>" + sucursal.getNombreSucursal());
+		System.out.println("SUCURSAL--->" + sucursal.getNombreSucursal());
 		try {
 			TransaccionWrap response = webResource.accept("application/json").get(TransaccionWrap.class);
 			//se obtiene el detalle de los datos del JSON
@@ -124,6 +146,13 @@ public class ClienteRecibirTxAcumulacionRs {
 			if (detalle != null) {
 				
 				if (!detalle.isEmpty()) {
+					//Lista de transacciona a persistir
+					List<Transaccion> txList = new ArrayList<Transaccion>();
+					
+					//Este list es el arregro que se envia al servicio de actualizacion de Transacciones
+					List<String> idsList = new ArrayList<String>();
+					
+					txWrap = new UtilTransactionWrap();
 					
 					//Itera las Tx's
 					for (TransaccionWrapDatum e : detalle) {
@@ -132,53 +161,64 @@ public class ClienteRecibirTxAcumulacionRs {
 						
 						//si el clientes esta afiliado crea el objeto Transaccion
 						if(afiliado != null){
-							Transaccion tx = new Transaccion();//nueva transaccion
 							
-							// se reciben parametros y se crean los objetos necesarios		
-							SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-							Date momentotx = new Date();
-
-							try {
-								//parsin fecha tx
-								momentotx = sdf.parse(e.getFechadoc());
-
-								System.out.println("Fecha Recibida: " + momentotx);
-
-							} catch (ParseException ex) {
-								ex.printStackTrace();
-							} // end catch
-							
-							//Setea el objeto Transaccion
-							int idTipoTx = 1; //1 es acumulacion
-							Tipotransaccion tipoTx = tipoTxService.obtenerTipoTransaccioById(idTipoTx);
-							tx.setAfiliado(afiliado);
-							tx.setSucursal(sucursal);
-							tx.setFechatransaccion(momentotx);
 							String factura = e.getTipodoc()+e.getPrefijo()+e.getNumero();
-							tx.setNrofactura(factura);
 							
-							int valortx = Integer.parseInt(e.getTotal());							
-							tx.setValortotaltx(valortx);
-							
-							Date fechavencimientopuntos = this.puntosService.addDays(momentotx, 365);//-> Cambiar (365) por paramatreo optenico de consulta  
-							tx.setVencen(fechavencimientopuntos);
-							tx.setTipotransaccion(tipoTx);
-							tx.setEnvionotificacion((byte)0);
-							//Aca se debe traer el parametros por consulta de base de datos del factor de acumulacion 
-							Contrato contrato =  empresaService.obtenerUltimoContrato(sucursal.getEmpresa());
-							int baseAc = contrato.getBasegravable();
-							
-							int mathPuntos = (valortx / baseAc);	//-> Cambiar (100) por paramatreo optenico de consulta  
-							System.out.println("----Puntos acumulados: "+ mathPuntos);
-														
-							tx.setPuntostransaccion(mathPuntos);
-							
-							//anade le nuevo objeto Transaccion a la coleccion
-							txList.add(tx);
-							
+							//valida que la factura no este registrada
+							if(txService.obtenerTransaccionPorFactura(factura) == null){
+								Transaccion tx = new Transaccion();//nueva transaccion
+								
+								// se reciben parametros y se crean los objetos necesarios		
+								SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+								Date momentotx = new Date();
+
+								try {
+									//parsin fecha tx
+									momentotx = sdf.parse(e.getFechadoc());
+
+									System.out.println("Fecha Recibida: " + momentotx);
+
+								} catch (ParseException ex) {
+									ex.printStackTrace();
+								} // end catch
+								
+								//Setea el objeto Transaccion
+								int idTipoTx = 1; //1 es acumulacion
+								Tipotransaccion tipoTx = tipoTxService.obtenerTipoTransaccioById(idTipoTx);
+								tx.setAfiliado(afiliado);
+								tx.setSucursal(sucursal);
+								tx.setFechatransaccion(momentotx);
+								
+								tx.setNrofactura(factura);
+								
+								int valortx = Integer.parseInt(e.getTotal());							
+								tx.setValortotaltx(valortx);
+								
+								Date fechavencimientopuntos = this.puntosService.addDays(momentotx, 365);//-> Cambiar (365) por paramatreo optenico de consulta  
+								tx.setVencen(fechavencimientopuntos);
+								tx.setTipotransaccion(tipoTx);
+								tx.setEnvionotificacion((byte)0);
+								//Aca se debe traer el parametros por consulta de base de datos del factor de acumulacion 
+								Contrato contrato =  empresaService.obtenerUltimoContrato(sucursal.getEmpresa());
+								int baseAc = contrato.getBasegravable();
+								
+								int mathPuntos = (valortx / baseAc);	//-> Cambiar (100) por paramatreo optenico de consulta  
+								System.out.println("----Puntos acumulados: "+ mathPuntos);
+															
+								tx.setPuntostransaccion(mathPuntos);
+								
+								//anade le nuevo objeto Transaccion a la coleccion
+								txList.add(tx);								
+								//anade el id del documento para actualizar la tx en la sucursal
+								idsList.add(e.getDocuid());
+							}// fin del if validar factura
 						}//fin del if afiliado != null
+						
 					}// fin del for que itera el Datum del JSON
+					
+					txWrap.setTxList(txList);
+					txWrap.setIdsList(idsList);
 				}
 			} else {
 				log.info("No hay informacion de Tx's para la sucursal actual");
@@ -186,7 +226,7 @@ public class ClienteRecibirTxAcumulacionRs {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return txList;
+		return txWrap;
 	}
 	
 	
@@ -258,5 +298,24 @@ public class ClienteRecibirTxAcumulacionRs {
 	
 	
 	
+	/**
+	 * 
+	 * @param idsList
+	 */
+	public void updateTxs(List<String> idsList, Sucursal sucursal) {
+
+		// Objeto cliente que consume el servicio
+		Client client = Client.create();
+		WebResource webResource = client.resource(sucursal.getRutaweb() + this.servicioAct);
+		try {
+			//TransaccionWrap response = webResource.accept("application/json").get(TransaccionWrap.class);
+		} catch (Exception e) {
+			
+			
+		}
+
+	}
 	
-}
+	
+	
+}//end class

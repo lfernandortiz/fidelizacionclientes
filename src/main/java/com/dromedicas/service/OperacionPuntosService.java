@@ -131,9 +131,7 @@ public class OperacionPuntosService {
 	public void registrarListTransacciones(List<Transaccion> txList) {		
 		try {
 			for(Transaccion tx: txList){
-				if(txService.obtenerTransaccionPorFactura(tx.getNrofactura()) == null){
-					txService.updateTransaccion(tx);
-				}				
+				txService.updateTransaccion(tx);			
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

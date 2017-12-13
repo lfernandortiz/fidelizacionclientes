@@ -65,7 +65,7 @@ public class QuartzListener implements ServletContextListener {
 			// Trigger recorrer todas las sucursales y obtener las ultimas transacciones 
 			// de puntos farmanorte
 			Trigger triggerTx = newTrigger().withIdentity("TransaccionAfiliado", "TxGroup")
-					.withSchedule(CronScheduleBuilder.cronSchedule("0 0/3 * 1/1 * ? *")) //cada 30 min
+					.withSchedule(CronScheduleBuilder.cronSchedule("0 0/5 * 1/1 * ? *")) //cada 30 min
 					.build();
 			
 			// configuracion del Setup the Job and Trigger with Scheduler & schedule jobs

@@ -50,7 +50,7 @@ public class ClienteRecibirTxAcumulacionRs {
 	private EmpresaService empresaService;
 
 	private String servicio = "wsjson/fptransacciones";
-	private String servicioAct = "wsjson/fptransacciones";
+	private String servicioAct = "wsjson/fpmarcaventas/?docuid=";
 	
 	
 	
@@ -160,7 +160,16 @@ public class ClienteRecibirTxAcumulacionRs {
 					//Itera las Tx's
 					for (TransaccionWrapDatum e : detalle) {
 						//obtener el objeto afiliado y sucursal
-						Afiliado afiliado = this.afiliadoService.obtenerAfiliadoByDocumento(e.getDni());
+						System.out.println("Documento Afiliado: " + e.getDni());
+						
+						Afiliado afiliado = null;
+						try {
+							afiliado = this.afiliadoService.obtenerAfiliadoByDocumento(e.getDni());
+						} catch (Exception e2) {
+							System.out.println("FALLA EN BUSCAR AFILIADO");
+							e2.printStackTrace();
+						}
+						
 						
 						//si el clientes esta afiliado crea el objeto Transaccion
 						if(afiliado != null){
@@ -307,11 +316,35 @@ public class ClienteRecibirTxAcumulacionRs {
 	 */
 	public void updateTxs(List<String> idsList, Sucursal sucursal) {
 
-		// Objeto cliente que consume el servicio
-		Client client = Client.create();
-		WebResource webResource = client.resource(sucursal.getRutaweb() + this.servicioAct);
+		
 		try {
-			//TransaccionWrap response = webResource.accept("application/json").get(TransaccionWrap.class);
+			
+			String urlServicioFinal = sucursal.getRutaweb() + this.servicioAct;
+			
+			for(int i= 0 ; i< idsList.size(); i++){
+				if( i+1 == idsList.size()){
+					urlServicioFinal +=  idsList.get(i);
+				}else{
+					urlServicioFinal +=  idsList.get(i) + ",";
+				}
+			}
+			
+			System.out.println("URL SERVICIO ACTUALIZAR: " + urlServicioFinal);
+			
+			// Objeto cliente que consume el servicio
+//			Client client = Client.create();
+//			WebResource webResource = client.resource(urlServicioFinal);
+//			
+//			ActualizarTxWrap response = webResource.accept("application/json").get(ActualizarTxWrap.class);
+//			
+//			String status = response.getStatus();
+//			
+//			if( status.equals("sucess")){
+//				
+//			}else{
+//				//si no actualiza debo hacer algo...
+//			}
+			
 		} catch (Exception e) {
 			
 			

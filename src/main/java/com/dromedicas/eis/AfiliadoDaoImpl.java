@@ -35,19 +35,6 @@ public class AfiliadoDaoImpl implements AfiliadoDao {
 		return (Afiliado) queryString.getSingleResult();
 	}
 	
-	@Override
-	public Afiliado obtenerAfiliadoByDocumento(String documento) {
-		Query query = em.createQuery("FROM Afiliado a WHERE a.documento = :docu");
-		query.setParameter("docu", documento);
-		Afiliado temp = null;		
-		try {
-			temp = (Afiliado) query.getSingleResult();
-		} catch (NoResultException e) {
-			System.out.println("Elemento no encontrado");			
-		}		
-		return temp;
-	}
-	
 
 	@Override
 	public void insertAfiliado(Afiliado instance) {

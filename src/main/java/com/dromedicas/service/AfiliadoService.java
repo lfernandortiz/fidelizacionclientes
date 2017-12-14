@@ -1,20 +1,16 @@
 package com.dromedicas.service;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import com.dromedicas.domain.Afiliado;
-import com.dromedicas.domain.Referido;
-import com.dromedicas.domain.Tipotransaccion;
-import com.dromedicas.domain.Transaccion;
-import com.dromedicas.domain.Usuarioweb;
 import com.dromedicas.eis.AfiliadoDao;
 import com.dromedicas.mailservice.EnviarEmailAlertas;
 
@@ -67,8 +63,20 @@ public class AfiliadoService {
 		return this.afiliadoDao.obtenerAfiliadoByDocumento(instance);
 	}
 	
-	public Afiliado obtenerAfiliadoByDocumento(String documento){
-		return this.afiliadoDao.obtenerAfiliadoByDocumento(documento);
+	//@TransactionAttribute(value=REQUIRES_NEW)
+	public Afiliado obtenerAfiliadoByDocumento(String documento) {
+		System.out.println(">>"+documento+"<<");
+		Query query = em.createQuery("FROM Afiliado a WHERE a.documento = :docu");
+		query.setParameter("docu", documento);
+		
+		System.out.println("---------Query: " + query.unwrap(org.hibernate.Query.class).getQueryString());
+		Afiliado temp = null;		
+		try {
+			temp = (Afiliado) query.getSingleResult();
+		} catch (NoResultException e) {
+			System.out.println("Elemento no encontrado");			
+		}		
+		return temp;
 	}
 	
 	public void insertAfiliado(Afiliado instance){

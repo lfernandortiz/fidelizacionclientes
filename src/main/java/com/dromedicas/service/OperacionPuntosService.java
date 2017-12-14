@@ -370,7 +370,6 @@ public class OperacionPuntosService {
 				+ " and t.tipotransaccion.idtipotransaccion <> 2  and t.tipotransaccion.idtipotransaccion <> 3";  
 		
 		Query query = em.createQuery( queryString );
-		System.out.println("Consultando puntos acumulados de: " + instance.getDocumento());
 		query.setParameter("documento", instance.getDocumento());
 		Long puntos = 0L;		
 		try {

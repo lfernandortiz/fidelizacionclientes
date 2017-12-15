@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE glassfish-ejb-jar SYSTEM "glassfish-ejb-jar_3_1-1.dtd" >
 <glassfish-ejb-jar>
-<enterprise-beans>        
+	<enterprise-beans>        
+         <ejb>
+            <ejb-name>ClienteRecibirTxAcumulacionRs</ejb-name>
+            <cmt-timeout-in-seconds>1200</cmt-timeout-in-seconds>
+         </ejb>
          <ejb>
             <ejb-name>AfiliadoService</ejb-name>
             <cmt-timeout-in-seconds>1200</cmt-timeout-in-seconds>
          </ejb>
-  </enterprise-beans>
+  	</enterprise-beans>
 </glassfish-ejb-jar>

@@ -10,6 +10,8 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.EJBTransactionRolledbackException;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionManagement;
+import javax.ejb.TransactionManagementType;
 
 import org.apache.log4j.Logger;
 
@@ -28,6 +30,7 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 
 @Stateless
+@TransactionManagement (TransactionManagementType.BEAN) 
 public class ClienteRecibirTxAcumulacionRs {
 
 	Logger log = Logger.getLogger(ClienteRecibirTxAcumulacionRs.class);
@@ -68,7 +71,7 @@ public class ClienteRecibirTxAcumulacionRs {
 		// Itera Todas las sucursales
 		for (Sucursal sucursal : sucursalList) {
 			// evalua si la sucursal es 24 Horas
-			if (sucursal.getEs24horas().trim().equals("true") && !sucursal.getCodigointerno().equals("11")) {
+			if (sucursal.getEs24horas().trim().equals("true")) {
 				
 				//obtiene las transacciones pendientes por reportar a puntos para 
 				//la sucursal actual asignandolas a un list de transacciones
@@ -125,6 +128,7 @@ public class ClienteRecibirTxAcumulacionRs {
 	 * @param sucursal
 	 * @return
 	 */
+	
 	private UtilTransactionWrap obtenerTxFromWS(Sucursal sucursal) {
 		
 		//objeto de utilidad creado para devolver dos colecciones

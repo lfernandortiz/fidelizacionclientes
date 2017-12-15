@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.ejb.EJB;
+import javax.ejb.EJBTransactionRolledbackException;
 import javax.ejb.Stateless;
 
 import org.apache.log4j.Logger;
@@ -67,7 +68,7 @@ public class ClienteRecibirTxAcumulacionRs {
 		// Itera Todas las sucursales
 		for (Sucursal sucursal : sucursalList) {
 			// evalua si la sucursal es 24 Horas
-			if (sucursal.getEs24horas().trim().equals("true")) {
+			if (sucursal.getEs24horas().trim().equals("true") && !sucursal.getCodigointerno().equals("11")) {
 				
 				//obtiene las transacciones pendientes por reportar a puntos para 
 				//la sucursal actual asignandolas a un list de transacciones
@@ -165,7 +166,7 @@ public class ClienteRecibirTxAcumulacionRs {
 						Afiliado afiliado = null;
 						try {
 							afiliado = this.afiliadoService.obtenerAfiliadoByDocumento(e.getDni());
-						} catch (Exception e2) {
+						} catch (EJBTransactionRolledbackException e2) {
 							System.out.println("FALLA EN BUSCAR AFILIADO");
 							e2.printStackTrace();
 						}

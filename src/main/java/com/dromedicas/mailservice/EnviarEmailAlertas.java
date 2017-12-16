@@ -7,6 +7,8 @@ import java.util.Properties;
 import javax.ejb.EJB;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionManagement;
+import javax.ejb.TransactionManagementType;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
@@ -34,6 +36,7 @@ import com.vdurmont.emoji.EmojiParser;
 @ManagedBean(name="mailAlert")
 @SessionScoped
 @Stateless
+@TransactionManagement (TransactionManagementType.BEAN) 
 public class EnviarEmailAlertas {
 	
 	@Context ServletContext context;

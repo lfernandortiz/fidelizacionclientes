@@ -47,7 +47,7 @@ public class QuartzListener implements ServletContextListener {
 			// Trigger para Notificaciones de acumulacion de puntos cada 30 minutos
 			// Son usadas expresiones cron
 			Trigger trigger = newTrigger().withIdentity("NotificacionAcum", "Group")
-					.withSchedule(CronScheduleBuilder.cronSchedule("0 0/30 * 1/1 * ? *")) //cada 40 min
+					.withSchedule(CronScheduleBuilder.cronSchedule("0 0/40 * 1/1 * ? *")) //cada 40 min
 					.build();
 			
 			// configuracion del Setup the Job and Trigger with Scheduler & schedule jobs
@@ -57,7 +57,7 @@ public class QuartzListener implements ServletContextListener {
 			
 			
 			/*
-			 * Schedule Obtener transacciones de sucursal
+			 * Schedule Obtener transacciones de sucursales
 			 */
 			//Job para Obtener las transacciones de sucursales 			
 			JobDetail jobTx = newJob(RecibirTxPuntosSucursalJob.class).withIdentity("TransaccionAfiliado", "TxGroup").build();
@@ -65,15 +65,13 @@ public class QuartzListener implements ServletContextListener {
 			// Trigger recorrer todas las sucursales y obtener las ultimas transacciones 
 			// de puntos farmanorte
 			Trigger triggerTx = newTrigger().withIdentity("TransaccionAfiliado", "TxGroup")
-					.withSchedule(CronScheduleBuilder.cronSchedule("0 0/5 * 1/1 * ? *")) //cada 30 min
+					.withSchedule(CronScheduleBuilder.cronSchedule("0 0/30 * 1/1 * ? *")) //cada 30 min
 					.build();
 			
 			// configuracion del Setup the Job and Trigger with Scheduler & schedule jobs
 			schTxPuntosF = new StdSchedulerFactory().getScheduler();
 			schTxPuntosF.start();
 			schTxPuntosF.scheduleJob(jobTx, triggerTx);
-			
-			
 			
 			
 			

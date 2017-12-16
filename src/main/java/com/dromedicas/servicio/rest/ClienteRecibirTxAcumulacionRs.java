@@ -94,7 +94,10 @@ public class ClienteRecibirTxAcumulacionRs {
 			} else {//no es 24 horas
 				try {					
 					//evalua si la sucursal esta abierta
-					if ( estaAbierta(sucursal) ) {
+					boolean abierta =  estaAbierta(sucursal) ;
+					System.out.println("Sucursal Abierta: " + abierta);
+					
+					if ( abierta ) {
 						
 						//obtiene las transacciones pendientes por reportar a puntos para 
 						//la sucursal actual asignandolas a un list de transacciones
@@ -337,18 +340,20 @@ public class ClienteRecibirTxAcumulacionRs {
 			System.out.println("URL SERVICIO ACTUALIZAR: " + urlServicioFinal);
 			
 			// Objeto cliente que consume el servicio
-//			Client client = Client.create();
-//			WebResource webResource = client.resource(urlServicioFinal);
-//			
-//			ActualizarTxWrap response = webResource.accept("application/json").get(ActualizarTxWrap.class);
-//			
-//			String status = response.getStatus();
-//			
-//			if( status.equals("sucess")){
-//				
-//			}else{
-//				//si no actualiza debo hacer algo...
-//			}
+			Client client = Client.create();
+			WebResource webResource = client.resource(urlServicioFinal);
+			
+			ActualizarTxWrap response = webResource.accept("application/json").get(ActualizarTxWrap.class);
+			
+			String status = response.getStatus();
+			
+			if( status.equals("sucess")){
+				
+				System.out.println("Transacciones actulizadas en sucursal");
+				
+			}else{
+				//si no actualiza debo hacer algo...
+			}
 			
 		} catch (Exception e) {
 			

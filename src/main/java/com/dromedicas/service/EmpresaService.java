@@ -99,7 +99,7 @@ public class EmpresaService {
 	}
 	
 	
-	public Contrato obtenerUltimoContrato(Empresa instance){		
+	public Contrato obtenerUltimoContrato(Empresa instance){	
 		String queryString = "from Contrato c where current_date between c.fechainicio and c.fechafin "
 				+ "and c.empresa.idempresa =  '" + instance.getIdempresa() +"'" ;
 		Query query = em.createQuery(queryString);

@@ -6,7 +6,7 @@
                 xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
                 template="/WEB-INF/template.xhtml">
 
-    <ui:define name="title">Crear Afiliado</ui:define>
+    <ui:define name="title">Editar Afiliado</ui:define>
 
     <ui:define name="content">
         <h:form id="afiliadoformppal">
@@ -15,8 +15,15 @@
             <div class="ui-fluid">
                 <div class="ui-g">
                     <div class="ui-g-12">
-                        <div class="card">                        
-                            <h1><i class="fa fa-child"></i> Datos del Afiliado</h1>
+                        <div class="card">   
+                        <p:tabView>
+						  <p:tab>
+							<f:facet name="title">
+								<i class="fa fa-child"></i>
+								<h:outputText value=" Datos del Afiliado" />								
+								<!-- <p:graphicImage value="/resources/images/icon.png" /> -->
+							</f:facet>
+							<h1><i class="fa fa-child"></i> Datos del Afiliado</h1>									
 							<p:panelGrid columns="4" id="afiliadoForm"
 								columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
 								layout="grid" styleClass="ui-panelgrid-blank"
@@ -1254,7 +1261,151 @@
 												 process="@this"/>
 															
 							</p:panelGrid>
-							<p:separator style="height:20px"/>						
+							<p:separator style="height:20px"/>	
+							</p:tab> <!-- end tab Datos del Afiliado -->
+							
+							<p:tab>
+								<f:facet name="title">
+									<i class="fa fa-circle" aria-hidden="true"></i>
+									<h:outputText value=" Balance de Puntos" />							
+									
+								</f:facet>
+								<!-- contenido del tab -->								
+								<h1><i class="fa fa-circle" aria-hidden="true"></i> Balance de puntos</h1>		
+								
+								<p:panelGrid columns="4" id="balanceForm"
+								columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+									
+									<p:outputLabel for="p_acumulados" value="Puntos Acumulados" />
+									<p:inputText id="p_acumulados"
+												 readonly="#{facesContext.renderResponse}"  
+										         value="#{afiliadoBeanEdit.balancePuntos.acumuladosnodisponibles}" 
+										         style="text-align:right">
+										         <p:tooltip id="tp_p_acumulados" for="p_acumulados" 
+										value="Suma de todos los puntos acumulados" position="top"/>
+									
+									</p:inputText>
+											
+										         
+									<p:outputLabel for="p_disponibles" value="Disponibles para Redimir" />
+									<p:inputText id="p_disponibles"
+												 readonly="#{facesContext.renderResponse}"  
+										         value="#{afiliadoBeanEdit.balancePuntos.disponiblesaredimir}" 
+										         style="text-align:right">	
+										<p:tooltip id="tp_p_disponibles" for="p_disponibles" 
+										value="Son los puntos disponibles para redimir" position="top"/>
+									</p:inputText>
+								
+									<p:outputLabel for="p_avencer" value="Puntos a Vencer" />
+									<p:inputText id="p_avencer"
+												 readonly="#{facesContext.renderResponse}"  
+										         value="#{afiliadoBeanEdit.balancePuntos.avencer}" 
+										         style="text-align:right">
+									<p:tooltip id="tp_p_avencer" for="p_avencer" 
+										value="Proximos puntos a vencer" position="top"/> 
+									</p:inputText>
+										         
+									<p:outputLabel for="p_fechavencen" value="Proxima Fecha Vencen" />
+									<p:inputText id="p_fechavencen"
+												 readonly="#{facesContext.renderResponse}"  
+										         value="#{afiliadoBeanEdit.balancePuntos.fechavencimiento}" 
+										         style="text-align:right">	
+									<p:tooltip id="tp_p_fechavencen" for="p_fechavencen" 
+										value="Fecha en la que vencen los puntos mas cercanos" position="top"/>
+									</p:inputText>
+										         
+									<p:outputLabel for="p_vencidos" value="Puntos Vencidos" />
+									<p:inputText id="p_vencidos"
+												 readonly="#{facesContext.renderResponse}"  
+										         value="#{afiliadoBeanEdit.balancePuntos.vencidos}" 
+										         style="text-align:right">
+									<p:tooltip id="tp_p_vencidos" for="p_vencidos" 
+										value="Puntos vencidos que no fueron redimidos" position="top"/>
+									</p:inputText> 
+										         
+									<p:outputLabel for="p_redimidos" value="Puntos Redimidos" />
+									<p:inputText id="p_redimidos"
+												 readonly="#{facesContext.renderResponse}"  
+										         value="#{afiliadoBeanEdit.balancePuntos.redimidos}" 
+										         style="text-align:right">
+									<p:tooltip id="tp_p_redimidos" for="p_redimidos" 
+										value="Suma de todos los puntos redimidos y devoluciones en compras" position="top"/>
+									</p:inputText> 
+								</p:panelGrid>
+								
+								<p:separator style="height:5px"/>
+								<p:panelGrid columns="6" id="buttonsbalance"
+								columnClasses="ui-grid-col-2,"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">	
+								
+								<p:commandButton value="Cancelar" 
+												 id="cancelarBalanceid"
+												 action="#{afiliadoBeanEdit.cancelarAfiliado()}"
+												 process="@this"/>	
+								</p:panelGrid>
+								
+								<p:separator style="height:10px"/>	
+									<p:dataTable id="balancedatail" var="tx" value="#{afiliadoBeanEdit.afiliadoSelected.transaccions}" 
+	                        			rowKey="#{tx.idtransaccion}" selectionMode="single"  
+	                        			emptyMessage="Registros no encontrados :-(" >
+	                        			
+										<f:facet name="header">Detalle de Transacciones - #{afiliadoBeanEdit.afiliadoSelected.transaccions.size()}</f:facet>
+										
+										<p:columnGroup type="header">
+								            <p:row>
+								                <p:column headerText="Fecha Transaccion" />
+								                <p:column headerText="Sucursal" />
+								                <p:column headerText="Nro. Factura"/>
+								                <p:column headerText="Tipo Transaccion"/>
+								                <p:column headerText="Acumulados"/>
+								                <p:column headerText="Redimidos - Devolucion"/>
+								            </p:row>
+								         </p:columnGroup>
+										
+										<p:column>
+											<h:outputText value="#{tx.fechatransaccion}" >
+												<f:convertDateTime pattern = "dd/MM/yyyy" /> 
+											</h:outputText>
+										</p:column>
+										<p:column>
+											<h:outputText value="#{tx.sucursal.nombreSucursal}" /> 
+										</p:column>
+										<p:column >
+											<h:outputText value="#{tx.nrofactura}" /> 
+										</p:column>
+										<p:column >
+											<div class="tipotx">
+											<h:outputText value="#{tx.tipotransaccion.descripcion.equals('INSCRIPCION AFILIADO')? 'INSCRIPCION' : 
+											tx.tipotransaccion.descripcion}" /> 
+											</div>
+										</p:column>
+										<p:column>
+											<div class="celdaDerecha">
+												<h:outputText value="#{tx.tipotransaccion.idtipotransaccion == 1 || tx.tipotransaccion.idtipotransaccion == 4 ? tx.puntostransaccion : ''}"/> 
+											</div>
+										</p:column>
+										<p:column>
+											<div class="celdaDerecha">
+												<h:outputText value="#{tx.tipotransaccion.idtipotransaccion == 2 || tx.tipotransaccion.idtipotransaccion == 3? tx.puntostransaccion*-1 : ''}"/> 
+											</div>
+										</p:column>
+										
+										<p:columnGroup type="footer">
+								            <p:row>
+								                <p:column colspan="4" style="text-align:right" footerText="Totales..:" />
+               									<p:column footerText="#{afiliadoBeanEdit.balancePuntos.acumulados}" style="text-align: right!important;"/>
+               									<p:column footerText="#{afiliadoBeanEdit.balancePuntos.redimidos * -1}" style="text-align: right!important;"/> 
+								            </p:row>
+								        </p:columnGroup>										 
+									</p:dataTable>
+									
+									
+									
+							</p:tab><!-- end tab Banlance de puntos -->
+						  </p:tabView>					
 						</div>
                     </div>
                 </div>

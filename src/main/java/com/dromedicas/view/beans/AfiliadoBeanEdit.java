@@ -15,6 +15,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.Flash;
 
 import com.dromedicas.domain.Afiliado;
+import com.dromedicas.domain.BalancePuntos;
 import com.dromedicas.domain.Pais;
 import com.dromedicas.domain.Sucursal;
 import com.dromedicas.domain.Tipodocumento;
@@ -72,6 +73,9 @@ public class AfiliadoBeanEdit implements Serializable{
 	@EJB
 	private PaisService paisService;
 	
+	@EJB
+	private OperacionPuntosService puntosService;
+	
 	@ManagedProperty(value = "#{loginService}")
 	private LoginBeanService loginBean;
 		
@@ -90,6 +94,8 @@ public class AfiliadoBeanEdit implements Serializable{
 	private boolean emailValid = true; 
 	//varialbe para gui par
 	private boolean emailValidated;
+	
+	private BalancePuntos balancePuntos;
 	
 	public AfiliadoBeanEdit(){
 		
@@ -212,6 +218,14 @@ public class AfiliadoBeanEdit implements Serializable{
 
 	public void setNacionalidad(Pais nacionalidad) {
 		this.nacionalidad = nacionalidad;
+	}
+	
+	public BalancePuntos getBalancePuntos() {
+		return balancePuntos;
+	}
+
+	public void setBalancePuntos(BalancePuntos balancePuntos) {
+		this.balancePuntos = balancePuntos;
 	}
 
 	//metodos de control de la interfaz	
@@ -345,7 +359,11 @@ public class AfiliadoBeanEdit implements Serializable{
 		this.emailValidated = this.afiliadoSelected.getEmailvalidado() == 1 ? true : false;
 		//variable de control para validacion de correo se usa para aplicar el css en la vista
 		this.emailValid = true;		
-		this.nacionalidad = this.paisService.obtenerPaisPorNombre(this.afiliadoSelected.getNacionalidad());		
+		this.nacionalidad = this.paisService.obtenerPaisPorNombre(this.afiliadoSelected.getNacionalidad());	
+		
+		//Carga de informacion del Balance de Puntos
+		System.out.println("Afiliado Seleccionado: " + afiliadoSelected.getDocumento());		
+		this.balancePuntos = this.puntosService.consultaPuntos(afiliadoSelected);
 		return "afiliadoedit?faces-redirect=true";
 	}
 	
@@ -442,6 +460,7 @@ public class AfiliadoBeanEdit implements Serializable{
 	
 	
 	public String cancelarAfiliado(){
+		//FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("afiliadoBeanEdit");
 		return "afiliadolist?faces-redirect=true";
 	}
 	
@@ -449,6 +468,11 @@ public class AfiliadoBeanEdit implements Serializable{
 		return "afiliadolist?faces-redirect=true";
 	}
 		
+	
+	/**
+	 * INFORMACION DEL BALANCE DE PUNTOS
+	 */
 		
+	
 	
 }

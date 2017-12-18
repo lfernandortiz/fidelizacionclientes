@@ -3541,3 +3541,13 @@ hr{
    
     padding: 2px 4px 2px 4px!important;
 }
+
+/*Css para el balance de afiliado*/
+
+.celdaDerecha{
+	text-align: right!important;
+}
+
+.tipotx{
+	font-size: 0.85em!important;
+}

@@ -35,7 +35,7 @@ public class QuartzListener implements ServletContextListener {
 
 	@Override
 	public void contextInitialized(ServletContextEvent servletContext) {
-		
+
 		try {
 			/*
 			 * Schedule Notificaciones compra - acumulacion de puntos
@@ -84,6 +84,7 @@ public class QuartzListener implements ServletContextListener {
 		} catch (SchedulerException e) {
 			e.printStackTrace();
 		}
+		
 	}
 
 	@Override

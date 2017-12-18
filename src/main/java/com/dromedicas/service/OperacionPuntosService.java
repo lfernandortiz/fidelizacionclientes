@@ -330,6 +330,7 @@ public class OperacionPuntosService {
 	 * @return
 	 */
 	public BalancePuntos consultaPuntos( Afiliado afiliado){
+				
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		
 		BalancePuntos balance = new BalancePuntos();

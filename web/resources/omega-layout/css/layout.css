@@ -2024,6 +2024,13 @@ html {
   box-sizing: border-box;
   background-repeat: no-repeat;
   background-attachment: fixed; 
+ 
+ 
+
+background: #bdc3c7;  /* fallback for old browsers */
+background: -webkit-linear-gradient(to top, #052c52, #bdc3c7);  /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to top, #052c52, #bdc3c7); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
   
   }
   
@@ -3551,3 +3558,13 @@ hr{
 .tipotx{
 	font-size: 0.85em!important;
 }
+
+.titulonombrebalance{	
+	padding-left: 10px!important;
+}
+
+/*css para botones del cuadro de dialogo de sms*/
+.buttonssms .ui-grid-row{
+	justify-content: flex-end!important;	
+}
+

@@ -1,5 +1,10 @@
 package com.dromedicas.servicio.rest;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ws.rs.GET;
@@ -19,6 +24,7 @@ import com.dromedicas.service.OperacionPuntosService;
 import com.dromedicas.service.SucursalService;
 import com.dromedicas.service.TipoTransaccionService;
 import com.dromedicas.service.TransaccionService;
+import com.dromedicas.smsservice.SMSService;
 
 /**
  * Clase que implementa JAX-RS para ofrecer 
@@ -46,6 +52,9 @@ public class PuntosServiceRs {
 	
 	@EJB
 	private OperacionPuntosService calculoService;
+	
+	@EJB
+	private SMSService smsService;
 	
 	
 	//Grabar transaccion de ACUMULACION puntos - Devolviendo balance de puntos
@@ -199,7 +208,16 @@ public class PuntosServiceRs {
 							responseObject.setCode(200);
 							responseObject.setMessage("Transaccion exitosa");
 							responseObject.setBalance(balance);
-							
+													
+							//aca enviar notifiacacion SMS al afiliado sobre la redencion
+							if(  !("").equals(afiliado.getCelular()) ){
+								NumberFormat nf = new DecimalFormat("#,###");
+								String mensaje = "Puntos Farmanorte le informa que has REDIMIDO "+nf.format(puntosRedimidos)+" puntos "
+										+ "en la sucursal "+ sucursal.getNombreSucursal()+"  "+ 
+										new SimpleDateFormat("dd/MM/YY HH:mm").format(new Date()) + ".";
+								
+								this.smsService.enviarSMSDirecto(afiliado.getCelular(), mensaje, "redencion");
+							}
 							return Response.status(200).entity(responseObject).build();
 						}else{							
 							responseObject.setCode(400);

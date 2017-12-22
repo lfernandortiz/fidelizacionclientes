@@ -72,11 +72,24 @@ public class JavaMailService {
 		this.config = new Properties();
 		try {
 			//esto se debe manejar a nivel de base de datos
-			FileInputStream entrada = new FileInputStream( "C:/FarmapuntosEmail/emailconexion.properties" );
+			//FileInputStream entrada = new FileInputStream( "emailconexion.properties" );
+			
+			ClassLoader objClassLoader = null;
+			objClassLoader = getClass().getClassLoader();
+			FileInputStream entrada = new FileInputStream(objClassLoader.getResource("emailconexion.properties").getFile());
+         
 			this.config.load(entrada); 
 		} catch (IOException e) {
 			e.printStackTrace();
-		}		
+		}	
+		
+		Set<Object> claves = config.keySet();
+		
+		for (Object clave : claves) {
+			System.out.printf("%s\t\t\t\t%s\n", clave, config.getProperty((String) clave));
+		}
+		
+		
 		username = config.getProperty(MAIL_USERNAME);
 		password = config.getProperty(MAIL_PASSWORD);
 		serverSMTPHost = config.getProperty(MAIL_SMTP_HOST);

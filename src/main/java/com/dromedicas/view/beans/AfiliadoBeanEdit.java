@@ -472,7 +472,10 @@ public class AfiliadoBeanEdit implements Serializable{
 	/**
 	 * INFORMACION DEL BALANCE DE PUNTOS
 	 */
-		
+	
+	public String nombrePropioAfiliado(String nombre){
+		return this.regex.nombrePropio(nombre, true);
+	}
 	
 	
 }

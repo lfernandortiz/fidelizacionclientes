@@ -14,7 +14,7 @@
 		</div> -->
 		<h:form id="formppal">
         	<p:messages id="globalMessagex" showDetail="true" closable="true" />
-            <div class="ui-fluid">
+			<div class="ui-fluid">
                 <div class="ui-g">
                     <div class="ui-g-12">
                         <div class="card">                        
@@ -82,6 +82,7 @@
 													  id="editarrowid"
 													  action="#{afiliadoBeanEdit.editarAfiliado()}">
 										<f:setPropertyActionListener value="#{af}" target="#{afiliadoBeanEdit.afiliadoSelected}" /> 
+										
 									</p:commandButton>	
 								</p:column>		
 							</p:dataTable>	
@@ -91,6 +92,7 @@
             </div>  <!-- end ui-fluid -->
             </h:form>
             
-    	
+            <h:outputScript target="body">        	
+            </h:outputScript>     
     </ui:define>
 </ui:composition>

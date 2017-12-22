@@ -1,0 +1,122 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">Editar / Crear SMS Plantillas</ui:define>	
+    <ui:define name="content">
+		<div class="message">
+			<h:form>
+				<p:messages id="globalMessagex" showDetail="true" closable="true" />
+			</h:form>
+		</div>
+		<h:form id="formppal">
+        
+            <div class="ui-fluid">
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <div class="card">                        
+                            <h1>Plantillas SMS's</h1>
+							<p:fieldset legend="Buscar Plantilla por:" toggleable="true" toggleSpeed="500">
+                            <p:panelGrid columns="4" id="smsForm"
+								columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+								
+								<p:outputLabel for="criterioid" value="Descripcion plantilla" />
+								<p:inputText id="criterioid" value=""/>
+								
+							</p:panelGrid>
+							<p:spacer height="10px"/>
+							<p:panelGrid columns="6" id="buttons"
+								columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">								
+								<p:commandButton value="Buscar" 
+									id="buscarbutton"
+									actionListener="#{plantillaSmsBeanList.buscarPlantillaSMS()}"
+									update="smsDetail"/>
+								<p:commandButton value="Cancelar" id="cancelarbutton"
+									action="#{plantillaSmsBeanList.cancelarPlantillaSmsList()}"
+									update=":formppal:smsDetail, :formppal:smsForm"/>
+								<p:commandButton value="Crear" id="crearbutton"
+												 action="#{plantillaSmsBeanList.crearPlantillaSMS()}" />
+							</p:panelGrid>						
+                        	</p:fieldset>
+                        	
+                        	<p:spacer height="40px"/>
+                        	<!-- tabla detalle sucursal -->
+                        	<p:dataTable id="smsDetail" var="sms" value="#{plantillaSmsBeanList.smsPlantillaList}" 
+                        			rowKey="" selectionMode="single"  paginator="true" rows="20">
+                        			
+								<f:facet name="header">Plantillas SMS</f:facet>
+								
+								<p:column headerText="Nombre Plantilla">
+									<h:outputText value="#{sms.descripcion}" /> 
+								</p:column>
+								<p:column headerText="Contenido SMS">
+									<h:outputText value="#{sms.smscontenido}" /> 
+								</p:column>														
+								
+								<p:column headerText="Editar" style="width:32px;text-align: center">
+									<p:commandButton  icon="fa fa-pencil"
+													  title="Editar "
+													  id="editarrowid"
+													  update=":formppal:smsDetailForm"
+													  oncomplete="PF('smsDialog').show()">
+										<f:setPropertyActionListener value="#{sms}" target="#{plantillaSmsBeanList.smsPlantillaSelected}" /> 
+									</p:commandButton>
+									
+								</p:column>		
+							</p:dataTable>	
+							
+						</div> <!-- end card -->
+                    </div> <!-- end ui-g-12 -->
+                </div> <!-- end ui-g -->
+            </div>  <!-- end ui-fluid -->
+
+			<p:dialog header="" widgetVar="smsDialog" modal="true"
+				showEffect="fade" hideEffect="fade" resizable="false" style="min-width: 35em!important;">
+				<div class="ui-fluid">
+                	<div class="ui-g">
+                		<div class="ui-g-12">
+						<h1><i class="fa fa-commenting" aria-hidden="true"></i> Editar SMS</h1>
+						<p:spacer height="10px"/>
+						<p:panelGrid columns="1" id="smsDetailForm"
+									 columnClasses="ui-grid-col-12,ui-grid-col-12"
+									 layout="grid" styleClass="ui-panelgrid-blank"
+									 style="border:0px none; background-color:transparent;">
+		                   
+							<p:outputLabel for="descripid" value="Descripcion:" />
+							<p:inputText id="descripid"  value="#{plantillaSmsBeanList.}" required="true"/>
+									
+							<p:outputLabel for="contesmsid" value="Mensaje SMS" />
+							<p:inputTextarea rows="5" placeholder="Mensaje SMS"
+								id="contesmsid" value="#{plantillaSmsBeanList.smsPlantillaSelected.smscontenido}" required="true"/>
+						</p:panelGrid>	
+						<p:spacer height="10px"/>
+							<div class="buttonssms">
+								<p:panelGrid columns="4" id="buttonsedit"
+								columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-3,ui-grid-col-3"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none;  background-color:transparent; ">	
+									
+									<p:commandButton value="Cancelar" id="cancelareditid" 
+									action="#{plantillaSmsBeanList.cancelarPlantillaSmsList()}"/>
+									<p:commandButton value="Actualizar" id="creareditid" 
+												 action="#{plantillaSmsBeanList.crearPlantillaSMS()}" />								
+																
+							</p:panelGrid>
+							</div>
+						</div> <!-- end ui-g-12 -->
+              	  </div> <!-- end ui-g -->
+            	</div>  <!-- end ui-fluid -->
+			</p:dialog>
+
+		</h:form>
+            
+    	
+    </ui:define>
+</ui:composition>

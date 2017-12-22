@@ -1,135 +1,119 @@
 package com.dromedicas.test;
 
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
+import java.io.File;
 
-import com.vdurmont.emoji.Emoji;
-import com.vdurmont.emoji.EmojiManager;
-import com.vdurmont.emoji.EmojiParser;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+
+import com.dromedicas.mailservice.CustomMimeMessage;
+import com.dromedicas.mailservice.JavaMailService;
+import com.dromedicas.util.EncodingUtil;
 
 public class Test {
-	
-	static EntityManager em = null;
-	static EntityTransaction tx = null;
-	static EntityManagerFactory emf = null;
-	
-	
+
 	public static void main(String[] args) {
-
 		try {
-//			String str = "An :grinning:awesome :smiley:string &#128516;with a few :wink:emojis!";
-//			String resultDecimal = EmojiParser.parseToHtmlDecimal(str);
-//			System.out.println(resultDecimal);
-			// Prints:+
+			//enviarEmail();
+			leerMensajes();		
 			
-			
-			
-			try {
-				String subjectEmojiRaw = ":large_blue_circle: Confirmacion de suscripcion :memo:";
-				String subjectEmoji = EmojiParser.parseToUnicode(subjectEmojiRaw);	
-				System.out.println("----------->" + subjectEmoji);
-				
-				subjectEmoji = "Mensaje de pruba";
-				// Thread.sleep(5500);
-				String query = String.format("cliente=%s&api=%s&numero=%s&sms=%s", URLEncoder.encode("10010333", "UTF-8"),
-						URLEncoder.encode("4z1MlW6lsQHKiJ6x909E7zS8Rp5PRF", "UTF-8"),
-						URLEncoder.encode( "3102097474", "UTF-8"), 
-						URLEncoder.encode( subjectEmoji, "UTF-8"));
-
-				URL url = new URL("https://ws.hablame.co/sms_http.php" + "?" + query);
-				System.out.println(url);
-				HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-				conn.setRequestMethod("GET");
-				Map<String, List<String>> header = conn.getHeaderFields();
-				int responseCode = conn.getResponseCode();
-				System.out.println("Headers : " + header);
-				System.out.println("Respuesta : " + responseCode);
-				
-
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-		
-//			Key k = MacProvider.generateKey();
-//			String k = "CSK395";
-//			String jwt = Jwts.builder()
-//			 .setSubject("PuntosFarmanorte")
-//			 .signWith(SignatureAlgorithm.HS256, k)
-//			 .setIssuedAt(new Date(t1))
-//			 .setExpiration(new Date(t1 + 900000))
-//			 .claim("email", "cliente@yahoo.com")
-//			 .compact();
-//		
-//			System.out.println("K: " + k.toString());
-			
-//			JsonObject json ;
-//			json = Json.createObjectBuilder().add("JWT", compactJws).build();
-//			
-			
-			
-			
-//			Logger log = Logger.getLogger("TestPuntosFarmanorte");
-//
-//			log.debug("Preparando contexto de persistencia");
-//			
-//			emf = Persistence.createEntityManagerFactory("PuntosFPU");
-//			
-//			em = emf.createEntityManager();
-//
-//			log.debug("Iniciando test Persona Entity con JPA");
-//			@SuppressWarnings("unused")
-//			EntityTransaction tx = em.getTransaction();
-//
-////			tx.begin();
-//
-////			Empresa emp = new Empresa();
-////			emp.setNit("900265730-0");
-////			emp.setNombreEmpresa("Dromedicas del Oriente SAS");
-////			emp.setDireccion("Avenida 7A # 0BN - 36 Sevilla");
-////			emp.setTelefono("5781240");
-////			emp.setEmailNotificaciones("info@dromedicas.com.co");
-//			
-//			
-//			@SuppressWarnings("unchecked")
-//			List<Empresa> empresaList = em.createNamedQuery("Empresa.findAll").getResultList();
-//			
-//			for(Empresa e: empresaList )
-//				System.out.println(e);
-//
-////			log.debug("Objeto a persistir: " + emp);
-////
-////			em.persist(emp);
-////			
-//	//		tx.commit();
-////
-////			log.debug("Objeto persistido: " + emp);
-//
-//			log.debug("Fin test Persona Entity con JPA");
 		} catch (Exception e) {
+			// TODO: handle exception
+		}		
+	}
+		
+	public static void enviarEmail(){
+		//Objeto de servicio Email
+		JavaMailService  service = new JavaMailService();
+		//Clase generica para componeer email
+		CustomMimeMessage message;
+		String messageId = EncodingUtil.generateUUID();
+		
+		try {
+			//Html personalizado para el mensaje
+			File inputHtml = new File(
+					"C:/FarmapuntosEmail/basic.html");
+			Document doc = Jsoup.parse(inputHtml, "UTF-8");
+			
+			//Parametros del mensaje
+			message = new CustomMimeMessage(service.createUserMailSession(), messageId+"@"+service.getServerSMTPHost() );
+			message.setOrigen("pruebassistemas@dromedicas.com.co");
+			message.setText(doc.html());
+			message.setDestino("sistemas2@dromedicas.com.co");
+			message.setSubject("Mensaje Farmapuntos");	
+			
+			//envio del mensajse		
+			System.out.println("Enviando");
+			service.sendEmail(message.buildText("HTML"));	
+			
+		} catch (Exception e) {
+			
 			e.printStackTrace();
 		}
 
 	}
 
+	
+	public static void leerMensajes(){
+		try {
+			//Clase de servico para operaciones con el correo
+			//JavaMailService  service = new JavaMailService();
+			String str = "Mensaje de prueba de caracteres";
+		    int counter = 0;
+		    for (int i = 0; i < str.length(); i++) {
+		    	
+		    	System.out.println(">>"+ str.charAt(i) + "<<");
+		    	
+		        counter++;
+		        
+		    }
+		    System.out.println(counter + " letters.");
+			
+			
+			
+			//List<Message> inboxM = service.getNewMessages();//Mensajes recibidos
+			
+			//ArrayList<Message> archivo = new ArrayList<Message>();//coleccion de mensajes errados
+			
+			//System.out.println("tamanio:" + inboxM.size());
+			
+			
+			String emailAddres = null;
+			String messageId = null;
+			
+//			System.out.println(service.isFailedMessage(inboxM.get(inboxM.size()-1)));
+//			emailAddres = service.getEmailFailed(inboxM.get(inboxM.size()-1));			
+//			messageId = service.messageId(inboxM.get(inboxM.size()-1));
+//			System.out.println("Email Fallido>>>\t"+emailAddres+" Tocken>>>\t" + messageId);
+			
+			
+//			for(Message m: inboxM ){		
+//				//metodo perdicado que determina si el mensaje es fallido
+//				if(service.isFailedMessage(m)){		
+//					
+//					//metodo que devuelve la direccion email
+//					emailAddres = service.getEmailFailed(m);
+//					//metodo que devuelve el message-id
+//					messageId = service.messageId(m);
+//					//añado el mensaje a la coleecion de leidos					
+//					archivo.add(m);
+//					
+//					//copio el mensaje a la carperta de leidos					
+//					service.copiarMensajes(service.getMailInbox(), service.getAchivedFolder(), 
+//							archivo.toArray(new Message[0]) );
+//					//borro del inbox el mensaje actual
+//					
+//					service.deleteMessage(m);
+//					System.out.println("Email Fallido>>>\t"+emailAddres+" Tocken>>>\t" + messageId);
+//				}
+//			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	
+	
 }

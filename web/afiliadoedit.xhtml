@@ -1271,7 +1271,10 @@
 									
 								</f:facet>
 								<!-- contenido del tab -->								
-								<h1><i class="fa fa-circle" aria-hidden="true"></i> Balance de puntos</h1>		
+								<h1><i class="fa fa-circle" aria-hidden="true"></i> Balance de puntos</h1>
+								<h3 class="titulonombrebalance">
+									#{afiliadoBeanEdit.nombrePropioAfiliado(afiliadoBeanEdit.afiliadoSelected.nombres.concat(' ').concat(afiliadoBeanEdit.afiliadoSelected.apellidos))}
+								</h3>
 								
 								<p:panelGrid columns="4" id="balanceForm"
 								columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
@@ -1295,7 +1298,7 @@
 										         value="#{afiliadoBeanEdit.balancePuntos.disponiblesaredimir}" 
 										         style="text-align:right">	
 										<p:tooltip id="tp_p_disponibles" for="p_disponibles" 
-										value="Son los puntos disponibles para redimir" position="top"/>
+										value="Puntos disponibles para redimir" position="top"/>
 									</p:inputText>
 								
 									<p:outputLabel for="p_avencer" value="Puntos a Vencer" />
@@ -1344,7 +1347,28 @@
 								<p:commandButton value="Cancelar" 
 												 id="cancelarBalanceid"
 												 action="#{afiliadoBeanEdit.cancelarAfiliado()}"
-												 process="@this"/>	
+												 process="@this"/>
+								<!-- 				 
+								<p:commandButton value="Email" 
+												 id="emailpdf"
+												 icon="fa fa-envelope-o"
+												 action="#{afiliadoBeanEdit.cancelarAfiliado()}"
+												 process="@this">
+									<p:tooltip id="tp_emailpdf" for="emailpdf" 
+										value="Si el afiliado tiene email, le envia un balance de sus puntos" position="top"/>
+								</p:commandButton>
+								
+								<p:commandButton value="PDF" 
+												 id="dowloadpdf"
+												 icon="fa fa-file-pdf-o"
+												 action="#{afiliadoBeanEdit.cancelarAfiliado()}"
+												 process="@this">
+									<p:tooltip id="tp_dowloadpdf" for="dowloadpdf" 
+										value="Genera un PDF con el balance de los puntos" position="top"/>
+								</p:commandButton>
+								-->
+								
+												 	
 								</p:panelGrid>
 								
 								<p:separator style="height:10px"/>	
@@ -1367,7 +1391,7 @@
 										
 										<p:column>
 											<h:outputText value="#{tx.fechatransaccion}" >
-												<f:convertDateTime pattern = "dd/MM/yyyy" /> 
+												<f:convertDateTime pattern = "dd/MM/yyyy HH:mm" /> 
 											</h:outputText>
 										</p:column>
 										<p:column>
@@ -1410,6 +1434,6 @@
                     </div>
                 </div>
             </div>          
-        </h:form>        
+        </h:form>   
     </ui:define>   
 </ui:composition>

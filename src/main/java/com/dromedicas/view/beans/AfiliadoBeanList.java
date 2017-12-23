@@ -9,7 +9,6 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.context.Flash;
 
 import org.primefaces.component.datatable.DataTable;
 
@@ -23,6 +22,7 @@ public class AfiliadoBeanList {
 	/**
 	 * 
 	 */
+	@SuppressWarnings("unused")
 	private static final long serialVersionUID = 1L;
 	
 	@EJB

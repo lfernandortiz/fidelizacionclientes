@@ -4,6 +4,8 @@ import java.text.Normalizer;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.ejb.Stateless;
 import javax.faces.bean.ManagedBean;
@@ -167,6 +169,25 @@ public class ExpresionesRegulares {
 	        age--;
 	    }
 	    return age;
+	}
+	
+	
+	/**
+	 * Reemplaza las variables "${[a-z] [0-9]}" por espacio vacio 
+	 * para dar la longitud del mensaje sn las variables
+	 * @param mensaje
+	 * @return
+	 */
+	@SuppressWarnings("unused")
+	private  String reemplazaMensaje(String mensaje, String variable, String valor ){
+		Pattern p = Pattern.compile("(\\$\\{.*"+variable+"?\\})");
+		 Matcher m = p.matcher(mensaje);		 
+		 StringBuffer sb = new StringBuffer();
+		 while (m.find()) {
+		     m.appendReplacement(sb, valor);
+		 }
+		 m.appendTail(sb);
+		 return sb.toString();
 	}
 
 }

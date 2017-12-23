@@ -1,13 +1,23 @@
 package com.dromedicas.domain;
 
 import java.io.Serializable;
-import javax.persistence.*;
+
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 
 
 /**
  * The persistent class for the smsplantilla database table.
  * 
  */
+@ManagedBean(name="smsPlantilla")
+@ViewScoped
 @Entity
 @NamedQueries({@NamedQuery(name="Smsplantilla.findAll", query="SELECT s FROM Smsplantilla s")})
 public class Smsplantilla implements Serializable {

@@ -3,6 +3,7 @@ package com.dromedicas.domain;
 import java.io.Serializable;
 
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
 import javax.faces.bean.ViewScoped;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,7 +18,7 @@ import javax.persistence.NamedQuery;
  * 
  */
 @ManagedBean(name="smsPlantilla")
-@ViewScoped
+@ViewScoped 
 @Entity
 @NamedQueries({@NamedQuery(name="Smsplantilla.findAll", query="SELECT s FROM Smsplantilla s")})
 public class Smsplantilla implements Serializable {

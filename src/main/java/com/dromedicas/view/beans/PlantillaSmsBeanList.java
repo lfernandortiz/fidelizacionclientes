@@ -132,15 +132,20 @@ public class PlantillaSmsBeanList implements Serializable {
 
 		// Consulta nuevamente el List
 		this.smsPlantillaList = this.smsService.findAllSmsplantillas();
-
 	}
-	
 	
 	
 	
 	/*
 	 * Metodos del Edit
 	 */
+	
+	public void cancelarCrearSMS(){
+		this.smsPlantillaSelected = new Smsplantilla();
+		this.setCriterioBusqueda("");
+		this.setLongiMensajeSMS("");
+		this.restartDatatable();
+	}
 	
 	public void crearPlantillaSMS(){
 		
@@ -164,6 +169,8 @@ public class PlantillaSmsBeanList implements Serializable {
 			//como se mantiene la misma lista se manda a resetear el datatable del list
 			this.restartDatatable();
 			
+			this.setLongiMensajeSMS("");
+			
 			
 		} catch (Exception e) {
 			FacesContext.getCurrentInstance().addMessage("globalMessagex", new FacesMessage(FacesMessage.SEVERITY_FATAL,
@@ -172,30 +179,7 @@ public class PlantillaSmsBeanList implements Serializable {
 		
 	}
 	
-	
-	
-	public void editarPlantillaSMS(){
-		System.out.println("Contenido SMS: " + this.smsPlantillaSelected.getSmscontenido());
-	}
-	
-	
-	
-	
-	
-	public void creaPlantillaSMS(){				
-		//RequestContext context = RequestContext.getCurrentInstance();
-		//context.execute("PF('myDialogVar').show();");
-		//RequestContext.execute("dialogWidgetVar.hide()");
-	}
-	
-	public void cancelarCrearSMS(){
-		this.smsPlantillaSelected.setDescripcion("");
-		this.smsPlantillaSelected.setSmscontenido("");
-		this.setLongiMensajeSMS("");
-	}
-	
-	
-	
+		
 	public void analizaSMS(){
 		// La longitud maxima de caracteres a enviar por mensaje SMS es de 160 caracteres
 		// segun el proveedor del servicio.
@@ -212,16 +196,24 @@ public class PlantillaSmsBeanList implements Serializable {
 	
 	
 	public void actualziarPlantillaSMS() {
+		
+		this.smsService.updateSmsplantilla(smsPlantillaSelected);
 
 		this.smsPlantillaSelected = new Smsplantilla();
-		// Reset DataTable Object (reestablecer la paginacion)
-		DataTable dataTable = (DataTable) FacesContext.getCurrentInstance().getViewRoot()
-				.findComponent("formppal:smsDetail");
-		dataTable.reset();
-
-		// Consulta nuevamente el List
-		this.smsPlantillaList = this.smsService.findAllSmsplantillas();
-
+		
+		this.restartDatatable();
+		
+		//cierra el cuado de dialogo
+		RequestContext.getCurrentInstance().execute("PF('smsDialogCrear').hide();");
+		
+		//Mensaje de confirmacion en el list
+		FacesContext.getCurrentInstance().addMessage("globalMessagex", new FacesMessage(FacesMessage.SEVERITY_INFO,
+				"Actualizacion Exitosa!", "Plantilla SMS ACTUALIZADA correctamente"));
+		
+		//como se mantiene la misma lista se manda a resetear el datatable del list
+		this.restartDatatable();
+		
+		this.setLongiMensajeSMS("");
 	}
 	
 	

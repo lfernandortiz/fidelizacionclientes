@@ -78,17 +78,14 @@
 				<div class="ui-fluid">
 					<div class="ui-g">
 						<div class="ui-g-12">
-						
-							Crear - #{plantillaSmsBeanList.smsPlantillaSelected.idsmsplantilla == 0}  -  #{plantillaSmsBeanList.smsPlantillaSelected.idsmsplantilla}
-							<br />
-							Editar - #{plantillaSmsBeanList.smsPlantillaSelected.idsmsplantilla != 0} -  #{plantillaSmsBeanList.smsPlantillaSelected.descripcion}
 							
-							<ui:fragment rendered="#{plantillaSmsBeanList.smsPlantillaSelected.idsmsplantilla == 0}">
+							<ui:fragment rendered="#{plantillaSmsBeanList.smsPlantillaSelected.idsmsplantilla == 0 ||
+							plantillaSmsBeanList.smsPlantillaSelected.idsmsplantilla == null}">
 								<h1>
 									<i class="fa fa-commenting-o" aria-hidden="true"></i> Crear Nueva Plantilla SMS
 								</h1>
 							</ui:fragment>
-							<ui:fragment rendered="#{plantillaSmsBeanList.smsPlantillaSelected.idsmsplantilla != 0}">
+							<ui:fragment rendered="#{plantillaSmsBeanList.smsPlantillaSelected.idsmsplantilla > 0}">
 								<h1>
 									<i class="fa fa-commenting" aria-hidden="true"></i> Editar Plantilla SMS
 								</h1>
@@ -122,22 +119,23 @@
 									<p:commandButton value="Cancelar" 
 													 id="cancelarcrearid" 
 													 oncomplete="PF('smsDialogCrear').hide()"
-													 update="formppal smsDetailFormCrear" 
+													 update="formppal smsDetailFormCrear smsDetail dialogsms" 
 													 action="#{plantillaSmsBeanList.cancelarCrearSMS()}" />
 									
 									<p:commandButton value="Crear" 
 													 id="crearsmsid" 
-													 rendered="#{plantillaSmsBeanList.smsPlantillaSelected.idsmsplantilla == 0}"
+													 rendered="#{plantillaSmsBeanList.smsPlantillaSelected.idsmsplantilla == 0 ||
+																 plantillaSmsBeanList.smsPlantillaSelected.idsmsplantilla == null}"
 													 styleClass="navy-button"
-													 update="smsDetailFormCrear smsDetail globalMessagex"
+													 update="smsDetailFormCrear smsDetail globalMessagex dialogsms"
 													 action="#{plantillaSmsBeanList.crearPlantillaSMS()}" />
 									
 									
 									<p:commandButton value="Actualizar" 
 													 id="updatesmsid" 
-													 rendered="#{plantillaSmsBeanList.smsPlantillaSelected.idsmsplantilla != 0}"
+													 rendered="#{plantillaSmsBeanList.smsPlantillaSelected.idsmsplantilla > 0}"
 													 styleClass="navy-button"
-													 update="smsDetailFormCrear smsDetail"
+													 update="smsDetailFormCrear smsDetail globalMessagex dialogsms"
 													 action="#{plantillaSmsBeanList.actualziarPlantillaSMS()}"/>
 									
 									

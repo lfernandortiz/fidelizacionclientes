@@ -84,7 +84,7 @@ public class AfiliadoBeanList {
 			this.afiliadoList = afiliadoService.findAllAfiliadosMenor();		
 			this.totalAfiliados = afiliadoService.totalAfiliados();
 		}else{
-			this.afiliadoList = afiliadoService.bucarAfiliadoByFields(this.valorABuscar);
+			this.afiliadoList = afiliadoService.bucarAfiliadoByFields(this.valorABuscar.replace("'", ""));
 			this.totalAfiliados = this.afiliadoList.size();
 		}
 		

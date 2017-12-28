@@ -4,6 +4,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -17,14 +18,17 @@ import javax.ws.rs.core.Response.Status;
 
 import com.dromedicas.domain.Afiliado;
 import com.dromedicas.domain.BalancePuntos;
+import com.dromedicas.domain.Smsplantilla;
 import com.dromedicas.domain.Sucursal;
 import com.dromedicas.domain.Transaccion;
 import com.dromedicas.service.AfiliadoService;
 import com.dromedicas.service.OperacionPuntosService;
+import com.dromedicas.service.SmsPlantillaService;
 import com.dromedicas.service.SucursalService;
 import com.dromedicas.service.TipoTransaccionService;
 import com.dromedicas.service.TransaccionService;
 import com.dromedicas.smsservice.SMSService;
+import com.dromedicas.util.ExpresionesRegulares;
 
 /**
  * Clase que implementa JAX-RS para ofrecer 
@@ -55,6 +59,12 @@ public class PuntosServiceRs {
 	
 	@EJB
 	private SMSService smsService;
+	
+	@EJB
+	private SmsPlantillaService smsPlantillaService;
+	
+	@EJB
+	private ExpresionesRegulares rgx;
 	
 	
 	//Grabar transaccion de ACUMULACION puntos - Devolviendo balance de puntos
@@ -211,11 +221,25 @@ public class PuntosServiceRs {
 													
 							//aca enviar notifiacacion SMS al afiliado sobre la redencion
 							if(  !("").equals(afiliado.getCelular()) ){
-								NumberFormat nf = new DecimalFormat("#,###");
-								String mensaje = "Puntos Farmanorte le informa que has REDIMIDO "+nf.format(puntosRedimidos)+" puntos "
-										+ "en la sucursal "+ sucursal.getNombreSucursal()+"  "+ 
-										new SimpleDateFormat("dd/MM/YY HH:mm").format(new Date()) + ".";
+								//obtengo la plantilla SMS para redencion;
 								
+								List<Smsplantilla> smsList = smsPlantillaService.bucarSMSByFields("redencion");
+								String mensaje = smsList.get(0).getSmscontenido();
+								
+								//si la plantilla tiene las variables se reemplaza
+								if( mensaje.contains("${puntos}")){
+									NumberFormat nf = new DecimalFormat("#,###");
+									mensaje = rgx.reemplazaMensaje(mensaje, "puntos", nf.format(puntosRedimidos));
+								}
+								
+								if( mensaje.contains("${sucursal}")){
+									mensaje = rgx.reemplazaMensaje(mensaje, "sucursal", sucursal.getNombreSucursal());
+								}
+								
+								if( mensaje.contains("${fecha}")){
+									mensaje = rgx.reemplazaMensaje(mensaje, "fecha", 
+											new SimpleDateFormat("dd/MM/YY HH:mm").format(new Date()));
+								}
 								this.smsService.enviarSMSDirecto(afiliado.getCelular(), mensaje, "redencion");
 							}
 							return Response.status(200).entity(responseObject).build();

@@ -1,6 +1,8 @@
 package com.dromedicas.mailservice;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
@@ -74,12 +76,14 @@ public class EnviarEmailAlertas {
 			
 			Element nomAfiliado = doc.select("span#nombreAfiliado").first();
 			nomAfiliado.append(afiliado.getNombres() + " " + afiliado.getApellidos());
+			
+			Element anioactual = doc.select("span#anioactual").first();
+			anioactual.append( new SimpleDateFormat("yyyy").format(new Date() ));
 
 			// Url de confirmacion de correo para el elemento buton 
 			Element btn = doc.select("a#linkconfirm").first();
 			btn.attr("href", urlConfirmacion);
-			
-						
+									
 			//Element img = doc.select("img#pixelcontrol").first();
 			//img.attr("src", url);
 			
@@ -389,6 +393,9 @@ public boolean emailNotificacionReferido(final List<String> emailList ) {
 							// Asginamos el archivo al objeto analizador Document
 							Document doc = Jsoup.parse(inputHtml, "UTF-8");
 							
+							Element anioactual = doc.select("span#anioactual").first();
+							anioactual.append( new SimpleDateFormat("yyyy").format(new Date() ));
+							
 							InternetAddress addressTo =  new InternetAddress(dir);	
 										
 							// se compone el mensaje (Asunto, cuerpo del mensaje y direccion origen)
@@ -455,6 +462,9 @@ public boolean emailConfirmacionFinalSuscripcion(Afiliado afiliado) {
 		
 		Element nomAfiliado = doc.select("span#nombreAfiliado").first();
 		nomAfiliado.append(afiliado.getNombres() + " " + afiliado.getApellidos());
+		
+		Element anioactual = doc.select("span#anioactual").first();
+		anioactual.append( new SimpleDateFormat("yyyy").format(new Date() ));
 					
 		//Element img = doc.select("img#pixelcontrol").first();
 		//img.attr("src", url);

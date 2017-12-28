@@ -14,7 +14,7 @@
                 <div class="ui-g">
                     <div class="ui-g-12">
                         <div class="card">                        
-                            <h1>Plantillas SMS's</h1>
+                            <h1>Plantillas SMS's</h1>                            
 							<p:fieldset legend="Buscar Plantilla por:" toggleable="true" toggleSpeed="500">
                             <p:panelGrid columns="4" id="smsForm"
 								columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
@@ -36,7 +36,7 @@
 												 update="smsDetail"/>
 								<p:commandButton value="Cancelar" id="cancelarbutton"
 												 action="#{plantillaSmsBeanList.cancelarPlantillaSmsList()}"
-												 update=":formppal:smsDetail, :formppal:smsForm"/>
+												 update=":formppal:smsDetail, :formppal:smsForm formppal"/>
 								<p:commandButton value="Crear" id="crearbutton"
 												 oncomplete="PF('smsDialogCrear').show()"
 												 action="#{plantillaSmsBeanList.crearPlantillaSMSList()}" />
@@ -63,8 +63,10 @@
                 													 target="#{plantillaSmsBeanList.smsPlantillaSelected}" />
             						</p:commandButton>									
 								</p:column>		
-							</p:dataTable>	
-							
+							</p:dataTable>
+							<h:commandLink class="ayudamodulolink">
+							<h4 class="ayudamodulo"><i class="fa fa-info-circle" aria-hidden="true"></i> Ayuda sobre este modulo.</h4>
+							</h:commandLink>
 						</div> <!-- end card -->
                     </div> <!-- end ui-g-12 -->
                 </div> <!-- end ui-g -->

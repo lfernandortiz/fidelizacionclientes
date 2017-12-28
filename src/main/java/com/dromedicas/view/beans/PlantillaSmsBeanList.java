@@ -154,24 +154,30 @@ public class PlantillaSmsBeanList implements Serializable {
 			System.out.println("Descripcion: " + this.smsPlantillaSelected.getDescripcion().trim() );
 			System.out.println("Contenido: " + this.smsPlantillaSelected.getSmscontenido().trim() );
 			
-			this.smsPlantillaSelected.setDescripcion(this.smsPlantillaSelected.getDescripcion().trim());
-			this.smsPlantillaSelected.setSmscontenido(this.smsPlantillaSelected.getSmscontenido());
-			
-			this.smsService.updateSmsplantilla(smsPlantillaSelected);
-			
-			//cierra el cuado de dialogo
-			RequestContext.getCurrentInstance().execute("PF('smsDialogCrear').hide();");
-			
-			//Mensaje de confirmacion en el list
-			FacesContext.getCurrentInstance().addMessage("globalMessagex", new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Registro Exitoso!", "Plantilla SMS creada correctamente"));
-			
-			//como se mantiene la misma lista se manda a resetear el datatable del list
-			this.restartDatatable();
-			
-			this.setLongiMensajeSMS("");
-			
-			
+			//validaciones de campos vacios
+			if( !"".equals(this.smsPlantillaSelected.getDescripcion().trim()) && 
+					!"".equals(this.smsPlantillaSelected.getSmscontenido().trim()) ){
+				this.smsPlantillaSelected.setDescripcion(this.smsPlantillaSelected.getDescripcion().trim());
+				this.smsPlantillaSelected.setSmscontenido(this.smsPlantillaSelected.getSmscontenido().trim());
+				
+				this.smsService.updateSmsplantilla(smsPlantillaSelected);
+				
+				//cierra el cuado de dialogo
+				RequestContext.getCurrentInstance().execute("PF('smsDialogCrear').hide();");
+				
+				//Mensaje de confirmacion en el list
+				FacesContext.getCurrentInstance().addMessage("globalMessagex", new FacesMessage(FacesMessage.SEVERITY_INFO,
+						"Registro Exitoso!", "Plantilla SMS creada correctamente"));
+				
+				//como se mantiene la misma lista se manda a resetear el datatable del list
+				this.restartDatatable();
+				
+				this.setLongiMensajeSMS("");
+				
+			}else{
+				
+				
+			}
 		} catch (Exception e) {
 			FacesContext.getCurrentInstance().addMessage("globalMessagex", new FacesMessage(FacesMessage.SEVERITY_FATAL,
 					"Registro NO Creado! ", " Plantilla SMS NO fue creada."));

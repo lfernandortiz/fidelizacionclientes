@@ -54,6 +54,9 @@ public class TestStringSmsReplace {
 		
 		
 		String original = "Puntos Farmanorte le informa que ha redimido ${puntos} puntos en la sucursal ${sucursal}.";
+		
+		 System.out.println("Contiene Puntos: " + original.contains("${puntos}"));
+		  
 		 System.out.println("Original String: " + original);
 		 String temp = reemplazaMensaje(original, "puntos", "8.000");
 		 System.out.println("Modificadno 1vr: " +  temp);

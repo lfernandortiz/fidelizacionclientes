@@ -179,7 +179,7 @@ public class ExpresionesRegulares {
 	 * @return
 	 */
 	@SuppressWarnings("unused")
-	private  String reemplazaMensaje(String mensaje, String variable, String valor ){
+	public  String reemplazaMensaje(String mensaje, String variable, String valor ){
 		Pattern p = Pattern.compile("(\\$\\{.*"+variable+"?\\})");
 		 Matcher m = p.matcher(mensaje);		 
 		 StringBuffer sb = new StringBuffer();
@@ -189,5 +189,8 @@ public class ExpresionesRegulares {
 		 m.appendTail(sb);
 		 return sb.toString();
 	}
+	
+	
+	
 
 }

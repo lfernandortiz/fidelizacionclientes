@@ -3568,3 +3568,15 @@ hr{
 	justify-content: flex-end!important;	
 }
 
+/*css para vinculos de ayuda de cada vista*/
+.ayudamodulo{	
+	font-weight: normal;
+	-webkit-margin-before: .6em;
+    -webkit-margin-after: .6em;
+    color: #2780FF;
+}
+
+.ayudamodulolink{
+	text-decoration: none!important;
+}
+

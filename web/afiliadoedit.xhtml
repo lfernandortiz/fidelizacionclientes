@@ -11,7 +11,8 @@
     <ui:define name="content">
         <h:form id="afiliadoformppal">
         <!-- <p:growl id="growl" showDetail="true" sticky="true" />  -->
-        <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
+        <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" for="afiliadoformppal" />
+      
             <div class="ui-fluid">
                 <div class="ui-g">
                     <div class="ui-g-12">
@@ -1339,8 +1340,8 @@
 								</p:panelGrid>
 								
 								<p:separator style="height:5px"/>
-								<p:panelGrid columns="6" id="buttonsbalance"
-								columnClasses="ui-grid-col-2,"
+								<p:panelGrid columns="4" id="buttonsbalance"
+								columnClasses="ui-grid-col-3,"
 								layout="grid" styleClass="ui-panelgrid-blank"
 								style="border:0px none; background-color:transparent;">	
 								
@@ -1348,6 +1349,17 @@
 												 id="cancelarBalanceid"
 												 action="#{afiliadoBeanEdit.cancelarAfiliado()}"
 												 process="@this"/>
+								 				 
+								<p:commandButton value="Redencion" 
+												 id="uploadticketid"
+												 icon="fa fa-upload"
+												 oncomplete="PF('ticketDialogCrear').show()"
+												 
+												 process="@this">
+									<p:tooltip id="tp_uploadticketid" for="uploadticketid" 
+										value="Carga la imagen de un ticket de redencion de puntos" position="top"/>
+								</p:commandButton>
+																
 								<!-- 				 
 								<p:commandButton value="Email" 
 												 id="emailpdf"
@@ -1433,7 +1445,97 @@
 						</div>
                     </div>
                 </div>
-            </div>          
-        </h:form>   
+            </div>  
+            </h:form>   <!-- end form ppal -->
+            <!-- Cuadro de Carga de Ticket Redencion -->
+            
+			<p:dialog header="" widgetVar="ticketDialogCrear" modal="true" id="dialogsms"
+				showEffect="fade" hideEffect="fade" resizable="true"
+				style="min-width: 35em!important;">
+				<h:form enctype="multipart/form-data" id="formticketid">
+				  <p:growl id="messagesupload" showDetail="true" life="2000" />
+				<div class="ui-fluid">
+					<div class="ui-g">
+						<div class="ui-g-12">
+							<h1>
+								<i class="fa fa-upload" aria-hidden="true"></i> Subir Ticket Redencion de Puntos
+							</h1>
+							<p:spacer height="10px" />
+							<p:panelGrid columns="3" id="ticketDetailFormid"
+								columnClasses="ui-grid-col-6, ui-grid-col-3, ui-grid-col-3" layout="grid"
+								styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+								
+								<p:outputLabel for="nrofactid" value="Nro de Factura:" />
+								<p:outputLabel  />
+								<p:outputLabel  />
+								
+								<p:inputText id="nrofactid" 
+											 maxlength="35"
+											 placeholder="Nro de Factura"
+											 value="#{afiliadoBeanEdit.nroFacturaTemp}" />	
+											 
+								<p:commandButton value="Buscar" 
+												 id="buscarfacturaid"
+												 icon="fa fa-search"
+												 styleClass="navy-button"
+												 update="nrofactid factsiid factnoid formticketid  :formticketid:messagesupload" 
+												 action="#{afiliadoBeanEdit.buscarFacturaRedencion()}"
+												 process="formticketid">
+								</p:commandButton>
+								<ui:fragment rendered="#{afiliadoBeanEdit.txTemp != null}" id="factsiid">
+									<i class="fa fa-check-square-o checkfactura" aria-hidden="true"></i>
+								</ui:fragment>
+								<ui:fragment rendered="#{afiliadoBeanEdit.txTemp == null}" id="factnoid">
+									<i class="fa fa-times nofactura" aria-hidden="true"></i>
+								</ui:fragment>
+							</p:panelGrid >
+							<p:panelGrid columns="1" id="ticketDetail2Formid"
+								columnClasses="ui-grid-col-12" layout="grid"
+								styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;"> 									
+								
+								<p:fileUpload value="#{afiliadoBeanEdit.fileUp}"
+											  fileUploadListener="#{afiliadoBeanEdit.uploadFile()}" 
+											  mode="advanced" 
+											  dragDropSupport="false"
+	           								  update="messagesupload" 
+	           								  sizeLimit="100000" 
+	           								  fileLimit="1" 
+	           								  cancelLabel="Cancelar"
+	           								  uploadLabel="Cargar Ticket"
+	           								  label="Examinar"
+	           								  allowTypes="/(\.|\/)(gif|jpe?g|png)$/" />
+										
+							</p:panelGrid>
+							<p:spacer height="10px" />
+							<div class="buttonssms">
+								<p:panelGrid columns="4" id="buttonsecrearid"
+									columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-3,ui-grid-col-3"
+									layout="grid" styleClass="ui-panelgrid-blank"
+									style="border:0px none;  background-color:transparent; ">
+								
+									<p:commandButton value="Cancelar" 
+												 	 id="cancelarticketid"
+												 	 action="#{afiliadoBeanEdit.cancelarUpload()}"
+												     update="formticketid"
+												     process="@this">
+									
+									</p:commandButton>
+									
+								</p:panelGrid>
+							</div>
+						</div>
+						<!-- end ui-g-12 -->
+					</div>
+					<!-- end ui-g -->
+				</div>
+				<!-- end ui-fluid -->
+				</h:form>
+			</p:dialog>
+            
+            
+                    
+        
     </ui:define>   
 </ui:composition>

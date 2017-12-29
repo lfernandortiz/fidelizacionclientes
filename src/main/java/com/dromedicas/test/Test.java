@@ -56,18 +56,7 @@ public class Test {
 	
 	public static void leerMensajes(){
 		try {
-			//Clase de servico para operaciones con el correo
-			//JavaMailService  service = new JavaMailService();
-			String str = "Mensaje de prueba de caracteres";
-		    int counter = 0;
-		    for (int i = 0; i < str.length(); i++) {
-		    	
-		    	System.out.println(">>"+ str.charAt(i) + "<<");
-		    	
-		        counter++;
-		        
-		    }
-		    System.out.println(counter + " letters.");
+			
 			
 			
 			

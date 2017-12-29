@@ -14,11 +14,15 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.context.Flash;
 
+import org.primefaces.context.RequestContext;
+import org.primefaces.model.UploadedFile;
+
 import com.dromedicas.domain.Afiliado;
 import com.dromedicas.domain.BalancePuntos;
 import com.dromedicas.domain.Pais;
 import com.dromedicas.domain.Sucursal;
 import com.dromedicas.domain.Tipodocumento;
+import com.dromedicas.domain.Transaccion;
 import com.dromedicas.mailservice.EnviarEmailAlertas;
 import com.dromedicas.service.AfiliadoService;
 import com.dromedicas.service.OperacionPuntosService;
@@ -97,6 +101,15 @@ public class AfiliadoBeanEdit implements Serializable{
 	
 	private BalancePuntos balancePuntos;
 	
+	//upload ticket redenciones
+	private String nroFacturaTemp;
+	private UploadedFile fileUp;
+	private Transaccion txTemp;
+	
+	
+	/**
+	 * Constructor por defecto
+	 */
 	public AfiliadoBeanEdit(){
 		
 		
@@ -115,7 +128,31 @@ public class AfiliadoBeanEdit implements Serializable{
 		
 		System.out.println("Pais: " + this.getNacionalidad().getNombees());
 	}
-		
+			
+	public Transaccion getTxTemp() {
+		return txTemp;
+	}
+
+	public void setTxTemp(Transaccion txTemp) {
+		this.txTemp = txTemp;
+	}
+
+	public UploadedFile getFileUp() {
+		return fileUp;
+	}
+
+	public void setFileUp(UploadedFile fileUp) {
+		this.fileUp = fileUp;
+	}
+	
+	public String getNroFacturaTemp() {
+		return nroFacturaTemp;
+	}
+
+	public void setNroFacturaTemp(String nroFacturaTemp) {
+		this.nroFacturaTemp = nroFacturaTemp;
+	}
+
 	public LoginBeanService getLoginBean() {
 		return loginBean;
 	}
@@ -475,6 +512,38 @@ public class AfiliadoBeanEdit implements Serializable{
 	
 	public String nombrePropioAfiliado(String nombre){
 		return this.regex.nombrePropio(nombre, true);
+	}
+	
+	
+	/**
+	 * Metodo para la carga de archivos*/
+	public void uploadFile(){
+		
+	}
+	
+	public void buscarFacturaRedencion(){
+		//Obtengo el objeto factura al que le vamos relacionar el 
+		//archivo de redenion
+		System.out.println("NRO Factura en el managedBean: " + this.getNroFacturaTemp());
+		
+		this.txTemp = 
+				txService.obtenerTransaccionPorFacturaYAfiliado(this.getNroFacturaTemp(), this.afiliadoSelected);
+		if( txTemp != null ){
+			FacesContext context = FacesContext.getCurrentInstance();	         
+	        context.addMessage(":formticketid:messagesupload", new FacesMessage(FacesMessage.SEVERITY_INFO, "Redencion si Existe!",
+	        		"Factura de Redencion encontrada"));
+		}else{
+			FacesContext context = FacesContext.getCurrentInstance();	         
+	        context.addMessage(":formticketid:messagesupload", new FacesMessage(FacesMessage.SEVERITY_WARN, "Error", 
+	        		"Factura de Redencion no hallada") );
+		}
+	}
+	
+	public void cancelarUpload(){
+		this.setTxTemp(null);
+		this.setNroFacturaTemp("");		
+		//cierra el cuado de dialogo
+		RequestContext.getCurrentInstance().execute("PF('ticketDialogCrear').hide();");
 	}
 	
 	

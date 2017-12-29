@@ -3580,3 +3580,19 @@ hr{
 	text-decoration: none!important;
 }
 
+.checkfactura{
+	font-size: 1.9rem!important;
+	color: #1f9e53;
+	float: center;
+}
+
+.nofactura{
+	font-size: 1.7rem!important;
+	color: #ff0000;
+	float: center;
+}
+
+.titulocargar{
+	margin: 4px 0 0 0!important;
+	float: center;
+}

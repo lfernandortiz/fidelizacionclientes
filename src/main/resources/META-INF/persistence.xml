@@ -41,6 +41,7 @@
 		<class>com.dromedicas.domain.Smsenvio</class>
 		<class>com.dromedicas.domain.Smsplantilla</class>
 		<class>com.dromedicas.domain.Sucursal</class>
+		<class>com.dromedicas.domain.Ticketredencion</class>
 		<class>com.dromedicas.domain.Tipodocumento</class>
 		<class>com.dromedicas.domain.Tipoemail</class>
 		<class>com.dromedicas.domain.Tipoestaestadoemail</class>

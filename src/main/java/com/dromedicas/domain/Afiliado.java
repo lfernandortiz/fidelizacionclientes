@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
@@ -111,6 +112,10 @@ public class Afiliado implements Serializable {
 	private String urlimageperfil;
 
 	private String usuarioweb;
+	
+	//bi-directional many-to-one association to Ticketredencion
+	@OneToMany(mappedBy="transaccion")
+	private Set<Ticketredencion> ticketredencions;
 
 	//bi-directional many-to-one association to Estudioafiliado
 	@ManyToOne
@@ -638,6 +643,14 @@ public class Afiliado implements Serializable {
 		transaccion.setAfiliado(null);
 
 		return transaccion;
+	}
+	
+	public Set<Ticketredencion> getTicketredencions() {
+		return this.ticketredencions;
+	}
+
+	public void setTicketredencions(Set<Ticketredencion> ticketredencions) {
+		this.ticketredencions = ticketredencions;
 	}
 
 }

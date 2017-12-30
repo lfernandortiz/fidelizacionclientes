@@ -18,7 +18,7 @@ public class Ticketredencion implements Serializable {
 	private int idticketredencion;
 
 	@Lob
-	@Column(length=100000)
+	@Column(length=1000000)
 	private byte[] imgticket;
 
 	//bi-directional many-to-one association to Transaccion

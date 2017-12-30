@@ -1265,7 +1265,7 @@
 							<p:separator style="height:20px"/>	
 							</p:tab> <!-- end tab Datos del Afiliado -->
 							
-							<p:tab>
+							<p:tab id="tabbalance">
 								<f:facet name="title">
 									<i class="fa fa-circle" aria-hidden="true"></i>
 									<h:outputText value=" Balance de Puntos" />							
@@ -1446,14 +1446,14 @@
                     </div>
                 </div>
             </div>  
-            </h:form>   <!-- end form ppal -->
-            <!-- Cuadro de Carga de Ticket Redencion -->
+          </h:form>   <!-- end form ppal -->
             
+            <!-- Cuadro de Carga de Ticket Redencion -->            
 			<p:dialog header="" widgetVar="ticketDialogCrear" modal="true" id="dialogsms"
 				showEffect="fade" hideEffect="fade" resizable="true"
 				style="min-width: 35em!important;">
 				<h:form enctype="multipart/form-data" id="formticketid">
-				  <p:growl id="messagesupload" showDetail="true" life="2000" />
+				  <p:growl id="messagesupload" showDetail="true" life="3000" />
 				<div class="ui-fluid">
 					<div class="ui-g">
 						<div class="ui-g-12">
@@ -1496,12 +1496,13 @@
 								style="border:0px none; background-color:transparent;"> 									
 								
 								<p:fileUpload value="#{afiliadoBeanEdit.fileUp}"
-											  fileUploadListener="#{afiliadoBeanEdit.uploadFile()}" 
+											  fileUploadListener="#{afiliadoBeanEdit.uploadFile}" 
 											  mode="advanced" 
 											  dragDropSupport="false"
-	           								  update="messagesupload" 
-	           								  sizeLimit="100000" 
+	           								  update=":formticketid:messagesupload ticketDetail2Formid formticketid @this " 
+	           								  sizeLimit="1000000" 
 	           								  fileLimit="1" 
+	           								  invalidSizeMessage="Tamaño Invalido de archivo Max. 1Mb: "
 	           								  cancelLabel="Cancelar"
 	           								  uploadLabel="Cargar Ticket"
 	           								  label="Examinar"

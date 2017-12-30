@@ -14,13 +14,16 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.context.Flash;
 
+import org.apache.commons.io.IOUtils;
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
 
 import com.dromedicas.domain.Afiliado;
 import com.dromedicas.domain.BalancePuntos;
 import com.dromedicas.domain.Pais;
 import com.dromedicas.domain.Sucursal;
+import com.dromedicas.domain.Ticketredencion;
 import com.dromedicas.domain.Tipodocumento;
 import com.dromedicas.domain.Transaccion;
 import com.dromedicas.mailservice.EnviarEmailAlertas;
@@ -29,6 +32,7 @@ import com.dromedicas.service.OperacionPuntosService;
 import com.dromedicas.service.PaisService;
 import com.dromedicas.service.ReferidoService;
 import com.dromedicas.service.SucursalService;
+import com.dromedicas.service.TicketredencionService;
 import com.dromedicas.service.TipoDocumentoService;
 import com.dromedicas.service.TipoTransaccionService;
 import com.dromedicas.service.TransaccionService;
@@ -80,6 +84,9 @@ public class AfiliadoBeanEdit implements Serializable{
 	@EJB
 	private OperacionPuntosService puntosService;
 	
+	@EJB
+	private TicketredencionService ticketService;
+	
 	@ManagedProperty(value = "#{loginService}")
 	private LoginBeanService loginBean;
 		
@@ -127,6 +134,7 @@ public class AfiliadoBeanEdit implements Serializable{
 		this.nacionalidad = paisService.obtenerPaisPorNombre("Colombia");
 		
 		System.out.println("Pais: " + this.getNacionalidad().getNombees());
+		
 	}
 			
 	public Transaccion getTxTemp() {
@@ -516,10 +524,49 @@ public class AfiliadoBeanEdit implements Serializable{
 	
 	
 	/**
-	 * Metodo para la carga de archivos*/
-	public void uploadFile(){
+	 * Metodo para la carga de archivos
+	 * */
+	public void uploadFile(FileUploadEvent event){
 		
+		try {
+			
+			this.fileUp = event.getFile();
+			
+			if( this.fileUp != null && this.getTxTemp() != null){
+				//primero establezco el objeto a persistir junto con sus miembros
+				Ticketredencion tck = new Ticketredencion();
+				
+				tck.setTransaccion(this.getTxTemp());
+				
+				tck.setImgticket( IOUtils.toByteArray( this.fileUp.getInputstream() ));
+				
+				//con el objeto servicio de ticket persisto el nuevo objeto 
+				this.ticketService.updateTicketredencion(tck);
+				
+				//despliego los mensajes, cierro el cuadro de dialogo y actualizdo el datatable de Tx's
+				FacesContext context = FacesContext.getCurrentInstance();	         
+		        context.addMessage(":formticketid:messagesupload", new FacesMessage(FacesMessage.SEVERITY_INFO, "Carga Exitosa!",
+		        		"Ticket Asociao Exitosamente a la Transaccion de Redencion"));
+		        
+		        this.cancelarUpload();
+		        
+		        //actualiza el datatable de tx's
+		        this.afiliadoSelected = afiliadoService.obtenerAfiliadoById(this.afiliadoSelected);				
+			}else{
+				FacesContext context = FacesContext.getCurrentInstance();	         
+		        context.addMessage(":formticketid:messagesupload", new FacesMessage(FacesMessage.SEVERITY_WARN, "Falta Informacion",
+		        		"Falta el nro de Factura o el archivo del ticket"));
+		        
+			}
+	        
+		} catch (Exception e) {
+			FacesContext context = FacesContext.getCurrentInstance();	         
+	        context.addMessage(":formticketid:messagesupload", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Archivo MUY Grande",
+	        		"El tamano maximo del archivo es de 1MB."));
+			e.printStackTrace();
+		}
 	}
+	
 	
 	public void buscarFacturaRedencion(){
 		//Obtengo el objeto factura al que le vamos relacionar el 
@@ -542,6 +589,7 @@ public class AfiliadoBeanEdit implements Serializable{
 	public void cancelarUpload(){
 		this.setTxTemp(null);
 		this.setNroFacturaTemp("");		
+		this.setFileUp(null);
 		//cierra el cuado de dialogo
 		RequestContext.getCurrentInstance().execute("PF('ticketDialogCrear').hide();");
 	}

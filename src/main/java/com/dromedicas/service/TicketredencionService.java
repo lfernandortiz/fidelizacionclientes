@@ -47,6 +47,18 @@ public class TicketredencionService implements Serializable {
 		}		
 		return temp;
 	}
+	
+	public Ticketredencion obtenerTicketredencionByFactura(Transaccion tx){
+		Query query = em.createQuery("FROM Ticketredencion t where t.transaccion = :tx");
+		query.setParameter("tx", tx);
+		Ticketredencion temp = null;		
+		try {
+			temp = (Ticketredencion) query.getSingleResult();
+		} catch (NoResultException e) {
+			System.out.println("Ticket no encontrado");			
+		}		
+		return temp;
+	}
 		
 	
 	public void insertTicketredencion(Ticketredencion instance){

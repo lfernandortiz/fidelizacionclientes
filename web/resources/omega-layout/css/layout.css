@@ -3596,3 +3596,8 @@ hr{
 	margin: 4px 0 0 0!important;
 	float: center;
 }
+
+.linkticket{
+	color:#000a7b;
+	font-weight: bold;	
+}

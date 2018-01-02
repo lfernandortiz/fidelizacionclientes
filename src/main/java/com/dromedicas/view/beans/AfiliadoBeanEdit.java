@@ -1,5 +1,6 @@
 package com.dromedicas.view.beans;
 
+import java.io.ByteArrayInputStream;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -17,6 +18,8 @@ import javax.faces.context.Flash;
 import org.apache.commons.io.IOUtils;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
 
 import com.dromedicas.domain.Afiliado;
@@ -112,6 +115,7 @@ public class AfiliadoBeanEdit implements Serializable{
 	private String nroFacturaTemp;
 	private UploadedFile fileUp;
 	private Transaccion txTemp;
+	private StreamedContent fileDow;
 	
 	
 	/**
@@ -137,6 +141,14 @@ public class AfiliadoBeanEdit implements Serializable{
 		
 	}
 			
+	public StreamedContent getFileDow() {
+		return fileDow;
+	}
+
+	public void setFileDow(StreamedContent fileDow) {
+		this.fileDow = fileDow;
+	}
+
 	public Transaccion getTxTemp() {
 		return txTemp;
 	}
@@ -394,7 +406,7 @@ public class AfiliadoBeanEdit implements Serializable{
 	
 	public void validarEdad(){
 		if(regex.getAge(this.afiliadoSelected.getFechanacimiento()) < 18 ){
-			FacesContext.getCurrentInstance().addMessage("fechanacid", 
+			FacesContext.getCurrentInstance().addMessage(null, 
 					new FacesMessage(FacesMessage.SEVERITY_WARN, "Error", "Menor de Edad!"));			
 			System.out.println("Menor de edad: " );		
 		}		
@@ -477,14 +489,14 @@ public class AfiliadoBeanEdit implements Serializable{
 		boolean enviado = mailAlert.enviarEmailAlertaVentas(this.afiliadoSelected);
 		
 		if(enviado){
-			FacesContext.getCurrentInstance().addMessage("messages", 
+			FacesContext.getCurrentInstance().addMessage(null, 
 					new FacesMessage(FacesMessage.SEVERITY_INFO, "Envio Exitoso!", "Un nuevo email de confirmacion "
 							+ "de suscripcion a Puntos Farmanorte fue enviando."));
 			byte valid = 0 ;
 			this.afiliadoSelected.setEmailvalidado(valid);
 			this.afiliadoService.updateAfiliado(afiliadoSelected);
 		}else{
-			FacesContext.getCurrentInstance().addMessage("messages", 
+			FacesContext.getCurrentInstance().addMessage(null, 
 					new FacesMessage(FacesMessage.SEVERITY_WARN, "Error", "No fue posible el envio de confirmacion"));
 		}
 		
@@ -551,12 +563,13 @@ public class AfiliadoBeanEdit implements Serializable{
 		        this.cancelarUpload();
 		        
 		        //actualiza el datatable de tx's
-		        this.afiliadoSelected = afiliadoService.obtenerAfiliadoById(this.afiliadoSelected);				
+		        this.afiliadoSelected = afiliadoService.obtenerAfiliadoById(this.afiliadoSelected);		
+		        RequestContext.getCurrentInstance().update("balancedatail");
+		        
 			}else{
 				FacesContext context = FacesContext.getCurrentInstance();	         
 		        context.addMessage(":formticketid:messagesupload", new FacesMessage(FacesMessage.SEVERITY_WARN, "Falta Informacion",
-		        		"Falta el nro de Factura o el archivo del ticket"));
-		        
+		        		"Falta el Nro. de Factura o el Archivo de Ticket"));
 			}
 	        
 		} catch (Exception e) {
@@ -564,6 +577,36 @@ public class AfiliadoBeanEdit implements Serializable{
 	        context.addMessage(":formticketid:messagesupload", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Archivo MUY Grande",
 	        		"El tamano maximo del archivo es de 1MB."));
 			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Retorna la imagen del ticket digitalizado
+	 * @return
+	 */
+	public StreamedContent getImage(){
+		//obtengo el Ticket
+		FacesContext context = FacesContext.getCurrentInstance();
+		String factura = context.getExternalContext().getRequestParameterMap().get("nrofactura");
+		
+		System.out.println("Nro FACTURA: " + factura);
+		
+		Ticketredencion tkTemp = this.ticketService.obtenerTicketredencionByNroFactura(factura);
+		if( tkTemp != null ){
+			byte[] image = null;
+			image = tkTemp.getImgticket();
+			System.out.println("Ticket:" + tkTemp.getIdticketredencion());
+			
+			try {
+				
+			} catch (Exception e) { // TODO Auto-generated catch block
+										// e.printStackTrace();
+			}
+			DefaultStreamedContent ds = new DefaultStreamedContent(new ByteArrayInputStream(image),
+					"image/jpg");
+			return ds;
+		}else{
+			return new DefaultStreamedContent();
 		}
 	}
 	
@@ -577,11 +620,11 @@ public class AfiliadoBeanEdit implements Serializable{
 				txService.obtenerTransaccionPorFacturaYAfiliado(this.getNroFacturaTemp(), this.afiliadoSelected);
 		if( txTemp != null ){
 			FacesContext context = FacesContext.getCurrentInstance();	         
-	        context.addMessage(":formticketid:messagesupload", new FacesMessage(FacesMessage.SEVERITY_INFO, "Redencion si Existe!",
+	        context.addMessage("messagesupload", new FacesMessage(FacesMessage.SEVERITY_INFO, "Redencion si Existe!",
 	        		"Factura de Redencion encontrada"));
 		}else{
 			FacesContext context = FacesContext.getCurrentInstance();	         
-	        context.addMessage(":formticketid:messagesupload", new FacesMessage(FacesMessage.SEVERITY_WARN, "Error", 
+	        context.addMessage("messagesupload", new FacesMessage(FacesMessage.SEVERITY_WARN, "Error", 
 	        		"Factura de Redencion no hallada") );
 		}
 	}
@@ -592,6 +635,10 @@ public class AfiliadoBeanEdit implements Serializable{
 		this.setFileUp(null);
 		//cierra el cuado de dialogo
 		RequestContext.getCurrentInstance().execute("PF('ticketDialogCrear').hide();");
+	}
+	
+	public boolean ticketAsociado(Transaccion tx){
+		return this.ticketService.obtenerTicketredencionByNroFactura(tx.getNrofactura())!= null? true : false;
 	}
 	
 	

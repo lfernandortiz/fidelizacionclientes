@@ -76,8 +76,6 @@ public class TransaccionService {
 	}
 	
 	
-	
-	
 	public List<Transaccion> obtenerTxSinNotificacion(){
 		
 		List<Transaccion> txList = null;

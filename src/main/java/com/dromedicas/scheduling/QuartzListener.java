@@ -83,7 +83,6 @@ public class QuartzListener implements ServletContextListener {
 		} catch (SchedulerException e) {
 			e.printStackTrace();
 		}
-
 		
 	}
 

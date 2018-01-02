@@ -11,14 +11,15 @@
     <ui:define name="content">
         <h:form id="afiliadoformppal">
         <!-- <p:growl id="growl" showDetail="true" sticky="true" />  -->
-        <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" for="afiliadoformppal" />
+        
+        <p:messages id="messages" showDetail="true" autoUpdate="true" globalOnly="true" closable="true" redisplay="false"/>
       
             <div class="ui-fluid">
                 <div class="ui-g">
                     <div class="ui-g-12">
                         <div class="card">   
-                        <p:tabView>
-						  <p:tab>
+                        <p:tabView id="tabviewafiliado">
+						  <p:tab id="tabdatos">
 							<f:facet name="title">
 								<i class="fa fa-child"></i>
 								<h:outputText value=" Datos del Afiliado" />								
@@ -1385,7 +1386,7 @@
 								
 								<p:separator style="height:10px"/>	
 									<p:dataTable id="balancedatail" var="tx" value="#{afiliadoBeanEdit.afiliadoSelected.transaccions}" 
-	                        			rowKey="#{tx.idtransaccion}" selectionMode="single"  
+	                        			rowKey="#{tx.idtransaccion}" 
 	                        			emptyMessage="Registros no encontrados :-(" >
 	                        			
 										<f:facet name="header">Detalle de Transacciones - #{afiliadoBeanEdit.afiliadoSelected.transaccions.size()}</f:facet>
@@ -1414,8 +1415,8 @@
 										</p:column>
 										<p:column >
 											<div class="tipotx">
-											<h:outputText value="#{tx.tipotransaccion.descripcion.equals('INSCRIPCION AFILIADO')? 'INSCRIPCION' : 
-											tx.tipotransaccion.descripcion}" /> 
+												<h:outputText value="#{tx.tipotransaccion.descripcion.equals('INSCRIPCION AFILIADO')? 'INSCRIPCION' : 
+													tx.tipotransaccion.descripcion}" />
 											</div>
 										</p:column>
 										<p:column>
@@ -1424,8 +1425,29 @@
 											</div>
 										</p:column>
 										<p:column>
-											<div class="celdaDerecha">
-												<h:outputText value="#{tx.tipotransaccion.idtipotransaccion == 2 || tx.tipotransaccion.idtipotransaccion == 3? tx.puntostransaccion*-1 : ''}"/> 
+											<div class="celdaDerecha"> <!-- Columna redencion muestra ticket -->
+											
+												<ui:fragment rendered="#{tx.tipotransaccion.idtipotransaccion == 3}" >
+													<h:outputText value="#{tx.puntostransaccion*-1 }"/>
+												</ui:fragment>
+												<ui:fragment rendered="#{tx.tipotransaccion.idtipotransaccion == 2}" >
+													<ui:fragment rendered="#{afiliadoBeanEdit.ticketAsociado(tx)}" >
+														<p:lightBox styleClass="imagebox" id="lighbox1">  
+														    <h:outputLink value="#" title="Redencion Factura Nro. #{tx.nrofactura}" styleClass="linkticket">
+																<h:outputText value="#{tx.puntostransaccion*-1 }"/> <i class="fa fa-sticky-note" aria-hidden="true"></i>
+															</h:outputLink>
+															<f:facet name="inline">
+														       <p:graphicImage value="#{afiliadoBeanEdit.image}">
+																    <f:param name="nrofactura" value="#{tx.nrofactura}" />
+																</p:graphicImage>
+														    </f:facet>
+														</p:lightBox>
+													</ui:fragment>	<!-- end afiliadoBeanEdit.ticketAsociado(tx) -->
+													<ui:fragment rendered="#{!afiliadoBeanEdit.ticketAsociado(tx)}" >
+														<h:outputText value="#{tx.puntostransaccion*-1 }"/>
+													</ui:fragment> <!-- end !afiliadoBeanEdit.ticketAsociado(tx) -->
+												</ui:fragment> <!-- end tx.tipotransaccion.idtipotransaccion == 2 -->
+												
 											</div>
 										</p:column>
 										
@@ -1499,7 +1521,7 @@
 											  fileUploadListener="#{afiliadoBeanEdit.uploadFile}" 
 											  mode="advanced" 
 											  dragDropSupport="false"
-	           								  update=":formticketid:messagesupload ticketDetail2Formid formticketid @this " 
+	           								  update=":formticketid:messagesupload ticketDetail2Formid formticketid @this afiliadoformppal:tabviewafiliado:balancedatail" 
 	           								  sizeLimit="1000000" 
 	           								  fileLimit="1" 
 	           								  invalidSizeMessage="Tamaño Invalido de archivo Max. 1Mb: "

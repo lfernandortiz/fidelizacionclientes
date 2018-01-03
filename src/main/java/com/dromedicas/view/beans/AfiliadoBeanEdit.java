@@ -117,6 +117,9 @@ public class AfiliadoBeanEdit implements Serializable{
 	private Transaccion txTemp;
 	private StreamedContent fileDow;
 	
+	//download ticket
+	private StreamedContent ticketDown;
+	
 	
 	/**
 	 * Constructor por defecto
@@ -544,32 +547,59 @@ public class AfiliadoBeanEdit implements Serializable{
 			
 			this.fileUp = event.getFile();
 			
-			if( this.fileUp != null && this.getTxTemp() != null){
-				//primero establezco el objeto a persistir junto con sus miembros
-				Ticketredencion tck = new Ticketredencion();
+			//valida que solo se permita carga de ticket de redension y que existan los archivos
+			if( this.fileUp != null && this.getTxTemp() != null && this.getTxTemp().getTipotransaccion().getIdtipotransaccion() == 2){
+				//valida si la Tx ya tiene una imagen de ticket asignada
+				Ticketredencion tck = 
+						this.ticketService.obtenerTicketredencionByNroFactura(this.txTemp.getNrofactura());
 				
-				tck.setTransaccion(this.getTxTemp());
-				
-				tck.setImgticket( IOUtils.toByteArray( this.fileUp.getInputstream() ));
-				
-				//con el objeto servicio de ticket persisto el nuevo objeto 
-				this.ticketService.updateTicketredencion(tck);
-				
-				//despliego los mensajes, cierro el cuadro de dialogo y actualizdo el datatable de Tx's
-				FacesContext context = FacesContext.getCurrentInstance();	         
-		        context.addMessage(":formticketid:messagesupload", new FacesMessage(FacesMessage.SEVERITY_INFO, "Carga Exitosa!",
-		        		"Ticket Asociao Exitosamente a la Transaccion de Redencion"));
-		        
-		        this.cancelarUpload();
-		        
-		        //actualiza el datatable de tx's
-		        this.afiliadoSelected = afiliadoService.obtenerAfiliadoById(this.afiliadoSelected);		
-		        RequestContext.getCurrentInstance().update("balancedatail");
-		        
+				if( tck != null ){//actualiza la imagen de la Tx actual
+					
+					tck.setTransaccion(this.getTxTemp());
+					
+					tck.setImgticket( IOUtils.toByteArray( this.fileUp.getInputstream() ));
+					
+					//con el objeto servicio de ticket persisto la actualizacion del ticket
+					this.ticketService.updateTicketredencion(tck);
+					
+					//despliego los mensajes, cierro el cuadro de dialogo y actualizdo el datatable de Tx's
+					FacesContext context = FacesContext.getCurrentInstance();	         
+			        context.addMessage(":formticketid:messagesupload", new FacesMessage(FacesMessage.SEVERITY_INFO, "Actualizacion Exitosa!",
+			        		"Ticket Actualizado Exitosamente a la Transaccion de Redencion"));
+			        
+			        this.cancelarUpload();
+			        
+			        //actualiza el datatable de tx's
+			        this.afiliadoSelected = afiliadoService.obtenerAfiliadoById(this.afiliadoSelected);		
+			        RequestContext.getCurrentInstance().update("balancedatail");
+					
+				}else{// Carga una nueva imagen de ticket
+					
+					//primero establezco el objeto a persistir junto con sus miembros
+					tck = new Ticketredencion();
+					
+					tck.setTransaccion(this.getTxTemp());
+					
+					tck.setImgticket( IOUtils.toByteArray( this.fileUp.getInputstream() ));
+					
+					//con el objeto servicio de ticket persisto el nuevo objeto 
+					this.ticketService.updateTicketredencion(tck);
+					
+					//despliego los mensajes, cierro el cuadro de dialogo y actualizdo el datatable de Tx's
+					FacesContext context = FacesContext.getCurrentInstance();	         
+			        context.addMessage(":formticketid:messagesupload", new FacesMessage(FacesMessage.SEVERITY_INFO, "Carga Exitosa!",
+			        		"Ticket Asociao Exitosamente a la Transaccion de Redencion"));
+			        
+			        this.cancelarUpload();
+			        
+			        //actualiza el datatable de tx's
+			        this.afiliadoSelected = afiliadoService.obtenerAfiliadoById(this.afiliadoSelected);		
+			        RequestContext.getCurrentInstance().update("balancedatail");	
+				}//end else (tck != null)		        
 			}else{
 				FacesContext context = FacesContext.getCurrentInstance();	         
 		        context.addMessage(":formticketid:messagesupload", new FacesMessage(FacesMessage.SEVERITY_WARN, "Falta Informacion",
-		        		"Falta el Nro. de Factura o el Archivo de Ticket"));
+		        		"Informacion invalida para cargar el ticket."));
 			}
 	        
 		} catch (Exception e) {
@@ -579,6 +609,42 @@ public class AfiliadoBeanEdit implements Serializable{
 			e.printStackTrace();
 		}
 	}
+	
+	
+	public StreamedContent getTicketDown() {
+		
+		Ticketredencion tkTemp = this.ticketService.obtenerTicketredencionByNroFactura(this.txTemp.getNrofactura());
+
+		System.out.println("Factura Selecctionada: " + this.txTemp.getNrofactura());
+
+		if (tkTemp != null) {
+			byte[] image = null;
+			image = tkTemp.getImgticket();
+
+			System.out.println("Descargando...:" + tkTemp.getIdticketredencion());
+
+			DefaultStreamedContent ds = new DefaultStreamedContent(new ByteArrayInputStream(image), "image/jpg",
+					"redencion" + this.txTemp.getNrofactura()+".jpg");
+
+			System.out.println("Type....:" + ds.getName());
+			
+			this.resetFilesField();
+			
+			return ds;
+		} else {
+			FacesContext context = FacesContext.getCurrentInstance();	         
+	        context.addMessage("messagesupload", new FacesMessage(FacesMessage.SEVERITY_WARN, "Error", 
+	        		"No hay archivos para descargar") );
+	        this.resetFilesField();
+	        return null;
+		}
+	}
+	
+
+	public void setTicketDown(StreamedContent ticketDown) {
+		this.ticketDown = ticketDown;
+	}
+
 	
 	/**
 	 * Retorna la imagen del ticket digitalizado
@@ -594,14 +660,9 @@ public class AfiliadoBeanEdit implements Serializable{
 		Ticketredencion tkTemp = this.ticketService.obtenerTicketredencionByNroFactura(factura);
 		if( tkTemp != null ){
 			byte[] image = null;
-			image = tkTemp.getImgticket();
-			System.out.println("Ticket:" + tkTemp.getIdticketredencion());
 			
-			try {
-				
-			} catch (Exception e) { // TODO Auto-generated catch block
-										// e.printStackTrace();
-			}
+			image = tkTemp.getImgticket();
+			
 			DefaultStreamedContent ds = new DefaultStreamedContent(new ByteArrayInputStream(image),
 					"image/jpg");
 			return ds;
@@ -616,30 +677,44 @@ public class AfiliadoBeanEdit implements Serializable{
 		//archivo de redenion
 		System.out.println("NRO Factura en el managedBean: " + this.getNroFacturaTemp());
 		
-		this.txTemp = 
-				txService.obtenerRedencionPorFacturaYAfiliado(this.getNroFacturaTemp(), this.afiliadoSelected);
-		if( txTemp != null ){
-			FacesContext context = FacesContext.getCurrentInstance();	         
-	        context.addMessage("messagesupload", new FacesMessage(FacesMessage.SEVERITY_INFO, "Redencion si Existe!",
-	        		"Factura de Redencion encontrada"));
-		}else{
+		try {
+			this.txTemp = 
+					txService.obtenerRedencionPorFacturaYAfiliado(this.getNroFacturaTemp(), this.afiliadoSelected);
+			
+			if( txTemp != null ){
+				FacesContext context = FacesContext.getCurrentInstance();	         
+		        context.addMessage("messagesupload", new FacesMessage(FacesMessage.SEVERITY_INFO, "Redencion si Existe!",
+		        		"Factura de Redencion encontrada"));
+			}else{
+				FacesContext context = FacesContext.getCurrentInstance();	         
+		        context.addMessage("messagesupload", new FacesMessage(FacesMessage.SEVERITY_WARN, "Error", 
+		        		"Factura de Redencion no hallada") );
+			}
+		} catch (Exception e) {
 			FacesContext context = FacesContext.getCurrentInstance();	         
 	        context.addMessage("messagesupload", new FacesMessage(FacesMessage.SEVERITY_WARN, "Error", 
-	        		"Factura de Redencion no hallada") );
+	        		"Criterios de busqueda no validos") );
 		}
 	}
 	
+	
 	public void cancelarUpload(){
+		this.resetFilesField();
+		//cierra el cuado de dialogo
+		RequestContext.getCurrentInstance().execute("PF('ticketDialogCrear').hide();");
+	}
+	
+	
+	private void resetFilesField(){
 		this.setTxTemp(null);
 		this.setNroFacturaTemp("");		
 		this.setFileUp(null);
-		//cierra el cuado de dialogo
-		RequestContext.getCurrentInstance().execute("PF('ticketDialogCrear').hide();");
 	}
 	
 	public boolean ticketAsociado(Transaccion tx){
 		return this.ticketService.obtenerTicketredencionByNroFactura(tx.getNrofactura())!= null? true : false;
 	}
+	
 	
 	
 }

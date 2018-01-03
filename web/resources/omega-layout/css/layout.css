@@ -1907,7 +1907,8 @@ html {
     background-image: linear-gradient(top, #4e5159, #1f2023);
     filter: progid:DXImageTransform.Microsoft.gradient(start-colourStr='#4e5159', end-colourStr='#1f2023');
     color: #ffffff;
-    position: fixed;}
+    position: fixed;
+    }
     .wrapper .footer img {
       vertical-align: middle;
       margin: 0px 2px 5px 0px; }
@@ -3609,3 +3610,14 @@ a:-webkit-any-link.linkticket {
 	font-weight: bold;	
 	text-decoration: none!important;
 }
+
+/*Edita el css para el componente p:growl opcion info*/
+.ui-growl-info, .ui-messages .ui-messages-info, .ui-message.ui-message-info {
+    color: #fff;
+    /*background-color: #9bd76f!important;*/
+    border-color: #9ccc65;
+    opacity: .9!important;
+	filter: Alpha(Opacity = 90)!important;
+}
+
+

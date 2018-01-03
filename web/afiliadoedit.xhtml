@@ -1351,7 +1351,7 @@
 												 action="#{afiliadoBeanEdit.cancelarAfiliado()}"
 												 process="@this"/>
 								 				 
-								<p:commandButton value="Redencion" 
+								<p:commandButton value="Cargar Ticket" 
 												 id="uploadticketid"
 												 icon="fa fa-upload"
 												 oncomplete="PF('ticketDialogCrear').show()"
@@ -1386,7 +1386,7 @@
 								
 								<p:separator style="height:10px"/>	
 									<p:dataTable id="balancedatail" var="tx" value="#{afiliadoBeanEdit.afiliadoSelected.transaccions}" 
-	                        			rowKey="#{tx.idtransaccion}" 
+	                        			rowKey="#{tx.idtransaccion}" selection="#{afiliadoBeanEdit.txTemp}" selectionMode="single"
 	                        			emptyMessage="Registros no encontrados :-(" >
 	                        			
 										<f:facet name="header">Detalle de Transacciones - #{afiliadoBeanEdit.afiliadoSelected.transaccions.size()}</f:facet>
@@ -1437,7 +1437,7 @@
 																<h:outputText value="#{tx.puntostransaccion*-1 }"/> <i class="fa fa-sticky-note" aria-hidden="true"></i>
 															</h:outputLink>
 															<f:facet name="inline">
-														       <p:graphicImage value="#{afiliadoBeanEdit.image}" style="height: 400pxx">
+														       <p:graphicImage value="#{afiliadoBeanEdit.image}" style="height: 400px">
 																    <f:param name="nrofactura" value="#{tx.nrofactura}" />
 																</p:graphicImage>
 														    </f:facet>
@@ -1460,6 +1460,13 @@
 								        </p:columnGroup>										 
 									</p:dataTable>
 									
+									 <p:contextMenu for="balancedatail" id="contextmenufileid" >
+								        <p:menuitem value="Cargar Ticket" update="balancedatail" icon="fa fa-upload" oncomplete="PF('ticketDialogCrear').show()"/>
+								        <p:menuitem value="Actualizar Ticket" update="balancedatail" icon="fa fa-retweet" oncomplete="PF('ticketDialogCrear').show()" />
+								        <p:menuitem value="Descargar Ticket" update="balancedatail" icon="fa fa-download" ajax="false">
+								        	<p:fileDownload value="#{afiliadoBeanEdit.ticketDown}" />	
+								        </p:menuitem>
+								    </p:contextMenu>
 									
 									
 							</p:tab><!-- end tab Banlance de puntos -->
@@ -1475,7 +1482,7 @@
 				showEffect="fade" hideEffect="fade" resizable="true"
 				style="min-width: 35em!important;">
 				<h:form enctype="multipart/form-data" id="formticketid">
-				  <p:growl id="messagesupload" showDetail="true" life="3000" />
+				  <p:growl id="messagesupload" showDetail="true" life="4000" />
 				<div class="ui-fluid">
 					<div class="ui-g">
 						<div class="ui-g-12">
@@ -1483,9 +1490,10 @@
 								<i class="fa fa-upload" aria-hidden="true"></i> Subir Ticket Redencion de Puntos
 							</h1>
 							<p:spacer height="10px" />
+							
 							<p:panelGrid columns="3" id="ticketDetailFormid"
 								columnClasses="ui-grid-col-6, ui-grid-col-3, ui-grid-col-3" layout="grid"
-								styleClass="ui-panelgrid-blank"
+								styleClass="ui-panelgrid-blank" 
 								style="border:0px none; background-color:transparent;">
 								
 								<p:outputLabel for="nrofactid" value="Nro de Factura:" />

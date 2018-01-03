@@ -3598,6 +3598,14 @@ hr{
 }
 
 .linkticket{
-	color:#000a7b;
+	
 	font-weight: bold;	
+	
+}
+
+.linkticket ,
+a:-webkit-any-link.linkticket {
+	color:#000a7b!important;
+	font-weight: bold;	
+	text-decoration: none!important;
 }

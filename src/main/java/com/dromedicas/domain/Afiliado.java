@@ -115,6 +115,7 @@ public class Afiliado implements Serializable {
 	
 	//bi-directional many-to-one association to Ticketredencion
 	@OneToMany(mappedBy="transaccion")
+	@JsonIgnore
 	private Set<Ticketredencion> ticketredencions;
 
 	//bi-directional many-to-one association to Estudioafiliado

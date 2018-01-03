@@ -617,7 +617,7 @@ public class AfiliadoBeanEdit implements Serializable{
 		System.out.println("NRO Factura en el managedBean: " + this.getNroFacturaTemp());
 		
 		this.txTemp = 
-				txService.obtenerTransaccionPorFacturaYAfiliado(this.getNroFacturaTemp(), this.afiliadoSelected);
+				txService.obtenerRedencionPorFacturaYAfiliado(this.getNroFacturaTemp(), this.afiliadoSelected);
 		if( txTemp != null ){
 			FacesContext context = FacesContext.getCurrentInstance();	         
 	        context.addMessage("messagesupload", new FacesMessage(FacesMessage.SEVERITY_INFO, "Redencion si Existe!",

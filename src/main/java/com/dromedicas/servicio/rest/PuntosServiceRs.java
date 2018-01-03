@@ -163,6 +163,7 @@ public class PuntosServiceRs {
 			responseObject.setStatus(Status.OK.getReasonPhrase());
 			responseObject.setAfiliado(afiliado);
 			return Response.status(200).entity(responseObject).build();
+			
 		}else{
 			responseObject.setCode(401);
 			responseObject.setMessage("Afilaido no encontrado");
@@ -216,6 +217,7 @@ public class PuntosServiceRs {
 							BalancePuntos balance =  calculoService.consultaPuntos(afiliado);
 							balance.setGanadostxactual(pTxActual);
 							responseObject.setCode(200);
+							responseObject.setStatus(Status.OK.getReasonPhrase());
 							responseObject.setMessage("Transaccion exitosa");
 							responseObject.setBalance(balance);
 													
@@ -242,36 +244,42 @@ public class PuntosServiceRs {
 								}
 								this.smsService.enviarSMSDirecto(afiliado.getCelular(), mensaje, "redencion");
 							}
-							return Response.status(200).entity(responseObject).build();
+							
+							return Response.status(200).entity(responseObject).build();							
 						}else{							
-							responseObject.setCode(400);
-							responseObject.setMessage("No Tiene los puntos suficientes para esta rededencion");
+							responseObject.setCode(200);
+							responseObject.setMessage("No Tiene los puntos suficientes para esta redencion");
 							responseObject.setBalance(bTemp);
-							return Response.status(400).entity(responseObject).build();
+							responseObject.setStatus(Status.OK.getReasonPhrase());
+							return Response.status(200).entity(responseObject).build();
 						}
 						
 					} catch (Exception e) {
 						e.printStackTrace();
 						responseObject.setCode(500);
-						responseObject.setMessage("Error general en el servidor");						
+						responseObject.setMessage("Error general en el servidor");	
+						responseObject.setStatus(Status.INTERNAL_SERVER_ERROR.getReasonPhrase());
 						return Response.status(500).entity(responseObject).build();
 					}
 					
 				}else{ // si no se halla la sucursal			
-					responseObject.setCode(401);
+					responseObject.setCode(200);
 					responseObject.setMessage("Sucursal no encontrada");
-					return Response.status(401).entity(responseObject).build();
+					responseObject.setStatus(Status.OK.getReasonPhrase());
+					return Response.status(200).entity(responseObject).build();
 				}
 			}else{ //Si no se halla el afiliado
-				responseObject.setCode(401);
+				responseObject.setCode(200);
 				responseObject.setMessage("Afilaido no encontrado");
-				return Response.status(401).entity(responseObject).build();
+				responseObject.setStatus(Status.OK.getReasonPhrase());
+				return Response.status(200).entity(responseObject).build();
 			}			
 			
 		}else{
-			responseObject.setCode(400);
+			responseObject.setCode(200);
 			responseObject.setMessage("El servidor no pudo entender la solicitud debido a una sintaxis mal formada");
-			return Response.status(400).entity(responseObject).build();
+			responseObject.setStatus(Status.OK.getReasonPhrase());
+			return Response.status(200).entity(responseObject).build();
 		}
 		
 	}

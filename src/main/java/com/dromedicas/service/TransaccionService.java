@@ -58,10 +58,10 @@ public class TransaccionService {
 		return temp;
 	}
 	
-	public Transaccion obtenerTransaccionPorFacturaYAfiliado(String nroFactura, Afiliado afiliado) {
+	public Transaccion obtenerRedencionPorFacturaYAfiliado(String nroFactura, Afiliado afiliado) {
 		System.out.println("Afiliado: " + afiliado.getNombres());
 		System.out.println("Factura: " + nroFactura);
-		Query query = em.createQuery("FROM Transaccion t WHERE t.nrofactura = :nroFac and t.afiliado = :af and "
+		Query query = em.createQuery("FROM Transaccion t WHERE t.nrofactura LIKE CONCAT('%', :nroFac, '%') and t.afiliado = :af and "
 				+ "t.tipotransaccion.idtipotransaccion = 2");
 		
 		query.setParameter("nroFac", nroFactura);

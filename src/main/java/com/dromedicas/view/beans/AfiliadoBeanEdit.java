@@ -3,6 +3,7 @@ package com.dromedicas.view.beans;
 import java.io.ByteArrayInputStream;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
@@ -539,7 +540,7 @@ public class AfiliadoBeanEdit implements Serializable{
 	
 	
 	/**
-	 * Metodo para la carga de archivos
+	 * Metodo para la carga y descarga de archivos ticket
 	 * */
 	public void uploadFile(FileUploadEvent event){
 		
@@ -615,18 +616,12 @@ public class AfiliadoBeanEdit implements Serializable{
 		
 		Ticketredencion tkTemp = this.ticketService.obtenerTicketredencionByNroFactura(this.txTemp.getNrofactura());
 
-		System.out.println("Factura Selecctionada: " + this.txTemp.getNrofactura());
-
 		if (tkTemp != null) {
 			byte[] image = null;
 			image = tkTemp.getImgticket();
 
-			System.out.println("Descargando...:" + tkTemp.getIdticketredencion());
-
 			DefaultStreamedContent ds = new DefaultStreamedContent(new ByteArrayInputStream(image), "image/jpg",
 					"redencion" + this.txTemp.getNrofactura()+".jpg");
-
-			System.out.println("Type....:" + ds.getName());
 			
 			this.resetFilesField();
 			
@@ -636,6 +631,7 @@ public class AfiliadoBeanEdit implements Serializable{
 	        context.addMessage("messagesupload", new FacesMessage(FacesMessage.SEVERITY_WARN, "Error", 
 	        		"No hay archivos para descargar") );
 	        this.resetFilesField();
+	        
 	        return null;
 		}
 	}
@@ -655,8 +651,6 @@ public class AfiliadoBeanEdit implements Serializable{
 		FacesContext context = FacesContext.getCurrentInstance();
 		String factura = context.getExternalContext().getRequestParameterMap().get("nrofactura");
 		
-		System.out.println("Nro FACTURA: " + factura);
-		
 		Ticketredencion tkTemp = this.ticketService.obtenerTicketredencionByNroFactura(factura);
 		if( tkTemp != null ){
 			byte[] image = null;
@@ -675,8 +669,6 @@ public class AfiliadoBeanEdit implements Serializable{
 	public void buscarFacturaRedencion(){
 		//Obtengo el objeto factura al que le vamos relacionar el 
 		//archivo de redenion
-		System.out.println("NRO Factura en el managedBean: " + this.getNroFacturaTemp());
-		
 		try {
 			this.txTemp = 
 					txService.obtenerRedencionPorFacturaYAfiliado(this.getNroFacturaTemp(), this.afiliadoSelected);

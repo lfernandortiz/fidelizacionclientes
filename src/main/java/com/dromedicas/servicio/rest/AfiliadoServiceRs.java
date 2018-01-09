@@ -350,13 +350,15 @@ public class AfiliadoServiceRs{
 			afiliado.setEmail(email);
 			afiliado.setClaveweb(claveweb);
 			// informacion adicional formulario 2
-			// Ocupacion
-			if (ocupacion != null) {
+			// Ocupacion		
+			
+			if (ocupacion != null && !ocupacion.toString().equals("[object HTMLDivElement]")) {
 				Ocupacion ocupac = this.ocupacionService.obtenerOcupacionById(Integer.parseInt(ocupacion));
 				afiliado.setOcupacionBean(ocupac);
 			}
+			
 			// Nivel de estudios
-			if (estudios != null) {
+			if (estudios != null && !estudios.toString().equals("[object HTMLDivElement]")) {
 				Estudioafiliado estudiosnivel = this.estudioService.obtenerEstudioafiliadoById(Integer.parseInt(estudios));
 				afiliado.setEstudioafiliado(estudiosnivel);
 			}
@@ -457,7 +459,7 @@ public class AfiliadoServiceRs{
 			
 			System.out.println(Response.Status.OK.getStatusCode());
 			responseObject.setCode(Status.OK.getStatusCode());
-			responseObject.setAfiliado(afiliado);
+			responseObject.setAfiliado(null);
 			responseObject.setStatus(Status.OK.getReasonPhrase());
 			responseObject.setMessage("Afiliado encontrado correctamente.");
 			

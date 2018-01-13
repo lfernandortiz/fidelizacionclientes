@@ -214,6 +214,7 @@ public class PuntosServiceRs {
 						if(  bTemp.getDisponiblesaredimir() >= puntosRedimidos ){ 
 							int pTxActual =  calculoService.redencionPuntos(sucursal, momento, nrofactura,
 													valortx, afiliado, puntosRedimidos);
+							
 							BalancePuntos balance =  calculoService.consultaPuntos(afiliado);
 							balance.setGanadostxactual(pTxActual);
 							responseObject.setCode(200);

@@ -459,12 +459,11 @@ public class AfiliadoServiceRs{
 			
 			System.out.println(Response.Status.OK.getStatusCode());
 			responseObject.setCode(Status.OK.getStatusCode());
-			responseObject.setAfiliado(null);
+			responseObject.setAfiliado(afiliado);
 			responseObject.setStatus(Status.OK.getReasonPhrase());
 			responseObject.setMessage("Afiliado encontrado correctamente.");
 			
 			System.out.println("Nombre: " + afiliado.getNombres() +" "+afiliado.getApellidos() );
-			
 			
 			return 
 					Response.status(Status.OK).entity(responseObject).header("Access-Control-Allow-Origin", "*").build();

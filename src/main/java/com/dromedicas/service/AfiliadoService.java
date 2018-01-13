@@ -54,6 +54,26 @@ public class AfiliadoService {
 		return temp;
 	}
 	
+	
+	
+	public Afiliado obtenerAfiliadoByCredenciales(String documento, String clave){	
+		System.out.println("Buscando Afiliado por credenciales...");
+		
+		Query query = em.createQuery("FROM Afiliado a WHERE a.documento = :docu and a.claveweb = :clave");
+		query.setParameter("docu", documento);
+		query.setParameter("clave", clave);
+		Afiliado temp = null;	
+		try { 
+			temp = (Afiliado) query.getSingleResult();
+			
+		} catch (NoResultException e) {
+			System.out.println("Afiliado no encontrado");			
+		}		
+		return temp;
+	}
+	
+	
+	
 	public Afiliado obtenerAfiliadoById(Afiliado instance){
 		return this.afiliadoDao.obtenerAfiliadoById(instance);
 	}
@@ -68,7 +88,7 @@ public class AfiliadoService {
 		Query query = em.createQuery("FROM Afiliado a WHERE a.documento = :docu");
 		query.setParameter("docu", documento);
 		
-		System.out.println("---------Query: " + query.unwrap(org.hibernate.Query.class).getQueryString());
+		//System.out.println("---------Query: " + query.unwrap(org.hibernate.Query.class).getQueryString());
 		Afiliado temp = null;		
 		try {
 			temp = (Afiliado) query.getSingleResult();

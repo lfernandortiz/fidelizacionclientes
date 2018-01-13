@@ -8,9 +8,16 @@ public class TestUnaccent {
 	
 	public static void main(String[] args){
 		
+		
 		String result = unaccent(accents);
 		
 		System.out.println("-->"+ result);
+		
+		
+		float residuo = (3500/1000) % 1;
+		System.out.println("$-------------"+ residuo); 
+		System.out.println("-------------"+ !(residuo == 0)); 
+		
 		
 	}
 	

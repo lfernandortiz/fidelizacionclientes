@@ -52,10 +52,9 @@ public class ClienteRecibirTxAcumulacionRs {
 	
 	@EJB
 	private EmpresaService empresaService;
-
+	
 	private String servicio = "wsjson/fptransacciones";
 	private String servicioAct = "wsjson/fpmarcaventas/?docuid=";
-	
 	
 	
 	/**
@@ -212,7 +211,10 @@ public class ClienteRecibirTxAcumulacionRs {
 								
 								tx.setNrofactura(factura);
 								
-								int valortx = Integer.parseInt(e.getTotal());							
+								Float tempValue = Float.parseFloat(e.getTotal());
+								
+								int valortx = tempValue.intValue();
+								
 								tx.setValortotaltx(valortx);
 								
 								Date fechavencimientopuntos = this.puntosService.addDays(momentotx, 365);//-> Cambiar (365) por paramatreo optenico de consulta  

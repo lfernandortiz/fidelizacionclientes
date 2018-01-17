@@ -28,6 +28,7 @@ public class RecibirTxPuntosSucursalJob implements Job {
 			ClienteRecibirTxAcumulacionRs clienteTx= (ClienteRecibirTxAcumulacionRs)
 					jndi.lookup("java:global/puntosfarmanorte/ClienteRecibirTxAcumulacionRs!com.dromedicas.servicio.rest.ClienteRecibirTxAcumulacionRs");
 			//Se consume los servicios en cada sucursal para obtener las tx's
+			
 			clienteTx.obtenerTxSucursales();			
 		} catch (Exception e) {
 			// TODO: handle exception

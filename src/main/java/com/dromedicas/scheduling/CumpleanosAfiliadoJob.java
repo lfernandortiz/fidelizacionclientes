@@ -8,7 +8,17 @@ public class CumpleanosAfiliadoJob implements Job{
 
 	@Override
 	public void execute(JobExecutionContext arg0) throws JobExecutionException {
-		// TODO Auto-generated method stub
+		//Actualiza las edades de los afiliados
+		
+		
+		//Obtiene los afiliados que cumplen anios el dia actual
+		
+		
+		
+		//Envia la coleccion de mensajes - o email informativo
+		
+		
+		
 		
 	}
 

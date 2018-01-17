@@ -99,6 +99,7 @@ public class AfiliadoBeanList {
 	}
 	
 	public void crearUUIDPendiente(){
+		
 		List<Afiliado> afiliadoListx = this.afiliadoService.obtenerAfiliadosSinUUID();
 		System.out.println(!afiliadoListx.isEmpty());
 		if( !afiliadoListx.isEmpty() ){
@@ -114,8 +115,10 @@ public class AfiliadoBeanList {
 		}else{
 			FacesContext.getCurrentInstance().addMessage("localmessage", new FacesMessage(FacesMessage.SEVERITY_WARN,
 					"No hay registros. ", " No hay afiliados pendientes de codigo UUID "));
-			
 		}
+		
+		
+		
 	}
 	
 	

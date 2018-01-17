@@ -1,5 +1,6 @@
 package com.dromedicas.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -218,6 +219,24 @@ public class AfiliadoService {
 		System.out.println("QueryString:" + queryString);
 		Query query = em.createQuery(queryString);
 		return query.getResultList();			
+	}
+	
+	
+	public List<Afiliado> obtenerAfiliadosPorCumpleanos(){
+		
+		List<Afiliado> cumpleList = new ArrayList<Afiliado>();
+		
+		String queryString = "SELECT a.* FROM Afiliado a where TIMESTAMPDIFF(YEAR, a.fechanacimiento, CURDATE()) >= 18 AND "+
+							 " TIMESTAMPDIFF(YEAR, a.fechanacimiento, CURDATE()) <= 99 ";	
+		
+		System.out.println("QueryString:" + queryString);
+		Query query = em.createNativeQuery(queryString);
+		List<Object[]> afiliadoTemp = query.getResultList();
+		for( Object el[] :afiliadoTemp  )
+			System.out.println("dd:" + el[2]);
+		
+		return cumpleList; 	
+		
 	}
 	
 	

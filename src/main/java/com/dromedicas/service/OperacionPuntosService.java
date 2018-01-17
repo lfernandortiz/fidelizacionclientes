@@ -227,6 +227,9 @@ public class OperacionPuntosService {
 		// llamada al metodo registrarTransaccion con el nuevo valor a acumular
 		int pTxActual =  this.registrarTransaccion(sucursal, momento, nrofactura, nuevoValorTx, afiliado);
 		
+		//enviar email de auditoria
+		this.mailAlert.notificacionRedencion(sucursal, momento, nrofactura, valortx, afiliado, puntosARedimir);
+		
 		return pTxActual;
 		
 	} 

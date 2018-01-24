@@ -317,10 +317,6 @@ public class AfiliadoBeanEdit implements Serializable{
 		
 		Afiliado afTempo = afiliadoService.obtenerAfiliadoByDocumento(this.afiliadoSelected.getDocumento());
  		if(afTempo != null ){
-//		Afiliado afTempo = afiliadoService.obtenerAfiliadoDocumentoNacionalidad(this.afiliadoSelected.getDocumento(), 
-//				this.getNacionalidad().getNombees());
-//		if(afTempo != null && afTempo.getNacionalidad().equals(this.getNacionalidad().getNombees())  ){
-			
 			FacesContext.getCurrentInstance().addMessage("cedulaid", 
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Numero de Documento Ya Registrado!"));			
 			System.out.println("Cedula ya registrada: " );	
@@ -396,12 +392,7 @@ public class AfiliadoBeanEdit implements Serializable{
 	
 	public void validarCedula(){
 		Afiliado afTemp = afiliadoService.obtenerAfiliadoByDocumento(this.afiliadoSelected.getDocumento());
- 		if(afTemp != null ){
-//		Afiliado afTemp = 
-//				afiliadoService.obtenerAfiliadoDocumentoNacionalidad(this.afiliadoSelected.getDocumento(), 
-//						this.getNacionalidad().getNombees());
-//		if(afTemp != null && afTemp.getNacionalidad().equals(this.getNacionalidad().getNombees()) ){
-			
+ 		if(afTemp != null ){		
 			FacesContext.getCurrentInstance().addMessage("cedulaid", 
 					new FacesMessage(FacesMessage.SEVERITY_WARN, "Error", "Numero de DOCUMENTO YA REGISTRADA!"));			
 			System.out.println("Cedula ya registrada: " );			
@@ -436,6 +427,17 @@ public class AfiliadoBeanEdit implements Serializable{
 		this.afiliadoSelected.setApellidos(
 				regex.removerAcentosNtildes(this.afiliadoSelected.getApellidos().trim().toUpperCase()));
 		this.afiliadoSelected.setTipodocumentoBean(this.afiliadoSelected.getTipodocumentoBean());
+		
+		//valida si la cedula que se esta ingresando no este registrada en otro afiliado
+		Afiliado afTempo = afiliadoService.obtenerAfiliadoByDocumento(this.afiliadoSelected.getDocumento());
+
+ 		if(afTempo != null && afTempo.getIdafiliado() != this.afiliadoSelected.getIdafiliado() ){		
+			FacesContext.getCurrentInstance().addMessage(null, 
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Numero de Documento Ya Registrado a otro afiliado!"));			
+			System.out.println("Cedula ya registrada: " );	
+			return null;
+		}	
+		
 		this.afiliadoSelected.setDocumento(this.afiliadoSelected.getDocumento());
 		this.afiliadoSelected.setSexo(this.afiliadoSelected.getSexo());
 		this.afiliadoSelected.setFechanacimiento(this.afiliadoSelected.getFechanacimiento());

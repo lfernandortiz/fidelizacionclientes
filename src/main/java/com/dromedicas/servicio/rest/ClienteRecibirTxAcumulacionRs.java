@@ -85,8 +85,7 @@ public class ClienteRecibirTxAcumulacionRs {
 						this.puntosService.registrarListTransacciones(nuevasTxsList);	
 						
 						//consumir servicio de actualizacion						
-						this.updateTxs( txWrap.getIdsList(), sucursal );
-						
+						this.updateTxs( txWrap.getIdsList(), sucursal );						
 					}
 				}
 
@@ -107,17 +106,18 @@ public class ClienteRecibirTxAcumulacionRs {
 
 							// persiste las nuevas transacciones de acumulacion
 							// en un metodo del EJB de operaciones de puntos
+							System.out.println("--------Vacias " + (!nuevasTxsList.isEmpty()));
 							if( !nuevasTxsList.isEmpty() ){
 								this.puntosService.registrarListTransacciones(nuevasTxsList);	
 								
 								//consumir servicio de actualizacion						
 								this.updateTxs( txWrap.getIdsList(), sucursal );
-								
 							}
 						}
 					}
 				} catch (Exception e) {
-					// TODO: handle exception
+					System.out.println("ERROR EN LA PERSISTENCIA DE LAS TRANSACCIONES-----");
+					e.printStackTrace();
 				}
 			}//fin del else 24 horas				 
 		} // fin for itera sucursales
@@ -129,8 +129,7 @@ public class ClienteRecibirTxAcumulacionRs {
 	 * Retorna la Transacciones por acumular puntos en la sucursal enviada como parametro
 	 * @param sucursal
 	 * @return
-	 */
-	
+	 */	
 	private UtilTransactionWrap obtenerTxFromWS(Sucursal sucursal) {
 		
 		//objeto de utilidad creado para devolver dos colecciones

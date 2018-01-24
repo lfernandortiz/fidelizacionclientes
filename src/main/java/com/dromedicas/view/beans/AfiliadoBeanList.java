@@ -87,8 +87,8 @@ public class AfiliadoBeanList {
 			this.afiliadoList = afiliadoService.bucarAfiliadoByFields(this.valorABuscar.replace("'", ""));
 			this.totalAfiliados = this.afiliadoList.size();
 		}
-		
 	}
+	
 
 	public Integer getTotalAfiliados() {
 		return totalAfiliados;

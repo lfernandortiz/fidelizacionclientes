@@ -215,12 +215,6 @@ public class PuntosServiceRs {
 							int pTxActual =  calculoService.redencionPuntos(sucursal, momento, nrofactura,
 													valortx, afiliado, puntosRedimidos);
 							
-//							responseObject.setMessage("El servicio de redencion no esta disponible :-(");
-//							responseObject.setCode(200);
-//							responseObject.setBalance(bTemp);
-//							responseObject.setStatus(Status.OK.getReasonPhrase());
-//							return Response.status(200).entity(responseObject).build();
-							
 							BalancePuntos balance =  calculoService.consultaPuntos(afiliado);
 							balance.setGanadostxactual(pTxActual);
 							responseObject.setCode(200);
@@ -251,7 +245,6 @@ public class PuntosServiceRs {
 								}
 								this.smsService.enviarSMSDirecto(afiliado.getCelular(), mensaje, "redencion");
 							}
-							
 							
 							return Response.status(200).entity(responseObject).build();	
 												

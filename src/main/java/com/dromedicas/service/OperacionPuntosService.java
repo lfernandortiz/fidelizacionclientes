@@ -236,7 +236,15 @@ public class OperacionPuntosService {
 	
 	
 	
-	
+	/***
+	 * Metodo que procesa la devolucion de una compra.
+	 * @param sucursal
+	 * @param momento
+	 * @param nrofactura
+	 * @param valortx
+	 * @param afiliado
+	 * @return
+	 */
 	public int devolucionTx(Sucursal sucursal, String momento, String nrofactura, Integer valortx, Afiliado afiliado) {
 
 		// Graba la Transaccion de redencion

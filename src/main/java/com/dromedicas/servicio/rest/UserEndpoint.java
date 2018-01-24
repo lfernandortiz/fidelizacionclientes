@@ -2,21 +2,22 @@ package com.dromedicas.servicio.rest;
 
 
 import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
-import static javax.ws.rs.core.MediaType.APPLICATION_FORM_URLENCODED;
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import com.dromedicas.domain.Afiliado;
@@ -38,11 +39,10 @@ public class UserEndpoint {
 	
 	private UriInfo uriInfo;	
 	
-	@POST
-    @Path("/login")
-    @Consumes(APPLICATION_FORM_URLENCODED)
-	@Produces(APPLICATION_JSON)
-    public Response authenticateUser(@QueryParam("login") String login,
+	@Path("/login")
+	@POST    
+	@Produces(MediaType.APPLICATION_JSON)
+    public Response authenticateUser(@QueryParam("user") String login,
     								 @QueryParam("password") String password) {
 		
 		System.out.println("ENTRE AL METODO");
@@ -52,28 +52,41 @@ public class UserEndpoint {
             
 
             // Autentica el usuario usando las credenciales proporcionadas
-            authenticate(login, password);
+            String uuid = authenticate(login, password);
 
             // Emite un token para el usuario 
-            String token = issueToken(login);            
+            String token = issueToken(uuid);            
 
+            Thread.sleep(4000);
             // Retorna el tocken en la respuesta
-            return Response.ok().header(AUTHORIZATION, "Bearer " + token).build();
-
+            
+            return Response.status(Status.OK).header("Access-Control-Allow-Origin", "*")
+            								 .header("Access-Control-Expose-Headers","Session-Token")
+            								 .header("Access-Control-Expose-Headers", "ETag")
+            								 .header("Access-Control-Expose-Headers", "AUTHORIZATION")
+            								 .header("Access-Control-Allow-Credentials", "true")
+            								 .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD")	
+            								 .header(AUTHORIZATION, "Bearer " + token).build();
+            
         } catch (Exception e) {
-            return Response.status(UNAUTHORIZED).header("Access-Control-Allow-Origin", "*").build();
-            //Response.status(Status.OK).entity(responseObject).header("Access-Control-Allow-Origin", "*").build()
+        	Map<String, String> rep = new HashMap<String, String>();
+        	rep.put("code", "404");
+        	rep.put("message", "Usuario no resgistrado.");
+            return Response.status(Status.OK).entity(rep).header("Access-Control-Allow-Origin", "*").build();
         }
     }
 	
 	
-	private void authenticate(String login, String password) throws Exception {
+	private String authenticate(String login, String password) throws Exception {
 		System.out.println("---- login/password : " + login + "/" + password);
 		
         Afiliado afTemp = this.afiliadoService.obtenerAfiliadoByCredenciales(login, password);
         
         if (afTemp == null)
             throw new SecurityException("Invalid user/password");
+        
+        return afTemp.getKeycode();
+        
     }
 
 	
@@ -84,7 +97,7 @@ public class UserEndpoint {
                 .setSubject(login)
                 //.setIssuer(uriInfo.getAbsolutePath().toString())
                 .setIssuedAt(date)                
-                .setExpiration(addMinutesToDate(60, date))                
+                .setExpiration(addMinutesToDate(180, date))                
                 .signWith(SignatureAlgorithm.HS512, key)
                 .compact();
         System.out.println("#### generating token for a key : " + jwtToken + " - " + key);

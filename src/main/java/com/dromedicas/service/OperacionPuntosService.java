@@ -352,7 +352,7 @@ public class OperacionPuntosService {
 		Date tempDate = this.getFechaVencimiento(afiliado);
 		balance.setFechavencimiento(tempDate != null ? sdf.format(tempDate) : "" );
 		balance.setDisponiblesaredimir(this.getPuntosDisponibles(afiliado));
-		balance.setAcumuladosnodisponibles(this.getPuntosAcumuladosNoDisponibles(afiliado));
+		balance.setTotalpuntosactual(this.getPuntosAcumuladosNoDisponibles(afiliado)); 
 		
 		return balance;
 	}

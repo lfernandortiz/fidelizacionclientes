@@ -50,14 +50,14 @@ public class UserEndpoint {
         try {
             System.out.println("#### login/password : " + login + "/" + password);
             
-
+            Thread.sleep(3000);
             // Autentica el usuario usando las credenciales proporcionadas
             String uuid = authenticate(login, password);
 
             // Emite un token para el usuario 
             String token = issueToken(uuid);            
 
-            Thread.sleep(4000);
+           
             // Retorna el tocken en la respuesta
             
             return Response.status(Status.OK).header("Access-Control-Allow-Origin", "*")
@@ -97,7 +97,7 @@ public class UserEndpoint {
                 .setSubject(login)
                 //.setIssuer(uriInfo.getAbsolutePath().toString())
                 .setIssuedAt(date)                
-                .setExpiration(addMinutesToDate(180, date))                
+                .setExpiration(addMinutesToDate(172800000, date))                
                 .signWith(SignatureAlgorithm.HS512, key)
                 .compact();
         System.out.println("#### generating token for a key : " + jwtToken + " - " + key);

@@ -1,5 +1,10 @@
 package com.dromedicas.servicio.rest;
 
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.security.Key;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -9,9 +14,11 @@ import java.util.UUID;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
@@ -21,11 +28,14 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.commons.io.IOUtils;
+
 import com.dromedicas.domain.Afiliado;
 import com.dromedicas.domain.Afiliadopatologia;
 import com.dromedicas.domain.AfiliadopatologiaPK;
 import com.dromedicas.domain.Afiliadopatologianucleo;
 import com.dromedicas.domain.AfiliadopatologianucloePK;
+import com.dromedicas.domain.BalancePuntos;
 import com.dromedicas.domain.Estudioafiliado;
 import com.dromedicas.domain.Nucleofamilia;
 import com.dromedicas.domain.NucleofamiliaPK;
@@ -43,6 +53,7 @@ import com.dromedicas.service.AfiliadoService;
 import com.dromedicas.service.EstudioAfiliadoService;
 import com.dromedicas.service.NucleoFamiliaService;
 import com.dromedicas.service.OcupacionService;
+import com.dromedicas.service.OperacionPuntosService;
 import com.dromedicas.service.PatologiaService;
 import com.dromedicas.service.ReferidoService;
 import com.dromedicas.service.SucursalService;
@@ -50,7 +61,11 @@ import com.dromedicas.service.TipoDocumentoService;
 import com.dromedicas.service.TipoMiembroService;
 import com.dromedicas.service.UsuarioWebService;
 import com.dromedicas.util.ExpresionesRegulares;
+import com.dromedicas.util.SimpleKeyGenerator;
+import com.sun.jersey.core.header.FormDataContentDisposition;
+import com.sun.jersey.multipart.FormDataParam;
 
+import io.jsonwebtoken.Jwts;
 
 /**
  * 
@@ -59,8 +74,13 @@ import com.dromedicas.util.ExpresionesRegulares;
  */
 @Path("/afiliado")
 @Stateless
-public class AfiliadoServiceRs{
+public class AfiliadoServiceRs implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@EJB
 	private AfiliadoService afiliadoService;
 	
@@ -101,7 +121,12 @@ public class AfiliadoServiceRs{
 	private ExpresionesRegulares regex;
 	
 	@EJB
+	private OperacionPuntosService calculoService;
+	
+	@EJB
 	private EnviarEmailAlertas emailAlerta;
+	
+	@Context UriInfo uriInfo;
 		
 	
 	//crear afiliado desde formulario web y la app
@@ -139,7 +164,7 @@ public class AfiliadoServiceRs{
 			afiliado.setDocumento(documento);
 			afiliado.setNacionalidad("Colombia");
 			afiliado.setSexo(sexo);
-			
+						
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");			
 			try {
 				afiliado.setFechanacimiento(sdf.parse(fechanacimiento));
@@ -473,17 +498,210 @@ public class AfiliadoServiceRs{
 			System.out.println(Response.Status.BAD_REQUEST.getStatusCode());
 			responseObject.setCode(Status.BAD_REQUEST.getStatusCode());
 			responseObject.setStatus(Status.BAD_REQUEST.getReasonPhrase());
-			responseObject.setMessage("El documento ya se encuentra registrado.");
+			responseObject.setMessage("Error en la actualizacion de los datos.");
 			return 
 					Response.status(Status.OK).entity(responseObject).header("Access-Control-Allow-Origin", "*").build();
 		}		
 	}
 	
 	
+	/**
+	 * End Point para la actualizacion de los datos basicos del afiliado
+	 * desde el perfil web y la App.
+	 * Retorna un objeto ResponsePuntos wrap con la informacion del afiliado
+	 * puntos acumulados y url de la foto del perfil.
+	 * @param ui
+	 * @return Response
+	 */
+	@Path("/updateprofilepartner")
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response actualizaPerfil(@Context UriInfo ui) {
+
+		MultivaluedMap<String, String> map = ui.getQueryParameters();
+
+		ResponsePuntos responseObject = new ResponsePuntos();
+
+		try {
+			Thread.sleep(2000);
+			
+			String documento = map.getFirst("documento");
+			String nombres = map.getFirst("nombres");
+			String apellidos = map.getFirst("apellidos");
+			int tipodocumento = Integer.parseInt(map.getFirst("tipodocumento"));
+			String sexo = map.getFirst("sexo");
+			String direccion = map.getFirst("direccion");
+			String fechanacimiento = map.getFirst("fechanacimiento");
+			String telefonofijo = map.getFirst("telefonofijo");
+			String celular = map.getFirst("celular");
+			String ciudad = map.getFirst("ciudad");
+			String email = map.getFirst("email");
+			String barrio = map.getFirst("barrio");
+			String token = this.getToken(map.getFirst("token"));
+
+			// --> Se crean las instancias respectivas
+			Afiliado afiliado = this.afiliadoService.obtenerAfiliadoUUID(token);
+			afiliado.setNombres(nombres);
+			afiliado.setApellidos(apellidos);
+			
+			Tipodocumento tdocumento = tipodocService.obtenerTipodocumentoByIdString(tipodocumento);
+			afiliado.setTipodocumentoBean(tdocumento);
+			afiliado.setNacionalidad("Colombia");
+			afiliado.setSexo(sexo);
+
+			afiliado.setStreet(direccion);
+			afiliado.setStreetdos(barrio);
+			afiliado.setCiudad(ciudad);
+			afiliado.setDepartamento("");
+
+			Sucursal sucursal = this.sucursalService.obtenerSucursalPorIdIterno("00");
+			afiliado.setSucursal(sucursal);
+			afiliado.setTelefonofijo(telefonofijo);
+			afiliado.setCelular(celular);
+			afiliado.setEmail(email);
+			
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			try {
+				
+				System.out.println("fecha recibida: " + fechanacimiento);
+				
+				Date f = sdf.parse(fechanacimiento);
+				
+				
+				afiliado.setFechanacimiento(f);
+				
+				System.out.println("Fecha de Nacimiento Comprobacion updateprofilepartner: " + f);
+			} catch (ParseException e) {
+
+				e.printStackTrace();
+			}
+
+			//valida que no exista otro afiliado con el documento que se intenta actualizar
+			
+			boolean validaDocumento = afiliado.getIdafiliado() != this.afiliadoService.obtenerAfiliadoByDocumento(documento).getIdafiliado();
+			
+			if( validaDocumento ){
+				System.out.println(Response.Status.BAD_REQUEST.getStatusCode());
+				responseObject.setCode(Status.BAD_REQUEST.getStatusCode());
+				responseObject.setStatus(Status.BAD_REQUEST.getReasonPhrase());
+				responseObject.setMessage("Error en la actualizacion de los datos, Este numero de documento ya esta asignado a otro afiliado.");
+				return Response.status(Status.OK).entity(responseObject).header("Access-Control-Allow-Origin", "*").build();
+			}
+			
+			
+			afiliado.setDocumento(documento);
+			
+			// se actualizan los valores
+			this.afiliadoService.actualizarAfiliado(afiliado);
+			
+			Afiliado tempA=  this.afiliadoService.obtenerAfiliadoById(afiliado);
+			
+			BalancePuntos balance = calculoService.consultaPuntos(tempA);
+			
+			System.out.println(Response.Status.OK.getStatusCode());
+			responseObject.setCode(Status.OK.getStatusCode());
+			responseObject.setBalance(balance);
+			responseObject.setAfiliado(tempA);
+			if(afiliado.getFotoperfil() != null){
+				responseObject.setUrlFotoAfiliado(uriInfo.getBaseUri()+ "afiliado"+ "/getfotoperfil/" + afiliado.getKeycode());
+			}
+			responseObject.setStatus(Status.OK.getReasonPhrase());
+			responseObject.setMessage("Afiliado encontrado correctamente.");
+			
+			System.out.println("Nombre: " + afiliado.getNombres() + " " + afiliado.getApellidos());
+
+			return Response.status(Status.OK).entity(responseObject).header("Access-Control-Allow-Origin", "*").build();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println(Response.Status.BAD_REQUEST.getStatusCode());
+			responseObject.setCode(Status.BAD_REQUEST.getStatusCode());
+			responseObject.setStatus(Status.BAD_REQUEST.getReasonPhrase());
+			responseObject.setMessage("Error en la actualizacion de los datos.");
+			return Response.status(Status.OK).entity(responseObject).header("Access-Control-Allow-Origin", "*").build();
+		}
+	}
 	
 	
+	
+	/**
+	 * End Point para actualizar la foto del perfil del afiliado
+	 * @param uploadedInputStream
+	 * @param fileDetail
+	 * @param token
+	 * @return Response 
+	 */
+	@POST
+	@Path("/uploadfoto")  //Your Path or URL to call this service
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response uploadFile(@FormDataParam("file") InputStream uploadedInputStream,
+							   @FormDataParam("file") FormDataContentDisposition fileDetail,
+							   @FormDataParam("token") String token) {
+		
+		try {
+		    //Se obtiene el flujo de bits de la imagen
+			//Se usa la api IOUtils para obtener el array de bits del objeto InputStream
+		    byte[] foto = IOUtils.toByteArray( uploadedInputStream );
+		    
+		    //obtenemos el JWT (json web token) y extraemos el codigo UUID del afiliado
+		    String uuid = getToken(token);
+		    
+		    //usando el EJB de servicio de afiliado obtenemos el afiliado por medio del UUID
+		    Afiliado afTemp = this.afiliadoService.obtenerAfiliadoUUID( uuid );
+		    //Al objeto afiliado establecemos la imagen (blob)
+		    afTemp.setFotoperfil(foto);
+		    
+		    //Por medio del EJB de servicio para afiliado actualizamos los cambiod de la foto
+		    this.afiliadoService.actualizarAfiliado(afTemp);
+		    
+		    //Crea Wrap o envoltorio para la respuesta del JSON
+		    ResponsePuntos responseObject = new ResponsePuntos();
+		    responseObject.setCode(Status.OK.getStatusCode());
+		    responseObject.setUrlFotoAfiliado(uriInfo.getBaseUri()+ "afiliado"+ "/getfotoperfil/" + afTemp.getKeycode());
+			responseObject.setAfiliado(afTemp);
+			responseObject.setStatus(Status.OK.getReasonPhrase());
+			responseObject.setMessage("Afiliado encontrado correctamente.");
+		   
+		    return
+		    		Response.status(Status.OK).entity(responseObject).header("Access-Control-Allow-Origin", "*").build();
+		    
+		} catch (Exception e) {
+			
+			return null;
+		}
+	}
+	
+	
+	@GET
+	@Path("/getfotoperfil/{token}")
+	@Produces("image/jpg")
+	public Response getFile(@PathParam("token") String token) {
+		
+		Afiliado afTemp = this.afiliadoService.obtenerAfiliadoUUID(token);
+		System.out.println("Afiliado foto: " + afTemp.getNombres());
+		
+		System.out.println("--------------" + afTemp.getFotoperfil());
+		
+		if( afTemp.getFotoperfil() != null ){
+			return  
+					Response.status(Status.OK).entity(new ByteArrayInputStream(afTemp.getFotoperfil())).
+											header("Access-Control-Allow-Origin", "*").build();
+		}else{
+			return null;
+		}
+	}
+		
 	
 
+	private String getToken(String jWT){
+		String uuidAfiliado = null;
+		String justTheToken = jWT.substring("Bearer".length()).trim();
+		Key key = new SimpleKeyGenerator().generateKey();			
+		uuidAfiliado = Jwts.parser().setSigningKey(key).parseClaimsJws(justTheToken).getBody().getSubject();
+		return uuidAfiliado;
+		
+	}
 	
 	
 	

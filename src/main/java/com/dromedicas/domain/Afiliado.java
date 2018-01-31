@@ -9,6 +9,7 @@ import java.util.Set;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -16,6 +17,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
@@ -112,6 +114,11 @@ public class Afiliado implements Serializable {
 	private String urlimageperfil;
 
 	private String usuarioweb;
+	
+	@JsonIgnore
+	@Lob
+	@Column(length=1000000)
+	private byte[] fotoperfil;
 	
 	//bi-directional many-to-one association to Ticketredencion
 	@OneToMany(mappedBy="transaccion")
@@ -653,5 +660,15 @@ public class Afiliado implements Serializable {
 	public void setTicketredencions(Set<Ticketredencion> ticketredencions) {
 		this.ticketredencions = ticketredencions;
 	}
+
+	public byte[] getFotoperfil() {
+		return fotoperfil;
+	}
+
+	public void setFotoperfil(byte[] fotoperfil) {
+		this.fotoperfil = fotoperfil;
+	}
+	
+	
 
 }

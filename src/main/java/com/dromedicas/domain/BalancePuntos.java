@@ -7,7 +7,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @XmlRootElement
-@JsonPropertyOrder({ "ganadostxactual", "acumulados","redimidos", "vencidos", "avencer","fechavencimiento", "disponiblesaredimir", "acumuladosnodisponibles"})
+@JsonPropertyOrder({ "ganadostxactual", "acumulados","redimidos", "vencidos", "avencer","fechavencimiento", "disponiblesaredimir", "totalpuntosactual"})
 public class BalancePuntos implements Serializable {
 	
 	/**
@@ -20,8 +20,9 @@ public class BalancePuntos implements Serializable {
 	private int avencer;
 	private String fechavencimiento;
 	private int disponiblesaredimir;
-	private int acumuladosnodisponibles;
+	private int totalpuntosactual;
 	private int ganadostxactual;
+
 	
 	
 	public BalancePuntos (){}
@@ -87,13 +88,14 @@ public class BalancePuntos implements Serializable {
 	}
 
 
-	public int getAcumuladosnodisponibles() {
-		return acumuladosnodisponibles;
+	
+	public int getTotalpuntosactual() {
+		return totalpuntosactual;
 	}
 
 
-	public void setAcumuladosnodisponibles(int acumuladosnodisponibles) {
-		this.acumuladosnodisponibles = acumuladosnodisponibles;
+	public void setTotalpuntosactual(int totalpuntosactual) {
+		this.totalpuntosactual = totalpuntosactual;
 	}
 
 

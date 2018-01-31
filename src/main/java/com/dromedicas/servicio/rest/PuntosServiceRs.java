@@ -1,5 +1,6 @@
 package com.dromedicas.servicio.rest;
 
+import java.security.Key;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -12,8 +13,10 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
 
 import com.dromedicas.domain.Afiliado;
@@ -29,6 +32,9 @@ import com.dromedicas.service.TipoTransaccionService;
 import com.dromedicas.service.TransaccionService;
 import com.dromedicas.smsservice.SMSService;
 import com.dromedicas.util.ExpresionesRegulares;
+import com.dromedicas.util.SimpleKeyGenerator;
+
+import io.jsonwebtoken.Jwts;
 
 /**
  * Clase que implementa JAX-RS para ofrecer 
@@ -65,6 +71,8 @@ public class PuntosServiceRs {
 	
 	@EJB
 	private ExpresionesRegulares rgx;
+	
+	@Context UriInfo uriInfo;
 	
 	
 	//Grabar transaccion de ACUMULACION puntos - Devolviendo balance de puntos
@@ -161,6 +169,9 @@ public class PuntosServiceRs {
 			responseObject.setMessage("Transaccion exitosa");
 			responseObject.setBalance(balance);
 			responseObject.setStatus(Status.OK.getReasonPhrase());
+			if(afiliado.getFotoperfil() != null){
+				responseObject.setUrlFotoAfiliado(uriInfo.getBaseUri()+ "afiliado"+ "/getfotoperfil/" + afiliado.getKeycode());
+			}
 			responseObject.setAfiliado(afiliado);
 			return Response.status(200).entity(responseObject).build();
 			
@@ -219,6 +230,9 @@ public class PuntosServiceRs {
 							balance.setGanadostxactual(pTxActual);
 							responseObject.setCode(200);
 							responseObject.setStatus(Status.OK.getReasonPhrase());
+							if(afiliado.getFotoperfil() != null){
+								responseObject.setUrlFotoAfiliado(uriInfo.getBaseUri()+ "afiliado"+ "/getfotoperfil/" + afiliado.getKeycode());
+							}
 							responseObject.setMessage("Transaccion exitosa");
 							responseObject.setBalance(balance);
 													
@@ -365,5 +379,65 @@ public class PuntosServiceRs {
 
 	}
 	
-
+	
+	/**
+	 * Consulta de Balance de puntos basado en
+	 * Jason Web Tokens JWT
+	 * @param documento
+	 * @return
+	 */
+	@Path("/datosafiliado/{token}")
+	@GET	
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response consultaBalancePuntosJWT(@PathParam("token") String token){
+		
+		ResponsePuntos responseObject = new ResponsePuntos();		
+		String uuidAfiliado = null;
+		try {
+			String justTheToken = token.substring("Bearer".length()).trim();
+			Key key = new SimpleKeyGenerator().generateKey();			
+			uuidAfiliado = Jwts.parser().setSigningKey(key).parseClaimsJws(justTheToken).getBody().getSubject();			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println(Response.Status.BAD_REQUEST.getStatusCode());
+			responseObject.setCode(Status.BAD_REQUEST.getStatusCode());
+			responseObject.setStatus(Status.BAD_REQUEST.getReasonPhrase());
+			responseObject.setMessage("Sesion finalizada");
+			return Response.status(Status.OK).entity(responseObject).header("Access-Control-Allow-Origin", "*").build();
+		}
+		
+		if(uuidAfiliado != null){
+			Afiliado afiliado = this.afiliadoService.obtenerAfiliadoUUID(uuidAfiliado);
+			
+			if(afiliado != null){
+				
+				BalancePuntos balance = calculoService.consultaPuntos(afiliado);
+				
+				responseObject.setCode(200);
+				responseObject.setMessage("Transaccion exitosa");
+				responseObject.setBalance(balance);
+				responseObject.setStatus(Status.OK.getReasonPhrase());
+				if(afiliado.getFotoperfil() != null){
+					responseObject.setUrlFotoAfiliado(uriInfo.getBaseUri()+ "afiliado"+ "/getfotoperfil/" + afiliado.getKeycode());
+				}
+				responseObject.setAfiliado(afiliado);
+				return Response.status(Status.OK).entity(responseObject).header("Access-Control-Allow-Origin", "*").build();
+				
+			}else{
+				responseObject.setCode(401);
+				responseObject.setMessage("Afilaido no encontrado");
+				return Response.status(401).entity(responseObject).header("Access-Control-Allow-Origin", "*").build();
+			}
+		}else{
+			responseObject.setCode(Status.BAD_REQUEST.getStatusCode());
+			responseObject.setStatus(Status.BAD_REQUEST.getReasonPhrase());
+			responseObject.setMessage("Afiliado no encontrado");
+			return Response.status(Status.OK).entity(responseObject).header("Access-Control-Allow-Origin", "*").build();
+			
+		}
+	
+	}
+	
+	
 }

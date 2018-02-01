@@ -695,7 +695,8 @@ public class AfiliadoServiceRs implements Serializable{
 	}
 	
 	/**
-	 * 
+	 * End point para la recuperacion de la clave de afiliado
+	 * por medio del correo electronico.
 	 * @param email
 	 * @return
 	 */
@@ -707,7 +708,7 @@ public class AfiliadoServiceRs implements Serializable{
 		Afiliado afTemp = null;
 		
 		try {
-			Thread.sleep(2000);
+			Thread.sleep(2000); // esto es por visaje ;-)
 		} catch (InterruptedException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -716,15 +717,14 @@ public class AfiliadoServiceRs implements Serializable{
 		try {			
 			afTemp = this.afiliadoService.obtenerAfiliadoByEmail(email);			
 		}catch(Exception e) {
-			System.out.println("------------Hay mas de un afiliado con esta cuenta de correo");
-			
 			e.printStackTrace();
-			
 			ResponsePuntos responseObject = new ResponsePuntos();
 		    System.out.println(Response.Status.BAD_REQUEST.getStatusCode());
 			responseObject.setCode(Status.BAD_REQUEST.getStatusCode());
 			responseObject.setStatus(Status.BAD_REQUEST.getReasonPhrase());
-			responseObject.setMessage("Hay mas de un afiliado con esta cuenta de correo.");		   
+			
+			String mensaje = e.getCause().getCause().getMessage();//Cool
+			responseObject.setMessage(mensaje);		   
 		    return
 		    		Response.status(Status.OK).entity(responseObject).header("Access-Control-Allow-Origin", "*").build();
 		}
@@ -737,7 +737,6 @@ public class AfiliadoServiceRs implements Serializable{
 			
 			ResponsePuntos responseObject = new ResponsePuntos();
 		    responseObject.setCode(Status.OK.getStatusCode());
-		    
 			responseObject.setAfiliado(afTemp);
 			responseObject.setStatus(Status.OK.getReasonPhrase());
 			responseObject.setMessage("Correo de recuperacion encontrado satisfactoriamente.");
@@ -748,7 +747,6 @@ public class AfiliadoServiceRs implements Serializable{
 			return null;
 		}
 	}
-	
 		
 	
 

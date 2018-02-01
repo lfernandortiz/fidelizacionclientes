@@ -192,11 +192,9 @@ public class AfiliadoService {
 			
 		} catch (NoResultException e) {
 			System.out.println("Elemento no encontrado");
-			
+			throw new NoResultException("No hay ningun afiliado con esta cuenta de correo.");
 		} catch (NonUniqueResultException e){
-			System.out.println("Mas de un resultado con ese correo");
-			 throw new NonUniqueResultException("Mas de un resultado con ese correo papa");
-			
+			throw new NonUniqueResultException("Hay mas de un afiliado con esta cuenta de correo.");
 		}		
 		return temp;
 		

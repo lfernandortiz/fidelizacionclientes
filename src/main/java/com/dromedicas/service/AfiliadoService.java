@@ -7,6 +7,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
@@ -175,6 +176,26 @@ public class AfiliadoService {
 			temp = (Afiliado) query.getSingleResult();
 		} catch (NoResultException e) {
 			System.out.println("Elemento no encontrado");
+			
+		}		
+		return temp;
+		
+	}
+	
+	
+	public Afiliado obtenerAfiliadoByEmail(String email)  {
+		Query query = em.createQuery("FROM Afiliado a WHERE a.email = :email");
+		query.setParameter("email", email);
+		Afiliado temp = null;		
+		try {
+			temp = (Afiliado) query.getSingleResult();
+			
+		} catch (NoResultException e) {
+			System.out.println("Elemento no encontrado");
+			
+		} catch (NonUniqueResultException e){
+			System.out.println("Mas de un resultado con ese correo");
+			 throw new NonUniqueResultException("Mas de un resultado con ese correo papa");
 			
 		}		
 		return temp;

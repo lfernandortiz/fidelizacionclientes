@@ -14,6 +14,8 @@ import java.util.UUID;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -691,6 +693,62 @@ public class AfiliadoServiceRs implements Serializable{
 			return null;
 		}
 	}
+	
+	/**
+	 * 
+	 * @param email
+	 * @return
+	 */
+	@GET
+	@Path("/recuperaclave/{email}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response recuperaClave(@PathParam("email") String email) {
+		
+		Afiliado afTemp = null;
+		
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		try {			
+			afTemp = this.afiliadoService.obtenerAfiliadoByEmail(email);			
+		}catch(Exception e) {
+			System.out.println("------------Hay mas de un afiliado con esta cuenta de correo");
+			
+			e.printStackTrace();
+			
+			ResponsePuntos responseObject = new ResponsePuntos();
+		    System.out.println(Response.Status.BAD_REQUEST.getStatusCode());
+			responseObject.setCode(Status.BAD_REQUEST.getStatusCode());
+			responseObject.setStatus(Status.BAD_REQUEST.getReasonPhrase());
+			responseObject.setMessage("Hay mas de un afiliado con esta cuenta de correo.");		   
+		    return
+		    		Response.status(Status.OK).entity(responseObject).header("Access-Control-Allow-Origin", "*").build();
+		}
+		System.out.println("Afiliado encontrado por email :-)");
+		
+		if( afTemp != null ){			
+			//se envia un correo de recuperacion de clave
+			
+			this.emailAlerta.emailRecuparacionClave(afTemp);
+			
+			ResponsePuntos responseObject = new ResponsePuntos();
+		    responseObject.setCode(Status.OK.getStatusCode());
+		    
+			responseObject.setAfiliado(afTemp);
+			responseObject.setStatus(Status.OK.getReasonPhrase());
+			responseObject.setMessage("Correo de recuperacion encontrado satisfactoriamente.");
+		   
+		    return
+		    		Response.status(Status.OK).entity(responseObject).header("Access-Control-Allow-Origin", "*").build();
+		}else{
+			return null;
+		}
+	}
+	
 		
 	
 
@@ -705,8 +763,5 @@ public class AfiliadoServiceRs implements Serializable{
 	
 	
 	
-	// login perfil del usuario
-
-	// actualizacion de datos basicos de afiliado
 
 }

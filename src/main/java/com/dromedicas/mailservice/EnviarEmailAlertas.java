@@ -629,7 +629,7 @@ public boolean notificacionRedencion(Sucursal sucursal, String momento, String n
 
 public boolean emailRecuparacionClave(Afiliado afiliado) {
 	
-	String urlConfirmacion = "http://localhost:8003/seccion/actualizacion.html?id=" + afiliado.getKeycode();
+	String urlConfirmacion = "http://localhost:8003/seccion/resetpassword.html?id=" + afiliado.getKeycode();
 	
 	System.out.println("Enviar Email Recuperacion clave");
 	try{			
@@ -729,6 +729,111 @@ public boolean emailRecuparacionClave(Afiliado afiliado) {
 	return true;	
 }
 
+
+public boolean emailConfirmacionClave(Afiliado afiliado) {
+	
+	
+	
+	System.out.println("Enviar Email confirmacion clave");
+	try{			
+		ServletContext servletContext = null;
+					
+		try {
+			servletContext = (ServletContext) FacesContext
+			        .getCurrentInstance().getExternalContext().getContext();
+		} catch (Exception e) {
+			servletContext = context;
+		}
+		
+		File inputHtml = new File(servletContext.getRealPath("emailhtml/emailconfirmaclave.html"));
+		// Asginamos el archivo al objeto analizador Document
+		Document doc = Jsoup.parse(inputHtml, "UTF-8");
+		
+		// obtengo los id's del DOM a los que deseo insertar los valores
+		// mediante el metodo append() se insertan los valores obtenidos del
+		// objeto obtenido como parametro
+		
+		Element anioactual = doc.select("span#anioactual").first();
+		anioactual.append( new SimpleDateFormat("yyyy").format(new Date() ));
+
+		// Url de confirmacion de correo para el elemento buton 
+		Element genero = doc.select("span#genero").first();
+		genero.append(afiliado.getSexo().equals("M")? "o": "a" );
+		
+		Element nomAfiliado = doc.select("span#nombreAfiliado").first();
+		nomAfiliado.append(afiliado.getNombres() + " " + afiliado.getApellidos());
+								
+		//Element img = doc.select("img#pixelcontrol").first();
+		//img.attr("src", url);
+		
+		// Propiedades de la conexión
+		Properties props = new Properties();
+		props.setProperty("mail.smtp.host", "deus.wnkserver6.com");
+		props.setProperty("mail.smtp.port", "25");// puerto de salida, de
+		// entrada 110
+		props.setProperty("mail.smtp.user",
+							"contacto@puntosfarmanorte.com.co");
+		props.setProperty("mail.smtp.auth", "true");
+		props.put("mail.transport.protocol.", "smtp");
+
+		// Preparamos la sesion
+		Session session = Session.getDefaultInstance(props);
+		// Construimos el mensaje
+
+		
+		// multiples direcciones
+		String[] to = { afiliado.getEmail() };
+		
+		
+		// arreglo con las direcciones de correo
+		InternetAddress[] addressTo = new InternetAddress[to.length];
+		for (int i = 0; i < addressTo.length; i++) {
+			addressTo[i] = new InternetAddress(to[i]);
+		}
+					
+		// se compone el mensaje (Asunto, cuerpo del mensaje y direccion origen)
+		final MimeMessage message = new MimeMessage(session);
+		message.setFrom(new InternetAddress( 
+				"contacto@puntosfarmanorte.com.co", "Puntos Farmanorte"));
+		message.setRecipients(Message.RecipientType.TO, addressTo);
+		//Emojis :-)			
+		String subjectEmojiRaw = "Contraseña Reestablecida - Puntos Farmanorte";
+		String subjectEmoji = EmojiParser.parseToUnicode(subjectEmojiRaw);			
+			
+		message.setSubject( subjectEmoji , "UTF-8");
+		message.setContent(doc.html(), "text/html; charset=utf-8");
+		
+		message.setFlag(FLAGS.Flag.RECENT, true);
+
+		//Envia el correo
+		final Transport t = session.getTransport("smtp");			
+		//asigno un hilo exclusivo a la conexion y envio del mensaje
+		//dado que el proveedor de correo es muy lento para establecer
+		//la conexion
+		new Thread(new Runnable() {
+		    public void run() {
+		    	try {
+		    		t.connect("contacto@puntosfarmanorte.com.co", "Dromedicas2013.");
+					t.sendMessage(message, message.getAllRecipients());
+					// Cierre de la conexion
+					t.close();
+			    
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		    }	
+		}).start();
+		
+		System.out.println("Conexion cerrada");
+		
+	}catch(Exception e){
+		System.out.println("Falla en el envio del correo:");
+		e.printStackTrace();
+		return false;
+	}
+	return true;	
+}
 
 
 	

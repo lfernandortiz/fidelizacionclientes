@@ -708,7 +708,7 @@ public class AfiliadoServiceRs implements Serializable{
 		Afiliado afTemp = null;
 		
 		try {
-			Thread.sleep(2000); // esto es por visaje ;-)
+			Thread.sleep(1000); // esto es por visaje ;-)
 		} catch (InterruptedException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -748,6 +748,28 @@ public class AfiliadoServiceRs implements Serializable{
 		}
 	}
 		
+	
+	@GET
+	@Path("/reestablecerclave")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response reestablecerClave(@QueryParam("pswd") String pswd, 
+									  @QueryParam("token") String token) {
+
+		Afiliado afTemp = this.afiliadoService.obtenerAfiliadoUUID(token);
+		afTemp.setClaveweb(pswd);
+		this.afiliadoService.actualizarAfiliado(afTemp);
+
+		this.emailAlerta.emailConfirmacionClave(afTemp);
+
+		ResponsePuntos responseObject = new ResponsePuntos();
+		responseObject.setCode(Status.OK.getStatusCode());
+		responseObject.setStatus(Status.OK.getReasonPhrase());
+		responseObject.setMessage("Se ha reestablecido correctamente la nueva contraseña.");
+
+		return Response.status(Status.OK).entity(responseObject).header("Access-Control-Allow-Origin", "*").build();
+
+	}
+	
 	
 
 	private String getToken(String jWT){

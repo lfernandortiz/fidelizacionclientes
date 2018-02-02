@@ -629,7 +629,7 @@ public boolean notificacionRedencion(Sucursal sucursal, String momento, String n
 
 public boolean emailRecuparacionClave(Afiliado afiliado) {
 	
-	String urlConfirmacion = "http://localhost:8003/seccion/resetpassword.html?id=" + afiliado.getKeycode();
+	String urlConfirmacion = "http://www.puntosfarmanorte.com.co/seccion/resetpassword.html?id=" + afiliado.getKeycode();
 	
 	System.out.println("Enviar Email Recuperacion clave");
 	try{			
@@ -797,7 +797,7 @@ public boolean emailConfirmacionClave(Afiliado afiliado) {
 				"contacto@puntosfarmanorte.com.co", "Puntos Farmanorte"));
 		message.setRecipients(Message.RecipientType.TO, addressTo);
 		//Emojis :-)			
-		String subjectEmojiRaw = "Contraseña Reestablecida - Puntos Farmanorte";
+		String subjectEmojiRaw = ":white_check_mark: Contraseña Reestablecida - Puntos Farmanorte";
 		String subjectEmoji = EmojiParser.parseToUnicode(subjectEmojiRaw);			
 			
 		message.setSubject( subjectEmoji , "UTF-8");

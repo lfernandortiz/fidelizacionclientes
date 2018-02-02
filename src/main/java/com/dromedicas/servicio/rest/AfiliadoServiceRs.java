@@ -754,6 +754,13 @@ public class AfiliadoServiceRs implements Serializable{
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response reestablecerClave(@QueryParam("pswd") String pswd, 
 									  @QueryParam("token") String token) {
+		
+		try {
+			Thread.sleep(1000); // esto es por visaje ;-)
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 
 		Afiliado afTemp = this.afiliadoService.obtenerAfiliadoUUID(token);
 		afTemp.setClaveweb(pswd);

@@ -147,7 +147,8 @@ public class AfiliadoServiceRs implements Serializable{
 									 @QueryParam("ciudad") String ciudad,
 									 @QueryParam("email") String email,
 									 @QueryParam("barrio") String barrio,
-									 @QueryParam("usuario") String usuario){
+									 @QueryParam("usuario") String usuario,
+									 @QueryParam("sucursal") String suc){
 		
 		ResponsePuntos responseObject = new ResponsePuntos();
 		//valida que el afiliado no exista
@@ -179,7 +180,13 @@ public class AfiliadoServiceRs implements Serializable{
 			afiliado.setCiudad(ciudad);
 			afiliado.setDepartamento("");
 			
-			Sucursal sucursal = this.sucursalService.obtenerSucursalPorIdIterno("00");
+			Sucursal sucursal = null;
+			System.out.println("-----SUCURSAL RECIBIDA: " + suc);
+			if( suc == null  || suc.equals("")){
+				sucursal = this.sucursalService.obtenerSucursalPorIdIterno("00");
+			}else{
+				sucursal = this.sucursalService.obtenerSucursalPorIdIterno(suc);
+			}
 			afiliado.setSucursal(sucursal);
 			afiliado.setTelefonofijo(telefonofijo);
 			afiliado.setCelular(celular);
@@ -772,6 +779,24 @@ public class AfiliadoServiceRs implements Serializable{
 		responseObject.setCode(Status.OK.getStatusCode());
 		responseObject.setStatus(Status.OK.getReasonPhrase());
 		responseObject.setMessage("Se ha reestablecido correctamente la nueva contraseña.");
+
+		return Response.status(Status.OK).entity(responseObject).header("Access-Control-Allow-Origin", "*").build();
+
+	}
+	
+	
+	@GET
+	@Path("/getsucursales")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getSucursales() {
+		
+		List<Sucursal> sucursalList = this.sucursalService.findAllSucursals();
+		
+		ResponsePuntos responseObject = new ResponsePuntos();
+		responseObject.setCode(Status.OK.getStatusCode());
+		responseObject.setStatus(Status.OK.getReasonPhrase());
+		responseObject.setContenedor(sucursalList);
+		responseObject.setMessage("Sucursales obtenidas satisfactoriamente.");
 
 		return Response.status(Status.OK).entity(responseObject).header("Access-Control-Allow-Origin", "*").build();
 

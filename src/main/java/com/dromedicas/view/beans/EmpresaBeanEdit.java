@@ -161,6 +161,7 @@ public class EmpresaBeanEdit implements Serializable {
 		this.envioEmail = this.contrato.getEnvioemail() == 1 ? true : false;
 		this.redensionSuc = this.contrato.getRedensionsucursales() == 1 ? true : false;
 		
+		
 		this.setIdEmpresaSel(this.selectedEmpresa.getIdempresa());
 		this.setIdContratoSel(this.contrato.getIdcontrato());		
 		

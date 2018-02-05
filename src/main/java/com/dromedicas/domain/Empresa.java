@@ -35,7 +35,8 @@ public class Empresa implements Serializable {
 
 	private String direccion;
 
-	private String email;
+	private String email;	
+	
 
 	@Column(name="email_notificaciones")
 	private String emailNotificaciones;
@@ -183,6 +184,9 @@ public class Empresa implements Serializable {
 
 		return vendedor;
 	}
+	
+	
+
 	
 
 	@Override

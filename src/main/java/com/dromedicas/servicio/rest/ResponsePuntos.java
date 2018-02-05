@@ -7,7 +7,7 @@ import com.dromedicas.domain.BalancePuntos;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @XmlRootElement
-@JsonPropertyOrder({ "code", "status", "message", "balance", "urlFotoAfiliado", "afiliado"})
+@JsonPropertyOrder({ "code", "status", "message", "balance", "urlFotoAfiliado", "afiliado", "contenedor"})
 public class ResponsePuntos {
 	
 	private int code;
@@ -20,7 +20,9 @@ public class ResponsePuntos {
 	
 	private String urlFotoAfiliado;
 	
-	private Afiliado afiliado;	
+	private Afiliado afiliado;
+	
+	private Object contenedor;
 
 	public int getCode() {
 		return code;
@@ -69,5 +71,14 @@ public class ResponsePuntos {
 	public void setAfiliado(Afiliado afiliado) {
 		this.afiliado = afiliado;
 	}
+
+	public Object getContenedor() {
+		return contenedor;
+	}
+
+	public void setContenedor(Object contenedor) {
+		this.contenedor = contenedor;
+	}
+	
 	
 }

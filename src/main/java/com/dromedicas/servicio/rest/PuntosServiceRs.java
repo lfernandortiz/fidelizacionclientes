@@ -16,15 +16,17 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriInfo;
 
 import com.dromedicas.domain.Afiliado;
 import com.dromedicas.domain.BalancePuntos;
+import com.dromedicas.domain.Contrato;
 import com.dromedicas.domain.Smsplantilla;
 import com.dromedicas.domain.Sucursal;
 import com.dromedicas.domain.Transaccion;
 import com.dromedicas.service.AfiliadoService;
+import com.dromedicas.service.EmpresaService;
 import com.dromedicas.service.OperacionPuntosService;
 import com.dromedicas.service.SmsPlantillaService;
 import com.dromedicas.service.SucursalService;
@@ -72,12 +74,15 @@ public class PuntosServiceRs {
 	@EJB
 	private ExpresionesRegulares rgx;
 	
+	@EJB
+	private EmpresaService empresaService;
+	
 	@Context UriInfo uriInfo;
 	
 	
 	//Grabar transaccion de ACUMULACION puntos - Devolviendo balance de puntos
 	/**
-	 * Tipo Tx: R: Redencion| A:Acumulacion |
+	 * End 
 	 * @param codsucursal
 	 * @param momento
 	 * @param nrofactua
@@ -196,6 +201,7 @@ public class PuntosServiceRs {
 	 * @param puntosRedimidos
 	 * @return
 	 */
+	@SuppressWarnings("unused")
 	@Path("/redimirpuntos/{codsucursal}/{momento}/{nrofactua}/{valortx}/{documento}/{puntosredimidos}")
 	@GET	
 	@Produces(MediaType.APPLICATION_JSON)
@@ -207,17 +213,37 @@ public class PuntosServiceRs {
 									 	@PathParam("puntosredimidos") int puntosRedimidos){
 		ResponsePuntos responseObject = new ResponsePuntos();
 		
+		Sucursal sucursal = this.sucursalService.obtenerSucursalPorIdIterno(codsucursal);
+		Contrato contrato =  empresaService.obtenerUltimoContrato(sucursal.getEmpresa());
+		
+		if( contrato.getRedensionsucursales() == 0 ){
+			responseObject.setCode(200);
+			responseObject.setMessage("La opcion de REDENCION ESTA DESHABILITADA temporalmente.");
+			responseObject.setStatus(Status.OK.getReasonPhrase());
+			return Response.status(200).entity(responseObject).build();
+		}
+		
+		
 		//se validan todos los parametros
 		if( !codsucursal.equals("") && !momento.equals("") && !nrofactura.equals("") && valortx != 0 
 					&& !documento.equals("") && puntosRedimidos!= 0){
 			
-			Sucursal sucursal = this.sucursalService.obtenerSucursalPorIdIterno(codsucursal);
+			//Sucursal sucursal = this.sucursalService.obtenerSucursalPorIdIterno(codsucursal);
 			
 			//se obtiene el afiliado	
 			Afiliado afiliado = this.afiliadoService.obtenerAfiliadoByDocumento(documento);
 			
-			if(afiliado != null){				
-				if (sucursal != null) {	
+			if(afiliado != null){
+				
+				if (sucursal != null) {						
+					
+					if( contrato.getRedensionsucursales() == 0 ){
+						responseObject.setCode(200);
+						responseObject.setMessage("La opcion de REDENCION ESTA DESHABILITADA temporalmente.");
+						responseObject.setStatus(Status.OK.getReasonPhrase());
+						return Response.status(200).entity(responseObject).build();
+						
+					}
 					//invoca al metodo de registro Tx del Bean Balance puntos
 					try {
 						BalancePuntos bTemp = calculoService.consultaPuntos(afiliado);
@@ -229,13 +255,10 @@ public class PuntosServiceRs {
 							BalancePuntos balance =  calculoService.consultaPuntos(afiliado);
 							balance.setGanadostxactual(pTxActual);
 							responseObject.setCode(200);
-							responseObject.setStatus(Status.OK.getReasonPhrase());
-							if(afiliado.getFotoperfil() != null){
-								responseObject.setUrlFotoAfiliado(uriInfo.getBaseUri()+ "afiliado"+ "/getfotoperfil/" + afiliado.getKeycode());
-							}
+							responseObject.setStatus(Status.OK.getReasonPhrase());							
 							responseObject.setMessage("Transaccion exitosa");
 							responseObject.setBalance(balance);
-													
+							
 							//aca enviar notifiacacion SMS al afiliado sobre la redencion
 							if(  !("").equals(afiliado.getCelular()) ){
 								//obtengo la plantilla SMS para redencion;
@@ -328,9 +351,9 @@ public class PuntosServiceRs {
 			//primero valida si la tx acumulo puntos
 			Transaccion txADevolver =  this.txService.obtenerTransaccionPorFactura(nrofactura);
 			if(txADevolver == null){
-				responseObject.setCode(401);
+				responseObject.setCode(200);
 				responseObject.setMessage("Factura no acumula puntos");
-				return Response.status(401).entity(responseObject).build();
+				return Response.status(200).entity(responseObject).build();
 			}
 
 			Sucursal sucursal = this.sucursalService.obtenerSucursalPorIdIterno(codsucursal);

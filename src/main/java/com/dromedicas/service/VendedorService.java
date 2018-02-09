@@ -5,9 +5,11 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import com.dromedicas.domain.Afiliado;
 import com.dromedicas.domain.Vendedor;
 import com.dromedicas.eis.VendedorDao;
 
@@ -57,6 +59,22 @@ public class VendedorService {
 		System.out.println("Query String: " + queryString);
 		Query q = em.createQuery(queryString);
 		return q.getResultList();
+	}
+	
+	
+	public Vendedor obtenerVendedorPorCodigo(String codigo){	
+		System.out.println("Buscando vendedor...");
+		
+		Query query = em.createQuery("FROM Vendedor v WHERE v.codvende = :codigo ");
+		query.setParameter("codigo", codigo);
+		Vendedor temp = null;	
+		try { 
+			temp = (Vendedor) query.getSingleResult();
+			
+		} catch (NoResultException e) {
+			System.out.println("Vendedor no encontrado");			
+		}		
+		return temp;
 	}
 	
 

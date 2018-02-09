@@ -98,6 +98,13 @@ public class EmpresaService {
 		return (Empresa) query.getSingleResult();
 	}
 	
+	public Empresa obtenerEmpresaPorNit(String nit){
+		String queryString = "from Empresa p where p.nit = :nit";
+		Query query = em.createQuery(queryString);
+		query.setParameter("nit", nit);
+		return (Empresa) query.getSingleResult();
+	}
+	
 	
 	public Contrato obtenerUltimoContrato(Empresa instance){	
 		String queryString = "from Contrato c where current_date between c.fechainicio and c.fechafin "

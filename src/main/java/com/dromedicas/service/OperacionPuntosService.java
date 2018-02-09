@@ -1,6 +1,8 @@
 package com.dromedicas.service;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -497,7 +499,12 @@ public class OperacionPuntosService {
 	}
 	
 	
-	
+	/**
+	 * Obtiene los puntos disponibles para redimir del afiliado
+	 * Tipo tx 2 = redencion, Tipo tx 3 = devolucion
+	 * @param instance
+	 * @return
+	 */	
 	private int getPuntosDisponibles(Afiliado instance) {
 		String queryStringA = "select sum(t.puntostransaccion) from transaccion t "
 				+ "where t.tipotx <> 2  and t.tipotx <> 3 and " 
@@ -668,6 +675,115 @@ public class OperacionPuntosService {
 		return temp;
 	}
 	
+	
+	// ===========================================
+    // = Metodos de informacion global de puntos =
+    // ===========================================
+	
+	/**
+	 * Retorna el total de puntos acumulados disponibles por 
+	 * redimir en toda la plataforma
+	 * @return
+	 */
+	@SuppressWarnings("unused")
+	public int getTotalPuntosDisponibles() {
+		
+		String queryString = 
+			"SELECT sum( x.totalpuntos) FROM ( select afiliado.documento, (sum(general.totalpuntos) + sum(general.totalsaldo) - sum(general.devolucion)) as totalpuntos "+
+			"from (	select 	t.idafiliado as id, sum(t.puntostransaccion) as totalpuntos, 0 as totalsaldo,  0 as devolucion from  transaccion t " +
+			"where t.tipotx <> 2 and t.tipotx <> 3 and  t.vencen >= current_date()  and  t.redimidos = 0 group by t.idafiliado " +
+			"union all select t.idafiliado as id, 0 as totalpuntos, sum(t.saldo) as totalsaldo,  0 as devolucion from  transaccion t " +  
+			"where t.tipotx <> 2 and t.tipotx <> 3 and t.vencen >= CURRENT_DATE and t.redimidos = 1 group by t.idafiliado " +
+			"union all select  t.idafiliado as id, 0 as totalpuntos, 0 as totalsaldo, sum(t.puntostransaccion) as devolucion " +
+			"from transaccion t  where t.tipotx = 3  group by t.idafiliado) as general INNER JOIN afiliado on (afiliado.idafiliado = general.id) "+
+			"group by 1 having totalpuntos >= 8000 ) AS x ";
+		
+		Query query = em.createNativeQuery(queryString);
+		BigDecimal total = new BigDecimal(0);	
+		try {
+			total = (BigDecimal) query.getSingleResult();
+			System.out.println("Total disponible a redimir: " +  total);
+		} catch (NoResultException e) {
+			System.out.println("Total puntos no calculados");
+		}
+		return total.intValue();
+	}
+	
+	
+	/**
+	 * Retorna el total de puntos redimidos en toda la plataforma
+	 * @return
+	 */
+	public int getTotalPuntosRedemidos(){
+		String queryString = "SELECT sum(t.puntostransaccion) FROM Transaccion t WHERE "
+				+ "t.tipotransaccion.idtipotransaccion = 2";
+		Query query = em.createQuery( queryString );			
+		Long puntos = 0L;		
+		try {
+			puntos =  (Long) query.getSingleResult();
+		} catch (Exception e) {			
+			System.out.println("Total de puntos redimidos...");
+			return puntos.intValue();			
+		}		
+		return puntos != null ? puntos.intValue() : 0;
+	}
+	
+	
+	/**
+	 * Retorna el total de puntos acumulados en la plataforma
+	 * puntos farmanorte
+	 * @return
+	 */
+	public int getTotalPuntosAcumulados(){
+		String queryStringA = "select sum(t.puntostransaccion) from transaccion t "
+				+ "where t.tipotx <> 2  and t.tipotx <> 3 and " 
+				+ "t.vencen >= CURRENT_DATE  and t.redimidos = 0  ";
+
+		String queryStringB = "select sum(t.saldo) from transaccion t " 
+				+ "where t.tipotx <> 2  and t.tipotx <> 3 and "
+				+ "t.vencen >= CURRENT_DATE  and t.redimidos = 1  ";
+		
+		String queryStringC = "select sum(t.puntostransaccion) from transaccion t " 
+				+ "where t.tipotx = 3 ";
+
+		Query queryA = em.createNativeQuery(queryStringA);
+		Query queryB = em.createNativeQuery(queryStringB);
+		Query queryC = em.createNativeQuery(queryStringC);
+		
+		BigDecimal puntosA = new BigDecimal(0);	
+		BigDecimal puntosB = new BigDecimal(0);	
+		BigDecimal puntosC = new BigDecimal(0);	
+		try {
+			puntosA = (BigDecimal) queryA.getSingleResult();
+		} catch (NoResultException e) {
+			
+		}
+		try {
+			puntosB = (BigDecimal) queryB.getSingleResult();
+		} catch (NoResultException e) {
+			
+		}
+		try {
+			puntosC = (BigDecimal) queryC.getSingleResult();
+		} catch (NoResultException e) {
+			
+		}		
+		BigDecimal total = new BigDecimal(0);
+		if( puntosA != null){
+			total = puntosA;
+		}
+		if( puntosB != null){
+			total = total.add(puntosB);
+		}
+		if( puntosC != null){
+			total =  total.subtract(puntosC);
+		}
+		
+		return total.intValue() ;
+	}
+	
+	
+
 	
 	
 	

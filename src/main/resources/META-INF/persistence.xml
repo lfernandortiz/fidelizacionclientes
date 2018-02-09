@@ -28,6 +28,7 @@
 		<class>com.dromedicas.domain.NucleofamiliaPK</class>
 		<class>com.dromedicas.domain.Ocupacion</class>
 		<class>com.dromedicas.domain.Pais</class>
+		<class>com.dromedicas.domain.Parametrosemail</class>
 		<class>com.dromedicas.domain.Patologia</class>
 		<class>com.dromedicas.domain.Perfil</class>
 		<class>com.dromedicas.domain.Permisorol</class>

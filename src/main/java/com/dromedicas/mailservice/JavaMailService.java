@@ -6,10 +6,10 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
-import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.ejb.Stateless;
 import javax.mail.Flags;
 import javax.mail.Folder;
 import javax.mail.FolderNotFoundException;
@@ -30,7 +30,7 @@ import com.google.common.collect.Lists;
 
 
 
-
+@Stateless
 public class JavaMailService {
 	
 	private static final String MAIL_SMTP_AUTH = "mail.smtp.auth";
@@ -77,17 +77,14 @@ public class JavaMailService {
 			ClassLoader objClassLoader = null;
 			objClassLoader = getClass().getClassLoader();
 			FileInputStream entrada = new FileInputStream(objClassLoader.getResource("emailconexion.properties").getFile());
+			
+			
          
 			this.config.load(entrada); 
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}	
 		
-		Set<Object> claves = config.keySet();
-		
-		for (Object clave : claves) {
-			System.out.printf("%s\t\t\t\t%s\n", clave, config.getProperty((String) clave));
-		}
 		
 		
 		username = config.getProperty(MAIL_USERNAME);

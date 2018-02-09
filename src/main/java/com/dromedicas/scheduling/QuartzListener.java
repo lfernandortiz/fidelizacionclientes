@@ -24,6 +24,7 @@ public class QuartzListener implements ServletContextListener {
 	//Schedule para Notificaciones de acumulacion de puntos <0 0/2 * 1/1 * ? *> cada 30 min
 	Scheduler schNotiCompra = null;
 	Scheduler schTxPuntosF = null;
+	Scheduler schEmailRechazo = null;
 	
 	//Schedule para envio SMS & Email de cumpleanos <0 0 8 ? * MON-FRI *> Todos los dias a las 8am
 	
@@ -35,11 +36,11 @@ public class QuartzListener implements ServletContextListener {
 
 	@Override
 	public void contextInitialized(ServletContextEvent servletContext) {
+	
 		try {
 			/*
-			 * Schedule Notificaciones compra - acumulacion de puntos
-			 */
-			
+			 * Schedule Notificaciones compra - acumulacion de puntos | Cada 40 minutos
+			 */			
 			// Job para Notificaciones de acumulacion de puntos
 			JobDetail job = newJob(NotificacionCompraJob.class).withIdentity("NotificacionAcum", "Group").build();
 			
@@ -56,7 +57,7 @@ public class QuartzListener implements ServletContextListener {
 			
 			
 			/*
-			 * Schedule Obtener transacciones de sucursales
+			 * Schedule Obtener transacciones de sucursales | Cada 30 minutos
 			 */
 			//Job para Obtener las transacciones de sucursales 			
 			JobDetail jobTx = newJob(RecibirTxPuntosSucursalJob.class).withIdentity("TransaccionAfiliado", "TxGroup").build();
@@ -74,15 +75,11 @@ public class QuartzListener implements ServletContextListener {
 			
 			
 			
-			/*
-			 * Schedule envio SMS diario para afiliados de cumpleanos
-			 */
-			
-			
-			
 		} catch (SchedulerException e) {
 			e.printStackTrace();
 		}
+		
+	
 	}
 
 	@Override
@@ -91,7 +88,9 @@ public class QuartzListener implements ServletContextListener {
 		try {
 			schNotiCompra.shutdown();	
 			schTxPuntosF.shutdown();
-
+			schEmailRechazo.shutdown();
+			
+			
 		} catch (SchedulerException e) {
 			e.printStackTrace();
 		}

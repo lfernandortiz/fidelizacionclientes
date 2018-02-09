@@ -12,6 +12,7 @@ import javax.servlet.http.HttpSession;
 
 import org.primefaces.context.RequestContext;
 
+import com.dromedicas.domain.Empresa;
 import com.dromedicas.domain.Usuarioweb;
 import com.dromedicas.service.UsuarioWebService;
 import com.dromedicas.util.ExpresionesRegulares;
@@ -25,7 +26,7 @@ public class LoginBeanService implements Serializable {
 	private String username;
 	private String password;
 	private boolean logeado = false;
-	private Usuarioweb user;
+	private Usuarioweb user;	
 	
 	private String NombreUsuario;
 	

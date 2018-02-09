@@ -3,7 +3,6 @@ package com.dromedicas.view.beans;
 import java.io.ByteArrayInputStream;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,6 +30,7 @@ import com.dromedicas.domain.Ticketredencion;
 import com.dromedicas.domain.Tipodocumento;
 import com.dromedicas.domain.Transaccion;
 import com.dromedicas.mailservice.EnviarEmailAlertas;
+import com.dromedicas.reportes.Reporteador;
 import com.dromedicas.service.AfiliadoService;
 import com.dromedicas.service.OperacionPuntosService;
 import com.dromedicas.service.PaisService;
@@ -90,6 +90,9 @@ public class AfiliadoBeanEdit implements Serializable{
 	
 	@EJB
 	private TicketredencionService ticketService;
+	
+	@EJB
+	private Reporteador report;
 	
 	@ManagedProperty(value = "#{loginService}")
 	private LoginBeanService loginBean;
@@ -708,6 +711,12 @@ public class AfiliadoBeanEdit implements Serializable{
 	public boolean ticketAsociado(Transaccion tx){
 		return this.ticketService.obtenerTicketredencionByNroFactura(tx.getNrofactura())!= null? true : false;
 	}
+	
+	public void exportarExcel(String documento){
+		
+		report.generarReporteExcelElipsis("balancepuntos", documento);		
+	}
+	
 	
 	
 	

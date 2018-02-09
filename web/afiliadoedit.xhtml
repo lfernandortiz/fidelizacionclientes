@@ -5,8 +5,8 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
                 template="/WEB-INF/template.xhtml">
-
-    <ui:define name="title">Editar Afiliado</ui:define>
+   
+        <ui:define name="title">Editar Afiliado</ui:define>
 
     <ui:define name="content">
         <h:form id="afiliadoformppal">
@@ -1290,10 +1290,24 @@
 										         style="text-align:right">
 										         <p:tooltip id="tp_p_acumulados" for="p_acumulados" 
 										value="Suma de todos los puntos acumulados" position="top"/>
-									
 									</p:inputText>
+									<p:outputLabel for="p_redimidos" value="Puntos Redimidos" />
+									<p:inputText id="p_redimidos"
+												 readonly="#{facesContext.renderResponse}"  
+										         value="#{afiliadoBeanEdit.balancePuntos.redimidos}" 
+										         style="text-align:right">
+									<p:tooltip id="tp_p_redimidos" for="p_redimidos" 
+										value="Suma de todos los puntos redimidos y devoluciones en compras" position="top"/>
+									</p:inputText> 
 											
-										         
+									<p:outputLabel for="p_nodisponibles" value="No Disponibles para Redimir" />
+									<p:inputText id="p_nodisponibles"
+												 readonly="#{facesContext.renderResponse}"  
+										         value="#{afiliadoBeanEdit.balancePuntos.totalpuntosactual}" 
+										         style="text-align:right">	
+										<p:tooltip id="tp_p_nodisponibles" for="p_nodisponibles" 
+										value="Puntos acumulados NO disponibles para redimir" position="top"/>
+									</p:inputText>       
 									<p:outputLabel for="p_disponibles" value="Disponibles para Redimir" />
 									<p:inputText id="p_disponibles"
 												 readonly="#{facesContext.renderResponse}"  
@@ -1329,15 +1343,7 @@
 									<p:tooltip id="tp_p_vencidos" for="p_vencidos" 
 										value="Puntos vencidos que no fueron redimidos" position="top"/>
 									</p:inputText> 
-										         
-									<p:outputLabel for="p_redimidos" value="Puntos Redimidos" />
-									<p:inputText id="p_redimidos"
-												 readonly="#{facesContext.renderResponse}"  
-										         value="#{afiliadoBeanEdit.balancePuntos.redimidos}" 
-										         style="text-align:right">
-									<p:tooltip id="tp_p_redimidos" for="p_redimidos" 
-										value="Suma de todos los puntos redimidos y devoluciones en compras" position="top"/>
-									</p:inputText> 
+									
 								</p:panelGrid>
 								
 								<p:separator style="height:5px"/>
@@ -1361,16 +1367,16 @@
 										value="Carga la imagen de un ticket de redencion de puntos" position="top"/>
 								</p:commandButton>
 																
-								<!-- 				 
-								<p:commandButton value="Email" 
-												 id="emailpdf"
-												 icon="fa fa-envelope-o"
-												 action="#{afiliadoBeanEdit.cancelarAfiliado()}"
-												 process="@this">
-									<p:tooltip id="tp_emailpdf" for="emailpdf" 
-										value="Si el afiliado tiene email, le envia un balance de sus puntos" position="top"/>
+								 				 
+								<p:commandButton value="Exportar Excel" 
+												 id="to_excel"
+												 ajax="false"
+												 action="#{afiliadoBeanEdit.exportarExcel(afiliadoBeanEdit.afiliadoSelected.documento)}"
+												 icon="fa fa-file-excel-o">
+									<p:tooltip id="tp_toexcel" for="to_excel" 
+										value="Exporta a Excel todas los movimientos de puntos farmanorte" position="top"/>
 								</p:commandButton>
-								
+								<!--
 								<p:commandButton value="PDF" 
 												 id="dowloadpdf"
 												 icon="fa fa-file-pdf-o"
@@ -1383,13 +1389,23 @@
 								
 												 	
 								</p:panelGrid>
-								
+								 
 								<p:separator style="height:10px"/>	
+								
 									<p:dataTable id="balancedatail" var="tx" value="#{afiliadoBeanEdit.afiliadoSelected.transaccions}" 
 	                        			rowKey="#{tx.idtransaccion}" selection="#{afiliadoBeanEdit.txTemp}" selectionMode="single"
-	                        			emptyMessage="Registros no encontrados :-(" >
+	                        			emptyMessage="Registros no encontrados :-(" paginator="true"
+	                        			paginatorTemplate="{Name}" paginatorPosition="top">
 	                        			
-										<f:facet name="header">Detalle de Transacciones - #{afiliadoBeanEdit.afiliadoSelected.transaccions.size()}</f:facet>
+	                        			<f:facet name="{Exporters}">
+	                        			<div>
+	                        				<h:commandLink>	                        					
+								                <p:graphicImage name="images/excelexport.png" library="omega-layout" width="40"/> 							                
+								                <p:dataExporter type="xls" target="tbl" fileName="Balance_#{afiliadoBeanEdit.afiliadoSelected.documento}" />								              
+								            </h:commandLink>
+								         </div>
+								        </f:facet>
+										<f:facet name="{Name}">Detalle de Transacciones - #{afiliadoBeanEdit.afiliadoSelected.transaccions.size()}</f:facet>
 										
 										<p:columnGroup type="header">
 								            <p:row>
@@ -1425,8 +1441,7 @@
 											</div>
 										</p:column>
 										<p:column>
-											<div class="celdaDerecha"> <!-- Columna redencion muestra ticket -->
-											
+											<div class="celdaDerecha"> <!-- Columna redencion muestra ticket -->											
 												<ui:fragment rendered="#{tx.tipotransaccion.idtipotransaccion == 3}" >
 													<h:outputText value="#{tx.puntostransaccion*-1 }"/>
 												</ui:fragment>

@@ -158,6 +158,8 @@ public class EnviarEmailAlertas {
 	}
 	
 	
+	
+	
 	public boolean emailAcumulacionPuntos(Afiliado afiliado, int ganados, BalancePuntos balance ) {
 		//nombrecliente
 		//puntostx
@@ -556,6 +558,7 @@ public boolean notificacionRedencion(Sucursal sucursal, String momento, String n
 		String mensaje = "Se registro una redencion de puntos. La siguientes es la informacion de la Tx.\n\n "+
 						 "Sucursal: " + sucursal.getNombreSucursal() + "\n" +
 						 "Fecha: " + momento + "\n" +
+						 "Nro Factura: " + nrofactura + "\n" +
 						 "Afiliado: " + afiliado.getDocumento() + "\n" +
 						 "Valor de la Tx: " + valortx + "\n" +
 						 "Puntos a Redimir: " + puntosARedimir + "\n" ;
@@ -572,19 +575,16 @@ public boolean notificacionRedencion(Sucursal sucursal, String momento, String n
 
 		// Preparamos la sesion
 		Session session = Session.getDefaultInstance(props);
-		// Construimos el mensaje
-
+		
 		
 		// multiples direcciones
-		String[] to = { "sistemas2@dromedicas.com.co", "sistemas@dromedicas.com.co" };
-		
+		String[] to = { "sistemas2@dromedicas.com.co", "sistemas@dromedicas.com.co", "johnduran@dromedicas.com.co" };		
 		
 		// arreglo con las direcciones de correo
 		InternetAddress[] addressTo = new InternetAddress[to.length];
 		for (int i = 0; i < addressTo.length; i++) {
 			addressTo[i] = new InternetAddress(to[i]);
-		}
-					
+		}					
 		// se compone el mensaje (Asunto, cuerpo del mensaje y direccion origen)
 		final MimeMessage message = new MimeMessage(session);
 		message.setFrom(new InternetAddress( 
@@ -626,6 +626,9 @@ public boolean notificacionRedencion(Sucursal sucursal, String momento, String n
 	}
 	return true;	
 }
+
+
+
 
 public boolean emailRecuparacionClave(Afiliado afiliado) {
 	

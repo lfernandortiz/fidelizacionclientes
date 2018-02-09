@@ -22,6 +22,8 @@ public class Vendedor implements Serializable {
 	private String apellidos;
 
 	private String nombres;
+	
+	private String codvende;
 
 	//bi-directional many-to-one association to Empresa
 	@ManyToOne
@@ -69,6 +71,14 @@ public class Vendedor implements Serializable {
 
 	public void setEmpresa(Empresa empresa) {
 		this.empresa = empresa;
+	}
+		
+	public String getCodvende() {
+		return codvende;
+	}
+
+	public void setCodvende(String codvende) {
+		this.codvende = codvende;
 	}
 
 	@Override

@@ -45,5 +45,22 @@ public class ParametrosEmialService {
 		dao.deleteParametrosemail(instance);
 
 	}
+	
+	/**
+	 * Obtiene parametros de correo segun la finalidad del correo
+	 * @param fin
+	 * @return
+	 */
+	public Parametrosemail obtenerParametrosemailPorFinalidad(String fin) {		
+		Query query = em.createQuery("select p FROM Parametrosemail p where p.proposito = :fin" );
+		query.setParameter("fin", fin);
+		Parametrosemail temp = null;		
+		try {
+			temp = (Parametrosemail) query.getSingleResult();
+		} catch (NoResultException e) {
+			System.out.println("Cuenta de email no encontrada.");			
+		}			
+		return temp;
+	}
 
 }

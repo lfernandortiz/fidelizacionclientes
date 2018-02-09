@@ -54,62 +54,65 @@
 		<div class="ui-g ui-fluid dashboard">
             <div class="ui-g-12 ui-md-4">
                 <div class="card clearfix summary">
-                    <span class="title">Users</span>
-                    <span class="detail">Number of visitors</span>
-                    <span class="count visitors">12</span>
+                    <span class="title">Puntos Acumulados</span>
+                    <span class="detail">Total puntos acumulados.</span>
+                    <span class="count visitors">#{dashboardBean.puntosAcumuladosTotal}</span>
                 </div>
             </div>
             <div class="ui-g-12 ui-md-4">
                 <div class="card clearfix summary">
-                    <span class="title">Sales</span>
-                    <span class="detail">Number of purchases</span>
-                    <span class="count purchases">534</span>
+                    <span class="title">Puntos Disponibles</span>
+                    <span class="detail">Total en puntos disponibles para redimir.</span>
+                    <span class="count revenue">#{dashboardBean.puntosAcumulados}</span>
                 </div>
             </div>
             <div class="ui-g-12 ui-md-4">
                 <div class="card clearfix summary">
-                    <span class="title">Revenue</span>
-                    <span class="detail">Income for today</span>
-                    <span class="count revenue">$3,200</span>
+                    <span class="title">Puntos Redimidos</span>
+                    <span class="detail">Total de puntos redimidos</span>
+                    <span class="count purchases">#{dashboardBean.puntosRedimidos}</span>
                 </div>
             </div>
             
             <div class="ui-g-12 ui-md-6 ui-lg-3">
                 <div class="highlight-box">
-                    <div class="initials" style="background-color:#007be5;color:#00448f">TV</div>
+                    <div class="initials" style="background-color:#007be5;color:#00448f"><i class="fa fa-child" aria-hidden="true"></i></div>
                     <div class="card">
-                        <span class="fa fa-eye"></span>
-                        <span>Total Views</span>
-                        <span class="count">523</span>
+                        <span class="fa fa-child"></span>
+                        <span>Total Afiliados</span>
+                        <span class="count">#{dashboardBean.totalAfiliados}</span>
                     </div>
                 </div>
             </div>
             <div class="ui-g-12 ui-md-6 ui-lg-3">
+            <h:link>
                 <div class="highlight-box">
-                    <div class="initials" style="background-color:#ef6262;color:#a83d3b">TI</div>
+                    <div class="initials" style="background-color:#20d077;color:#038d4a"><i class="fa fa-envelope-open-o" aria-hidden="true"></i></div>
                     <div class="card">
-                        <span class="fa fa-question-circle"></span>
-                        <span>Total Issues</span>
+                        <span class="fa fa-eye"></span>
+                        <span>Validado</span>
+                        <span class="count">#{dashboardBean.totalEmailValidado}</span>
+                    </div>
+                </div>
+            </h:link>
+            </div>
+            <div class="ui-g-12 ui-md-6 ui-lg-3">
+                <div class="highlight-box">
+                    <div class="initials" style="background-color:#ef6262;color:#a83d3b"><i class="fa fa-envelope"></i></div>
+                    <div class="card">
+                        <span class="fa fa-envelope"></span>
+                        <span>Rechazado</span>
                         <span class="count">81</span>
                     </div>
                 </div>
             </div>
+          
             <div class="ui-g-12 ui-md-6 ui-lg-3">
                 <div class="highlight-box">
-                    <div class="initials" style="background-color:#20d077;color:#038d4a">OI</div>
+                    <div class="initials" style="background-color:#f9c851;color:#b58c2b"><i class="fa fa-envelope-o" aria-hidden="true"></i></div>
                     <div class="card">
-                        <span class="fa fa-question-circle-o"></span>
-                        <span>Open Issues</span>
-                        <span class="count">21</span>
-                    </div>
-                </div>
-            </div>
-            <div class="ui-g-12 ui-md-6 ui-lg-3">
-                <div class="highlight-box">
-                    <div class="initials" style="background-color:#f9c851;color:#b58c2b">CI</div>
-                    <div class="card">
-                        <span class="fa fa-check"></span>
-                        <span>Closed Issues</span>
+                        <span class="fa fa-minus-circle"></span>
+                        <span>Sin Validar</span>
                         <span class="count">60</span>
                     </div>
                 </div>

@@ -56,6 +56,8 @@ public class Afiliado implements Serializable {
 	private String departamento;
 
 	private String documento;
+	
+	private String codvende;
 
 	private int edad;
 
@@ -667,6 +669,14 @@ public class Afiliado implements Serializable {
 
 	public void setFotoperfil(byte[] fotoperfil) {
 		this.fotoperfil = fotoperfil;
+	}
+
+	public String getCodvende() {
+		return codvende;
+	}
+
+	public void setCodvende(String codvende) {
+		this.codvende = codvende;
 	}
 	
 	

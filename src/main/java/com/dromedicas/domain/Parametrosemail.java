@@ -25,6 +25,8 @@ public class Parametrosemail implements Serializable {
 
 	private String port;
 
+	private String proposito;
+
 	private String protocol;
 
 	@Column(name="smtp_auth")
@@ -93,6 +95,14 @@ public class Parametrosemail implements Serializable {
 
 	public void setPort(String port) {
 		this.port = port;
+	}
+
+	public String getProposito() {
+		return this.proposito;
+	}
+
+	public void setProposito(String proposito) {
+		this.proposito = proposito;
 	}
 
 	public String getProtocol() {

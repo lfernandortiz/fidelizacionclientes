@@ -231,6 +231,20 @@ public class AfiliadoService {
 		return temp.intValue(); 
 	}	
 	
+	
+	public Integer totalAfiliadosCorreoValidado(){
+		Query query = em.createQuery("SELECT COUNT(a.idafiliado) FROM Afiliado a where a.emailvalidado = 1 ");		
+		Long temp = null;		
+		try {
+			temp =  (Long) query.getSingleResult();
+		} catch (NoResultException e) {
+			System.out.println("Elemento no encontrado");
+		}		
+		return temp.intValue(); 
+	}
+	
+	
+	
 	@SuppressWarnings("unchecked")
 	public List<Afiliado> obtenerAfiliadosSinUUID(){
 		String queryString = "SELECT a FROM Afiliado a where a.keycode is null";	

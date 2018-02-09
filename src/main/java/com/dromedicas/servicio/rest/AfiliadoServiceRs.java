@@ -148,7 +148,8 @@ public class AfiliadoServiceRs implements Serializable{
 									 @QueryParam("email") String email,
 									 @QueryParam("barrio") String barrio,
 									 @QueryParam("usuario") String usuario,
-									 @QueryParam("sucursal") String suc){
+									 @QueryParam("sucursal") String suc,
+									 @QueryParam("codvende") String codvende){
 		
 		ResponsePuntos responseObject = new ResponsePuntos();
 		//valida que el afiliado no exista
@@ -194,6 +195,10 @@ public class AfiliadoServiceRs implements Serializable{
 			afiliado.setMomento(new Date());
 			Usuarioweb user =  this.usuarioService.obtenerUsuarioPorUsuario(usuario);
 			afiliado.setUsuariowebBean(user);
+			if( codvende != null && !codvende.equals("")){
+				afiliado.setCodvende(codvende.trim());
+			}
+			
 			
 			UUID uniqueKey = UUID.randomUUID(); // codigo usado para validaciones web
 			afiliado.setKeycode(uniqueKey.toString().replace("-", ""));
@@ -217,8 +222,6 @@ public class AfiliadoServiceRs implements Serializable{
 			return 
 					Response.status(Status.OK).entity(responseObject).header("Access-Control-Allow-Origin", "*").build();
 		}
-		
-		
 	}
 	
 	

@@ -1,0 +1,86 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">Editar / Crear Entidad</ui:define>	
+    <ui:define name="content">
+		<div class="message">
+			<h:form>
+				<p:messages id="globalMessagex" showDetail="true" closable="true" />
+			</h:form>
+		</div>
+		<h:form id="formppal">
+        
+            <div class="ui-fluid">
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <div class="card">                        
+                            <h1>Nombre Entidad</h1>
+							<p:fieldset legend="Buscar Entidad por:" toggleable="true" toggleSpeed="500">
+                            <p:panelGrid columns="4" id="entidadForm"
+								columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+								
+								<p:outputLabel for="campo1id" value="Nombre Campo1" />
+								<p:inputText id="campo1id" value="#{sucursalbenlist.nombre}"/>
+							
+								<p:outputLabel for="campo2id" value="Nombre Campo2" />
+								<p:inputText id="campo2id" value="#{sucursalbenlist.empresa}"/>						
+								
+							</p:panelGrid>
+							<p:spacer height="10px"/>
+							<p:panelGrid columns="6" id="buttons"
+								columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">								
+								<p:commandButton value="Buscar" id="buscarbutton"
+									actionListener="#{sucursalbenlist.buscarSucursal()}"
+									update="sucursalDetail"/>
+								<p:commandButton value="Cancelar" id="cancelarbutton"
+									action="#{sucursalbenlist.cancelarList()}"
+									update=":formppal:sucursalDetail, :formppal:sucursalForm"/>
+								<p:commandButton value="Crear" id="crearbutton"
+												 action="#{sucursalbenlist.crearSucursal()}" />
+							</p:panelGrid>						
+                        	</p:fieldset>
+                        	
+                        	<p:spacer height="40px"/>
+                        	<!-- tabla detalle sucursal -->
+                        	<p:dataTable id="sucursalDetail" var="suc" value="#{sucursalbenlist.sucursalList}" 
+                        			rowKey="#{suc.idsucursal}" selectionMode="single"  paginator="true" rows="20">
+								<f:facet name="header">Sucursal</f:facet>
+								<p:column headerText="Nombre Sucursal">
+									<h:outputText value="#{suc.nombreSucursal}" /> 
+								</p:column>
+								<p:column headerText="Direccion">
+									<h:outputText value="#{suc.direccion}" /> 
+								</p:column>
+								<p:column headerText="Api Key">
+									<h:outputText value="#{suc.apikey}" /> 
+								</p:column>
+								<p:column headerText="Empresa">
+									<h:outputText value="#{suc.empresa.nombreEmpresa}" /> 
+								</p:column>								
+								
+								<p:column headerText="Editar" style="width:32px;text-align: center">
+									<p:commandButton  icon="fa fa-pencil"
+													  title="Editar #{suc.nombreSucursal}"
+													  id="editarrowid"
+													  action="#{sucursalbenlist.editarSucursal()}">
+										<f:setPropertyActionListener value="#{suc}" target="#{sucursalEdit.sucSelected}" /> 
+									</p:commandButton>	
+								</p:column>		
+							</p:dataTable>	
+						</div> <!-- end card -->
+                    </div> <!-- end ui-g-12 -->
+                </div> <!-- end ui-g -->
+            </div>  <!-- end ui-fluid -->
+            </h:form>
+            
+    	
+    </ui:define>
+</ui:composition>

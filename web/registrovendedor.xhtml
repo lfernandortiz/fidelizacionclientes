@@ -1,0 +1,101 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">Registro Afiliado Por Vendedor</ui:define>	
+    <ui:define name="content">
+		<div class="message">
+			<h:form>
+				<p:messages id="globalMessagex" showDetail="true" closable="true" />
+			</h:form>
+		</div>		
+		
+		<f:metadata>
+		   <f:event type="preRenderView" listener="#{registroAfiliadoBean.establecerInforme('vendedor')}"/>
+		</f:metadata>
+		<h:form id="formppal">			
+            <div class="ui-fluid">
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <div class="card">                        
+                            <h1>Registro Afilido por Vendedor</h1>
+                            <p:panel id="basic" header="Informe de Registro de Afiliados por Vendedor"  style="margin-bottom:20px">
+                            	<!-- obciones de busqueda rango de fechas -->
+                            	 <p:spacer height="15px"/>	
+	                            <p:panelGrid  columns="4" id="vendedorForm"
+									columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+									layout="grid" styleClass="ui-panelgrid-blank"
+									style="border:0px none; background-color:transparent;">
+	                                <p:outputLabel for="fechainiid" value="Fecha Inicial" />
+									<p:calendar id="fechainiid" value="#{registroAfiliadoBean.fechaInicio}"
+										pattern = "dd/MM/yyyy" mask="true" required="true"
+										navigator="true" popupIconOnly="false" mode="popup"
+										showOn="button" >
+										<f:convertDateTime pattern = "dd/MM/yyyy" />										
+									</p:calendar>
+									<p:outputLabel for="fechafin" value="Fecha Final" />
+									<p:calendar id="fechafin" value="#{registroAfiliadoBean.fechaFin}"
+										pattern = "dd/MM/yyyy" mask="true" required="true"
+										navigator="true" popupIconOnly="false" mode="popup"
+										showOn="button" >
+										<f:convertDateTime pattern = "dd/MM/yyyy" />										
+									</p:calendar>
+	                            </p:panelGrid>
+	                            <!-- botones -->
+	                            <p:spacer height="15px"/>								
+								<p:panelGrid columns="6" id="buttons"
+									columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2"
+									layout="grid" styleClass="ui-panelgrid-blank"
+									style="border:0px none; background-color:transparent;">								
+									<p:commandButton value="Filtrar" id="buscarbutton"
+										actionListener="#{registroAfiliadoBean.obtenerPorVendedor()}"
+										update="registroVendedorDetail"/>
+										
+									<p:commandButton value="Cancelar" id="cancelarbutton"
+										action="#{registroAfiliadoBean.cancelarList()}"
+										update=":formppal:registroVendedorDetail, :formppal:vendedorForm"/>
+										
+									<p:commandButton value="Exportar a Excel" id="ex_cel"
+													 action="#{sucursalbenlist.crearSucursal()}" />
+								</p:panelGrid>
+                        	
+                        	</p:panel>
+							
+                        	
+                        	<p:spacer height="5px"/>
+                        	<!-- tabla detalle registro -->
+                        	<p:dataTable id="registroVendedorDetail" var="data" value="#{registroAfiliadoBean.afListVendedor}" 
+                        			rowKey="#{data[0]}" selectionMode="single" >
+								<f:facet name="header">Afiliados Registrados Por Vendedor</f:facet>
+								<p:column headerText="Cod. Vendedor" sortBy="#{data[0]}">
+									<h:outputText value="#{data[0]}" /> 
+								</p:column>
+								<p:column headerText="Vendedor" sortBy="#{data[1]}">
+									<h:outputText value="#{data[1]}" /> 
+								</p:column> 
+								<p:column headerText="Registros" sortBy="#{data[2]}">
+									<h:outputText value="#{data[2]}" /> 
+								</p:column>
+								<p:column headerText="Email" sortBy="#{data[3]}">
+									<h:outputText value="#{data[3]}" /> 
+								</p:column>		
+								<p:column headerText="Email Validado" sortBy="#{data[4]}">
+									<h:outputText value="#{data[4]}" /> 
+								</p:column>		
+								<p:column headerText="Email Rechazado" sortBy="#{data[5]}"> 
+									<h:outputText value="#{data[5]}" /> 
+								</p:column>
+								
+							</p:dataTable>	
+						</div> <!-- end card -->
+                    </div> <!-- end ui-g-12 -->
+                </div> <!-- end ui-g -->
+            </div>  <!-- end ui-fluid -->
+            </h:form>
+            
+    	
+    </ui:define>
+</ui:composition>

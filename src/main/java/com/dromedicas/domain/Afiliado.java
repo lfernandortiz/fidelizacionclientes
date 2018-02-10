@@ -65,6 +65,8 @@ public class Afiliado implements Serializable {
 
 	private byte emailvalidado;
 	
+	private byte emailrechazado;
+	
 	private String facebookperfil;
 	
 	@JsonIgnore
@@ -677,6 +679,14 @@ public class Afiliado implements Serializable {
 
 	public void setCodvende(String codvende) {
 		this.codvende = codvende;
+	}
+
+	public byte getEmailrechazado() {
+		return emailrechazado;
+	}
+
+	public void setEmailrechazado(byte emailrechazado) {
+		this.emailrechazado = emailrechazado;
 	}
 	
 	

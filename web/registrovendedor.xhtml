@@ -58,8 +58,14 @@
 										action="#{registroAfiliadoBean.cancelarList()}"
 										update=":formppal:registroVendedorDetail, :formppal:vendedorForm"/>
 										
-									<p:commandButton value="Exportar a Excel" id="ex_cel"
-													 action="#{sucursalbenlist.crearSucursal()}" />
+									<p:commandButton value="Exportar Excel" 
+												 id="to_excel"
+												 ajax="false"
+												 action="#{registroAfiliadoBean.exportarExcelVendedores()}"
+												 icon="fa fa-file-excel-o">
+									<p:tooltip id="tp_toexcel" for="to_excel" 
+										value="Exporta a Excel el resultado de la consulta actual" position="top"/>
+								</p:commandButton>
 								</p:panelGrid>
                         	
                         	</p:panel>
@@ -68,7 +74,7 @@
                         	<p:spacer height="5px"/>
                         	<!-- tabla detalle registro -->
                         	<p:dataTable id="registroVendedorDetail" var="data" value="#{registroAfiliadoBean.afListVendedor}" 
-                        			rowKey="#{data[0]}" selectionMode="single" >
+                        			rowKey="#{data[0]}" selectionMode="single" emptyMessage="Registros no encontrados :-("  >
 								<f:facet name="header">Afiliados Registrados Por Vendedor</f:facet>
 								<p:column headerText="Cod. Vendedor" sortBy="#{data[0]}">
 									<h:outputText value="#{data[0]}" /> 

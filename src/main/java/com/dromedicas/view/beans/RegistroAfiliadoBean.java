@@ -6,12 +6,15 @@ import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+
+import com.dromedicas.reportes.Reporteador;
 
 @ManagedBean(name="registroAfiliadoBean")
 @ViewScoped
@@ -25,18 +28,20 @@ public class RegistroAfiliadoBean implements Serializable{
 	@PersistenceContext(unitName="PuntosFPU")
 	EntityManager em;
 	
+	@EJB
+	private Reporteador report;
+	
 	private String nombreInforme;
-	private Date fechaInicio;
-	private Date fechaFin;
+	private Date fechaInicio = new Date();
+	private Date fechaFin = new Date();
 	
 	private List<Object[]> afListVendedor;
+	private List<Object[]> afListSucursal;
 	
 	@PostConstruct
 	public void init(){
 		
 		System.out.println("-----Post Construct");
-		
-		
 		
 		
 	}
@@ -54,6 +59,10 @@ public class RegistroAfiliadoBean implements Serializable{
 			if( this.getNombreInforme().equals("vendedor")){
 				this.obtenerPorVendedor();
 			}
+			if( this.getNombreInforme().equals("sucursal")){
+				System.out.println("-----PreRender View sucursal");
+				this.obtenerPorSucursal();
+			}
 		}		
 	}
 	
@@ -62,6 +71,9 @@ public class RegistroAfiliadoBean implements Serializable{
 		this.setFechaFin(null);
 		
 		if( this.getNombreInforme().equals("vendedor")){
+			this.afListVendedor = null;
+		}
+		if( this.getNombreInforme().equals("sucursal")){
 			this.afListVendedor = null;
 		}
 	}
@@ -87,10 +99,6 @@ public class RegistroAfiliadoBean implements Serializable{
 		
 		queryString += " group by 1 order by 4 desc";
 		
-		
-		System.out.println("---------" + queryString);
-		
-		
 		try {
 			 Query query = em.createNativeQuery(queryString);
 			 afListVendedor = query.getResultList();
@@ -99,8 +107,66 @@ public class RegistroAfiliadoBean implements Serializable{
 		}
 	}
 	
-	public void exportarExcelVendedores(){
+	
+	@SuppressWarnings("unchecked")
+	public void obtenerPorSucursal(){
+		String queryString = "SELECT sucursal.codigointerno, sucursal.nombre_sucursal as sucursal," +
+							 "count(documento) as registrados, sum(case when afiliado.email != '' then 1 else 0 end) as email, "+
+							 "sum(case when afiliado.emailvalidado = 1 then 1 else 0 end) as emailvalidado, " +
+							 "sum(case when afiliado.emailvalidado = 1 then 1 else 0 end) as emailrechazado " +
+							 "FROM afiliado inner join sucursal on ( afiliado.idsucursal = sucursal.idsucursal) " +
+							 "WHERE afiliado.codvende IS NOT NULL ";
+						
 		
+		if( this.getFechaInicio() != null && this.fechaFin != null ){
+			
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			queryString += "and afiliado.momento >= '" + sdf.format(this.getFechaInicio())  + "' and " + 
+							" afiliado.momento  <= '" + sdf.format(this.getFechaFin()) + "' ";
+		}
+		
+		queryString += " group by 1 order by 3 desc";
+		
+		System.out.println("-----QueryString " + queryString);
+		
+		
+		try {
+			 Query query = em.createNativeQuery(queryString);
+			 afListSucursal = query.getResultList();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	/**
+	 * Exporta a excel la consulta actual afiliados registrados por 
+	 * vendedores
+	 */
+	public void exportarExcelVendedores(){				
+	    
+	    try {
+	    	report.generarReporteExcelElipsis("registroafiliadovendedor", this.getFechaInicio(), this.getFechaFin());
+			
+		} catch (Exception e) {
+	    	System.out.println("Error al exportar");
+	    	e.printStackTrace();
+		}		
+	}
+	
+	/**
+	 * Exporta la consulta acutla de afiliados registrados por
+	 * sucursal
+	 */
+	public void exportarExcelSucursal(){				
+	    
+	    try {
+	    	report.generarReporteExcelElipsis("registroafiliadosucursal", this.getFechaInicio(), this.getFechaFin());
+			
+		} catch (Exception e) {
+	    	System.out.println("Error al exportar");
+	    	e.printStackTrace();
+		}		
 	}
 
 	public String getNombreInforme() {
@@ -134,6 +200,19 @@ public class RegistroAfiliadoBean implements Serializable{
 	public void setAfListVendedor(List<Object[]> afListVendedor) {
 		this.afListVendedor = afListVendedor;
 	}
+
+	public List<Object[]> getAfListSucursal() {
+		return afListSucursal;
+	}
+	
+
+	public void setAfListSucursal(List<Object[]> afListSucursal) {
+		this.afListSucursal = afListSucursal;
+	}
+	
+	
+	
+	
 	
 	
 	

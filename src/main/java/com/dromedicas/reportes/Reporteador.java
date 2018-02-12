@@ -43,6 +43,8 @@ public class Reporteador {
 		String destFileNamePdf = path + doc;
 		Map parameters = new HashMap();
 		for (int i = 0; i < params.length; i++) {
+			
+			System.out.println("param" +  (i+1)  +": " + params[i]);
 			parameters.put("param" + (i + 1), params[i]);
 		}
 		try {

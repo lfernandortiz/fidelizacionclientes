@@ -244,6 +244,31 @@ public class AfiliadoService {
 	}
 	
 	
+	public Integer totalAfiliadosCorreoRechazado(){
+		Query query = em.createQuery("SELECT COUNT(a.idafiliado) FROM Afiliado a where a.emailrechazado = 1 ");		
+		Long temp = null;		
+		try {
+			temp =  (Long) query.getSingleResult();
+		} catch (NoResultException e) {
+			System.out.println("Elemento no encontrado email rechazado general");
+		}		
+		return temp.intValue(); 
+	}
+	
+	
+	public Integer totalAfiliadosCorreoSinValidar(){
+		Query query = em.createQuery("SELECT COUNT(a.idafiliado) FROM Afiliado a "
+				+ "where a.emailrechazado = 0 and a.emailvalidado = 0 and a.email != '' ");		
+		Long temp = null;		
+		try {
+			temp =  (Long) query.getSingleResult();
+		} catch (NoResultException e) {
+			System.out.println("Elemento no encontrado email rechazado general");
+		}		
+		return temp.intValue(); 
+	}
+	
+	
 	
 	@SuppressWarnings("unchecked")
 	public List<Afiliado> obtenerAfiliadosSinUUID(){

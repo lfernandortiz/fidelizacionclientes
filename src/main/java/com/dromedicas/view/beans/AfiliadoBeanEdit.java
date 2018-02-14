@@ -29,6 +29,7 @@ import com.dromedicas.domain.Sucursal;
 import com.dromedicas.domain.Ticketredencion;
 import com.dromedicas.domain.Tipodocumento;
 import com.dromedicas.domain.Transaccion;
+import com.dromedicas.domain.Vendedor;
 import com.dromedicas.mailservice.EnviarEmailAlertas;
 import com.dromedicas.reportes.Reporteador;
 import com.dromedicas.service.AfiliadoService;
@@ -41,11 +42,13 @@ import com.dromedicas.service.TipoDocumentoService;
 import com.dromedicas.service.TipoTransaccionService;
 import com.dromedicas.service.TransaccionService;
 import com.dromedicas.service.UsuarioWebService;
+import com.dromedicas.service.VendedorService;
 import com.dromedicas.util.ExpresionesRegulares;
 
 @ManagedBean(name="afiliadoBeanEdit")
 @SessionScoped
 public class AfiliadoBeanEdit implements Serializable{
+	
 	
 	/**
 	 * 
@@ -94,6 +97,9 @@ public class AfiliadoBeanEdit implements Serializable{
 	@EJB
 	private Reporteador report;
 	
+	@EJB
+	private VendedorService vendedorService;
+	
 	@ManagedProperty(value = "#{loginService}")
 	private LoginBeanService loginBean;
 		
@@ -112,6 +118,7 @@ public class AfiliadoBeanEdit implements Serializable{
 	private boolean emailValid = true; 
 	//varialbe para gui par
 	private boolean emailValidated;
+	private boolean emailRechazado;
 	
 	private BalancePuntos balancePuntos;
 	
@@ -267,7 +274,15 @@ public class AfiliadoBeanEdit implements Serializable{
 	public void setEmailValidated(boolean emailValidated) {
 		this.emailValidated = emailValidated;
 	}
-	
+		
+	public boolean isEmailRechazado() {
+		return emailRechazado;
+	}
+
+	public void setEmailRechazado(boolean emailRechazado) {
+		this.emailRechazado = emailRechazado;
+	}
+
 	public List<Pais> getPaisList() {
 		return paisList;
 	}
@@ -412,6 +427,7 @@ public class AfiliadoBeanEdit implements Serializable{
 	
 	public String editarAfiliado(){
 		this.emailValidated = this.afiliadoSelected.getEmailvalidado() == 1 ? true : false;
+		this.emailRechazado = this.afiliadoSelected.getEmailrechazado() == 1 ? true : false;
 		//variable de control para validacion de correo se usa para aplicar el css en la vista
 		this.emailValid = true;		
 		this.nacionalidad = this.paisService.obtenerPaisPorNombre(this.afiliadoSelected.getNacionalidad());	
@@ -509,6 +525,22 @@ public class AfiliadoBeanEdit implements Serializable{
 					new FacesMessage(FacesMessage.SEVERITY_WARN, "Error", "No fue posible el envio de confirmacion"));
 		}
 		
+	}
+	
+	public String usuarioRegistro(){
+		String registro = "";
+		
+		System.out.println("CODVENDE " + this.afiliadoSelected.getCodvende() );
+		if( this.afiliadoSelected.getCodvende() != null &&  !this.afiliadoSelected.getCodvende().equals("")){			
+			Vendedor v = 
+					this.vendedorService.obtenerVendedorPorCodigo( this.afiliadoSelected.getCodvende());
+			
+			registro = v.getNombres() + " " + v.getApellidos();
+		}else{
+			registro = this.afiliadoSelected.getUsuariowebBean().getNombreusuario();
+		}
+		
+		return registro;
 	}
 	
 	public void limpiarForm(){

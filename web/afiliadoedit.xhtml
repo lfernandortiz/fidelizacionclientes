@@ -1213,9 +1213,9 @@
 								layout="grid" styleClass="ui-panelgrid-blank"
 								style="border:0px none; background-color:transparent;">
 								
-								<p:outputLabel for="direccion2id" value="Direccion 2" />
-								<p:inputText id="direccion2id"
-									value="#{afiliadoBeanEdit.afiliadoSelected.streetvalor}" />
+								<p:outputLabel for="creadorid" value="Usuario que registro" />
+								<p:inputText id="creadorid" readonly="true"
+									value="#{afiliadoBeanEdit.usuarioRegistro()}" />
 								
 								<p:outputLabel for="fechacreacionid" value="Fecha de creacion" />
 								<p:inputText id="fechacreacionid" readonly="true"
@@ -1227,9 +1227,9 @@
         						<p:selectBooleanCheckbox id="emailvalidoid" disabled="true"
         									value="#{afiliadoBeanEdit.emailValidated}" />
         						
-        						<p:outputLabel for="creadorid" value="Usuario que registro" />
-								<p:inputText id="creadorid" readonly="true"
-									value="#{afiliadoBeanEdit.afiliadoSelected.usuariowebBean.nombreusuario}" />
+        						
+        						<p:outputLabel value="" />
+        						<p class="rechazo" >#{afiliadoBeanEdit.emailRechazado ==  true ? 'Email Rechazado' : ''}</p> 
  								
  								<p:outputLabel for="reenvioemail" value="" />
         						<p:commandButton value="Reenviar email de confirmacion" 

@@ -1,6 +1,7 @@
 package com.dromedicas.service;
 
 import javax.ejb.EJB;
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
@@ -9,6 +10,7 @@ import javax.persistence.Query;
 import com.dromedicas.domain.Parametrosemail;
 import com.dromedicas.eis.ParametrosemailDao;
 
+@Stateless
 public class ParametrosEmialService {
 	
 	@EJB
@@ -52,7 +54,8 @@ public class ParametrosEmialService {
 	 * @return
 	 */
 	public Parametrosemail obtenerParametrosemailPorFinalidad(String fin) {		
-		Query query = em.createQuery("select p FROM Parametrosemail p where p.proposito = :fin" );
+		System.out.println("PROPOSITO:  " +  fin);
+		Query query = em.createQuery(" from Parametrosemail p where p.proposito = :fin" );
 		query.setParameter("fin", fin);
 		Parametrosemail temp = null;		
 		try {

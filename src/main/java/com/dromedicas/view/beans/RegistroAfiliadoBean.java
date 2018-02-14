@@ -1,6 +1,8 @@
 package com.dromedicas.view.beans;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -38,6 +40,11 @@ public class RegistroAfiliadoBean implements Serializable{
 	private List<Object[]> afListVendedor;
 	private List<Object[]> afListSucursal;
 	
+	private int totalRegistrados;
+	private int totalEmail;
+	private int totalValidado;
+	private int totalRechazados;
+	
 	@PostConstruct
 	public void init(){
 		
@@ -57,7 +64,7 @@ public class RegistroAfiliadoBean implements Serializable{
 		if( this.isPostBack() == false){
 			this.setNombreInforme(informe);
 			if( this.getNombreInforme().equals("vendedor")){
-				this.obtenerPorVendedor();
+				this.obtenerPorVendedor();				
 			}
 			if( this.getNombreInforme().equals("sucursal")){
 				System.out.println("-----PreRender View sucursal");
@@ -67,20 +74,23 @@ public class RegistroAfiliadoBean implements Serializable{
 	}
 	
 	public void cancelarList(){
-		this.setFechaInicio(null);
-		this.setFechaFin(null);
+		this.setFechaInicio(new Date());
+		this.setFechaFin(new Date());
 		
 		if( this.getNombreInforme().equals("vendedor")){
 			this.afListVendedor = null;
+			this.resetTotales();
 		}
 		if( this.getNombreInforme().equals("sucursal")){
 			this.afListVendedor = null;
+			this.resetTotales();
 		}
 	}
 	
 	
 	@SuppressWarnings("unchecked")
 	public void obtenerPorVendedor(){
+		this.resetTotales();
 		String queryString = "SELECT vendedor.codvende, "+
 							"concat(vendedor.nombres,' ',vendedor.apellidos), "+
 							"count(documento), sum(case when afiliado.email != '' then 1 else 0 end) , "+
@@ -93,16 +103,24 @@ public class RegistroAfiliadoBean implements Serializable{
 		if( this.getFechaInicio() != null && this.fechaFin != null ){
 			
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-			queryString += "and afiliado.momento >= '" + sdf.format(this.getFechaInicio())  + "' and " + 
-							" afiliado.momento  <= '" + sdf.format(this.getFechaFin()) + "' ";
+			queryString += "and date(afiliado.momento) >= '" + sdf.format(this.getFechaInicio())  + "' and " + 
+							" date(afiliado.momento)  <= '" + sdf.format(this.getFechaFin()) + "' ";
 		}
 		
-		queryString += " group by 1 order by 4 desc";
+		queryString += " group by 1 order by 3 desc ";
+		
+		
+		System.out.println("-----QueryString " + queryString);
 		
 		try {
 			 Query query = em.createNativeQuery(queryString);
 			 afListVendedor = query.getResultList();
+			 
+			 //Establece los valores totales que aparecen en la vista.
+			 this.establecerTotales(afListVendedor);
+			 
 		} catch (Exception e) {
+			
 			e.printStackTrace();
 		}
 	}
@@ -110,10 +128,11 @@ public class RegistroAfiliadoBean implements Serializable{
 	
 	@SuppressWarnings("unchecked")
 	public void obtenerPorSucursal(){
+		this.resetTotales();
 		String queryString = "SELECT sucursal.codigointerno, sucursal.nombre_sucursal as sucursal," +
 							 "count(documento) as registrados, sum(case when afiliado.email != '' then 1 else 0 end) as email, "+
 							 "sum(case when afiliado.emailvalidado = 1 then 1 else 0 end) as emailvalidado, " +
-							 "sum(case when afiliado.emailvalidado = 1 then 1 else 0 end) as emailrechazado " +
+							 "sum(case when afiliado.emailrechazado = 1 then 1 else 0 end) as emailrechazado " +
 							 "FROM afiliado inner join sucursal on ( afiliado.idsucursal = sucursal.idsucursal) " +
 							 "WHERE afiliado.codvende IS NOT NULL ";
 						
@@ -121,8 +140,8 @@ public class RegistroAfiliadoBean implements Serializable{
 		if( this.getFechaInicio() != null && this.fechaFin != null ){
 			
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-			queryString += "and afiliado.momento >= '" + sdf.format(this.getFechaInicio())  + "' and " + 
-							" afiliado.momento  <= '" + sdf.format(this.getFechaFin()) + "' ";
+			queryString += "and date(afiliado.momento) >= '" + sdf.format(this.getFechaInicio())  + "' and " + 
+							" date(afiliado.momento)  <= '" + sdf.format(this.getFechaFin()) + "' ";
 		}
 		
 		queryString += " group by 1 order by 3 desc";
@@ -133,10 +152,52 @@ public class RegistroAfiliadoBean implements Serializable{
 		try {
 			 Query query = em.createNativeQuery(queryString);
 			 afListSucursal = query.getResultList();
+			 this.establecerTotales(afListSucursal);
+			 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+	
+	
+	private void resetTotales(){
+		this.setTotalRegistrados(0);
+		this.setTotalEmail(0);
+		this.setTotalValidado(0);			
+		this.setTotalRechazados(0);
+		
+	}
+	
+	
+	
+	private void establecerTotales(List<Object[]> list){
+		if( this.getNombreInforme().equals("vendedor")){
+			for(Object[] e: list){	
+				 BigInteger reg = (BigInteger) e[2];
+				 this.totalRegistrados += reg.intValue() ;
+				 BigDecimal em = (BigDecimal) e[3];
+				 this.totalEmail += em.intValue() != 0 ? em.intValue() : 0;
+				 BigDecimal va = (BigDecimal) e[4];
+				 this.totalValidado += va.intValue() != 0 ? va.intValue() : 0;
+				 BigDecimal rec = (BigDecimal) e[5];
+				 this.totalRechazados += rec.intValue() != 0 ? rec.intValue() : 0;
+				 
+			}
+		}
+		if( this.getNombreInforme().equals("sucursal")){
+			for(Object[] e: list){					
+				 BigInteger reg = (BigInteger) e[2];
+				 this.totalRegistrados += reg.intValue() ;
+				 BigDecimal em = (BigDecimal) e[3];
+				 this.totalEmail += em.intValue() != 0 ? em.intValue() : 0;
+				 BigDecimal va = (BigDecimal) e[4];
+				 this.totalValidado += va.intValue() != 0 ? va.intValue() : 0;
+				 BigDecimal rec = (BigDecimal) e[5];
+				 this.totalRechazados += rec.intValue() != 0 ? rec.intValue() : 0;
+			}
+		}
+	}
+	
 	
 	
 	/**
@@ -209,11 +270,38 @@ public class RegistroAfiliadoBean implements Serializable{
 	public void setAfListSucursal(List<Object[]> afListSucursal) {
 		this.afListSucursal = afListSucursal;
 	}
-	
-	
-	
-	
-	
+
+	public int getTotalRegistrados() {
+		return totalRegistrados;
+	}
+
+	public void setTotalRegistrados(int totalRegistrados) {
+		this.totalRegistrados = totalRegistrados;
+	}
+
+	public int getTotalEmail() {
+		return totalEmail;
+	}
+
+	public void setTotalEmail(int totalEmail) {
+		this.totalEmail = totalEmail;
+	}
+
+	public int getTotalValidado() {
+		return totalValidado;
+	}
+
+	public void setTotalValidado(int totalValidado) {
+		this.totalValidado = totalValidado;
+	}
+
+	public int getTotalRechazados() {
+		return totalRechazados;
+	}
+
+	public void setTotalRechazados(int totalRechazados) {
+		this.totalRechazados = totalRechazados;
+	}
 	
 	
 	

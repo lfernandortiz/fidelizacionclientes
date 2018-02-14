@@ -2,6 +2,10 @@ package com.dromedicas.test;
 
 
 import java.io.File;
+import java.util.List;
+
+import javax.mail.Message;
+import javax.naming.Context;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -12,6 +16,7 @@ import com.dromedicas.util.EncodingUtil;
 
 public class Test {
 
+	static Context jndi;
 	public static void main(String[] args) {
 		try {
 			//enviarEmail();
@@ -57,14 +62,15 @@ public class Test {
 	public static void leerMensajes(){
 		try {
 			
+			JavaMailService service= (JavaMailService)
+					jndi.lookup("java:global/puntosfarmanorte/ClienteRecibirTxAcumulacionRs!com.dromedicas.mailservice.JavaMailService");
 			
 			
-			
-			//List<Message> inboxM = service.getNewMessages();//Mensajes recibidos
+			List<Message> inboxM = service.getNewMessages();//Mensajes recibidos
 			
 			//ArrayList<Message> archivo = new ArrayList<Message>();//coleccion de mensajes errados
 			
-			//System.out.println("tamanio:" + inboxM.size());
+			System.out.println("tamanio:" + inboxM.size());
 			
 			
 			String emailAddres = null;

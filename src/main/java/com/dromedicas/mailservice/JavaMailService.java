@@ -1,5 +1,4 @@
 package com.dromedicas.mailservice;
-
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Enumeration;
@@ -9,6 +8,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.mail.Flags;
 import javax.mail.Folder;
@@ -24,6 +24,8 @@ import javax.mail.Store;
 import javax.mail.Transport;
 import javax.mail.search.FlagTerm;
 
+import com.dromedicas.domain.Parametrosemail;
+import com.dromedicas.service.ParametrosEmialService;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -32,6 +34,9 @@ import com.google.common.collect.Lists;
 
 @Stateless
 public class JavaMailService {
+	
+	@EJB
+	private ParametrosEmialService emailParameters; 
 	
 	private static final String MAIL_SMTP_AUTH = "mail.smtp.auth";
     private static final String MAIL_SMTP_STARTTLS_ENABLE = "mail.smtp.starttls.enable";
@@ -47,14 +52,14 @@ public class JavaMailService {
     private static final String MAIL_SMTP_STATRTTLS = "mail.smtp.starttls.enable";
     private static final String ARCHIVED_FOLDER= "archived";
    
-    
-    public final String username;
-    public final String password;
-    private final String serverSMTPHost;
-    private final String serverProtocol;
-    private final String port;
-    private final String autentica;
-    private final String archivedFolderName;
+    private String tipoEmail;
+    public  String username;
+    public  String password;
+    private String serverSMTPHost;
+    private String serverProtocol;
+    private String port;
+    private String autentica;
+    private String archivedFolderName;
 	private Session session;
 	private Folder mailInbox;
 	private Folder achivedFolder;
@@ -67,45 +72,39 @@ public class JavaMailService {
 	private static final String MIME_TYPE_MULTIPAR_REPORT = "multipart/REPORT"; 
 
 	    
-	public JavaMailService() {
+	public JavaMailService() {			
+	}
+	
+	/**
+	 * Establece los valores de conexion para la cuenta de correo especificada
+	 */
+	public void setConnectionValues(String tipoEmail){
 		System.out.println("Leyendo propiedades");
-		this.config = new Properties();
-		try {
-			//esto se debe manejar a nivel de base de datos
-			//FileInputStream entrada = new FileInputStream( "emailconexion.properties" );
-			
-			ClassLoader objClassLoader = null;
-			objClassLoader = getClass().getClassLoader();
-			FileInputStream entrada = new FileInputStream(objClassLoader.getResource("emailconexion.properties").getFile());
-			
-			
-         
-			this.config.load(entrada); 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}	
 		
+		this.setTipoEmail(tipoEmail);
 		
+		Parametrosemail param = emailParameters.obtenerParametrosemailPorFinalidad(this.getTipoEmail());		
 		
-		username = config.getProperty(MAIL_USERNAME);
-		password = config.getProperty(MAIL_PASSWORD);
-		serverSMTPHost = config.getProperty(MAIL_SMTP_HOST);
-		port = config.getProperty(MAIL_SMTP_PORT );
-		serverProtocol = config.getProperty(MAIL_SERVER_PROTOCOL);
-		autentica = config.getProperty(MAIL_SMTP_AUTH);		
-		archivedFolderName = config.getProperty(ARCHIVED_FOLDER);
-		defaultName = "LEIDOS";
+		username = param.getUser();
+		password = param.getPassword();
+		serverSMTPHost = param.getSmtpHost();
+		port = param.getPort();
+		serverProtocol = param.getProtocol();
+		autentica = param.getSmtpAuth();		
+		archivedFolderName = param.getArchived();
+		defaultName = "LEIDOS";		
 		
 	}
 	
 	public Properties defaultMailConfig() {
+		Parametrosemail param = emailParameters.obtenerParametrosemailPorFinalidad(this.getTipoEmail());		
         Properties defaultMailConfig = new Properties();       
-        defaultMailConfig.setProperty(MAIL_SMTP_HOST, config.getProperty(MAIL_SMTP_HOST));        
-        defaultMailConfig.setProperty(MAIL_SMTP_PORT, config.getProperty(MAIL_SMTP_PORT));
-        defaultMailConfig.setProperty(MAIL_USERNAME, config.getProperty(MAIL_USERNAME));
-        defaultMailConfig.setProperty(MAIL_SMTP_AUTH, config.getProperty(MAIL_SMTP_AUTH));
-        defaultMailConfig.setProperty(MAIL_STORE_IMAP, config.getProperty(MAIL_STORE_IMAP));
-        defaultMailConfig.setProperty(MAIL_SMTP_STATRTTLS, config.getProperty(MAIL_SMTP_STATRTTLS));
+        defaultMailConfig.setProperty(MAIL_SMTP_HOST, param.getSmtpHost());        
+        defaultMailConfig.setProperty(MAIL_SMTP_PORT, param.getPort());
+        defaultMailConfig.setProperty(MAIL_USERNAME, param.getUser());
+        defaultMailConfig.setProperty(MAIL_SMTP_AUTH, param.getSmtpAuth());
+        defaultMailConfig.setProperty(MAIL_STORE_IMAP, param.getStoreProtocol());
+        defaultMailConfig.setProperty(MAIL_SMTP_STATRTTLS, param.getSmtpStarttlsEnable());
         
         return defaultMailConfig;
     }
@@ -135,16 +134,17 @@ public class JavaMailService {
 	}
 	
 	
+	Store store = null;
+
 	private Store connectToMailServer() throws MessagingException {
-		Store store = null;
 		if (null == session) {
 			session = Session.getDefaultInstance(defaultMailConfig());
 		}
 		if (null == store || !store.isConnected()) {
 			store = session.getStore();
-			//store.connect(serverHost, port, username, password);
+			// store.connect(serverHost, port, username, password);
 			store.connect(this.serverSMTPHost, this.username, this.password);
-			
+
 		}
 		return store;
 	}
@@ -167,6 +167,23 @@ public class JavaMailService {
 		}
 	}
 	
+	public Folder obtenerFolderAcrhivados(){
+		Folder folder = null;
+		try {
+			final Store store = connectToMailServer();
+			folder  =  store.getFolder(archivedFolderName);
+			
+		} catch (Exception e) {
+			System.out.println("ERROR AL OBTENER LA CARPETAD DE ARCHIVADOS");
+			
+			e.printStackTrace();
+			
+			return null;
+			
+		}		
+		return folder;
+	}
+	
 	/**
 	 * 
 	 * @throws MessagingException
@@ -180,8 +197,21 @@ public class JavaMailService {
 	
 	
 	public void deleteMessage(Message message) throws MessagingException{
-		message.setFlag(Flags.Flag.DELETED,true);
+		
+		message.setFlag(Flags.Flag.DELETED,true);		
 	}
+	
+	
+	public void closeFolderInbox(){
+		try {
+			this.mailInbox.close(true);
+		} catch (MessagingException e) {
+			System.out.println("ERROR al cerrar Inbox");
+			e.printStackTrace();
+		}
+	}
+	
+	
 	
 	/**
 	 * Obtiene todos los mensajes no leidos del INBOX
@@ -253,7 +283,7 @@ public class JavaMailService {
 		  while (e.hasMoreElements()) {
 				Header h = (Header) e.nextElement();
 				//this is a constant into all head messages
-				System.out.println(">-----" + h.getName() +": "+h.getValue() );
+				//System.out.println(">-----" + h.getName() +": "+h.getValue() );
 				if (h.getName().equals("X-Failed-Recipients")  ){					
 					address = h.getValue();	
 					
@@ -363,6 +393,7 @@ public class JavaMailService {
 	 */
 	public void copiarMensajes(Folder carpetaOrigen, Folder carpetaDestino,
 			Message mensajes[]) throws MessagingException {
+		
 		if(carpetaDestino == null){
 			crearFolder(connectToMailServer(), archivedFolderName );
 		}
@@ -462,6 +493,16 @@ public class JavaMailService {
 	}
 	
 	
+	
+	
+	public String getTipoEmail() {
+		return tipoEmail;
+	}
+
+	public void setTipoEmail(String tipoEmail) {
+		this.tipoEmail = tipoEmail;
+	}
+
 	/**
 	 * @return the serverSMTPHost
 	 */

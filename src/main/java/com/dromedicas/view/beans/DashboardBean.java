@@ -26,6 +26,8 @@ public class DashboardBean {
 	private String puntosAcumuladosTotal;
 	private String totalAfiliados;
 	private String totalEmailValidado;
+	private String totalEmailRechazados;
+	private String totalEmailSinValidar;
 	
 	public DashboardBean(){
 		
@@ -62,7 +64,7 @@ public class DashboardBean {
 	public String getPuntosAcumuladosTotal() {
 		NumberFormat nf = new DecimalFormat("#,###");
 		//Desde el EJB de servicio de puntos obtiene el total de puntos 
-		//Redimidos por los afiliados
+		//Total puntos acumulados
 		return nf.format(this.puntosService.getTotalPuntosAcumulados());
 	}
 
@@ -84,12 +86,34 @@ public class DashboardBean {
 	public String getTotalEmailValidado() {
 		NumberFormat nf = new DecimalFormat("#,###");
 		//Desde el EJB de servicio de puntos obtiene el total de puntos 
-		//Redimidos por los afiliados
+		//Total Email Validados
 		return nf.format(this.afiliadoService.totalAfiliadosCorreoValidado());
 	}
 
 	public void setTotalEmailValidado(String totalEmailValidado) {
 		this.totalEmailValidado = totalEmailValidado;
+	}
+
+	public String getTotalEmailRechazados() {
+		NumberFormat nf = new DecimalFormat("#,###");
+		//Desde el EJB de servicio de puntos obtiene el total de puntos 
+		//Total Email Rechazados
+		return nf.format(this.afiliadoService.totalAfiliadosCorreoRechazado());
+	}
+
+	public void setTotalEmailRechazados(String totalEmailRechazados) {
+		this.totalEmailRechazados = totalEmailRechazados;
+	}
+
+	public String getTotalEmailSinValidar() {
+		NumberFormat nf = new DecimalFormat("#,###");
+		//Desde el EJB de servicio de puntos obtiene el total de puntos 
+		//Total Email sin validar
+		return nf.format(this.afiliadoService.totalAfiliadosCorreoSinValidar());
+	}
+
+	public void setTotalEmailSinValidar(String totalEmailSinValidar) {
+		this.totalEmailSinValidar = totalEmailSinValidar;
 	}
 
 	

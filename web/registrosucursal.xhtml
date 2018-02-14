@@ -24,7 +24,7 @@
                             <h1>Registro Afilido por Sucursal</h1>
                             <p:panel id="basic" header="Informe de Registro de Afiliados por Sucursal"  style="margin-bottom:20px">
                             	<!-- obciones de busqueda rango de fechas -->
-                            	 <p:spacer height="15px"/>	
+                            	 <p:spacer height="30px"/>	
 	                            <p:panelGrid  columns="4" id="vendedorForm"
 									columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
 									layout="grid" styleClass="ui-panelgrid-blank"
@@ -68,29 +68,47 @@
 								</p:commandButton>
 								</p:panelGrid>
                         	
-                        	</p:panel>
-							
+                        	</p:panel>					
                         	
-                        	<p:spacer height="5px"/>
+                        	
                         	<!-- tabla detalle registro -->
                         	<p:dataTable id="registroVendedorDetail" var="data" value="#{registroAfiliadoBean.afListSucursal}" 
                         			rowKey="#{data[0]}" selectionMode="single" emptyMessage="Registros no encontrados  :-(  " >
 								<f:facet name="header">Afiliados Registrados Por Sucursal</f:facet>
 								<p:column headerText="Sucursal" sortBy="#{data[1]}">
-									<h:outputText value="#{data[1]}" /> 
+									<div class="celdaDerecha">
+										<h:outputText value="#{data[1]}" /> 
+									</div>									
 								</p:column>								
 								<p:column headerText="Registradoss" sortBy="#{data[2]}">
-									<h:outputText value="#{data[2]}" /> 
+									<div class="celdaDerecha">
+										<h:outputText value="#{data[2]}" /> 
+									</div>									
 								</p:column>
 								<p:column headerText="Email" sortBy="#{data[3]}">
-									<h:outputText value="#{data[3]}" /> 
+									<div class="celdaDerecha">
+										<h:outputText value="#{data[3]}" /> 
+									</div>
 								</p:column>		
 								<p:column headerText="Email Validado" sortBy="#{data[4]}">
-									<h:outputText value="#{data[4]}" /> 
+									<div class="celdaDerecha">
+										<h:outputText value="#{data[4]}" /> 
+									</div>									
 								</p:column>		
 								<p:column headerText="Email Rechazado" sortBy="#{data[5]}"> 
-									<h:outputText value="#{data[5]}" /> 
+									<div class="celdaDerecha">
+										<h:outputText value="#{data[5]}" /> 								
+									</div>									
 								</p:column>
+								<p:columnGroup type="footer">
+								            <p:row>
+								                <p:column style="text-align:right" footerText="Totales..:" />
+               									<p:column footerText="#{registroAfiliadoBean.totalRegistrados}" style="text-align: right!important; font-weight: bold;"/>
+               									<p:column footerText="#{registroAfiliadoBean.totalEmail}" style="text-align: right!important; font-weight: bold;"/> 
+               									<p:column footerText="#{registroAfiliadoBean.totalValidado}" style="text-align: right!important; font-weight: bold;"/>
+               									<p:column footerText="#{registroAfiliadoBean.totalRechazados}" style="text-align: right!important; font-weight: bold;"/>  
+								            </p:row>
+							    </p:columnGroup>	
 								
 							</p:dataTable>	
 						</div> <!-- end card -->

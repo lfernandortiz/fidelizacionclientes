@@ -3621,7 +3621,13 @@ a:-webkit-any-link.linkticket {
 	filter: Alpha(Opacity = 90)!important;
 }
 
+.rechazo{
+	margin:0;
+	padding: 0;
+	color: #ff0000!important;
+	font-weight: bolder!important;
 
+} 
 
 
 

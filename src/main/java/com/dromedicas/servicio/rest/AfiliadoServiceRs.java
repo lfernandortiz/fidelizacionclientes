@@ -233,6 +233,10 @@ public class AfiliadoServiceRs implements Serializable{
 	public Response validarCorreoAfiliado(@QueryParam("id") String id){
 		Afiliado afiliado = this.afiliadoService.obtenerAfiliadoUUID(id);
 		
+		if( afiliado.getEmailrechazado() == 1 ){
+			afiliado.setEmailrechazado((byte) 0 );
+		}
+		
 		//se marca como validado el correo 
 		afiliado.setEmailvalidado((byte)1);
 

@@ -168,89 +168,94 @@ public class EnviarEmailAlertas {
 			
 		System.out.println("Clase enviar Email Alerta de compra ");
 		try{
-			ServletContext servletContext = null;
-			
-			try {
-				servletContext = (ServletContext) FacesContext
-				        .getCurrentInstance().getExternalContext().getContext();
-			} catch (Exception e) {
-				servletContext = context;
-			}
-			
-			File inputHtml = new File(servletContext.getRealPath("emailhtml/emailcompra.html"));
-			// Asginamos el archivo al objeto analizador Document
-			Document doc = Jsoup.parse(inputHtml, "UTF-8");
-			
-			// obtengo los id's del DOM a los que deseo insertar los valores.
-			// Mediante el metodo append() se insertan los valores obtenidos de
-			// la consulta
-			Element nomAfiliado = doc.select("span#nombrecliente").first();
-			nomAfiliado.append(regex.puntoSegundoNombre(afiliado.getNombres()+" "+afiliado.getApellidos()) );
-			
-			Element puntosTx = doc.select("span#puntostx").first();
-			puntosTx.append(Integer.toString(ganados));
-			
-			Element acumulados = doc.select("span#acumulados").first();
-			acumulados.append(Integer.toString(balance.getAcumulados()));
-			
-			Element redimir = doc.select("span#redimir").first();
-			redimir.append(Integer.toString(balance.getDisponiblesaredimir()));
-			
-						
-			//Element img = doc.select("img#pixelcontrol").first();
-			//img.attr("src", url);
-			
-			// Propiedades de la conexión
-			Properties props = new Properties();
-			props.setProperty("mail.smtp.host", "deus.wnkserver6.com");
-			props.setProperty("mail.smtp.port", "25");// puerto de salida, de
-			// entrada 110
-			props.setProperty("mail.smtp.user",
-								"contacto@puntosfarmanorte.com.co");
-			props.setProperty("mail.smtp.auth", "true");
-			props.put("mail.transport.protocol.", "smtp");
+			//primero valida que el email registrado no este como rechazado
+			if( afiliado.getEmailrechazado() == 0 ){
+				
+				ServletContext servletContext = null;
+				
+				try {
+					servletContext = (ServletContext) FacesContext
+					        .getCurrentInstance().getExternalContext().getContext();
+				} catch (Exception e) {
+					servletContext = context;
+				}
+				
+				File inputHtml = new File(servletContext.getRealPath("emailhtml/emailcompra.html"));
+				// Asginamos el archivo al objeto analizador Document
+				Document doc = Jsoup.parse(inputHtml, "UTF-8");
+				
+				// obtengo los id's del DOM a los que deseo insertar los valores.
+				// Mediante el metodo append() se insertan los valores obtenidos de
+				// la consulta
+				Element nomAfiliado = doc.select("span#nombrecliente").first();
+				nomAfiliado.append(regex.puntoSegundoNombre(afiliado.getNombres()+" "+afiliado.getApellidos()) );
+				
+				Element puntosTx = doc.select("span#puntostx").first();
+				puntosTx.append(Integer.toString(ganados));
+				
+				Element acumulados = doc.select("span#acumulados").first();
+				acumulados.append(Integer.toString(balance.getAcumulados()));
+				
+				Element redimir = doc.select("span#redimir").first();
+				redimir.append(Integer.toString(balance.getDisponiblesaredimir()));
+				
+							
+				//Element img = doc.select("img#pixelcontrol").first();
+				//img.attr("src", url);
+				
+				// Propiedades de la conexión
+				Properties props = new Properties();
+				props.setProperty("mail.smtp.host", "deus.wnkserver6.com");
+				props.setProperty("mail.smtp.port", "25");// puerto de salida, de
+				// entrada 110
+				props.setProperty("mail.smtp.user",
+									"contacto@puntosfarmanorte.com.co");
+				props.setProperty("mail.smtp.auth", "true");
+				props.put("mail.transport.protocol.", "smtp");
 
-			// Preparamos la sesion
-			Session session = Session.getDefaultInstance(props);
-			// Construimos el mensaje
-			
-			InternetAddress addressTo = 
-					new InternetAddress(afiliado.getEmail());
-			
-						
-			// se compone el mensaje (Asunto, cuerpo del mensaje y direccion origen)
-			final MimeMessage message = new MimeMessage(session);
-			message.setFrom(new InternetAddress(
-					"contacto@puntosfarmanorte.com.co" , "Puntos Farmanorte"));
-			message.setRecipient(Message.RecipientType.TO, addressTo);			
-			//Emojis :-)			
-			String subjectEmojiRaw = ":pill: Puntos Farmanorte :syringe:";
-			String subjectEmoji = EmojiParser.parseToUnicode(subjectEmojiRaw);
-			
-			message.setSubject(subjectEmoji  + "| Acumulaste: " + ganados , "UTF-8");
-			message.setContent(doc.html(), "text/html; charset=utf-8");
+				// Preparamos la sesion
+				Session session = Session.getDefaultInstance(props);
+				// Construimos el mensaje
+				
+				InternetAddress addressTo = 
+						new InternetAddress(afiliado.getEmail());
+				
+							
+				// se compone el mensaje (Asunto, cuerpo del mensaje y direccion origen)
+				final MimeMessage message = new MimeMessage(session);
+				message.setFrom(new InternetAddress(
+						"contacto@puntosfarmanorte.com.co" , "Puntos Farmanorte"));
+				message.setRecipient(Message.RecipientType.TO, addressTo);			
+				//Emojis :-)			
+				String subjectEmojiRaw = ":pill: Puntos Farmanorte :syringe:";
+				String subjectEmoji = EmojiParser.parseToUnicode(subjectEmojiRaw);
+				
+				message.setSubject(subjectEmoji  + "| Acumulaste: " + ganados , "UTF-8");
+				message.setContent(doc.html(), "text/html; charset=utf-8");
 
-			System.out.println("Enviando Correo....");
-			//Envia el correo
-			final Transport t = session.getTransport("smtp");
-			//asigno un hilo exclusivo a la conexion y envio del mensaje
-			//dado que el proveedor de correo es muy lento para establecer
-			//la conexion
-			new Thread(new Runnable() {
-			    public void run() {
-			    	try {
-			    		t.connect("contacto@puntosfarmanorte.com.co", "Dromedicas2013.");
-						t.sendMessage(message, message.getAllRecipients());
-						// Cierre de la conexion
-						t.close();
-				    
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-			    }	
-			}).start();
-			System.out.println("Conexion cerrada");
+				System.out.println("Enviando Correo....");
+				//Envia el correo
+				final Transport t = session.getTransport("smtp");
+				//asigno un hilo exclusivo a la conexion y envio del mensaje
+				//dado que el proveedor de correo es muy lento para establecer
+				//la conexion
+				new Thread(new Runnable() {
+				    public void run() {
+				    	try {
+				    		t.connect("contacto@puntosfarmanorte.com.co", "Dromedicas2013.");
+							t.sendMessage(message, message.getAllRecipients());
+							// Cierre de la conexion
+							t.close();
+					    
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+				    }	
+				}).start();
+				System.out.println("Conexion cerrada");
+				
+			}//fin del if de validacion de email rechazado
 			
 		}catch(Exception e){
 			System.out.println("Falla en el envio del correo:");
@@ -296,50 +301,52 @@ public class EnviarEmailAlertas {
 			
 			for(Transaccion tx : txList){
 				Afiliado afiliado = tx.getAfiliado();
-				BalancePuntos balance = puntosService.consultaPuntos(afiliado);
 				
-				File inputHtml = new File(servletContext.getRealPath("emailhtml/emailcompra.html"));
-				// Asginamos el archivo al objeto analizador Document
-				Document doc = Jsoup.parse(inputHtml, "UTF-8");
-				// obtengo los id's del DOM a los que deseo insertar los valores.
-				// Mediante el metodo append() se insertan los valores obtenidos de
-				// la consulta
-				Element nomAfiliado = doc.select("span#nombrecliente").first();
-				nomAfiliado.append(regex.puntoSegundoNombre(afiliado.getNombres()+" "+afiliado.getApellidos()) );
-				
-				//Puntos ganados en la Tx actual
-				Element puntosTx = doc.select("span#puntostx").first();
-				puntosTx.append(Integer.toString( tx.getPuntostransaccion() ));
-				
-				//Se obtienen los puntos acumulados desde el balance 
-				Element acumulados = doc.select("span#acumulados").first();
-				acumulados.append(Integer.toString(balance.getAcumulados()));
-				
-				//Se obtienen los puntos disponiblea para redimir
-				Element redimir = doc.select("span#redimir").first();
-				redimir.append(Integer.toString(balance.getDisponiblesaredimir()));
-				
-				InternetAddress addressTo = 
-						new InternetAddress(afiliado.getEmail());	
+				// si el email registrado no esta como rechazado se envia la notificacion
+				if( afiliado.getEmailrechazado() == 0 ){
+					BalancePuntos balance = puntosService.consultaPuntos(afiliado);
+					
+					File inputHtml = new File(servletContext.getRealPath("emailhtml/emailcompra.html"));
+					// Asginamos el archivo al objeto analizador Document
+					Document doc = Jsoup.parse(inputHtml, "UTF-8");
+					// obtengo los id's del DOM a los que deseo insertar los valores.
+					// Mediante el metodo append() se insertan los valores obtenidos de
+					// la consulta
+					Element nomAfiliado = doc.select("span#nombrecliente").first();
+					nomAfiliado.append(regex.puntoSegundoNombre(afiliado.getNombres()+" "+afiliado.getApellidos()) );
+					
+					//Puntos ganados en la Tx actual
+					Element puntosTx = doc.select("span#puntostx").first();
+					puntosTx.append(Integer.toString( tx.getPuntostransaccion() ));
+					
+					//Se obtienen los puntos acumulados desde el balance 
+					Element acumulados = doc.select("span#acumulados").first();
+					acumulados.append(Integer.toString(balance.getAcumulados()));
+					
+					//Se obtienen los puntos disponiblea para redimir
+					Element redimir = doc.select("span#redimir").first();
+					redimir.append(Integer.toString(balance.getDisponiblesaredimir()));
+					
+					InternetAddress addressTo = 
+							new InternetAddress(afiliado.getEmail());
+					
+					// se compone el mensaje (Asunto, cuerpo del mensaje y direccion origen)
+					final MimeMessage message = new MimeMessage(session);
+					message.setFrom(new InternetAddress(
+							"contacto@puntosfarmanorte.com.co" , "Puntos Farmanorte"));
+					message.setRecipient(Message.RecipientType.TO, addressTo);			
+					//Emojis :-)			
+					String subjectEmojiRaw = 
+							":pill: Acumulaste: " + tx.getPuntostransaccion() +" Puntos :large_blue_circle:";
+					String subjectEmoji = EmojiParser.parseToUnicode(subjectEmojiRaw);
+					
+					message.setSubject(subjectEmoji , "UTF-8");
+					message.setContent(doc.html(), "text/html; charset=utf-8");
 
-							
-				// se compone el mensaje (Asunto, cuerpo del mensaje y direccion origen)
-				final MimeMessage message = new MimeMessage(session);
-				message.setFrom(new InternetAddress(
-						"contacto@puntosfarmanorte.com.co" , "Puntos Farmanorte"));
-				message.setRecipient(Message.RecipientType.TO, addressTo);			
-				//Emojis :-)			
-				String subjectEmojiRaw = 
-						":pill: Acumulaste: " + tx.getPuntostransaccion() +" Puntos :large_blue_circle:";
-				String subjectEmoji = EmojiParser.parseToUnicode(subjectEmojiRaw);
-				
-				message.setSubject(subjectEmoji , "UTF-8");
-				message.setContent(doc.html(), "text/html; charset=utf-8");
-
-				t.sendMessage(message, message.getAllRecipients());
-				// Cierre de la conexion
-				
+					t.sendMessage(message, message.getAllRecipients());
+				}				
 			}
+			// Cierre de la conexion
 			t.close();
 			System.out.println("Conexion cerrada");
 			

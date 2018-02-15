@@ -36,12 +36,12 @@ public class NotificacionCompraJob implements Job {
 			List<Transaccion>  txList = txService.obtenerTxSinNotificacion();			
 			
 			if( txList.size() > 0 ){
-				email.emailNotificacionCompra(txList);
+				//email.emailNotificacionCompra(txList);
 				
 				//Marca como enviada notificacion a las tx's
 				for(Transaccion tx : txList){
-					tx.setEnvionotificacion((byte) 1);
-					txService.updateTransaccion(tx);
+					//tx.setEnvionotificacion((byte) 1);
+					//txService.updateTransaccion(tx);
 				}
 			}					
 			

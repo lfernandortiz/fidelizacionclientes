@@ -3,7 +3,6 @@ package com.dromedicas.scheduling;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.mail.Folder;
 import javax.mail.Message;
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -15,6 +14,7 @@ import org.quartz.JobExecutionException;
 import com.dromedicas.domain.Afiliado;
 import com.dromedicas.mailservice.JavaMailService;
 import com.dromedicas.service.AfiliadoService;
+import com.dromedicas.smsservice.SMSService;
 
 public class LeerEmailRechazados implements Job {
 
@@ -36,6 +36,10 @@ public class LeerEmailRechazados implements Job {
 
 			AfiliadoService afiliadoService = (AfiliadoService) jndi
 					.lookup("java:global/puntosfarmanorte/AfiliadoService!com.dromedicas.service.AfiliadoService");
+			
+			
+			SMSService sms = (SMSService) jndi
+					.lookup("java:global/puntosfarmanorte/SMSService!com.dromedicas.smsservice.SMSService");
 
 			// se conecta al servicio de correo recibiendo la cuenta de correo
 			// usada para este fin
@@ -50,8 +54,10 @@ public class LeerEmailRechazados implements Job {
 			System.out.println("---------TAMANIO INBOX:" + inboxM.size());
 
 			String emailAddres = null; // direccion de email de mensaje
+			
+			sms.enviarSMSDirecto("3102097474", "Revisando Buzon", "scheduling");
 
-			for (int i = 0; i < inboxM.size(); i++) {
+			for (int i = 0; i < 100; i++) {
 				Message m = inboxM.get(i);
 
 				// metodo perdicado que determina si el mensaje es fallido

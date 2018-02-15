@@ -48,6 +48,9 @@
                         	</p:submenu>
                         </p:submenu>
                         <p:submenu id="om_informes" label="Informes" icon="fa fa-bar-chart">
+                        	<p:submenu id="om_puntos" label="Informes de Puntos" icon="fa fa-circle">
+                        		 <p:menuitem id="om_puntosredimidos" value="Redimidos por Afiliado" icon="fa fa-check-circle-o" outcome="/redimidosafiliado"/>
+                        	</p:submenu>
                         	<p:submenu id="om_registroafiliado" label="Registro Afiliados" icon="fa fa-pencil-square-o">
                         		 <p:menuitem id="om_registrosucursal" value="Registro por Sucursal" icon="fa fa-home" outcome="/registrosucursal"/>
                         		 <p:menuitem id="om_registrovendedor" value="Registro por Vendedor" icon="fa fa-male" outcome="/registrovendedor"/>		
@@ -58,7 +61,7 @@
                             <p:menuitem id="om_empresa" value="Empresa" icon="fa fa-building-o" outcome="/empresalist" />                           
                             <p:menuitem id="om_sucursal" value="Sucursal" icon="fa fa-home" outcome="/sucursallist" />
                             <p:menuitem id="om_vendedor" value="Vendedor" icon="fa fa-user" outcome="/vendedorlist" />   
-                             <p:menuitem id="om_platillasms" value="Plantillas SMS" icon="fa fa-commenting" outcome="/plantillasmslist" />                                              
+                            <p:menuitem id="om_platillasms" value="Plantillas SMS" icon="fa fa-commenting" outcome="/plantillasmslist" />                                              
                         </p:submenu>                        
                         <p:submenu id="om_configuracionsistema" label="Configuracion" icon="fa fa-cog">
                         	<p:menuitem id="om_usuario" value="Usurio Sistema" icon="fa fa-users" outcome="usuariolist" />      

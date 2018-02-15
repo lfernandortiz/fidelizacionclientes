@@ -82,10 +82,10 @@ public class ClienteRecibirTxAcumulacionRs {
 					// persiste las nuevas transacciones de acumulacion
 					// en un metodo del EJB de operaciones de puntos
 					if( !nuevasTxsList.isEmpty() ){
-						this.puntosService.registrarListTransacciones(nuevasTxsList);	
+						//this.puntosService.registrarListTransacciones(nuevasTxsList);	
 						
 						//consumir servicio de actualizacion						
-						this.updateTxs( txWrap.getIdsList(), sucursal );						
+						//this.updateTxs( txWrap.getIdsList(), sucursal );						
 					}
 				}
 
@@ -108,10 +108,10 @@ public class ClienteRecibirTxAcumulacionRs {
 							// en un metodo del EJB de operaciones de puntos
 							System.out.println("--------Vacias " + (!nuevasTxsList.isEmpty()));
 							if( !nuevasTxsList.isEmpty() ){
-								this.puntosService.registrarListTransacciones(nuevasTxsList);	
+								//this.puntosService.registrarListTransacciones(nuevasTxsList);	
 								
 								//consumir servicio de actualizacion						
-								this.updateTxs( txWrap.getIdsList(), sucursal );
+								//this.updateTxs( txWrap.getIdsList(), sucursal );
 							}
 						}
 					}

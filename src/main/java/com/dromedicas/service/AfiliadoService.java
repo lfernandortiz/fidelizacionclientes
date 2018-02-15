@@ -1,6 +1,8 @@
 package com.dromedicas.service;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -198,6 +200,26 @@ public class AfiliadoService {
 		}		
 		return temp;
 		
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	public List<Afiliado> obtenerUltimosAfiliadosRegistrados(){
+		//resta 7 dias a la fecha actual
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(new Date());
+		cal.add(Calendar.DATE, -7);
+		Date menosSiete = cal.getTime();
+		
+		Query query = em.createQuery("SELECT a FROM Afiliado a where date(a.momento) >= :menossiete order by a.idafiliado desc");	
+		query.setParameter("menossiete", menosSiete);
+		List<Afiliado> temp = null;
+		try {
+			temp =  query.getResultList();
+		} catch (NoResultException e) {
+			System.out.println("Ultimos afiliados no encontrados");			
+		}		
+		return temp;
 	}
 	
 	

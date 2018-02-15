@@ -35,9 +35,9 @@ public class QuartzListener implements ServletContextListener {
 	//Schedule consulta de saldo SMS <	0 0 7 ? * MON-FRI *> Todos los dias a las 7am
 
 	@Override
-	public void contextInitialized(ServletContextEvent servletContext) {	
+	public void contextInitialized(ServletContextEvent servletContext) {
+
 		try {
-			
 			/*
 			 * Schedule Notificaciones compra - acumulacion de puntos | Cada 40 minutos
 			 */			
@@ -74,31 +74,32 @@ public class QuartzListener implements ServletContextListener {
 			schTxPuntosF.scheduleJob(jobTx, triggerTx);
 			
 			
-			
 			/*
-			 * Schedule revision de correos rechazados | Todos los dias a las 6am. 
+			 * Schedule revision de correos rechazados | 
+			 * 
 			 */
-			//Job para que ejecuta el EJB que realiza la lectura de los email			
-			JobDetail jobEmailR = newJob(LeerEmailRechazados.class).withIdentity("EmailRechazados", "EmailGroup").build();
-			
-			// Trigger todos los dias a las 6 am abre el el buzon de despacho de correos y revisa las direcciones
-			// de email rechazadas y actualiza esta caracteristica en la base de datos
+			// Job para que ejecuta el EJB que realiza la lectura de los email
+			JobDetail jobEmailR = newJob(LeerEmailRechazados.class).withIdentity("EmailRechazados", "EmailGroup")
+					.build();
+
+			// Trigger todos los dias a las 6 am abre el el buzon de despacho de
+			// correos y revisa las direcciones
+			// de email rechazadas y actualiza esta caracteristica en la base de
+			// datos
 			Trigger triggerEmailR = newTrigger().withIdentity("EmailRechazados", "EmailGroup")
-					.withSchedule(CronScheduleBuilder.cronSchedule("0 0 0/6 1/1 * ? *")) //Cada 6 Horas
-					.build();			
-			 			
-			// configuracion del Setup the Job and Trigger with Scheduler & schedule jobs
+					.withSchedule(CronScheduleBuilder.cronSchedule("0 0 0/2 1/1 * ? *")) // Cada 	0 0 0/2 1/1 * ? *
+					.build();
+
+			// configuracion del Setup the Job and Trigger with Scheduler &
+			// schedule jobs
 			schEmailRechazo = new StdSchedulerFactory().getScheduler();
 			schEmailRechazo.start();
 			schEmailRechazo.scheduleJob(jobEmailR, triggerEmailR);
-			
-			
-			
+
 		} catch (SchedulerException e) {
 			e.printStackTrace();
 		}
-		
-	
+
 	}
 
 	@Override

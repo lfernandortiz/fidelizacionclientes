@@ -806,6 +806,28 @@ public class AfiliadoServiceRs implements Serializable{
 	}
 	
 	
+	
+	
+	@GET
+	@Path("/ultimosafiliados")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response obtenerUltimosAfiliados() {
+		
+		List<Afiliado> afiliadoList = this.afiliadoService.obtenerUltimosAfiliadosRegistrados();
+		
+		
+		
+		ResponsePuntos responseObject = new ResponsePuntos();
+		responseObject.setCode(Status.OK.getStatusCode());
+		responseObject.setStatus(Status.OK.getReasonPhrase());
+		responseObject.setContenedor(afiliadoList);
+		responseObject.setMessage("Afiliados registrados en los 7 ultimos dias.");
+
+		return Response.status(Status.OK).entity(responseObject).header("Access-Control-Allow-Origin", "*").build();
+
+	}
+	
+	
 
 	private String getToken(String jWT){
 		String uuidAfiliado = null;

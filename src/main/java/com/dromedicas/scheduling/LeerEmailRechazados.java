@@ -51,7 +51,7 @@ public class LeerEmailRechazados implements Job {
 
 			String emailAddres = null; // direccion de email de mensaje
 
-			for (int i = 0; i < 100; i++) {
+			for (int i = 0; i < inboxM.size(); i++) {
 				Message m = inboxM.get(i);
 
 				// metodo perdicado que determina si el mensaje es fallido

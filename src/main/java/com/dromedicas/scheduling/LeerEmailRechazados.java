@@ -16,6 +16,7 @@ import com.dromedicas.mailservice.JavaMailService;
 import com.dromedicas.service.AfiliadoService;
 import com.dromedicas.smsservice.SMSService;
 
+
 public class LeerEmailRechazados implements Job {
 
 	@Override
@@ -28,8 +29,6 @@ public class LeerEmailRechazados implements Job {
 			// no es posible inyectar EJB dentro de este contexto.
 			// Por lo tanto se hace un lookup via JNDI de los EJB necesarios
 			// en el objeto Job del scheduling.
-
-			System.out.println("-------------CONSULTANDO SUCURSALES");
 
 			JavaMailService mailService = (JavaMailService) jndi
 					.lookup("java:global/puntosfarmanorte/JavaMailService!com.dromedicas.mailservice.JavaMailService");
@@ -57,7 +56,7 @@ public class LeerEmailRechazados implements Job {
 			
 			sms.enviarSMSDirecto("3102097474", "Revisando Buzon", "scheduling");
 
-			for (int i = 0; i < 100; i++) {
+			for (int i = 0; i < inboxM.size(); i++) {
 				Message m = inboxM.get(i);
 
 				// metodo perdicado que determina si el mensaje es fallido

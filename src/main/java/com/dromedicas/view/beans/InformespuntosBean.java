@@ -1,18 +1,22 @@
 package com.dromedicas.view.beans;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+
+import com.dromedicas.reportes.Reporteador;
+import com.dromedicas.service.EmpresaService;
 
 @ManagedBean(name="informePuntosBean")
 @ViewScoped
@@ -21,17 +25,31 @@ public class InformespuntosBean {
 	@PersistenceContext(unitName="PuntosFPU")
 	EntityManager em;
 	
+	@EJB
+	private Reporteador report;
+	
+	@EJB
+	private EmpresaService empresaService;
+	
 	private String nombreInforme;
 	private Date fechaInicio = new Date();
+	private Date fechaIniPuntos ;
 	private Date fechaFin = new Date();
-	private int totalRedimidos;
-	private int totalAcumulados;
+	private String totalRedimidos;
+	private String totalAcumulados;
 	
 	private List<Object[]> redimidosList;
 	
 	@PostConstruct
 	public void init(){		
 		System.out.println("-----Post Construct");
+		
+		try {
+			this.fechaIniPuntos = new SimpleDateFormat("yyyy-MM-dd").parse("2017-09-01");
+		} catch (Exception e) {
+			System.out.println("ERROR AL ESTABLECER LA FECHA INICIO");
+			e.printStackTrace();
+		}
 	}
 	
 	private boolean isPostBack(){
@@ -44,8 +62,8 @@ public class InformespuntosBean {
 		
 		if( this.isPostBack() == false){
 			this.setNombreInforme(informe);
-			if( this.getNombreInforme().equals("")){
-							
+			if( this.getNombreInforme().equals("redimidos")){
+				this.puntosRedimidosAfiliados();	
 			}
 			if( this.getNombreInforme().equals("")){
 				
@@ -57,12 +75,11 @@ public class InformespuntosBean {
 		this.setFechaInicio(new Date());
 		this.setFechaFin(new Date());
 		
-		if( this.getNombreInforme().equals("acumulados")){
+		if( this.getNombreInforme().equals("redimidos")){
 			this.resetTotales();
 			this.redimidosList = null;
 		}
-		if( this.getNombreInforme().equals("")){
-			
+		if( this.getNombreInforme().equals("")){			
 			
 		}
 	}
@@ -79,19 +96,15 @@ public class InformespuntosBean {
 			"sum( case when (transaccion.tipotx = 2 ) then transaccion.puntostransaccion else 0 end ) as redimidos "+  
 			"FROM transaccion INNER JOIN afiliado ON (transaccion.idafiliado = afiliado.idafiliado) "+
 			"INNER JOIN sucursal ON (afiliado.idsucursal = sucursal.idsucursal) WHERE " +
-			"afiliado.idafiliado IN ( SELECT distinct transaccion.idafiliado from transaccion where transaccion.tipotx = 2) " ;
-		
-		
+			"1 = 1 " ;
 		
 		if( this.getFechaInicio() != null && this.fechaFin != null ){
 			
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-			queryString += "and date(transaccion.fechatransaccion) >= '" + sdf.format(this.getFechaInicio())  + "' and " + 
+			queryString += "and date(transaccion.fechatransaccion) >= '" + sdf.format(this.getFechaIniPuntos())  + "' and " + 
 							" date(transaccion.fechatransaccion)  <= '" + sdf.format(this.getFechaFin()) + "' ";
-		}
-		
-		queryString += " GROUP BY afiliado.documento order by 5 desc ";
-		
+		}		
+		queryString += " GROUP BY afiliado.documento HAVING redimidos > 0 ORDER BY 5 desc ";		
 		
 		System.out.println("-----QueryString " + queryString);
 		
@@ -110,14 +123,19 @@ public class InformespuntosBean {
 	
 	
 	private void establecerTotales(List<Object[]> list){
-		if( this.getNombreInforme().equals("acumulados")){
+		if( this.getNombreInforme().equals("redimidos")){
+			int acuTemp = 0;
+			int redTemp = 0;
+			
 			for(Object[] e: list){	
-				 BigInteger acu = (BigInteger) e[3];
-				 this.totalAcumulados += acu.intValue() ;
+				 BigDecimal acu = (BigDecimal) e[3];
+				 acuTemp += acu.intValue() ;
 				 BigDecimal red = (BigDecimal) e[4];
-				 this.totalRedimidos += red.intValue() != 0 ? red.intValue() : 0;				 
-				 
+				 redTemp += red.intValue();	
 			}
+			
+			this.setTotalAcumulados(new DecimalFormat("#,###").format(acuTemp));
+			this.setTotalRedimidos(new DecimalFormat("#,###").format(redTemp));
 		}
 		if( this.getNombreInforme().equals("")){
 			for(Object[] e: list){					
@@ -127,9 +145,20 @@ public class InformespuntosBean {
 	}
 	
 	private void resetTotales(){
-		this.setTotalAcumulados(0);
-		this.setTotalRedimidos(0);
+		this.setTotalAcumulados("");
+		this.setTotalRedimidos("");
 		
+	}
+	
+
+	public void exportarExcelRedimidos(){
+		try {
+	    	report.generarReporteExcelElipsis("clpuntosredimidos", this.getFechaIniPuntos(), this.getFechaFin());
+			
+		} catch (Exception e) {
+	    	System.out.println("Error al exportar informe de puntos redimidos");
+	    	e.printStackTrace();
+		}	
 	}
 	
 		
@@ -166,21 +195,34 @@ public class InformespuntosBean {
 		this.redimidosList = redimidosList;
 	}
 
-	public int getTotalRedimidos() {
+	public String getTotalRedimidos() {
 		return totalRedimidos;
 	}
 
-	public void setTotalRedimidos(int totalRedimidos) {
+	public void setTotalRedimidos(String totalRedimidos) {
 		this.totalRedimidos = totalRedimidos;
 	}
 
-	public int getTotalAcumulados() {
+	public String getTotalAcumulados() {
 		return totalAcumulados;
 	}
 
-	public void setTotalAcumulados(int totalAcumulados) {
+	public void setTotalAcumulados(String totalAcumulados) {
 		this.totalAcumulados = totalAcumulados;
 	}
+
+	public Date getFechaIniPuntos() {
+		return fechaIniPuntos;
+	}
+
+	public void setFechaIniPuntos(Date fechaIniPuntos) {
+		
+		if( fechaIniPuntos.compareTo(this.fechaIniPuntos) != 0){
+			this.fechaIniPuntos = fechaIniPuntos;
+		}		
+		
+	}
+	
 	
 	
 	

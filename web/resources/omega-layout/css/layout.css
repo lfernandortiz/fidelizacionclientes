@@ -3557,6 +3557,11 @@ hr{
 	text-align: right!important;
 }
 
+.celdaDerechaEnfasis{
+	text-align: right!important;
+	font-weight: bold!important;
+}
+
 .tipotx{
 	font-size: 0.85em!important;
 }
@@ -3626,9 +3631,9 @@ a:-webkit-any-link.linkticket {
 	padding: 0;
 	color: #ff0000!important;
 	font-weight: bolder!important;
-
 } 
 
-
-
+a.ui-commandlink.linkesp{
+	color: #0011dd!important;
+}
 

@@ -14,7 +14,7 @@
 		</div>		
 		
 		<f:metadata>
-		   <f:event type="preRenderView" listener="#{informePuntosBean.establecerInforme('acumulados')}"/>
+		   <f:event type="preRenderView" listener="#{informePuntosBean.establecerInforme('redimidos')}"/>
 		</f:metadata>
 		<h:form id="formppal">			
             <div class="ui-fluid">
@@ -30,7 +30,7 @@
 									layout="grid" styleClass="ui-panelgrid-blank"
 									style="border:0px none; background-color:transparent;">
 	                                <p:outputLabel for="fechainiid" value="Fecha Inicial" />
-									<p:calendar id="fechainiid" value="#{informePuntosBean.fechaInicio}"
+									<p:calendar id="fechainiid" value="#{informePuntosBean.fechaIniPuntos}"
 										pattern = "dd/MM/yyyy" mask="true" required="true"
 										navigator="true" popupIconOnly="false" mode="popup"
 										showOn="button" >
@@ -55,13 +55,13 @@
 										update="registroVendedorDetail"/>
 										
 									<p:commandButton value="Cancelar" id="cancelarbutton"
-										action="#{informePuntosBean}"
+										action="#{informePuntosBean.cancelarList()}"
 										update=":formppal:registroVendedorDetail, :formppal:vendedorForm"/>
 										
 									<p:commandButton value="Exportar Excel" 
 												 id="to_excel"
 												 ajax="false"
-												 action="#{registroAfiliadoBean.exportarExcelSucursal()}"
+												 action="#{informePuntosBean.exportarExcelRedimidos()}"
 												 icon="fa fa-file-excel-o">
 									<p:tooltip id="tp_toexcel" for="to_excel" 
 										value="Exporta a Excel el resultado de la consulta actual" position="top"/>
@@ -72,45 +72,50 @@
                         	
                         	
                         	<!-- tabla detalle registro -->
-                        	<p:dataTable id="registroVendedorDetail" var="data" value="#{registroAfiliadoBean.afListSucursal}" 
-                        			rowKey="#{data[0]}" selectionMode="single" emptyMessage="Registros no encontrados  :-(  " >
-								<f:facet name="header">Afiliados Registrados Por Sucursal</f:facet>
-								<p:column headerText="Sucursal" sortBy="#{data[1]}">
-									<div class="celdaDerecha">
-										<h:outputText value="#{data[1]}" /> 
+                        	<p:dataTable id="registroVendedorDetail" var="data" value="#{informePuntosBean.redimidosList}" 
+                        			   rowKey="#{data[0]}" emptyMessage="Registros no encontrados  :-(  " 
+                        			tableStyle="table-layout: auto;">
+								<f:facet name="header">Clientes Puntos Redemidos</f:facet>								
+								<p:column headerText="Documento" sortBy="#{data[0]}">
+									<div class="">
+										<p:commandLink class="linkesp" action="#{afiliadoBeanEdit.editarAfiliadoDocumento(data[0])}">
+											<h:outputText value="#{data[0]}" /> 
+										</p:commandLink>										
 									</div>									
 								</p:column>								
-								<p:column headerText="Registradoss" sortBy="#{data[2]}">
-									<div class="celdaDerecha">
-										<h:outputText value="#{data[2]}" /> 
+								<p:column headerText="Nombre" sortBy="#{data[1]}">
+									<div class="">
+										<h:outputText value="#{data[1]}" /> 
 									</div>									
 								</p:column>
-								<p:column headerText="Email" sortBy="#{data[3]}">
-									<div class="celdaDerecha">
-										<h:outputText value="#{data[3]}" /> 
+								<p:column headerText="Sucursal Afilido" sortBy="#{data[2]}">
+									<div class="">
+										<h:outputText value="#{data[2]}" /> 
 									</div>
 								</p:column>		
-								<p:column headerText="Email Validado" sortBy="#{data[4]}">
+								<p:column headerText="Total Acumulados" sortBy="#{data[3]}">
 									<div class="celdaDerecha">
-										<h:outputText value="#{data[4]}" /> 
+										<h:outputText value="#{data[3]}">
+											 <f:convertNumber pattern="#,###"/>
+										</h:outputText> 
 									</div>									
 								</p:column>		
-								<p:column headerText="Email Rechazado" sortBy="#{data[5]}"> 
-									<div class="celdaDerecha">
-										<h:outputText value="#{data[5]}" /> 								
+								<p:column headerText="Total Redimidos" sortBy="#{data[4]}"> 
+									<div class="celdaDerechaEnfasis">										
+										<h:outputText value="#{data[4]}">
+											 <f:convertNumber pattern="#,###"/>
+										</h:outputText>																				 								
 									</div>									
 								</p:column>
 								<p:columnGroup type="footer">
 								            <p:row>
-								                <p:column style="text-align:right" footerText="Totales..:" />
-               									<p:column footerText="#{registroAfiliadoBean.totalRegistrados}" style="text-align: right!important; font-weight: bold;"/>
-               									<p:column footerText="#{registroAfiliadoBean.totalEmail}" style="text-align: right!important; font-weight: bold;"/> 
-               									<p:column footerText="#{registroAfiliadoBean.totalValidado}" style="text-align: right!important; font-weight: bold;"/>
-               									<p:column footerText="#{registroAfiliadoBean.totalRechazados}" style="text-align: right!important; font-weight: bold;"/>  
+								                <p:column colspan="3" style="text-align:right" footerText="Totales..:" />
+               									<p:column footerText=" #{informePuntosBean.totalAcumulados}"  style="text-align: right!important; font-weight: bold;"/>	               									
+               									<p:column footerText="#{informePuntosBean.totalRedimidos}" style="text-align: right!important; font-weight: bold;"/>
 								            </p:row>
-							    </p:columnGroup>	
-								
-							</p:dataTable>	
+							    </p:columnGroup> 
+							</p:dataTable>
+							
 						</div> <!-- end card -->
                     </div> <!-- end ui-g-12 -->
                 </div> <!-- end ui-g -->

@@ -18,6 +18,7 @@ import javax.faces.context.Flash;
 import org.apache.commons.io.IOUtils;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
@@ -437,6 +438,32 @@ public class AfiliadoBeanEdit implements Serializable{
 		this.balancePuntos = this.puntosService.consultaPuntos(afiliadoSelected);
 		return "afiliadoedit?faces-redirect=true";
 	}
+	
+	public String editarAfiliadoDocumento(String documento){
+		//Establece el objeto seleccionado
+//		Object el[]= (Object [])  event.getObject();
+//		String documento = (String) el[0];
+		
+		System.out.println("Documento recibido " + documento);
+		Afiliado af = this.afiliadoService.obtenerAfiliadoByDocumento(documento);
+		
+		System.out.println("AFILIADO SELECCTIONADO: " + af.getDocumento());
+		this.setAfiliadoSelected(af);
+		
+		this.emailValidated = this.afiliadoSelected.getEmailvalidado() == 1 ? true : false;
+		this.emailRechazado = this.afiliadoSelected.getEmailrechazado() == 1 ? true : false;
+		//variable de control para validacion de correo se usa para aplicar el css en la vista
+		this.emailValid = true;		
+		this.nacionalidad = this.paisService.obtenerPaisPorNombre(this.afiliadoSelected.getNacionalidad());	
+		
+		//Carga de informacion del Balance de Puntos
+		System.out.println("Afiliado Seleccionado: " + afiliadoSelected.getDocumento());		
+		this.balancePuntos = this.puntosService.consultaPuntos(afiliadoSelected);
+		
+		return "afiliadoedit?faces-redirect=true";
+	}
+	
+	
 	
 	public String actualizar(){
 		System.out.println("Nombre: " + this.afiliadoSelected.getNombres().trim().toUpperCase());

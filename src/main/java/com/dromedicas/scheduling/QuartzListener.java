@@ -36,9 +36,8 @@ public class QuartzListener implements ServletContextListener {
 
 	@Override
 	public void contextInitialized(ServletContextEvent servletContext) {
-		try {
-			
 		
+		try {
 				
 				/*
 				 * Schedule Notificaciones compra - acumulacion de puntos | Cada 40 minutos
@@ -86,8 +85,9 @@ public class QuartzListener implements ServletContextListener {
 				// Trigger todos los dias a las 6 am abre el el buzon de despacho de correos y revisa las direcciones
 				// de email rechazadas y actualiza esta caracteristica en la base de datos
 				Trigger triggerEmailR = newTrigger().withIdentity("EmailRechazados", "EmailGroup")
-						.withSchedule(CronScheduleBuilder.cronSchedule("0 0 0/2 1/1 * ? *")) //Cada 6 Horas
+						.withSchedule(CronScheduleBuilder.cronSchedule("0 0 0/2 1/1 * ? *")) //Cada 6 Horas 0 0 0/2 1/1 * ? *
 						.build();			
+				
 				 			
 				// configuracion del Setup the Job and Trigger with Scheduler & schedule jobs
 				schEmailRechazo = new StdSchedulerFactory().getScheduler();
@@ -101,6 +101,7 @@ public class QuartzListener implements ServletContextListener {
 			} catch (SchedulerException e) {
 				e.printStackTrace();
 			}
+				
 		
 	}
 

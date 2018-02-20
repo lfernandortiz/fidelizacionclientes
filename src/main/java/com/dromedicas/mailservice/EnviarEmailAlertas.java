@@ -97,7 +97,7 @@ public class EnviarEmailAlertas {
 								"contacto@puntosfarmanorte.com.co");
 			props.setProperty("mail.smtp.auth", "true");
 			props.put("mail.transport.protocol.", "smtp");
-
+			          
 			// Preparamos la sesion
 			Session session = Session.getDefaultInstance(props);
 			// Construimos el mensaje
@@ -585,7 +585,12 @@ public boolean notificacionRedencion(Sucursal sucursal, String momento, String n
 		
 		
 		// multiples direcciones
-		String[] to = { "sistemas2@dromedicas.com.co", "sistemas@dromedicas.com.co", "johnduran@dromedicas.com.co" };		
+		String[] to = { "sistemas2@dromedicas.com.co", 
+						"sistemas@dromedicas.com.co" , 
+						"johnduran@dromedicas.com.co",
+						"diego.lozano@dromedicas.com.co",
+						"archivo@dromedicas.com.co"
+						};		
 		
 		// arreglo con las direcciones de correo
 		InternetAddress[] addressTo = new InternetAddress[to.length];

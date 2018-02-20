@@ -50,7 +50,9 @@ public class JavaMailService {
     private static final String MAIL_SERVER_HOST = "mail.server.host";
     private static final String MAIL_STORE_IMAP = "mail.store.protocol";
     private static final String MAIL_SMTP_STATRTTLS = "mail.smtp.starttls.enable";
+    private static final String MAIL_TRANSPORT_PROTOCOL = "mail.transport.protocol";
     private static final String ARCHIVED_FOLDER= "archived";
+    
    
     private String tipoEmail;
     public  String username;
@@ -104,7 +106,7 @@ public class JavaMailService {
         defaultMailConfig.setProperty(MAIL_USERNAME, param.getUser());
         defaultMailConfig.setProperty(MAIL_SMTP_AUTH, param.getSmtpAuth());
         defaultMailConfig.setProperty(MAIL_STORE_IMAP, param.getStoreProtocol());
-        defaultMailConfig.setProperty(MAIL_SMTP_STATRTTLS, param.getSmtpStarttlsEnable());
+        defaultMailConfig.setProperty(MAIL_TRANSPORT_PROTOCOL, param.getProtocol());
         
         return defaultMailConfig;
     }

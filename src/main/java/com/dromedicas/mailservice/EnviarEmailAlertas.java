@@ -747,8 +747,6 @@ public boolean emailRecuparacionClave(Afiliado afiliado) {
 
 public boolean emailConfirmacionClave(Afiliado afiliado) {
 	
-	
-	
 	System.out.println("Enviar Email confirmacion clave");
 	try{			
 		ServletContext servletContext = null;
@@ -849,6 +847,175 @@ public boolean emailConfirmacionClave(Afiliado afiliado) {
 	}
 	return true;	
 }
+
+
+
+/**
+ * 
+ * @param afiliado
+ * @return
+ */
+public boolean emailCumpleanosAfiliadoAdmin(List<Afiliado> afiliadoList) {
+	
+	System.out.println("Enviar administratrivo de cumpleanos");
+	try{			
+		ServletContext servletContext = null;
+					
+		try {
+			servletContext = (ServletContext) FacesContext
+			        .getCurrentInstance().getExternalContext().getContext();
+		} catch (Exception e) {
+			servletContext = context;
+		}
+		
+		File inputHtml = new File(servletContext.getRealPath("emailhtml/cumpleafiliado.html"));
+		// Asginamos el archivo al objeto analizador Document
+		Document doc = Jsoup.parse(inputHtml, "UTF-8");
+		
+		// obtengo los id's del DOM a los que deseo insertar los valores
+		// mediante el metodo append() se insertan los valores obtenidos del
+		// objeto obtenido como parametro
+		
+		Element fechaactual = doc.select("span#fechaactual").first();
+		fechaactual.append( new SimpleDateFormat("dd-MM-yyyy").format(new Date() ));
+
+		
+		Element rowProx = doc.select("table#detallec tbody").first();
+		//builder que contiene el detalle de la tabla
+		StringBuilder detalle = new StringBuilder(); 
+		
+		for( int i=0; i< afiliadoList.size(); i++){
+			
+			detalle.append(
+					"<tr>" +
+					"<td style=\"padding: 2px 3px 2px 3px; text-align:center;  border-color:#666666; \">"+
+					"<span style=\"font-size: 11px; font-family: Arial,Helvetica,sans-serif; display:block; color:#333333\">"+
+					 (i+1) +
+					"</span>" +
+					"</td>" +
+					"<td style=\"padding: 2px 3px 2px 3px; border-color:#666666; \">"+
+					"<span style=\"font-size: 11px; font-family: Arial,Helvetica,sans-serif; display:block; color:#333333\">"+
+					afiliadoList.get(i).getDocumento() +
+					"</span>" +
+					"</td>" +
+					"<td style=\"padding: 2px 3px 2px 3px; border-color:#666666; \">"+
+					"<span style=\"font-size: 11px; font-family: Arial,Helvetica,sans-serif; display:block; color:#333333\">"+
+					afiliadoList.get(i).getNombres() +" " +afiliadoList.get(i).getApellidos() +
+					"</span>" +
+					"</td>" +
+					"<td style=\"padding: 2px 3px 2px 3px; border-color:#666666; \">"+
+					"<span style=\"font-size: 11px; font-family: Arial,Helvetica,sans-serif; display:block; color:#333333\">"+
+					new SimpleDateFormat("dd-MM-yyyy").format(afiliadoList.get(i).getFechanacimiento()) +
+					"</span>" +
+					"</td>" +
+					"<td style=\"padding: 2px 3px 2px 3px;  border-color:#666666; \">"+
+					"<span style=\"font-size: 11px; font-family: Arial,Helvetica,sans-serif; display:block; color:#333333\">"+
+					"<strong>"+
+					afiliadoList.get(i).getEdad() +
+					"</strong>"+
+					"</span>" +
+					"</td>" +
+					"<td style=\"padding: 2px 3px 2px 3px; border-color:#666666; \">"+
+					"<span style=\"font-size: 11px; font-family: Arial,Helvetica,sans-serif; display:block; color:#333333\">"+
+					afiliadoList.get(i).getCelular() +
+					"</span>" +
+					"</td>" +
+					"<td style=\"padding: 2px 3px 2px 3px; text-align:center; border-color:#666666; \">"+
+					"<span style=\"font-size: 12px; font-family: Arial,Helvetica,sans-serif; display:block; color:#333333\">"+
+					afiliadoList.get(i).getTelefonofijo() +
+					"</span>" +
+					"</td>" +
+					"<td style=\"padding: 2px 3px 2px 3px; border-color:#666666; \">"+
+					"<span style=\"font-size: 11px; font-family: Arial,Helvetica,sans-serif; display:block; color:#333333\">"+
+					afiliadoList.get(i).getSucursal().getNombreSucursal()+
+					"</span>" +
+					"</td>" +
+					"</tr>");					
+		}//fin del ciclo que imprime la tabla
+		
+		rowProx.html(detalle.toString());
+		
+		Element auditor = doc.select("span#auditor").first();
+		auditor.append(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date() ));
+								
+		//Element img = doc.select("img#pixelcontrol").first();
+		//img.attr("src", url);
+		
+		// Propiedades de la conexión
+		Properties props = new Properties();
+		props.setProperty("mail.smtp.host", "deus.wnkserver6.com");
+		props.setProperty("mail.smtp.port", "25");// puerto de salida, de
+		// entrada 110
+		props.setProperty("mail.smtp.user",
+							"contacto@puntosfarmanorte.com.co");
+		props.setProperty("mail.smtp.auth", "true");
+		props.put("mail.transport.protocol.", "smtp");
+
+		// Preparamos la sesion
+		Session session = Session.getDefaultInstance(props);
+		// Construimos el mensaje
+
+		
+		// multiples direcciones
+		String[] to = { "sistemas2@dromedicas.com.co", 
+						"sistemas@dromedicas.com.co" , 
+						"johnduran@dromedicas.com.co",
+						"diego.lozano@dromedicas.com.co",
+						"elianaarredondo@dromedicas.com.co" };
+		
+		
+		// arreglo con las direcciones de correo
+		InternetAddress[] addressTo = new InternetAddress[to.length];
+		for (int i = 0; i < addressTo.length; i++) {
+			addressTo[i] = new InternetAddress(to[i]);
+		}
+					
+		// se compone el mensaje (Asunto, cuerpo del mensaje y direccion origen)
+		final MimeMessage message = new MimeMessage(session);
+		message.setFrom(new InternetAddress( 
+				"contacto@puntosfarmanorte.com.co", "Puntos Farmanorte"));
+		message.setRecipients(Message.RecipientType.TO, addressTo);
+		//Emojis :-)			
+		String subjectEmojiRaw = ":birthday: " + new SimpleDateFormat("dd-MM-yyyy").format(new Date())
+				+ " Cumpleaños Afiliados Puntos Farmanorte";
+		String subjectEmoji = EmojiParser.parseToUnicode(subjectEmojiRaw);			
+			
+		message.setSubject( subjectEmoji , "UTF-8");
+		message.setContent(doc.html(), "text/html; charset=utf-8");
+		
+		message.setFlag(FLAGS.Flag.RECENT, true);
+
+		//Envia el correo
+		final Transport t = session.getTransport("smtp");			
+		//asigno un hilo exclusivo a la conexion y envio del mensaje
+		//dado que el proveedor de correo es muy lento para establecer
+		//la conexion
+		new Thread(new Runnable() {
+		    public void run() {
+		    	try {
+		    		t.connect("contacto@puntosfarmanorte.com.co", "Dromedicas2013.");
+					t.sendMessage(message, message.getAllRecipients());
+					// Cierre de la conexion
+					t.close();
+			    
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		    }	
+		}).start();
+		
+		System.out.println("Conexion cerrada");
+		
+	}catch(Exception e){
+		System.out.println("Falla en el envio del correo:");
+		e.printStackTrace();
+		return false;
+	}
+	return true;	
+}
+
+
 
 
 	

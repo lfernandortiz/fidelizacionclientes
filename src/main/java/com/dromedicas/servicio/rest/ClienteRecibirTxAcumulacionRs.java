@@ -320,7 +320,9 @@ public class ClienteRecibirTxAcumulacionRs {
 	
 	
 	/**
-	 * 
+	 * Conusme el end point para la sucursal recibida como parametro
+	 * para marcar las Tx's recibidas como parametros para que aparezcan
+	 * como pendientes por reportar en puntos farmanorte
 	 * @param idsList
 	 */
 	public void updateTxs(List<String> idsList, Sucursal sucursal) {
@@ -357,8 +359,8 @@ public class ClienteRecibirTxAcumulacionRs {
 			}
 			
 		} catch (Exception e) {
-			
-			
+			System.out.println("ERROR al actualizar las Tx en el end point de Dropos en la sucursal ");
+			e.printStackTrace();
 		}
 
 	}

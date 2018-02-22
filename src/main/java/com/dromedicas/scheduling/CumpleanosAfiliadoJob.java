@@ -1,9 +1,7 @@
 package com.dromedicas.scheduling;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import javax.mail.Message;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 
@@ -12,9 +10,10 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
 import com.dromedicas.domain.Afiliado;
+import com.dromedicas.domain.Smsplantilla;
 import com.dromedicas.mailservice.EnviarEmailAlertas;
-import com.dromedicas.mailservice.JavaMailService;
 import com.dromedicas.service.AfiliadoService;
+import com.dromedicas.service.SmsPlantillaService;
 import com.dromedicas.smsservice.SMSService;
 
 public class CumpleanosAfiliadoJob implements Job{
@@ -36,11 +35,12 @@ public class CumpleanosAfiliadoJob implements Job{
 			EnviarEmailAlertas email= (EnviarEmailAlertas) 
 					jndi.lookup("java:global/puntosfarmanorte/EnviarEmailAlertas!com.dromedicas.mailservice.EnviarEmailAlertas");
 			
-			// de la clase de servicio de afiliado obtengo los cumpleaneros para la fecha actual
+						
+			// de la clase de servicio de afiliado obtiene los cumpleaneros para la fecha actual
 			List<Afiliado> listCumpleanos =  afService.obtenerAfiliadosPorCumpleanos();
-			// Actualizo las edades de estos cumpleaner
+			// Actualiza las edades de estos 
 			afService.actualizarCumpleanosList(listCumpleanos);
-			// obtengo nuevamente el List de cumpleaneros esta vez con su edad actualizada 
+			// obtiene nuevamente el List de cumpleaneros esta vez con su edad actualizada 
 			listCumpleanos =  afService.obtenerAfiliadosPorCumpleanos();
 			
 			//envio email al area interesada
@@ -53,9 +53,6 @@ public class CumpleanosAfiliadoJob implements Job{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		
-		
 		
 		
 	}

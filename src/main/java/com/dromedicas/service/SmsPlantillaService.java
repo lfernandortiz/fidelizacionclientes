@@ -62,5 +62,15 @@ public class SmsPlantillaService implements Serializable {
 	}
 	
 	
+	public Smsplantilla bucarSMSByDescription(String criterio){
+		System.out.println("nombre recibido: " + criterio);
+		String queryString = "from Smsplantilla s  where  s.descripcion like '%" + criterio.trim() + "%' " ;
+			
+		System.out.println("QueryString:" + queryString);
+		Query query = em.createQuery(queryString);
+		return (Smsplantilla) query.getSingleResult();
+	}
+	
+	
 
 }

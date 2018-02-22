@@ -377,7 +377,8 @@ public class AfiliadoService {
 		Query query = em.createQuery(queryString);
 		return query.getResultList();			
 	}
-	
+
+
 	
 	/**
 	 * Retorna un List de afiliados que cumplen anios en la fecha actual
@@ -387,10 +388,10 @@ public class AfiliadoService {
 	public List<Afiliado> obtenerAfiliadosPorCumpleanos(){		
 		
 		List<Afiliado> cumpleList = new ArrayList<Afiliado>();		
+		
 		String queryString = "select a from Afiliado a where "
 				+ "month(a.fechanacimiento) = month(current_date()) and "
 				+ "day(a.fechanacimiento) = day(current_date()) order by a.nombres, a.apellidos asc";	
-		
 		
 		System.out.println("QueryString:" + queryString);
 		
@@ -402,6 +403,30 @@ public class AfiliadoService {
 			System.out.println("Cumpleneros no encontrados");
 		}
 		return cumpleList;
+	}
+	
+	
+	/**
+	 * Retorna un List de afiliados que cumplen anios en la fecha actual
+	 * con numero de celular valido
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public List<Afiliado> obtenerAfiliadosCumpleanosCelular(){		
+		
+		List<Afiliado> cumpleList = this.obtenerAfiliadosPorCumpleanos();
+		List<Afiliado> smsList = new ArrayList<Afiliado>();
+		
+		for( Afiliado af:  cumpleList){
+			
+			String nroCel = !af.getCelular().equals("") ? af.getCelular() : "" ;
+			
+			//validacion sencilla del nro celular
+			if( nroCel.length() == 10 &&  nroCel.substring(0,1).equals("3")){
+				smsList.add( af );
+			}
+		}
+		return smsList;
 	}
 	
 	

@@ -54,7 +54,7 @@ public class LeerEmailRechazados implements Job {
 
 			String emailAddres = null; // direccion de email de mensaje
 			
-			sms.enviarSMSDirecto("3102097474", "Revisando Buzon", "scheduling");
+			//sms.enviarSMSDirecto("3102097474", "Revisando Buzon", "scheduling");
 
 			for (int i = 0; i < inboxM.size(); i++) {
 				Message m = inboxM.get(i);

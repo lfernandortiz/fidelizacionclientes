@@ -151,7 +151,7 @@ public class QuartzListener implements ServletContextListener {
 			// schedule jobs
 			schSMSCumple = new StdSchedulerFactory().getScheduler();
 			schSMSCumple.start();
-			schSMSCumple.scheduleJob(cumpleanosAct, triggerCumple);
+			schSMSCumple.scheduleJob(smsCumpleanos, triggerSMSCumple);
 			
 			
 			

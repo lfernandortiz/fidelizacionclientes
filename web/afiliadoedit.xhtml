@@ -60,7 +60,7 @@
 	
 								<p:outputLabel for="cedulaid" value="Documento" />
 								<p:inputText id="cedulaid" value="#{afiliadoBeanEdit.afiliadoSelected.documento}" required="true">
-									<p:keyFilter regEx="/[\d\-\.]/"/>
+									<p:keyFilter preventPaste="false" regEx="/[\d\-\.]/"/>
 								</p:inputText>
 
 								<p:outputLabel for="sexomenu" value="Sexo"/>
@@ -1184,12 +1184,12 @@
 																
                                 <p:outputLabel for="celularid" value="Celular" />
 								<p:inputText id="celularid" mask="9*" value="#{afiliadoBeanEdit.afiliadoSelected.celular}" required="true">
-									 <p:keyFilter regEx="/[\d\-\.]/"/>
+									 <p:keyFilter preventPaste="false" regEx="/[\d\-\.]/"/>
 								</p:inputText>				
 
 								<p:outputLabel for="telefonoid" value="Telefono" />
-								<p:inputText id="telefonoid"  mask="9*" value="#{afiliadoBeanEdit.afiliadoSelected.telefonofijo}">
-									<p:keyFilter regEx="/[\d\-\.]/"/>
+								<p:inputText id="telefonoid"  mask="9*"  value="#{afiliadoBeanEdit.afiliadoSelected.telefonofijo}">
+									<p:keyFilter preventPaste="false" regEx="/[\d\-\.]/"/>
 								</p:inputText>
                                 
                                 <p:outputLabel for="sucursalid" value="Sucursal" />

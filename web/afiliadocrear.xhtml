@@ -53,7 +53,7 @@
 								<p:outputLabel for="cedulaid" value="Documento" />
 								<p:inputText id="cedulaid" value="#{afiliadoBeanEdit.afiliadoSelected.documento}"  required="true">
 									<p:ajax event="blur" update="cedulaid" listener="#{afiliadoBeanEdit.validarCedula()}" />
-									<p:keyFilter regEx="/[\d\-\.]/"/>
+									<p:keyFilter preventPaste="false" regEx="/[\d\-\.]/"/>
 								</p:inputText>
 								
 								<p:outputLabel for="fechanacid" value="Fecha de nacimiento" />
@@ -144,7 +144,7 @@
 								columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
 								layout="grid" styleClass="ui-panelgrid-blank"
 								style="border:0px none; background-color:transparent;">	
-								
+									
 								<p:outputLabel for="barrioid" value="Barrio" />
 								<p:inputText id="barrioid" value="#{afiliadoBeanEdit.afiliadoSelected.streetdos}" />
 								
@@ -1251,12 +1251,12 @@
 																
                                 <p:outputLabel for="celularid" value="Celular" />
 								<p:inputText id="celularid" mask="9*" value="#{afiliadoBeanEdit.afiliadoSelected.celular}" required="true">
-									 <p:keyFilter regEx="/[\d\-\.]/"/>
+									 <p:keyFilter preventPaste="false" regEx="/[\d\-\.]/"/>
 								</p:inputText>				
 
 								<p:outputLabel for="telefonoid" value="Telefono" />
 								<p:inputText id="telefonoid"  mask="9*" value="#{afiliadoBeanEdit.afiliadoSelected.telefonofijo}">
-									<p:keyFilter regEx="/[\d\-\.]/"/>
+									<p:keyFilter preventPaste="false" regEx="/[\d\-\.]/"/>
 								</p:inputText>
                                 
                                 <p:outputLabel for="sucursalid" value="Sucursal" />

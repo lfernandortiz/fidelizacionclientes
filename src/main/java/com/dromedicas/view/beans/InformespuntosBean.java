@@ -9,7 +9,7 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -19,7 +19,7 @@ import com.dromedicas.reportes.Reporteador;
 import com.dromedicas.service.EmpresaService;
 
 @ManagedBean(name="informePuntosBean")
-@ViewScoped
+@SessionScoped
 public class InformespuntosBean {
 	
 	@PersistenceContext(unitName="PuntosFPU")
@@ -39,6 +39,7 @@ public class InformespuntosBean {
 	private String totalAcumulados;
 	
 	private List<Object[]> redimidosList;
+	private List<Object[]> redimidosDetalladoList;
 	
 	@PostConstruct
 	public void init(){		
@@ -46,6 +47,10 @@ public class InformespuntosBean {
 		
 		try {
 			this.fechaIniPuntos = new SimpleDateFormat("yyyy-MM-dd").parse("2017-09-01");
+		    this.resetTotales();
+		    this.redimidosDetalladoList = null;
+		    this.redimidosList = null;
+			
 		} catch (Exception e) {
 			System.out.println("ERROR AL ESTABLECER LA FECHA INICIO");
 			e.printStackTrace();
@@ -65,7 +70,8 @@ public class InformespuntosBean {
 			if( this.getNombreInforme().equals("redimidos")){
 				this.puntosRedimidosAfiliados();	
 			}
-			if( this.getNombreInforme().equals("")){
+			if( this.getNombreInforme().equals("redimidosdetallado")){
+				this.puntosRedimidosDetallado();
 				
 			}
 		}		
@@ -79,8 +85,9 @@ public class InformespuntosBean {
 			this.resetTotales();
 			this.redimidosList = null;
 		}
-		if( this.getNombreInforme().equals("")){			
-			
+		if( this.getNombreInforme().equals("redimidosdetallado")){			
+			this.resetTotales();
+			this.redimidosDetalladoList = null;
 		}
 	}
 	
@@ -121,6 +128,42 @@ public class InformespuntosBean {
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
+	public void puntosRedimidosDetallado(){
+		//this.resetTotales();
+		String queryString = 	
+			"SELECT  transaccion.fechatransaccion,  afiliado.documento, concat( afiliado.nombres, ' ' , afiliado.apellidos), " +
+			"sucursal.nombre_sucursal, transaccion.nrofactura,  " +
+			"CASE WHEN ticketredencion.idticketredencion IS NULL THEN 'NO' ELSE 'SI' END as Ticket, transaccion.puntostransaccion "+
+			"FROM transaccion INNER JOIN afiliado ON (transaccion.idafiliado = afiliado.idafiliado) "+
+			"INNER JOIN sucursal ON (transaccion.idsucursal = sucursal.idsucursal) "+
+			"LEFT JOIN ticketredencion ON ( transaccion.idtransaccion = ticketredencion.idtransaccion) "+
+			"WHERE  transaccion.tipotx = 2 " ;
+			
+			
+		if( this.getFechaInicio() != null && this.fechaFin != null ){
+			
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			queryString += "and date(transaccion.fechatransaccion) >= '" + sdf.format(this.getFechaIniPuntos())  + "' and " + 
+							" date(transaccion.fechatransaccion)  <= '" + sdf.format(this.getFechaFin()) + "' ";
+		}		
+		queryString += " order by 1 asc";		
+		
+		System.out.println("-----QueryString " + queryString);
+		
+		try {
+			 Query query = em.createNativeQuery(queryString);
+			 this.redimidosDetalladoList = query.getResultList();
+			 
+			 //Establece los valores totales que aparecen en la vista.
+			 this.establecerTotales(redimidosDetalladoList);
+			 
+		} catch (Exception e) {
+			
+			e.printStackTrace();
+		}
+	}
+	
 	
 	private void establecerTotales(List<Object[]> list){
 		if( this.getNombreInforme().equals("redimidos")){
@@ -137,9 +180,13 @@ public class InformespuntosBean {
 			this.setTotalAcumulados(new DecimalFormat("#,###").format(acuTemp));
 			this.setTotalRedimidos(new DecimalFormat("#,###").format(redTemp));
 		}
-		if( this.getNombreInforme().equals("")){
-			for(Object[] e: list){					
-				 
+		
+		if( this.getNombreInforme().equals("redimidosdetallado")){			
+			int redTemp = 0;
+			for(Object[] e: list){	
+				Integer red = (Integer) e[6];
+				redTemp += red.intValue();	
+				this.setTotalRedimidos(new DecimalFormat("#,###").format(redTemp));
 			}
 		}
 	}
@@ -160,6 +207,19 @@ public class InformespuntosBean {
 	    	e.printStackTrace();
 		}	
 	}
+	
+	
+	public void exportarExcelRedimidosDetallado(){
+		try {
+	    	report.generarReporteExcelElipsis("redimidosdetalle", this.getFechaIniPuntos(), this.getFechaFin());
+			
+		} catch (Exception e) {
+	    	System.out.println("Error al exportar informe de puntos redimidos detallado");
+	    	e.printStackTrace();
+		}	
+	}
+	
+	
 	
 		
 
@@ -221,6 +281,14 @@ public class InformespuntosBean {
 			this.fechaIniPuntos = fechaIniPuntos;
 		}		
 		
+	}
+
+	public List<Object[]> getRedimidosDetalladoList() {
+		return redimidosDetalladoList;
+	}
+
+	public void setRedimidosDetalladoList(List<Object[]> redimidosDetalladoList) {
+		this.redimidosDetalladoList = redimidosDetalladoList;
 	}
 	
 	

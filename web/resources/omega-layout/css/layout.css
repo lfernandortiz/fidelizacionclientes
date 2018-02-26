@@ -2258,7 +2258,7 @@ h2 {
     height: 100px; }
     .dashboard .highlight-box .initials {
       float: left;
-      width: 50%;
+      width: 40%;
       box-sizing: border-box;
       height: 100%;
       font-size: 54px;
@@ -3633,7 +3633,28 @@ a:-webkit-any-link.linkticket {
 	font-weight: bolder!important;
 } 
 
-a.ui-commandlink.linkesp{
+.dashboard .summary .count.visitors:hover {
+        background-color: #20d077;
+         
+        }
+.dashboard .summary .count.purchases:hover {
+        background-color: #f9c851; 
+        box-shadow: 0px 0px 5px #bf8806!important;
+        }
+.dashboard .summary .count.revenue:hover {
+        background-color: #007be5; 
+        }
+
+a.linkesp{
 	color: #0011dd!important;
+	text-decoration: none!important;
 }
 
+.thtablemain{
+	font-size: 0.70rem!important;
+}
+
+
+.cardtext{
+	height: 100%!important;
+}

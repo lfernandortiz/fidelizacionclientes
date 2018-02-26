@@ -526,7 +526,7 @@ public class ChartDemoView implements Serializable {
         LineChartModel model = new LineChartModel();
 
         LineChartSeries series1 = new LineChartSeries();
-        series1.setLabel("Series 1");
+        series1.setLabel("Afiliados");
 
         series1.set(1, 2);
         series1.set(2, 1);
@@ -535,7 +535,7 @@ public class ChartDemoView implements Serializable {
         series1.set(5, 8);
 
         LineChartSeries series2 = new LineChartSeries();
-        series2.setLabel("Series 2");
+        series2.setLabel("P. Redimidos");
 
         series2.set(1, 6);
         series2.set(2, 3);

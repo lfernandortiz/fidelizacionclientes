@@ -30,20 +30,10 @@ public class QuartzListener implements ServletContextListener {
 	Scheduler schCumpleanos = null;
 	Scheduler schSMSCumple = null;
 	
-	// Schedule para envio SMS & Email de cumpleanos <0 0 8 ? * MON-FRI *> Todos
-	// los dias a las 8am
-
-	// Schedule para actualizar edad de los afiliados <0 0 5 ? * MON-FRI *>
-	// Todos los dias a las 5am
-
-	// Schedule <0 0 0/1 1/1 * ? *> Cada hora
-
-	// Schedule consulta de saldo SMS < 0 0 7 ? * MON-FRI *> Todos los dias a
-	// las 7am
+	
 
 	@Override
 	public void contextInitialized(ServletContextEvent servletContext) {
-
 		try {
 			
 			/*
@@ -152,7 +142,6 @@ public class QuartzListener implements ServletContextListener {
 			schSMSCumple = new StdSchedulerFactory().getScheduler();
 			schSMSCumple.start();
 			schSMSCumple.scheduleJob(smsCumpleanos, triggerSMSCumple);
-			
 			
 			
 

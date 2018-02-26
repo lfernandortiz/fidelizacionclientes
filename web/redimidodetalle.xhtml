@@ -1,0 +1,137 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">Informe Puntos Redimidos</ui:define>	
+    <ui:define name="content">
+		<div class="message">
+			<h:form>
+				<p:messages id="globalMessagex" showDetail="true" closable="true" />
+			</h:form>
+		</div>		
+		
+		<f:metadata>
+		   <f:event type="preRenderView" listener="#{informePuntosBean.establecerInforme('redimidosdetallado')}"/>
+		</f:metadata>
+		<h:form id="formppal">			
+            <div class="ui-fluid">
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <div class="card">                        
+                            <h1>Puntos Redimidos Detalladao</h1>
+                            <p:panel id="basic" header="Informe de puntos redimidos por Afiliado"  style="margin-bottom:20px">
+                            	<!-- obciones de busqueda rango de fechas -->
+                            	 <p:spacer height="30px"/>	
+	                            <p:panelGrid  columns="4" id="vendedorForm"
+									columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+									layout="grid" styleClass="ui-panelgrid-blank"
+									style="border:0px none; background-color:transparent;">
+	                                <p:outputLabel for="fechainiid" value="Fecha Inicial" />
+									<p:calendar id="fechainiid" value="#{informePuntosBean.fechaIniPuntos}"
+										pattern = "dd/MM/yyyy" mask="true" required="true"
+										navigator="true" popupIconOnly="false" mode="popup"
+										showOn="button" >
+										<f:convertDateTime pattern = "dd/MM/yyyy" />										
+									</p:calendar>
+									<p:outputLabel for="fechafin" value="Fecha Final" />
+									<p:calendar id="fechafin" value="#{informePuntosBean.fechaFin}"
+										pattern = "dd/MM/yyyy" mask="true" required="true"
+										navigator="true" popupIconOnly="false" mode="popup"
+										showOn="button" >
+										<f:convertDateTime pattern = "dd/MM/yyyy" />										
+									</p:calendar>
+	                            </p:panelGrid>
+	                            <!-- botones -->
+	                            <p:spacer height="15px"/>								
+								<p:panelGrid columns="6" id="buttons"
+									columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2"
+									layout="grid" styleClass="ui-panelgrid-blank"
+									style="border:0px none; background-color:transparent;">								
+									<p:commandButton value="Filtrar" id="buscarbutton"
+										actionListener="#{informePuntosBean.puntosRedimidosAfiliados()}"
+										update="registroVendedorDetail"/>
+										
+									<p:commandButton value="Cancelar" id="cancelarbutton"
+										action="#{informePuntosBean.cancelarList()}"
+										update=":formppal:registroVendedorDetail, :formppal:vendedorForm"/>
+										
+									<p:commandButton value="Exportar Excel" 
+												 id="to_excel"
+												 ajax="false"
+												 action="#{informePuntosBean.exportarExcelRedimidosDetallado()}"
+												 icon="fa fa-file-excel-o">
+									<p:tooltip id="tp_toexcel" for="to_excel" 
+										value="Exporta a Excel el resultado de la consulta actual" position="top"/>
+								</p:commandButton>
+								</p:panelGrid>
+                        	
+                        	</p:panel>					
+                        	
+                        	
+                        	<!-- tabla detalle registro -->
+                        	<p:dataTable id="registroVendedorDetail" var="data" value="#{informePuntosBean.redimidosDetalladoList}" 
+                        			   rowKey="#{data[0]}" emptyMessage="Registros no encontrados  :-(  " 
+                        			tableStyle="table-layout: auto;">
+								<f:facet name="header">Clientes Puntos Redemidos Detallado</f:facet>								
+								<p:column headerText="Fecha Tx" sortBy="#{data[0]}">
+									<div class="">
+										<h:outputText value="#{data[0]}" /> 
+									</div>									
+								</p:column>
+								<p:column headerText="Documento" sortBy="#{data[1]}">
+									<div class="">
+										<h:commandLink target="_blank" rendered="true" class="linkesp" action="#{afiliadoBeanEdit.editarAfiliadoDocumento(data[1])}">
+											<h:outputText value="#{data[1]}" /> 
+										</h:commandLink>										
+									</div>									
+								</p:column>								
+								<p:column headerText="Nombre" sortBy="#{data[2]}">
+									<div class="">
+										<h:outputText value="#{data[2]}" /> 
+									</div>									
+								</p:column>
+								<p:column headerText="Sucursal Tx" sortBy="#{data[3]}">
+									<div class="">
+										<h:outputText value="#{data[3]}" /> 
+									</div>
+								</p:column>		
+								<p:column headerText="Nro Factura" sortBy="#{data[4]}">
+									<div class="celdaDerecha">
+										<h:outputText value="#{data[4]}">
+											 <f:convertNumber pattern="#,###"/>
+										</h:outputText> 
+									</div>									
+								</p:column>		
+								<p:column headerText="Tiene Ticket" sortBy="#{data[5]}"> 
+									<div class="celdaDerechaEnfasis">										
+										<h:outputText value="#{data[5]}">											
+										</h:outputText>																				 								
+									</div>									
+								</p:column>
+								<p:column headerText="Puntos Redimidos" sortBy="#{data[6]}"> 
+									<div class="celdaDerechaEnfasis">										
+										<h:outputText value="#{data[6]}">
+											 <f:convertNumber pattern="#,###"/>
+										</h:outputText>																				 								
+									</div>									
+								</p:column>
+								<p:columnGroup type="footer">
+								            <p:row>
+								                <p:column colspan="6" style="text-align:right" footerText="Totales..:" />
+               									<p:column footerText="#{informePuntosBean.totalRedimidos}" style="text-align: right!important; font-weight: bold;"/>
+								            </p:row>
+							    </p:columnGroup> 
+							</p:dataTable>
+							
+						</div> <!-- end card -->
+                    </div> <!-- end ui-g-12 -->
+                </div> <!-- end ui-g -->
+            </div>  <!-- end ui-fluid -->
+            </h:form>
+            
+    	
+    </ui:define>
+</ui:composition>

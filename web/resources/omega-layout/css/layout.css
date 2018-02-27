@@ -2258,12 +2258,12 @@ h2 {
     height: 100px; }
     .dashboard .highlight-box .initials {
       float: left;
-      width: 40%;
+      width: 50%;
       box-sizing: border-box;
       height: 100%;
       font-size: 54px;
       padding-top: 20px;
-      text-align: center; }
+      text-align: center; }      
     .dashboard .highlight-box .card {
       color: #a4a4a4;
       float: left;
@@ -2271,7 +2271,7 @@ h2 {
       box-sizing: border-box;
       height: 100%; }
       .dashboard .highlight-box .card .count {
-        font-size: 36px;
+        font-size: 34px;
         display: block;
         margin-top: 15px; }
   .dashboard .activity-list {

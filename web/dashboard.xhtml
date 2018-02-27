@@ -123,71 +123,45 @@
                     </div>
                 </div>
             </div>
-            
-            <!-- <div class="ui-g-12 ui-md-6 ui-lg-6">
-                <p:panel header="Afiliados Redenciones"  style="height:100%">
-               		<p:chart type="line" model="#{chartDemoView.lineModel1}" responsive="true"/>
+                                    
+           <div class="ui-g-12 ui-md-6 ui-lg-4">
+                <p:panel header="Tasks" style="height:100%">
+                    <ul class="task-list">
+                        <li>
+                            <p:selectBooleanCheckbox />
+                            <span class="task-name">Sales reports</span>
+                            <p:commandButton type="button" icon="fa fa-check"></p:commandButton>
+                        </li>
+                        <li>
+                            <p:selectBooleanCheckbox />
+                            <span class="task-name">Pay the invoices</span>
+                            <p:commandButton type="button" icon="fa fa-check"></p:commandButton>
+                        </li>
+                        <li>
+                            <p:selectBooleanCheckbox />
+                            <span class="task-name">Dinner with Tony</span>
+                            <p:commandButton type="button" icon="fa fa-check"></p:commandButton>
+                        </li>
+                        <li>
+                            <p:selectBooleanCheckbox />
+                            <span class="task-name">Team meeting</span>
+                            <p:commandButton type="button" icon="fa fa-check"></p:commandButton>
+                        </li>
+                        <li>
+                            <p:selectBooleanCheckbox />
+                            <span class="task-name">Plan the new theme</span>
+                            <p:commandButton type="button" icon="fa fa-check"></p:commandButton>
+                        </li>
+                        <li>
+                            <p:selectBooleanCheckbox />
+                            <span class="task-name">Client meeting</span>
+                            <p:commandButton type="button" icon="fa fa-check"></p:commandButton>
+                        </li>
+                    </ul>
                 </p:panel>
-            </div>  -->
-                        
-           <div class="ui-g-12 ui-md-6 ui-lg-6">
-                <div class="card cardtext">
-                    <p:chart type="bar" model="#{chartDemoView.barModel}" responsive="true"/>
-                </div>
-            </div> 
-            
-            <div class="ui-g-12 ui-md-6">
-                <h:form>
-                    <div class="card">
-                        <p:dataTable var="data" value="#{dashboardBean.tableMainList}" selectionMode="single"
-                        			 scrollable="true" scrollHeight="330" rowKey="#{data[0]}" reflow="true">
-                            <f:facet name="header">Total Datos Afiliados Por Sucursal</f:facet>
-                            <p:column headerText="Sucursal">
-                            	<div class="thtablemain">
-                            	 <h:outputText value="#{data[0]}" >
-                                	 <f:convertNumber pattern="#,###"/>
-                                </h:outputText>
-                            	</div>
-                            </p:column>
-
-                            <p:column headerText="Total Afiliados">
-                            	<div class="celdaDerecha">
-                            	 <h:outputText value="#{data[1]}" >
-                                	 <f:convertNumber pattern="#,###"/>
-                                </h:outputText>
-                            	</div>
-                            </p:column>
-
-                            <p:column headerText="Total Acumulados">
-                            	<div class="celdaDerecha">
-                            	 <h:outputText value="#{data[2]}" >
-                                	 <f:convertNumber pattern="#,###"/>
-                                </h:outputText>
-                            	</div>
-                            </p:column>
-                            
-                            <p:column headerText="Total Redimidos">
-                            	<div class="celdaDerecha">
-                            	 <h:outputText value="#{data[3]}" >
-                                	 <f:convertNumber pattern="#,###"/>
-                                </h:outputText>
-                            	</div>                               
-                            </p:column>
-                            
-                            <p:column headerText="Total Devoluciones">
-                            	<div class="celdaDerecha">
-                            	<h:outputText value="#{data[4]}" >
-                                	<f:convertNumber pattern="#,###"/>
-                                </h:outputText>
-                            	</div>
-                            </p:column>
-                            
-                        </p:dataTable>   
-                    </div>
-                </h:form>
             </div>
             
-           <!--  <div class="ui-g-12 ui-md-6 ui-lg-4">
+            <div class="ui-g-12 ui-md-6 ui-lg-4">
                 <p:panel header="Contact Us" style="text-align:center;background:#fff;height:100%">
                     <div class="ui-g">
                         <div class="ui-g-12">
@@ -211,7 +185,6 @@
                     <p:commandButton type="button" value="Send" icon="fa fa-check"></p:commandButton>
                 </p:panel>
             </div>
-            
             <div class="ui-g-12 ui-lg-4">
                 <p:panel header="Contacts" style="height:100%">
                     <ul class="contacts">
@@ -245,7 +218,7 @@
                         </li>
                     </ul>
                 </p:panel>
-            </div> -->
+            </div>
 
             <div class="ui-g-12 ui-md-6">
                 <h:form>
@@ -278,7 +251,7 @@
             </div>
             <div class="ui-g-12 ui-md-8">
                 <p:panel header="Calendar" style="height:100%">
-                    <p:schedule  value="#{scheduleView.eventModel}"/>
+                    <p:schedule value="#{scheduleView.eventModel}"/>
                 </p:panel>
             </div>
             <div class="ui-g-12 ui-md-4">

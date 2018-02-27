@@ -162,7 +162,7 @@ public class ChartDemoView implements Serializable {
     }
 
     public BarChartModel getBarModel() {
-        return barModel;
+        return barModel = this.initBarModel();
     }
     
     public HorizontalBarChartModel getHorizontalBarModel() {

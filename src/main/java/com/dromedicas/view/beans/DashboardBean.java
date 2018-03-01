@@ -3,7 +3,6 @@ package com.dromedicas.view.beans;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -13,6 +12,13 @@ import javax.faces.bean.ViewScoped;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+
+import org.primefaces.model.chart.Axis;
+import org.primefaces.model.chart.AxisType;
+import org.primefaces.model.chart.BarChartModel;
+import org.primefaces.model.chart.ChartSeries;
+import org.primefaces.model.chart.LineChartModel;
+import org.primefaces.model.chart.LineChartSeries;
 
 import com.dromedicas.service.AfiliadoService;
 import com.dromedicas.service.OperacionPuntosService;
@@ -46,6 +52,11 @@ public class DashboardBean {
 	
 	
 	private List<Object[]> tableMainList;
+	private List<Object[]> acumuladoGraficaList;
+	private List<Object[]> redimidoGraficaList;
+	
+	private BarChartModel barModel;
+	 private LineChartModel lineModel1;
 	
 	public DashboardBean(){
 		
@@ -54,10 +65,14 @@ public class DashboardBean {
 	@PostConstruct
 	public void init(){
 		this.setDataTableMainList();
-		
+		createBarModels();
 		
 	}
-
+	
+	private void createBarModels() {
+		createBarModel();
+		createLineModel();
+    }
 
 	public String getPuntosAcumulados() {
 		NumberFormat nf = new DecimalFormat("#,###");
@@ -176,8 +191,33 @@ public class DashboardBean {
 	public void setTotalDevolucion(String totalDevolucion) {
 		this.totalDevolucion = totalDevolucion;
 	}
+		
+	public List<Object[]> getAcumuladoGraficaList() {
+		return acumuladoGraficaList;
+	}
+
+	public void setAcumuladoGraficaList(List<Object[]> acumuladoGraficaList) {
+		this.acumuladoGraficaList = acumuladoGraficaList;
+	}
+
+	public List<Object[]> getRedimidoGraficaList() {
+		return redimidoGraficaList;
+	}
+
+	public void setRedimidoGraficaList(List<Object[]> redimidoGraficaList) {
+		this.redimidoGraficaList = redimidoGraficaList;
+	}
 	
 	
+
+	public LineChartModel getLineModel1() {
+		return lineModel1;
+	}
+
+	public void setLineModel1(LineChartModel lineModel1) {
+		this.lineModel1 = lineModel1;
+	}
+
 	public void setDataTableMainList(){
 		//this.resetTotales();
 		String queryString =
@@ -193,22 +233,20 @@ public class DashboardBean {
 			"sucursal.nombre_sucursal as nombre, 0 as afiliados, 0 as acumulados, 0 as redimidos, "+
 			"sum( case when transaccion.tipotx = 3  then transaccion.puntostransaccion else 0 end ) as devoluciones from sucursal " +
 			"inner join transaccion on ( transaccion.idsucursal = sucursal.idsucursal ) group by sucursal.nombre_sucursal ) as totales 	group by totales.nombre ";
-				
 		
 		System.out.println("-----QueryString " + queryString);
 		
 		try {
 			 Query query = em.createNativeQuery(queryString);
 			 this.tableMainList = query.getResultList();
-			 
 			 //Establece los valores totales que aparecen en la vista.
 			 this.establecerTotales(tableMainList);
 			 
 		} catch (Exception e) {
-			
 			e.printStackTrace();
 		}
 	}
+	
 	
 	private void establecerTotales(List<Object[]> list) {
 		int afiTemp = 0;
@@ -235,8 +273,153 @@ public class DashboardBean {
 	}
 	
 	
+	public BarChartModel getBarModel() {
+		return barModel;
+	}
+
+	public void setBarModel(BarChartModel barModel) {
+		this.barModel = barModel;
+	}
+	
+	private void createBarModel() {
+        barModel = initBarModel();
+         
+        barModel.setTitle("Acumulados Redimidos 3 Ultmos meses");
+        barModel.setLegendPosition("ne");
+        barModel.setExtender("skinChart");
+         
+        Axis xAxis = barModel.getAxis(AxisType.X);
+        xAxis.setLabel("Sucursal");
+        
+         
+        Axis yAxis = barModel.getAxis(AxisType.Y);
+        //yAxis.setLabel("Puntos");
+        yAxis.setMin(0);
+        //yAxis.setMax(200);
+    }
+	
+	private void createLineModel() {
+        this.lineModel1 = this.initLineModel();
+         
+        lineModel1.setTitle("Acumulados Redimidos 3 Ultmos meses");
+        lineModel1.setLegendPosition("ne");
+        lineModel1.setExtender("skinChart");
+         
+        Axis xAxis = lineModel1.getAxis(AxisType.X);
+        xAxis.setLabel("Sucursal");
+        
+         
+        Axis yAxis = lineModel1.getAxis(AxisType.Y);
+        //yAxis.setLabel("Puntos");
+        yAxis.setMin(0);
+        //yAxis.setMax(200);
+    }
+
+	private BarChartModel initBarModel() {
+		getRedimidoGrafica();
+		getAcumuladoGrafica();
+		
+		BarChartModel model = new BarChartModel();
+ 
+		LineChartSeries acumulados = new LineChartSeries();
+        acumulados.setLabel("Acumula");
+        
+        List<Object[]> ac = this.acumuladoGraficaList;
+        for(Object [] e : ac){
+        	acumulados.set(e[0], (BigDecimal) e[1]);
+        }
+        
+        LineChartSeries redimidos = new LineChartSeries();
+        redimidos.setLabel("Redime");
+        
+        List<Object[]> re = this.redimidoGraficaList;
+        for(Object [] e : re){
+        	redimidos.set(e[0], (BigDecimal) e[1]);
+        }
+        
+        model.addSeries(acumulados);
+        model.addSeries(redimidos);
+ 
+        return model;        
+    }
+	
+	private LineChartModel initLineModel() {
+		getRedimidoGrafica();
+		getAcumuladoGrafica();
+		
+		LineChartModel model = new LineChartModel();
+ 
+        ChartSeries acumulados = new ChartSeries();
+        acumulados.setLabel("Acumula");
+        
+        List<Object[]> ac = this.acumuladoGraficaList;
+        for(Object [] e : ac){
+        	acumulados.set(e[0], (BigDecimal) e[1]);
+        }
+        
+        ChartSeries redimidos = new ChartSeries();
+        redimidos.setLabel("Redime");
+        
+        List<Object[]> re = this.redimidoGraficaList;
+        for(Object [] e : re){
+        	redimidos.set(e[0], (BigDecimal) e[1]);
+        }
+        
+        model.addSeries(acumulados);
+        model.addSeries(redimidos);
+ 
+        return model;        
+    }
 	
 	
+	@SuppressWarnings("unchecked")
+	public void getAcumuladoGrafica(){
+		
+		
+		String queryString = 	
+				"select case when sucursal.codigointerno = '00' then 'Dr' else CONCAT('',sucursal.codigointerno) end as suc , "+ 
+				"sum(case when transaccion.tipotx = 1 or transaccion.tipotx = 4 or "+
+	            "transaccion.tipotx = 5 then transaccion.puntostransaccion " +
+	            "else 0 end) as acumulados from sucursal " +
+	            "inner join transaccion on (transaccion.idsucursal = sucursal.idsucursal) "+
+	            "group by 1";
+		
+		System.out.println("-----QueryString " + queryString);
+		
+		try {
+			 Query query = em.createNativeQuery(queryString);			 
+			 this.acumuladoGraficaList = query.getResultList();	
+			 
+			 System.out.println("Longitud" + this.acumuladoGraficaList.size());
+		} catch (Exception e) {
+			System.out.println(":-( ERROR EN LA CONSULTA :-(");
+			System.out.println("MENSAJE: " + e.getMessage() );
+			e.printStackTrace();
+		}
+		
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	public void getRedimidoGrafica(){		
+		String queryString = 	
+				"select case when sucursal.codigointerno = '00' then 'Dr' else CONCAT('',sucursal.codigointerno) end as suc , "+ 
+				"sum( case when transaccion.tipotx = 2  then transaccion.puntostransaccion else 0 end ) as redimidos "+
+				"from sucursal inner join transaccion on ( transaccion.idsucursal = sucursal.idsucursal ) "+
+				"group by 1";
+		
+		System.out.println("-----QueryString " + queryString);
+		
+		try {
+			 Query query = em.createNativeQuery(queryString);			 
+			 this.redimidoGraficaList = query.getResultList();			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+		
 
 	
 	

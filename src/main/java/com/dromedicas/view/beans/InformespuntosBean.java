@@ -15,6 +15,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import org.primefaces.model.chart.Axis;
+import org.primefaces.model.chart.AxisType;
+import org.primefaces.model.chart.ChartSeries;
+import org.primefaces.model.chart.HorizontalBarChartModel;
+
 import com.dromedicas.reportes.Reporteador;
 import com.dromedicas.service.EmpresaService;
 
@@ -40,6 +45,8 @@ public class InformespuntosBean {
 	
 	private List<Object[]> redimidosList;
 	private List<Object[]> redimidosDetalladoList;
+	
+	
 	
 	@PostConstruct
 	public void init(){		
@@ -219,10 +226,6 @@ public class InformespuntosBean {
 		}	
 	}
 	
-	
-	
-		
-
 	public String getNombreInforme() {
 		return nombreInforme;
 	}
@@ -279,8 +282,7 @@ public class InformespuntosBean {
 		
 		if( fechaIniPuntos.compareTo(this.fechaIniPuntos) != 0){
 			this.fechaIniPuntos = fechaIniPuntos;
-		}		
-		
+		}	
 	}
 
 	public List<Object[]> getRedimidosDetalladoList() {
@@ -290,10 +292,7 @@ public class InformespuntosBean {
 	public void setRedimidosDetalladoList(List<Object[]> redimidosDetalladoList) {
 		this.redimidosDetalladoList = redimidosDetalladoList;
 	}
-	
-	
-	
-	
+
 	
 
 }

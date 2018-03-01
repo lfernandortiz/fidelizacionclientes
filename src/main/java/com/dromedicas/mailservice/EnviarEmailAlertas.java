@@ -31,6 +31,7 @@ import com.dromedicas.domain.BalancePuntos;
 import com.dromedicas.domain.Sucursal;
 import com.dromedicas.domain.Transaccion;
 import com.dromedicas.service.OperacionPuntosService;
+import com.dromedicas.service.RegistroNotificacionesService;
 import com.dromedicas.util.ExpresionesRegulares;
 import com.sun.mail.imap.protocol.FLAGS;
 import com.vdurmont.emoji.EmojiParser;
@@ -49,6 +50,9 @@ public class EnviarEmailAlertas {
 	
 	@EJB
 	private OperacionPuntosService puntosService;
+	
+	@EJB
+	private RegistroNotificacionesService registroNotificacion;
 	
 	public boolean enviarEmailAlertaVentas(Afiliado afiliado) {
 
@@ -143,7 +147,10 @@ public class EnviarEmailAlertas {
 					}
 				}
 			}).start();
-
+			
+			
+			this.registroNotificacion.auditarEmailEnviado(afiliado, doc.html(), "Bienvenida al programa");
+			
 			System.out.println("Conexion cerrada");
 
 		} catch (Exception e) {

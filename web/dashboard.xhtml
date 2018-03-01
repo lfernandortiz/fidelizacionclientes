@@ -10,10 +10,11 @@
     <ui:define name="head">
         <script type="text/javascript">
             //<![CDATA[
-            console.log(">" + this.cfg + "<" );
+            
             function skinChart() {
+            	console.log(">" + this.cfg + "<" );
                 this.cfg.shadow = false;
-                this.cfg.title = '';
+                this.cfg.title = 'Afiliados por sucursal';
                 this.cfg.seriesColors = ['#007be5', '#20d077'];
                 this.cfg.grid = {
                     background: '#ffffff',
@@ -122,14 +123,13 @@
                         <span class="count">#{dashboardBean.totalEmailSinValidar}</span>
                     </div>
                 </div>
-            </div>
-                                                
+            </div>                                                
         
-            <div class="ui-g-12 ui-md-6">
+            <div class="ui-g-12 ui-md-12">
                 <h:form>
                     <div class="card">
                         <p:dataTable var="data" value="#{dashboardBean.tableMainList}" selectionMode="single" 
-                        	scrollable="true" scrollHeight="233" rowKey="#{data[0]}" reflow="true">
+                        	scrollable="true" scrollHeight="350" rowKey="#{data[0]}" reflow="true">
                             <f:facet name="header">Consolidado Puntos por Sucursal</f:facet>
                             <p:column headerText="Suscursal">
                             	<div class="thtablemain">
@@ -160,16 +160,16 @@
                     </div>
                 </h:form>
             </div>
-            <div class="ui-g-12 ui-md-6">
+            <div class="ui-g-12 ui-md-12">
                 <div class="card">
                    <p:chart type="line" model="#{dashboardBean.lineModel1}" responsive="true"/>  
                    <!--  <p:chart type="bar" model="#{dashboardBean.barModel}" responsive="true"/> -->
+                   <!-- <p:chart type="line" model="#{chartDemoView.lineModel1}" responsive="true"/> -->
                 </div>
             </div>
 
             
-        </div>
-        
+        </div>        
     </ui:define>
     
 </ui:composition>

@@ -67,10 +67,10 @@ public class DashboardBean {
 		this.setDataTableMainList();
 		createBarModels();
 		
+		
 	}
 	
-	private void createBarModels() {
-		createBarModel();
+	private void createBarModels() {		
 		createLineModel();
     }
 
@@ -281,22 +281,6 @@ public class DashboardBean {
 		this.barModel = barModel;
 	}
 	
-	private void createBarModel() {
-        barModel = initBarModel();
-         
-        barModel.setTitle("Acumulados Redimidos 3 Ultmos meses");
-        barModel.setLegendPosition("ne");
-        barModel.setExtender("skinChart");
-         
-        Axis xAxis = barModel.getAxis(AxisType.X);
-        xAxis.setLabel("Sucursal");
-        
-         
-        Axis yAxis = barModel.getAxis(AxisType.Y);
-        //yAxis.setLabel("Puntos");
-        yAxis.setMin(0);
-        //yAxis.setMax(200);
-    }
 	
 	private void createLineModel() {
         this.lineModel1 = this.initLineModel();
@@ -315,11 +299,13 @@ public class DashboardBean {
         //yAxis.setMax(200);
     }
 
-	private BarChartModel initBarModel() {
+	
+	
+	private LineChartModel initLineModel() {
 		getRedimidoGrafica();
 		getAcumuladoGrafica();
 		
-		BarChartModel model = new BarChartModel();
+		LineChartModel model = new LineChartModel();
  
 		LineChartSeries acumulados = new LineChartSeries();
         acumulados.setLabel("Acumula");
@@ -330,34 +316,6 @@ public class DashboardBean {
         }
         
         LineChartSeries redimidos = new LineChartSeries();
-        redimidos.setLabel("Redime");
-        
-        List<Object[]> re = this.redimidoGraficaList;
-        for(Object [] e : re){
-        	redimidos.set(e[0], (BigDecimal) e[1]);
-        }
-        
-        model.addSeries(acumulados);
-        model.addSeries(redimidos);
- 
-        return model;        
-    }
-	
-	private LineChartModel initLineModel() {
-		getRedimidoGrafica();
-		getAcumuladoGrafica();
-		
-		LineChartModel model = new LineChartModel();
- 
-        ChartSeries acumulados = new ChartSeries();
-        acumulados.setLabel("Acumula");
-        
-        List<Object[]> ac = this.acumuladoGraficaList;
-        for(Object [] e : ac){
-        	acumulados.set(e[0], (BigDecimal) e[1]);
-        }
-        
-        ChartSeries redimidos = new ChartSeries();
         redimidos.setLabel("Redime");
         
         List<Object[]> re = this.redimidoGraficaList;

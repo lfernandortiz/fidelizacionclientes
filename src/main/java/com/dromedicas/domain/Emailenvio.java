@@ -20,6 +20,11 @@ public class Emailenvio implements Serializable {
 	private int idemailenvio;
 
 	private int estadoemail;
+	
+	@Column(length=60)
+	private String email;
+	
+	private String mensaje;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date fechaenvio;
@@ -269,5 +274,23 @@ public class Emailenvio implements Serializable {
 	public void setGlobalstat(Globalstat globalstat) {
 		this.globalstat = globalstat;
 	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getMensaje() {
+		return mensaje;
+	}
+
+	public void setMensaje(String mensaje) {
+		this.mensaje = mensaje;
+	}
+	
+	
 
 }

@@ -41,6 +41,9 @@ public class AfiliadoService {
 	@EJB
 	private ReferidoService referidoService;
 	
+	@EJB
+	private RegistroNotificacionesService registroNotificacion;
+	
 	
 	public List<Afiliado> findAllAfiliados(){
 		return this.afiliadoDao.findAllAfiliados();
@@ -84,12 +87,13 @@ public class AfiliadoService {
 		this.calculoService.puntosInicialesRegistro(instance);
 		
 		// 5 Envia correo de notificacion de afiliacion
-		boolean enviado = false;
+		String enviado = "";
 		if (instance.getEmail() != null && !instance.getEmail().equals("")) {
 			enviado = mailAlert.enviarEmailAlertaVentas(instance);
 		}
-		if (enviado) {
-			// -- Registro del Email para tracking
+		if (enviado != null) {
+			//se graba el auditor del correo
+			this.registroNotificacion.auditarEmailEnviado(instance, enviado, "Bienvenida al programa");
 		}
 	}
 	
@@ -156,7 +160,7 @@ public class AfiliadoService {
 		try {
 			temp = (Afiliado) query.getSingleResult();
 		} catch (NoResultException e) {
-			System.out.println("Elemento no encontrado");			
+			System.out.println("Afiliado "+ documento +" no encontrado");			
 		}		
 		return temp;
 	}

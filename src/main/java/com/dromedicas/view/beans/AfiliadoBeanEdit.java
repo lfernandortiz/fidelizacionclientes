@@ -18,13 +18,13 @@ import javax.faces.context.Flash;
 import org.apache.commons.io.IOUtils;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
-import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
 
 import com.dromedicas.domain.Afiliado;
 import com.dromedicas.domain.BalancePuntos;
+import com.dromedicas.domain.Emailenvio;
 import com.dromedicas.domain.Pais;
 import com.dromedicas.domain.Sucursal;
 import com.dromedicas.domain.Ticketredencion;
@@ -37,6 +37,7 @@ import com.dromedicas.service.AfiliadoService;
 import com.dromedicas.service.OperacionPuntosService;
 import com.dromedicas.service.PaisService;
 import com.dromedicas.service.ReferidoService;
+import com.dromedicas.service.RegistroNotificacionesService;
 import com.dromedicas.service.SucursalService;
 import com.dromedicas.service.TicketredencionService;
 import com.dromedicas.service.TipoDocumentoService;
@@ -101,6 +102,9 @@ public class AfiliadoBeanEdit implements Serializable{
 	@EJB
 	private VendedorService vendedorService;
 	
+	@EJB
+	private RegistroNotificacionesService registroNotificacion;
+	
 	@ManagedProperty(value = "#{loginService}")
 	private LoginBeanService loginBean;
 		
@@ -108,6 +112,7 @@ public class AfiliadoBeanEdit implements Serializable{
 	private List<Tipodocumento> tipodocList; // list para select one menu tipodocumento
 	private List<Sucursal> sucursalList;
 	private List<Pais> paisList;
+	private List<Emailenvio> emailEnvioList;
 	
 	private String street1 = "AVENIDA";
 	private String street1Valor = "";
@@ -306,6 +311,15 @@ public class AfiliadoBeanEdit implements Serializable{
 
 	public void setBalancePuntos(BalancePuntos balancePuntos) {
 		this.balancePuntos = balancePuntos;
+	}
+	
+	
+	public List<Emailenvio> getEmailEnvioList() {
+		return emailEnvioList;
+	}
+
+	public void setEmailEnvioList(List<Emailenvio> emailEnvioList) {
+		this.emailEnvioList = emailEnvioList;
 	}
 
 	//metodos de control de la interfaz	
@@ -538,15 +552,16 @@ public class AfiliadoBeanEdit implements Serializable{
 	
 	public void reenvioEmailAfiliacion(){		
 		
-		boolean enviado = mailAlert.enviarEmailAlertaVentas(this.afiliadoSelected);
+		String enviado = mailAlert.enviarEmailAlertaVentas(this.afiliadoSelected);
 		
-		if(enviado){
+		if(enviado != null){
 			FacesContext.getCurrentInstance().addMessage(null, 
 					new FacesMessage(FacesMessage.SEVERITY_INFO, "Envio Exitoso!", "Un nuevo email de confirmacion "
 							+ "de suscripcion a Puntos Farmanorte fue enviando."));
 			byte valid = 0 ;
 			this.afiliadoSelected.setEmailvalidado(valid);
 			this.afiliadoService.updateAfiliado(afiliadoSelected);
+			this.registroNotificacion.auditarEmailEnviado(afiliadoSelected, enviado, "Bienvenida al programa");
 		}else{
 			FacesContext.getCurrentInstance().addMessage(null, 
 					new FacesMessage(FacesMessage.SEVERITY_WARN, "Error", "No fue posible el envio de confirmacion"));

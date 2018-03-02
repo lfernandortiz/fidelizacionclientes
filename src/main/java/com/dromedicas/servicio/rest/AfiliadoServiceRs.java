@@ -58,6 +58,7 @@ import com.dromedicas.service.OcupacionService;
 import com.dromedicas.service.OperacionPuntosService;
 import com.dromedicas.service.PatologiaService;
 import com.dromedicas.service.ReferidoService;
+import com.dromedicas.service.RegistroNotificacionesService;
 import com.dromedicas.service.SucursalService;
 import com.dromedicas.service.TipoDocumentoService;
 import com.dromedicas.service.TipoMiembroService;
@@ -127,6 +128,9 @@ public class AfiliadoServiceRs implements Serializable{
 	
 	@EJB
 	private EnviarEmailAlertas emailAlerta;
+	
+	@EJB
+	private RegistroNotificacionesService registroNotificacion;
 	
 	@Context UriInfo uriInfo;
 		
@@ -494,7 +498,12 @@ public class AfiliadoServiceRs implements Serializable{
 			
 			//Envia email de confirmacion de suscripcion
 			if( !afiliado.getEmail().equals("") && afiliado.getEmail() != null){
-				this.emailAlerta.emailConfirmacionFinalSuscripcion(afiliado);
+				String mensaje = this.emailAlerta.emailConfirmacionFinalSuscripcion(afiliado);
+				if( mensaje != null ){
+					//se graba el auditor del correo
+					this.registroNotificacion.auditarEmailEnviado(afiliado, mensaje, "Inscripcion completa");
+				}
+				
 			}
 			
 			

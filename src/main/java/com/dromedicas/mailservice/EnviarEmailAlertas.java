@@ -54,11 +54,13 @@ public class EnviarEmailAlertas {
 	@EJB
 	private RegistroNotificacionesService registroNotificacion;
 	
-	public boolean enviarEmailAlertaVentas(Afiliado afiliado) {
+	public String enviarEmailAlertaVentas(Afiliado afiliado) {
 
 		String urlConfirmacion = "http://www.puntosfarmanorte.com.co/seccion/actualizacion.html?id="
 				+ afiliado.getKeycode();
 
+		String contenidoEmail = null;
+		
 		System.out.println("Clase enviar Email Alerta Afilidaod");
 		try {
 			ServletContext servletContext = null;
@@ -128,6 +130,7 @@ public class EnviarEmailAlertas {
 
 			message.setFlag(FLAGS.Flag.RECENT, true);
 
+			contenidoEmail = doc.html();
 			// Envia el correo
 			final Transport t = session.getTransport("smtp");
 			// asigno un hilo exclusivo a la conexion y envio del mensaje
@@ -148,25 +151,20 @@ public class EnviarEmailAlertas {
 				}
 			}).start();
 			
-			
-			this.registroNotificacion.auditarEmailEnviado(afiliado, doc.html(), "Bienvenida al programa");
-			
 			System.out.println("Conexion cerrada");
 
 		} catch (Exception e) {
 			System.out.println("Falla en el envio del correo:");
 			e.printStackTrace();
-			return false;
+			return null;
 		}
-		return true;
+		return contenidoEmail;
 	}
+	
+	
 
 	public boolean emailAcumulacionPuntos(Afiliado afiliado, int ganados, BalancePuntos balance) {
-		// nombrecliente
-		// puntostx
-		// acumulados
-		// redimir
-
+		
 		System.out.println("Clase enviar Email Alerta de compra ");
 		try {
 			// primero valida que el email registrado no este como rechazado
@@ -266,6 +264,7 @@ public class EnviarEmailAlertas {
 
 	}
 
+	
 	public boolean emailNotificacionCompra(List<Transaccion> txList) {
 
 		System.out.println("Clase enviar Email Alerta de compra scheduling ");
@@ -442,9 +441,11 @@ public class EnviarEmailAlertas {
 
 	}
 
-	public boolean emailConfirmacionFinalSuscripcion(Afiliado afiliado) {
+	public String emailConfirmacionFinalSuscripcion(Afiliado afiliado) {
 
 		System.out.println("Clase enviar Email Alerta Confirmacion final");
+		
+		String cmensaje = null;
 		try {
 
 			ServletContext servletContext = null;
@@ -507,6 +508,8 @@ public class EnviarEmailAlertas {
 
 			message.setSubject(subjectEmoji, "UTF-8");
 			message.setContent(doc.html(), "text/html; charset=utf-8");
+			
+			cmensaje = doc.html();
 
 			// Envia el correo
 			final Transport t = session.getTransport("smtp");
@@ -533,9 +536,9 @@ public class EnviarEmailAlertas {
 		} catch (Exception e) {
 			System.out.println("Falla en el envio del correo:");
 			e.printStackTrace();
-			return false;
+			return null;
 		}
-		return true;
+		return cmensaje;
 	}
 
 	public boolean notificacionRedencion(Sucursal sucursal, String momento, String nrofactura, Integer valortx,

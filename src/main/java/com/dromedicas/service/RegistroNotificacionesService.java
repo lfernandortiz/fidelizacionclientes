@@ -22,50 +22,44 @@ public class RegistroNotificacionesService {
 	@EJB
 	private EmailEnvioService emailEnvioService;
 	
+	@EJB
+	private AfiliadoService afService;
+	
 	//metoddo que registra en auditor los email enviados a un afiliado
 	public void auditarEmailEnviado(Afiliado afiliado, String contenido, String tipo){
 		
 		//crea un objeto tipo email
 		Tipoemail tipoEmail = this.tipoEmailSevice.obtenerTipoEmialPorDescripcion(tipo);
 		
-		System.out.println("Tipo Email: " + tipoEmail.getDescripcion() );
-		System.out.println("Afiliado: " + afiliado.getNombres() );
-		
+		Afiliado afiliadoP = this.afService.obtenerAfiliadoNacionalidad(afiliado);
 		
 		//Tipoestaestadoemail tipoEstado = this.tipoEstadoEmail.obtenerTipoEstadoPorDescripcion("Enviado");
-		try {
+		try {		
+			
 			Emailenvio emailEnvio = new Emailenvio();
-			emailEnvio.setAfiliado(afiliado);
+			emailEnvio.setAfiliado(afiliadoP);
 			emailEnvio.setTipoemailBean(tipoEmail);
 			emailEnvio.setFechaenvio(new Date());
 			emailEnvio.setEstadoemail(1);
 			emailEnvio.setFechaestado(new Date());
-			System.out.println("CONTENIDO: " + contenido);
 			emailEnvio.setMensaje(contenido);
-			emailEnvio.setEmail(afiliado.getEmail());
+			emailEnvio.setEmail(afiliadoP.getEmail());
 			
 			System.out.println("Afiliado En email envio: " + emailEnvio.getAfiliado().getNombres() );
 			
 			System.out.println("Longitud del Mensaje: " + emailEnvio.getMensaje().length() );
-			
+			//persiste 
 			emailEnvioService.updateEmailenvio(emailEnvio);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
-		
+		}		
 		
 	}
 	
 	
 	
 	//metodo que registra en auditor los sms enviados a un afiliado
-	
-	
-	
-	
-	
-	
 	
 	
 	

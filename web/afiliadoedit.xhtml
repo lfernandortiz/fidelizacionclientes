@@ -1266,7 +1266,7 @@
 							<p:separator style="height:20px"/>	
 							</p:tab> <!-- end tab Datos del Afiliado -->
 							
-							<p:tab id="tabbalance">
+						   <p:tab id="tabbalance">
 								<f:facet name="title">
 									<i class="fa fa-circle" aria-hidden="true"></i>
 									<h:outputText value=" Balance de Puntos" />							
@@ -1485,7 +1485,51 @@
 									
 									
 							</p:tab><!-- end tab Banlance de puntos -->
-						  </p:tabView>					
+							
+							<p:tab id="tabnotificaciones">
+								<f:facet name="title">
+									<i class="fa fa-comments" aria-hidden="true"></i>
+									<h:outputText value=" Notificaciones Enviadas" />	
+								</f:facet>
+								<h1><i class="fa fa-comments" aria-hidden="true"></i> Notificaciones Enviadas al Afiliado</h1>
+									<p:separator style="height:10px"/>	
+									
+									<p:dataTable var="data" value="#{afiliadoBeanEdit.afiliadoSelected.emailenvios}"
+										selectionMode="single" rowKey="#{data.idemailenvio}" reflow="true">
+										<f:facet name="header"><i class="fa fa-envelope-o" aria-hidden="true"></i>  Email Enviados</f:facet>
+										<p:column headerText="Fecha">
+											<div class="thtablemain">
+												<h:outputText value="#{data.fechaenvio}" />
+											</div>
+										</p:column>
+										<p:column headerText="Tipo de Mensaje">
+											<div class="celdaDerecha">
+												<h:outputText value="#{data.tipoemailBean.descripcion}" />
+											</div>
+										</p:column>
+										<p:column headerText="Destino">
+											<div class="celdaDerecha">
+												<h:outputText value="#{data.email}" />
+											</div>
+										</p:column>
+										<p:column headerText="Estado">
+											<div class="celdaDerecha">
+												<h:outputText value="#{data.estadoemail}" />
+											</div>
+										</p:column>
+										<p:column headerText="Ver"
+											style="width:32px;text-align: center">
+											<p:commandButton icon="fa fa-search"
+												title="Editar #{data}" id="editarrowid"
+												action="#{afiliadoBeanEdit.editarAfiliado()}">
+												<f:setPropertyActionListener value="#{af}"
+													target="#{afiliadoBeanEdit.afiliadoSelected}" />
+
+											</p:commandButton>
+										</p:column>
+									</p:dataTable>
+								</p:tab>
+						</p:tabView>					
 						</div>
                     </div>
                 </div>

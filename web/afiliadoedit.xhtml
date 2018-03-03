@@ -1473,6 +1473,7 @@
                									<p:column footerText="#{afiliadoBeanEdit.balancePuntos.redimidos * -1}" style="text-align: right!important;"/> 
 								            </p:row>
 								        </p:columnGroup>										 
+									
 									</p:dataTable>
 									
 									 <p:contextMenu for="balancedatail" id="contextmenufileid" >
@@ -1486,17 +1487,29 @@
 									
 							</p:tab><!-- end tab Banlance de puntos -->
 							
+							<!-- tab Notificaciones -->
 							<p:tab id="tabnotificaciones">
 								<f:facet name="title">
 									<i class="fa fa-comments" aria-hidden="true"></i>
 									<h:outputText value=" Notificaciones Enviadas" />	
 								</f:facet>
 								<h1><i class="fa fa-comments" aria-hidden="true"></i> Notificaciones Enviadas al Afiliado</h1>
-									<p:separator style="height:10px"/>	
+									<p:separator style="height:4px"/>	
+									<ui:fragment rendered="#{afiliadoBeanEdit.afiliadoSelected.emailrechazado == 1}" >
+												<div class="emailRechazadoTitle">
+													<h4>Los Correos son rechazados </h4>
+												</div>
+									</ui:fragment>
+									<ui:fragment rendered="#{afiliadoBeanEdit.afiliadoSelected.emailrechazado == 0}" >
+												<p:separator style="height:10px"/>	
+									</ui:fragment>
+									
 									
 									<p:dataTable var="data" value="#{afiliadoBeanEdit.afiliadoSelected.emailenvios}"
 										selectionMode="single" rowKey="#{data.idemailenvio}" reflow="true">
-										<f:facet name="header"><i class="fa fa-envelope-o" aria-hidden="true"></i>  Email Enviados</f:facet>
+										<f:facet name="header">
+										<i class="fa fa-envelope-o" aria-hidden="true"></i>  Email Enviados
+										</f:facet>
 										<p:column headerText="Fecha">
 											<div class="thtablemain">
 												<h:outputText value="#{data.fechaenvio}" />
@@ -1514,21 +1527,25 @@
 										</p:column>
 										<p:column headerText="Estado">
 											<div class="celdaDerecha">
-												<h:outputText value="#{data.estadoemail}" />
+												<h:outputText value="#{data.estadoemail == 1 ? 'Enviado' : 'Rechazado'}" />
 											</div>
 										</p:column>
 										<p:column headerText="Ver"
 											style="width:32px;text-align: center">
 											<p:commandButton icon="fa fa-search"
-												title="Editar #{data}" id="editarrowid"
-												action="#{afiliadoBeanEdit.editarAfiliado()}">
-												<f:setPropertyActionListener value="#{af}"
-													target="#{afiliadoBeanEdit.afiliadoSelected}" />
+												title="Ver #{data}" id="editarrowid"
+												update=":formemailsent"
+												oncomplete="PF('emailDialog').show()">
+												<f:setPropertyActionListener value="#{data}"
+													target="#{afiliadoBeanEdit.emailEnvioSelected}" />
 
 											</p:commandButton>
 										</p:column>
+										
 									</p:dataTable>
-								</p:tab>
+									
+								</p:tab><!-- end tab Notificaciones -->
+								
 						</p:tabView>					
 						</div>
                     </div>
@@ -1624,7 +1641,39 @@
 				</h:form>
 			</p:dialog>
             
+            <!-- Cuadro Dialogo Visor email -->      
             
+            <p:dialog header="" widgetVar="emailDialog" modal="true" id="dialogemail"
+				showEffect="fade" hideEffect="fade" resizable="true" 
+				style="min-width: 45em!important;">
+				<h:form enctype="multipart/form-data" id="formemailsent">
+				
+				<div class="ui-fluid">
+					<div class="ui-g">
+						<div class="ui-g-12">
+							<h3>
+								<i class="fa fa-envelope" aria-hidden="true"></i>
+								Email Enviado | Fecha: #{afiliadoBeanEdit.emailEnvioSelected.fechaenvio}
+							</h3>
+							<p:panelGrid columns="3" id="emailSentDetail"
+								columnClasses="ui-grid-col-6, ui-grid-col-3, ui-grid-col-3" layout="grid"
+								styleClass="ui-panelgrid-blank" 
+								style="border:0px none; background-color:transparent;">
+								
+								<h:outputText escape="false" value="#{afiliadoBeanEdit.emailEnvioSelected.mensaje}"/>
+								
+							</p:panelGrid>
+							<p:spacer height="10px" />
+							
+						</div>
+						<!-- end ui-g-12 -->
+					</div>
+					<!-- end ui-g -->
+				</div>
+				<!-- end ui-fluid -->
+				
+				</h:form>
+			</p:dialog>
                     
         
     </ui:define>   

@@ -113,6 +113,7 @@ public class AfiliadoBeanEdit implements Serializable{
 	private List<Sucursal> sucursalList;
 	private List<Pais> paisList;
 	private List<Emailenvio> emailEnvioList;
+	private Emailenvio emailEnvioSelected;
 	
 	private String street1 = "AVENIDA";
 	private String street1Valor = "";
@@ -320,6 +321,14 @@ public class AfiliadoBeanEdit implements Serializable{
 
 	public void setEmailEnvioList(List<Emailenvio> emailEnvioList) {
 		this.emailEnvioList = emailEnvioList;
+	}	
+
+	public Emailenvio getEmailEnvioSelected() {
+		return emailEnvioSelected;
+	}
+
+	public void setEmailEnvioSelected(Emailenvio emailEnvioSelected) {
+		this.emailEnvioSelected = emailEnvioSelected;
 	}
 
 	//metodos de control de la interfaz	

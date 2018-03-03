@@ -164,6 +164,7 @@ public class Afiliado implements Serializable {
 	//bi-directional many-to-one association to Emailenvio
 	@OneToMany(fetch = FetchType.EAGER, mappedBy="afiliado", cascade = CascadeType.ALL)
 	@JsonIgnore
+	@OrderBy("fechaenvio desc")
 	private List<Emailenvio> emailenvios;
 
 	//bi-directional many-to-one association to Nucleofamilia

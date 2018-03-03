@@ -3658,3 +3658,8 @@ a.linkesp{
 .cardtext{
 	height: 100%!important;
 }
+
+.emailRechazadoTitle h4{
+	color: #ff2b2b;
+	font-shadow: 1px 1px 2px #494949;
+}

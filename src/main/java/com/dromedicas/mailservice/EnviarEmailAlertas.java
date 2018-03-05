@@ -307,11 +307,8 @@ public class EnviarEmailAlertas {
 					File inputHtml = new File(servletContext.getRealPath("emailhtml/emailcompra.html"));
 					// Asginamos el archivo al objeto analizador Document
 					Document doc = Jsoup.parse(inputHtml, "UTF-8");
-					// obtengo los id's del DOM a los que deseo insertar los
-					// valores.
-					// Mediante el metodo append() se insertan los valores
-					// obtenidos de
-					// la consulta
+					// obtengo los id's del DOM a los que deseo insertar los valores.
+					// Mediante el metodo append() se insertan los valores obtenidos de la consulta
 					Element nomAfiliado = doc.select("span#nombrecliente").first();
 					nomAfiliado.append(regex.puntoSegundoNombre(afiliado.getNombres() + " " + afiliado.getApellidos()));
 
@@ -341,6 +338,8 @@ public class EnviarEmailAlertas {
 
 					message.setSubject(subjectEmoji, "UTF-8");
 					message.setContent(doc.html(), "text/html; charset=utf-8");
+					
+					this.registroNotificacion.auditarEmailEnviado(afiliado, doc.html(), "Compra o acumulacion de puntos");
 
 					t.sendMessage(message, message.getAllRecipients());
 				}
@@ -623,12 +622,14 @@ public class EnviarEmailAlertas {
 		return true;
 	}
 
-	public boolean emailRecuparacionClave(Afiliado afiliado) {
+	public String emailRecuparacionClave(Afiliado afiliado) {
 
 		String urlConfirmacion = "http://www.puntosfarmanorte.com.co/seccion/resetpassword.html?id="
 				+ afiliado.getKeycode();
 
 		System.out.println("Enviar Email Recuperacion clave");
+		
+		String cmensaje = null;
 		try {
 			ServletContext servletContext = null;
 
@@ -689,6 +690,8 @@ public class EnviarEmailAlertas {
 
 			message.setSubject(subjectEmoji, "UTF-8");
 			message.setContent(doc.html(), "text/html; charset=utf-8");
+			
+			cmensaje = doc.html();
 
 			message.setFlag(FLAGS.Flag.RECENT, true);
 
@@ -717,14 +720,16 @@ public class EnviarEmailAlertas {
 		} catch (Exception e) {
 			System.out.println("Falla en el envio del correo:");
 			e.printStackTrace();
-			return false;
+			return null;
 		}
-		return true;
+		return cmensaje;
 	}
 
-	public boolean emailConfirmacionClave(Afiliado afiliado) {
+	public String emailConfirmacionClave(Afiliado afiliado) {
 
 		System.out.println("Enviar Email confirmacion clave");
+		
+		String cmensaje = null;
 		try {
 			ServletContext servletContext = null;
 
@@ -788,6 +793,8 @@ public class EnviarEmailAlertas {
 
 			message.setSubject(subjectEmoji, "UTF-8");
 			message.setContent(doc.html(), "text/html; charset=utf-8");
+			
+			cmensaje = doc.html();
 
 			message.setFlag(FLAGS.Flag.RECENT, true);
 
@@ -816,9 +823,9 @@ public class EnviarEmailAlertas {
 		} catch (Exception e) {
 			System.out.println("Falla en el envio del correo:");
 			e.printStackTrace();
-			return false;
+			return null;
 		}
-		return true;
+		return cmensaje;
 	}
 
 

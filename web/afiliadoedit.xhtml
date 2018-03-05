@@ -1494,7 +1494,9 @@
 									<h:outputText value=" Notificaciones Enviadas" />	
 								</f:facet>
 								<h1><i class="fa fa-comments" aria-hidden="true"></i> Notificaciones Enviadas al Afiliado</h1>
-									<p:separator style="height:4px"/>	
+									<h3 class="titulonombrebalance">
+										#{afiliadoBeanEdit.nombrePropioAfiliado(afiliadoBeanEdit.afiliadoSelected.nombres.concat(' ').concat(afiliadoBeanEdit.afiliadoSelected.apellidos))}
+									</h3>	
 									<ui:fragment rendered="#{afiliadoBeanEdit.afiliadoSelected.emailrechazado == 1}" >
 												<div class="emailRechazadoTitle">
 													<h4>Los Correos son rechazados </h4>

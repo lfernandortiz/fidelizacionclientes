@@ -756,7 +756,12 @@ public class AfiliadoServiceRs implements Serializable{
 		if( afTemp != null ){			
 			//se envia un correo de recuperacion de clave
 			
-			this.emailAlerta.emailRecuparacionClave(afTemp);
+			String mensaje = this.emailAlerta.emailRecuparacionClave(afTemp);
+			if(mensaje != null ){
+				//se graba el auditor del correo
+				this.registroNotificacion.auditarEmailEnviado(afTemp, mensaje, "Solicitud de nueva clave");
+				
+			}
 			
 			ResponsePuntos responseObject = new ResponsePuntos();
 		    responseObject.setCode(Status.OK.getStatusCode());
@@ -789,7 +794,13 @@ public class AfiliadoServiceRs implements Serializable{
 		afTemp.setClaveweb(pswd);
 		this.afiliadoService.actualizarAfiliado(afTemp);
 
-		this.emailAlerta.emailConfirmacionClave(afTemp);
+		String cmensaje = this.emailAlerta.emailConfirmacionClave(afTemp);
+		
+		if(cmensaje != null ){
+			//se graba el auditor del correo
+			this.registroNotificacion.auditarEmailEnviado(afTemp, cmensaje, "Recuperacion de clave exitosa");
+			
+		}
 
 		ResponsePuntos responseObject = new ResponsePuntos();
 		responseObject.setCode(Status.OK.getStatusCode());

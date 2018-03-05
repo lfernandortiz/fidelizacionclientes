@@ -18,6 +18,13 @@ public class Smsenvio implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int idsmsenvio;
+	
+	@Column(length=20)
+	private String celular;
+	
+
+	@Column(length=180)
+	private String mensaje;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date fechaenvio;
@@ -69,11 +76,7 @@ public class Smsenvio implements Serializable {
 			}
 		)
 	private Set<Campania> campanias3;
-
-	//bi-directional many-to-one association to Estadosm
-	@ManyToOne
-	@JoinColumn(name="idestadosms")
-	private Estadosm estadosm;
+	
 
 	//bi-directional many-to-one association to Tiposm
 	@ManyToOne
@@ -153,20 +156,28 @@ public class Smsenvio implements Serializable {
 		this.campanias3 = campanias3;
 	}
 
-	public Estadosm getEstadosm() {
-		return this.estadosm;
-	}
-
-	public void setEstadosm(Estadosm estadosm) {
-		this.estadosm = estadosm;
-	}
-
 	public Tiposm getTiposm() {
 		return this.tiposm;
 	}
 
 	public void setTiposm(Tiposm tiposm) {
 		this.tiposm = tiposm;
+	}
+		
+	public String getCelular() {
+		return this.celular;
+	}
+
+	public void setCelular(String celular) {
+		this.celular = celular;
+	}
+
+	public String getMensaje() {
+		return this.mensaje;
+	}
+
+	public void setMensaje(String mensaje) {
+		this.mensaje = mensaje;
 	}
 
 }

@@ -282,6 +282,8 @@ public class PuntosServiceRs {
 								}
 								this.smsService.enviarSMSDirecto(afiliado.getCelular(), mensaje, "redencion");
 							}
+							//aca registra el auditor del mensaje para el afiliado
+							
 							
 							return Response.status(200).entity(responseObject).build();	
 												

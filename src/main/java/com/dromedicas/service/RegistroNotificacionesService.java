@@ -7,7 +7,9 @@ import javax.ejb.Stateless;
 
 import com.dromedicas.domain.Afiliado;
 import com.dromedicas.domain.Emailenvio;
+import com.dromedicas.domain.Smsenvio;
 import com.dromedicas.domain.Tipoemail;
+import com.dromedicas.domain.Tiposm;
 
 
 @Stateless
@@ -20,13 +22,29 @@ public class RegistroNotificacionesService {
 	private TipoEstadoEmailService tipoEstadoEmail; 
 	
 	@EJB
+	private TipoSmsService tipoSmsServie;
+	
+	@EJB
 	private EmailEnvioService emailEnvioService;
 	
 	@EJB
 	private AfiliadoService afService;
 	
+	@EJB
+	private SmsEnvioService smsEnvioService;
+	
 	//metoddo que registra en auditor los email enviados a un afiliado
 	public void auditarEmailEnviado(Afiliado afiliado, String contenido, String tipo){
+		
+		//metodo que registra en auditor los sms enviados a un afiliado
+				
+		////EMAIL
+		//suscripcion
+		//confirmacion final
+		//recuperacion de contrasenia
+		//recuperacion contrasenia exitosa
+		//compra o acumulacion
+		
 		
 		//crea un objeto tipo email
 		Tipoemail tipoEmail = this.tipoEmailSevice.obtenerTipoEmialPorDescripcion(tipo);
@@ -44,10 +62,7 @@ public class RegistroNotificacionesService {
 			emailEnvio.setFechaestado(new Date());
 			emailEnvio.setMensaje(contenido);
 			emailEnvio.setEmail(afiliadoP.getEmail());
-			
-			System.out.println("Afiliado En email envio: " + emailEnvio.getAfiliado().getNombres() );
-			
-			System.out.println("Longitud del Mensaje: " + emailEnvio.getMensaje().length() );
+		
 			//persiste 
 			emailEnvioService.updateEmailenvio(emailEnvio);
 			
@@ -58,22 +73,28 @@ public class RegistroNotificacionesService {
 	}
 	
 	
+	public void auditarSMSEnviado(Afiliado afiliado, String mensaje, String tipoSms, int estado){
+		
+		//SMS
+		//cumpleanios afiliado
+		//redencion
+				
+		//crea un objeto tipo email
+		Tiposm tipoMensaje = this.tipoSmsServie.obtenerTipoSMSPorDescripcion(tipoSms);
+				
+		Afiliado afiliadoP = this.afService.obtenerAfiliadoNacionalidad(afiliado);
+		
+		Smsenvio sms = new Smsenvio();
+		sms.setAfiliado(afiliadoP);
+		sms.setFechaenvio(new Date());
+		sms.setTiposm(tipoMensaje);
+		sms.setIdsmsenvio(estado);
+		sms.setCelular(afiliadoP.getCelular());
+		sms.setMensaje(mensaje);
+		
+		this.smsEnvioService.updateSmsenvio(sms);
+		
+	}
 	
-	//metodo que registra en auditor los sms enviados a un afiliado
-	
-	
-	
-	
-	////EMAIL
-	//suscripcion
-	//confirmacion final
-	//recuperacion de contrasenia
-	//recuperacion contrasenia exitosa
-	//compra o acumulacion
-	
-	
-	//SMS
-	//cumpleanios afiliado
-	//redencion
 	
 }

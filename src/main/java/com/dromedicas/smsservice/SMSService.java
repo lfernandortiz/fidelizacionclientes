@@ -76,10 +76,9 @@ public class SMSService {
 			if( mensaje.contains("${nombrecliente}")){
 				mensaje = regex.reemplazaMensaje(mensaje, "nombrecliente", af.getNombres()+" "+af.getApellidos() );
 			}
-			
-			
+						
 			int estado = this.enviarSMSDirecto(af.getCelular(), mensaje, "cumpleanios");
-			
+			//registro en auditor del envio del sms
 			this.regNotificaciones.auditarSMSEnviado(af, mensaje, "Cumpleanos", estado);
 			
 			// sleep solicitado por el por el proveedor de sms

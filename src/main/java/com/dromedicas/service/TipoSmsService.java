@@ -49,7 +49,7 @@ public class TipoSmsService {
 	}
 	
 	public Tiposm obtenerTipoSMSPorDescripcion(String desc){
-		Query query = em.createQuery("FROM Tiposms t WHERE lower(t.descripcion) "
+		Query query = em.createQuery("FROM Tiposm t WHERE lower(t.descripcion) "
 				+ "like lower(concat('%', :descripcion, '%'))");
 		query.setParameter("descripcion", desc);
 		Tiposm temp = null;		

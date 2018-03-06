@@ -82,6 +82,8 @@ public class Smsenvio implements Serializable {
 	@ManyToOne
 	@JoinColumn(name="tiposms")
 	private Tiposm tiposm;
+		
+	private int idestadosms;
 
 	public Smsenvio() {
 	}
@@ -179,5 +181,14 @@ public class Smsenvio implements Serializable {
 	public void setMensaje(String mensaje) {
 		this.mensaje = mensaje;
 	}
+
+	public int getIdestadosms() {
+		return idestadosms;
+	}
+
+	public void setIdestadosms(int idestadosms) {
+		this.idestadosms = idestadosms;
+	}
+
 
 }

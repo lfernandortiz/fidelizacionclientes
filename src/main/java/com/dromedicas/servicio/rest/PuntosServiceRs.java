@@ -28,6 +28,7 @@ import com.dromedicas.domain.Transaccion;
 import com.dromedicas.service.AfiliadoService;
 import com.dromedicas.service.EmpresaService;
 import com.dromedicas.service.OperacionPuntosService;
+import com.dromedicas.service.RegistroNotificacionesService;
 import com.dromedicas.service.SmsPlantillaService;
 import com.dromedicas.service.SucursalService;
 import com.dromedicas.service.TipoTransaccionService;
@@ -76,6 +77,9 @@ public class PuntosServiceRs {
 	
 	@EJB
 	private EmpresaService empresaService;
+	
+	@EJB
+	private RegistroNotificacionesService regNotificaciones;
 	
 	@Context UriInfo uriInfo;
 	
@@ -280,7 +284,9 @@ public class PuntosServiceRs {
 									mensaje = rgx.reemplazaMensaje(mensaje, "fecha", 
 											new SimpleDateFormat("dd/MM/YY HH:mm").format(new Date()));
 								}
-								this.smsService.enviarSMSDirecto(afiliado.getCelular(), mensaje, "redencion");
+								int estado = this.smsService.enviarSMSDirecto(afiliado.getCelular(), mensaje, "redencion");
+								//auditoria de mensaje enviado al afiliado
+								this.regNotificaciones.auditarSMSEnviado(afiliado, mensaje, "Redencion de puntos", estado);
 							}
 							//aca registra el auditor del mensaje para el afiliado
 							

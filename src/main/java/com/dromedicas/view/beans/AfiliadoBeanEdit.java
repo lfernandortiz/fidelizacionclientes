@@ -26,6 +26,7 @@ import com.dromedicas.domain.Afiliado;
 import com.dromedicas.domain.BalancePuntos;
 import com.dromedicas.domain.Emailenvio;
 import com.dromedicas.domain.Pais;
+import com.dromedicas.domain.Smsenvio;
 import com.dromedicas.domain.Sucursal;
 import com.dromedicas.domain.Ticketredencion;
 import com.dromedicas.domain.Tipodocumento;
@@ -45,6 +46,7 @@ import com.dromedicas.service.TipoTransaccionService;
 import com.dromedicas.service.TransaccionService;
 import com.dromedicas.service.UsuarioWebService;
 import com.dromedicas.service.VendedorService;
+import com.dromedicas.smsservice.SMSService;
 import com.dromedicas.util.ExpresionesRegulares;
 
 @ManagedBean(name="afiliadoBeanEdit")
@@ -105,6 +107,12 @@ public class AfiliadoBeanEdit implements Serializable{
 	@EJB
 	private RegistroNotificacionesService registroNotificacion;
 	
+	@EJB
+	private SMSService smsService;
+	
+	@EJB
+	private RegistroNotificacionesService regNotificaciones;
+	
 	@ManagedProperty(value = "#{loginService}")
 	private LoginBeanService loginBean;
 		
@@ -114,6 +122,9 @@ public class AfiliadoBeanEdit implements Serializable{
 	private List<Pais> paisList;
 	private List<Emailenvio> emailEnvioList;
 	private Emailenvio emailEnvioSelected;
+	private String mensajeSms;
+	private String longiMensajeSMS;
+	private Smsenvio smsEnvioSelected;
 	
 	private String street1 = "AVENIDA";
 	private String street1Valor = "";
@@ -330,6 +341,90 @@ public class AfiliadoBeanEdit implements Serializable{
 	public void setEmailEnvioSelected(Emailenvio emailEnvioSelected) {
 		this.emailEnvioSelected = emailEnvioSelected;
 	}
+
+	public String getMensajeSms() {
+		return mensajeSms;
+	}
+
+	public void setMensajeSms(String mensajeSms) {
+		this.mensajeSms = mensajeSms;
+	}
+	
+
+	public String getLongiMensajeSMS() {
+		return longiMensajeSMS;
+	}
+
+	public void setLongiMensajeSMS(String longiMensajeSMS) {
+		this.longiMensajeSMS = longiMensajeSMS;
+	}
+		
+	public Smsenvio getSmsEnvioSelected() {
+		return smsEnvioSelected;
+	}
+
+	public void setSmsEnvioSelected(Smsenvio smsEnvioSelected) {
+		this.smsEnvioSelected = smsEnvioSelected;
+	}
+
+	public void analizaSMS(){
+		// La longitud maxima de caracteres a enviar por mensaje SMS es de 160 caracteres
+		// segun el proveedor del servicio.
+		
+		// El metodo longitudMensaje elimina del mensaje las variables "${variable}"
+		int longitud =  this.mensajeSms.length() ;
+		int restante = 160 - longitud;
+		if( longitud > 160){
+			this.setLongiMensajeSMS(longitud  + " Mensaje muy extenso");
+		}else{
+			this.setLongiMensajeSMS( restante  + (restante == 1 ? " Caracter restante" : " Caracteres restantes") );
+		}
+	}
+	
+	public void cancelarCrearSMS(){
+		this.setMensajeSms("");
+		this.setLongiMensajeSMS("");
+	}
+	
+	public void enviarSMSDirecto(){
+		
+		//valida que el afilado tenga un celular valido 
+		
+		if( this.afiliadoSelected.getCelular().length() == 10 && 
+				this.afiliadoSelected.getCelular().substring(0,1).equals("3") && 
+					this.getMensajeSms().length() > 10 ){
+			
+			int estado = this.smsService.enviarSMSDirecto(this.afiliadoSelected.getCelular(),
+						this.getMensajeSms(), "SMS Directo");
+			
+			this.regNotificaciones.auditarSMSEnviado(this.afiliadoSelected, this.getMensajeSms(), "SMS Directo", estado);
+			
+			System.out.println("CODIGO DE RESPUESTA: " + estado);
+			
+			if(estado == 0 ){
+				//cierra el cuado de dialogo
+				RequestContext.getCurrentInstance().execute("PF('smsdirectoafil').hide();");
+				
+				//Mensaje de confirmacion en el list
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+						"SMS enviado con exito!", "SMS enviado satisfactoriamente al Nro. " 
+								+ this.getAfiliadoSelected().getCelular()));
+				
+				this.cancelarCrearSMS();
+			}else{
+				//cierra el cuado de dialogo
+				RequestContext.getCurrentInstance().execute("PF('smsdirectoafil').hide();");
+				
+				//Mensaje de confirmacion en el list
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,
+						"SMS no enviado!", "El mensaje no fue enviado, hay un error en el numero celular."));
+				
+				this.cancelarCrearSMS();
+			}
+		}//fin else validacion nro
+		
+	}
+	
 
 	//metodos de control de la interfaz	
 	public void concatenarDireccion(){

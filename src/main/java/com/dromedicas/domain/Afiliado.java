@@ -194,7 +194,8 @@ public class Afiliado implements Serializable {
 	private List<Referido> referidos;
 
 	//bi-directional many-to-one association to Smsenvio
-	@OneToMany(mappedBy="afiliado")
+	@OneToMany(fetch = FetchType.EAGER, mappedBy="afiliado", cascade = CascadeType.ALL)
+	@OrderBy("fechaenvio desc")
 	@JsonIgnore
 	private List<Smsenvio> smsenvios;
 
@@ -202,6 +203,7 @@ public class Afiliado implements Serializable {
 	@OneToMany(fetch = FetchType.EAGER, mappedBy="afiliado", cascade = CascadeType.ALL)
 	@OrderBy("fechatransaccion desc")
 	private List<Transaccion> transaccions;
+	
 
 	public Afiliado() {
 	}

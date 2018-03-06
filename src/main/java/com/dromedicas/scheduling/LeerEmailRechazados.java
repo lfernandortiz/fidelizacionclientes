@@ -47,8 +47,7 @@ public class LeerEmailRechazados implements Job {
 
 			// se obtienen todo los mensajes de la bandeja de entrada de la
 			// cuenta
-			List<Message> inboxM = mailService.getNewMessages();// Mensajes recibidos
-			ArrayList<Message> archivo = new ArrayList<Message>();// coleccion mensajes errados
+			List<Message> inboxM = mailService.getNewMessages();// Mensajes recibidos			
 
 			System.out.println("---------TAMANIO INBOX:" + inboxM.size());
 

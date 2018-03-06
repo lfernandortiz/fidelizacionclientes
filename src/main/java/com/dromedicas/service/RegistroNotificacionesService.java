@@ -78,6 +78,7 @@ public class RegistroNotificacionesService {
 		//SMS
 		//cumpleanios afiliado
 		//redencion
+		//sms directo
 				
 		//crea un objeto tipo email
 		Tiposm tipoMensaje = this.tipoSmsServie.obtenerTipoSMSPorDescripcion(tipoSms);
@@ -88,12 +89,11 @@ public class RegistroNotificacionesService {
 		sms.setAfiliado(afiliadoP);
 		sms.setFechaenvio(new Date());
 		sms.setTiposm(tipoMensaje);
-		sms.setIdsmsenvio(estado);
+		sms.setIdestadosms(estado);
 		sms.setCelular(afiliadoP.getCelular());
 		sms.setMensaje(mensaje);
 		
 		this.smsEnvioService.updateSmsenvio(sms);
-		
 	}
 	
 	

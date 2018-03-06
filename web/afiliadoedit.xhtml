@@ -1238,6 +1238,14 @@
 												 action="#{afiliadoBeanEdit.reenvioEmailAfiliacion()}" 
 												 process="@this"
 												 update="emailvalidoid" />
+								
+								<p:outputLabel for="smsdirectoid" value="" />
+        						<p:commandButton value="Enviar SMS directo" 
+												 id="smsdirectoid"
+												 styleClass="green-button"
+												 oncomplete="PF('smsdirectoafil').show()" 
+												 process="@this"
+												 update="emailvalidoid" />
         						        						
 							</p:panelGrid>
 							
@@ -1543,7 +1551,45 @@
 
 											</p:commandButton>
 										</p:column>
-										
+									</p:dataTable>
+									
+										<p:separator style="height:10px"/>	
+									
+									<p:dataTable var="data" value="#{afiliadoBeanEdit.afiliadoSelected.smsenvios}"
+										selectionMode="single" rowKey="#{data.idsmsenvio}" reflow="true">
+										<f:facet name="header">
+										<i class="fa fa-comment" aria-hidden="true"></i>  SMS Enviados
+										</f:facet>
+										<p:column headerText="Fecha">
+											<div class="thtablemain">
+												<h:outputText value="#{data.fechaenvio}" />
+											</div>
+										</p:column>
+										<p:column headerText="Tipo de Mensaje">
+											<div class="celdaDerecha">
+												<h:outputText value="#{data.tiposm.descripcion}" />
+											</div>
+										</p:column>
+										<p:column headerText="Destino">
+											<div class="celdaDerecha">
+												<h:outputText value="#{data.celular}" />
+											</div>
+										</p:column>
+										<p:column headerText="Estado">
+											<div class="celdaDerecha">
+												<h:outputText value="#{data.idestadosms == 0 ? 'Enviado' : 'Rechazado'}" />
+											</div>
+										</p:column>
+										<p:column headerText="Ver"
+											style="width:32px;text-align: center">
+											<p:commandButton icon="fa fa-search"
+												title="Ver #{data}" id="versmsenviadoid"
+												update=":formsmsenvio"
+												oncomplete="PF('smsViewDialog').show()">
+												<f:setPropertyActionListener value="#{data}"
+													target="#{afiliadoBeanEdit.smsEnvioSelected}" />
+											</p:commandButton>
+										</p:column>
 									</p:dataTable>
 									
 								</p:tab><!-- end tab Notificaciones -->
@@ -1554,6 +1600,8 @@
                 </div>
             </div>  
           </h:form>   <!-- end form ppal -->
+          
+          
             
             <!-- Cuadro de Carga de Ticket Redencion -->            
 			<p:dialog header="" widgetVar="ticketDialogCrear" modal="true" id="dialogsms"
@@ -1643,8 +1691,7 @@
 				</h:form>
 			</p:dialog>
             
-            <!-- Cuadro Dialogo Visor email -->      
-            
+            <!-- Cuadro Dialogo Visor email --> 
             <p:dialog header="" widgetVar="emailDialog" modal="true" id="dialogemail"
 				showEffect="fade" hideEffect="fade" resizable="true" 
 				style="min-width: 45em!important;">
@@ -1674,6 +1721,99 @@
 				</div>
 				<!-- end ui-fluid -->
 				
+				</h:form>
+			</p:dialog>
+			
+			
+			<!-- Cuadro Dialogo Visor sms --> 
+            <p:dialog header="" widgetVar="smsViewDialog" modal="true" id="dialogsmsview"
+				showEffect="fade" hideEffect="fade" resizable="true" 
+				style="min-width: 35em!important;">
+				<h:form enctype="multipart/form-data" id="formsmsenvio">
+				
+				<div class="ui-fluid">
+					<div class="ui-g">
+						<div class="ui-g-12">
+							<h3>
+								<i class="fa fa-commenting-o" aria-hidden="true"></i>
+								SMS Enviado | Fecha: #{afiliadoBeanEdit.smsEnvioSelected.fechaenvio}
+							</h3>
+							<p:panelGrid columns="3" id="smsSentDetail"
+								columnClasses="ui-grid-col-6, ui-grid-col-3, ui-grid-col-3" layout="grid"
+								styleClass="ui-panelgrid-blank" 
+								style="border:0px none; background-color:transparent;">
+								
+								<h:outputText escape="false" value="#{afiliadoBeanEdit.smsEnvioSelected.mensaje}"/>
+								
+							</p:panelGrid>
+							<p:spacer height="10px" />
+							
+						</div>
+						<!-- end ui-g-12 -->
+					</div>
+					<!-- end ui-g -->
+				</div>
+				<!-- end ui-fluid -->
+				
+				</h:form>
+			</p:dialog>
+			
+			
+			<!-- Cuadro de dialogo crear SMS -->
+			<p:dialog header="" widgetVar="smsdirectoafil" modal="true" id="smsdirectomodalid"
+				showEffect="fade" hideEffect="fade" resizable="false"
+				style="min-width: 35em!important;">
+				<h:form id="enviosmsidform">
+				<div class="ui-fluid">
+					<div class="ui-g">
+						<div class="ui-g-12">
+							
+							<h1>
+							  <i class="fa fa-comment-o" aria-hidden="true"></i> Enviar SMS Directo a Afiliado
+							</h1>							
+							<p:spacer height="10px" />
+							<p:panelGrid columns="1" id="smsDirectoFormCrear"
+								columnClasses="ui-grid-col-12,ui-grid-col-12" layout="grid"
+								styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+																
+								<p:outputLabel for="mensajesmscontent">Mensaje SMS:</p:outputLabel>
+								<p:inputTextarea rows="5" placeholder="Mensaje SMS  max. 160 caracteres"
+									id="mensajesmscontent" maxlength="160"
+									value="#{afiliadoBeanEdit.mensajeSms}">
+									<p:ajax event="keyup" update="outCrearSms" listener="#{afiliadoBeanEdit.analizaSMS()}" />
+								</p:inputTextarea>								
+								<h:outputText id="outCrearSms" value="#{afiliadoBeanEdit.longiMensajeSMS}" />	
+										
+							</p:panelGrid>
+							<p:spacer height="10px" />
+							<div class="buttonssms">
+								<p:panelGrid columns="4" id="buttonsecrearid"
+									columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-3,ui-grid-col-3"
+									layout="grid" styleClass="ui-panelgrid-blank"
+									style="border:0px none;  background-color:transparent; ">
+
+									<p:commandButton value="Cancelar" 
+													 id="cancelarcrearid" 
+													 oncomplete="PF('smsdirectoafil').hide()"
+													 update="enviosmsidform" 
+													 action="#{afiliadoBeanEdit.cancelarCrearSMS()}" />
+									
+									<p:commandButton value="Enviar" 
+													 id="sendsmsid" 
+													 styleClass="navy-button"
+													 update="enviosmsidform :afiliadoformppal:messages smsdirectomodalid"
+													 action="#{afiliadoBeanEdit.enviarSMSDirecto()}"/>
+									
+									
+								</p:panelGrid>
+							</div>
+						</div>
+						<!-- end ui-g-12 -->
+					</div>
+					<!-- end ui-g -->
+				</div>
+				<!-- end ui-fluid -->
 				</h:form>
 			</p:dialog>
                     

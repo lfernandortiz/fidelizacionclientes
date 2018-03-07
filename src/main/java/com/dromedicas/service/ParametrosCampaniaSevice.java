@@ -1,4 +1,4 @@
-package com.dromedicas.eis;
+package com.dromedicas.service;
 
 import java.util.List;
 
@@ -7,44 +7,44 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import com.dromedicas.domain.Paremetroscampania;
+import com.dromedicas.eis.ParametrosCampaniaDao;
 
 @Stateless
-public class ParametrosCampaniaDaoImpl implements ParametrosCampaniaDao {
+public class ParametrosCampaniaSevice {
 	
 	@PersistenceContext(unitName="PuntosFPU")
 	EntityManager em;
+	
+	private ParametrosCampaniaDao dao;
 
-	@SuppressWarnings("unchecked")
-	@Override
+	
 	public List<Paremetroscampania> findAllParemetroscampanias() {
 		// TODO Auto-generated method stub
-		return em.createNamedQuery("Paremetroscampania.findAll").getResultList();			
+		return dao.findAllParemetroscampanias();
 	}
 
-	@Override
+	
 	public Paremetroscampania obtenerParemetroscampaniaById(Paremetroscampania instance) {
 		// TODO Auto-generated method stub
-		return em.find(Paremetroscampania.class, instance.getIdparemetroscampania() );
+		return dao.obtenerParemetroscampaniaById(instance);
 	}
 
-	@Override
+	
 	public void insertParemetroscampania(Paremetroscampania instance) {
-		em.persist(instance);
-		
-	}
-
-	@Override
-	public void updateParemetroscampania(Paremetroscampania instance) {
-		em.merge(instance);
-		
-	}
-
-	@Override
-	public void deleteParemetroscampania(Paremetroscampania instance) {
-		em.merge(instance);
-		em.remove(instance);
+		dao.insertParemetroscampania(instance);
 		
 	}
 
 	
+	public void updateParemetroscampania(Paremetroscampania instance) {
+		dao.updateParemetroscampania(instance);
+		
+	}
+
+	
+	public void deleteParemetroscampania(Paremetroscampania instance) {
+		dao.deleteParemetroscampania(instance);
+		
+	}
+
 }

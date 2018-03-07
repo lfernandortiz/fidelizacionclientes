@@ -74,7 +74,7 @@ public class SMSService {
 			}
 			
 			if( mensaje.contains("${nombrecliente}")){
-				mensaje = regex.reemplazaMensaje(mensaje, "nombrecliente", af.getNombres()+" "+af.getApellidos() );
+				mensaje = regex.reemplazaMensaje(mensaje, "nombrecliente", af.getNombres());
 			}
 						
 			int estado = this.enviarSMSDirecto(af.getCelular(), mensaje, "cumpleanios");

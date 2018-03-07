@@ -153,7 +153,6 @@ public class OperacionPuntosService {
 	 */
 	public int redencionPuntos(Sucursal sucursal, String momento, String nrofactura, Integer valortx,
 			Afiliado afiliado, int puntosARedimir){
-		//comienza lo bueno :-P
 		
 		BalancePuntos balance = null;
 		

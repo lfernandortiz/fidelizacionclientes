@@ -49,7 +49,7 @@ public class LeerEmailRechazados implements Job {
 			// cuenta
 			List<Message> inboxM = mailService.getNewMessages();// Mensajes recibidos			
 
-			System.out.println("---------TAMANIO INBOX:" + inboxM.size());
+			System.out.println("---------INBOX SIZE:" + inboxM.size());
 
 			String emailAddres = null; // direccion de email de mensaje
 			

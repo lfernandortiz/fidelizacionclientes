@@ -253,46 +253,62 @@ public class PuntosServiceRs {
 						BalancePuntos bTemp = calculoService.consultaPuntos(afiliado);
 						
 						if(  bTemp.getDisponiblesaredimir() >= puntosRedimidos ){ 
-							int pTxActual =  calculoService.redencionPuntos(sucursal, momento, nrofactura,
-													valortx, afiliado, puntosRedimidos);
-							
-							BalancePuntos balance =  calculoService.consultaPuntos(afiliado);
-							balance.setGanadostxactual(pTxActual);
-							responseObject.setCode(200);
-							responseObject.setStatus(Status.OK.getReasonPhrase());							
-							responseObject.setMessage("Transaccion exitosa");
-							responseObject.setBalance(balance);
-							
-							//aca enviar notifiacacion SMS al afiliado sobre la redencion
-							if(  !("").equals(afiliado.getCelular()) ){
-								//obtengo la plantilla SMS para redencion;
+							//valida que no exista esta factura en la misma sucursal para redimir del mismo afiliado
+							Transaccion txTemp = txService.obtenerTransaccionPorFactura(nrofactura);
+							//Validacion factura
+							if( txTemp.getNrofactura().equals(nrofactura) && txTemp.getAfiliado().getDocumento().equals(afiliado.getDocumento()) ){
+								responseObject.setCode(200);
+								responseObject.setMessage("Intento de redencion doble.");
+								responseObject.setStatus(Status.OK.getReasonPhrase());
+								//Aca va a mandar un sms
+								return Response.status(200).entity(responseObject).build();
+							}else{
 								
-								List<Smsplantilla> smsList = smsPlantillaService.bucarSMSByFields("redencion");
-								String mensaje = smsList.get(0).getSmscontenido();
-								
-								//si la plantilla tiene las variables se reemplaza
-								if( mensaje.contains("${puntos}")){
-									NumberFormat nf = new DecimalFormat("#,###");
-									mensaje = rgx.reemplazaMensaje(mensaje, "puntos", nf.format(puntosRedimidos));
+								// Aca si todo el proceso de redencion normal
+								int pTxActual = calculoService.redencionPuntos(sucursal, momento, nrofactura, valortx,
+										afiliado, puntosRedimidos);
+
+								BalancePuntos balance = calculoService.consultaPuntos(afiliado);
+								balance.setGanadostxactual(pTxActual);
+								responseObject.setCode(200);
+								responseObject.setStatus(Status.OK.getReasonPhrase());
+								responseObject.setMessage("Transaccion exitosa");
+								responseObject.setBalance(balance);
+
+								// aca enviar notifiacacion SMS al afiliado
+								// sobre la redencion
+								if (!("").equals(afiliado.getCelular())) {
+									// obtengo la plantilla SMS para redencion;
+
+									List<Smsplantilla> smsList = smsPlantillaService.bucarSMSByFields("redencion");
+									String mensaje = smsList.get(0).getSmscontenido();
+
+									// si la plantilla tiene las variables se
+									// reemplaza
+									if (mensaje.contains("${puntos}")) {
+										NumberFormat nf = new DecimalFormat("#,###");
+										mensaje = rgx.reemplazaMensaje(mensaje, "puntos", nf.format(puntosRedimidos));
+									}
+
+									if (mensaje.contains("${sucursal}")) {
+										mensaje = rgx.reemplazaMensaje(mensaje, "sucursal",
+												sucursal.getNombreSucursal());
+									}
+
+									if (mensaje.contains("${fecha}")) {
+										mensaje = rgx.reemplazaMensaje(mensaje, "fecha",
+												new SimpleDateFormat("dd/MM/YY HH:mm").format(new Date()));
+									}
+									int estado = this.smsService.enviarSMSDirecto(afiliado.getCelular(), mensaje,
+											"redencion");
+									// auditoria de mensaje enviado al afiliado
+									this.regNotificaciones.auditarSMSEnviado(afiliado, mensaje, "Redencion de puntos",
+											estado);
 								}
-								
-								if( mensaje.contains("${sucursal}")){
-									mensaje = rgx.reemplazaMensaje(mensaje, "sucursal", sucursal.getNombreSucursal());
-								}
-								
-								if( mensaje.contains("${fecha}")){
-									mensaje = rgx.reemplazaMensaje(mensaje, "fecha", 
-											new SimpleDateFormat("dd/MM/YY HH:mm").format(new Date()));
-								}
-								int estado = this.smsService.enviarSMSDirecto(afiliado.getCelular(), mensaje, "redencion");
-								//auditoria de mensaje enviado al afiliado
-								this.regNotificaciones.auditarSMSEnviado(afiliado, mensaje, "Redencion de puntos", estado);
-							}
-							//aca registra el auditor del mensaje para el afiliado
-							
-							
-							return Response.status(200).entity(responseObject).build();	
-												
+
+								return Response.status(200).entity(responseObject).build();
+
+							} // end else Validacion factura				
 						}else{							
 							responseObject.setCode(200);
 							responseObject.setMessage("No Tiene los puntos suficientes para esta redencion");

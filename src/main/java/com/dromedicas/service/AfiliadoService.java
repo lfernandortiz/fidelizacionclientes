@@ -87,10 +87,11 @@ public class AfiliadoService {
 		this.calculoService.puntosInicialesRegistro(instance);
 		
 		// 5 Envia correo de notificacion de afiliacion
-		String enviado = "";
-		if (instance.getEmail() != null && !instance.getEmail().equals("")) {
+		String enviado = null;
+		if (instance.getEmail() != null && !instance.getEmail().trim().equals("") ) {
 			enviado = mailAlert.enviarEmailAlertaVentas(instance);
 		}
+		
 		if (enviado != null) {
 			//se graba el auditor del correo
 			this.registroNotificacion.auditarEmailEnviado(instance, enviado, "Bienvenida al programa");

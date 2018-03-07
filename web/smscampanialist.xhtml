@@ -1,0 +1,84 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">Campania SMS</ui:define>	
+    <ui:define name="content">
+		<div class="message">
+			<h:form>
+				<p:messages id="globalMessagex" showDetail="true" closable="true" />
+			</h:form>
+		</div>
+		<h:form id="formppal">
+        
+            <div class="ui-fluid">
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <div class="card">                        
+                            <h1>Campañas SMS</h1>
+							<p:fieldset legend="Buscar campaña por:" toggleable="true" toggleSpeed="500">
+                            <p:panelGrid columns="4" id="campanaForm"
+								columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+								
+								<p:outputLabel for="campo1id" value="Campaña" />
+								<p:inputText id="campo1id" value="#{smsCampaniaBeanList.nombreCampania}"/>
+																			
+								
+							</p:panelGrid>
+							<p:spacer height="10px"/>
+							<p:panelGrid columns="6" id="buttons"
+								columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">								
+								<p:commandButton value="Buscar" id="buscarbutton"
+									actionListener="#{smsCampaniaBeanList.buscarCampania()}"
+									update="campanasmsDetail"/>
+								<p:commandButton value="Cancelar" id="cancelarbutton"
+									action="#{smsCampaniaBeanList.cancelarList()}"
+									update=":formppal:campanasmsDetail, :formppal:campanaForm"/>
+								<p:commandButton value="Crear" id="crearbutton"
+												 action="#{smsCampaniaBeanList.crearSMSCampania()}" />
+							</p:panelGrid>						
+                        	</p:fieldset>
+                        	
+                        	<p:spacer height="40px"/>
+                        	<!-- tabla detalle sucursal -->
+                        	<p:dataTable id="campanasmsDetail" var="data" value="#{smsCampaniaBeanList.campaniaSMSList}" 
+                        			rowKey="#{data.idcampania}" selectionMode="single"  paginator="true" rows="20">
+								<f:facet name="header">Campañas SMS</f:facet>
+								<p:column headerText="Nombre Campaña">
+									<h:outputText value="#{data.nombrecampania}" /> 
+								</p:column>
+								<p:column headerText="Fecha Inicio">
+									<h:outputText value="#{data.fechainicio}" /> 
+								</p:column>
+								<p:column headerText="Audiencia">
+									<h:outputText value="#{data.mercadoobjetivo}" /> 
+								</p:column>
+								<p:column headerText="Publico">
+									<h:outputText value="#{data.smscampanias.size()}" /> 
+								</p:column>								
+								
+								<p:column headerText="Editar" style="width:32px;text-align: center">
+									<p:commandButton  icon="fa fa-pencil"
+													  title="Editar #{suc.nombreSucursal}"
+													  id="editarrowid"
+													  action="#{sucursalbenlist.editarSucursal()}">
+										<f:setPropertyActionListener value="#{suc}" target="#{sucursalEdit.sucSelected}" /> 
+									</p:commandButton>	
+								</p:column>		
+							</p:dataTable>	
+						</div> <!-- end card -->
+                    </div> <!-- end ui-g-12 -->
+                </div> <!-- end ui-g -->
+            </div>  <!-- end ui-fluid -->
+            </h:form>
+            
+    	
+    </ui:define>
+</ui:composition>

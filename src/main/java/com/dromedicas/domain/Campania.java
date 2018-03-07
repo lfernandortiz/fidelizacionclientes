@@ -11,18 +11,23 @@ import java.util.Set;
  * 
  */
 @Entity
-@NamedQueries({@NamedQuery(name="Campania.findAll", query="SELECT c FROM Campania c")})
+@Table(name="campania")
+@NamedQuery(name="Campania.findAll", query="SELECT c FROM Campania c")
 public class Campania implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(unique=true, nullable=false)
 	private int idcampania;
 
+	@Column(length=300)
 	private String contenidoemail;
 
+	@Column(length=150)
 	private String contenidosms;
 
+	@Column(length=60)
 	private String criterios;
 
 	@Temporal(TemporalType.DATE)
@@ -31,43 +36,30 @@ public class Campania implements Serializable {
 	@Temporal(TemporalType.DATE)
 	private Date fechainicio;
 
+	@Column(length=150)
 	private String mercadoobjetivo;
 
+	@Column(nullable=false, length=55)
 	private String nombrecampania;
 
+	@Column(length=50)
 	private String urlplantillaemail;
 
 	//bi-directional many-to-one association to Emailcampania
 	@OneToMany(mappedBy="campania")
 	private Set<Emailcampania> emailcampanias;
 
-	//bi-directional many-to-many association to Emailenvio
-	@ManyToMany(mappedBy="campanias1")
-	private Set<Emailenvio> emailenvios1;
-
-	//bi-directional many-to-many association to Emailenvio
-	@ManyToMany(mappedBy="campanias2")
-	private Set<Emailenvio> emailenvios2;
-
-	//bi-directional many-to-many association to Emailenvio
-	@ManyToMany(mappedBy="campanias3")
-	private Set<Emailenvio> emailenvios3;
-
 	//bi-directional many-to-one association to Smscampania
 	@OneToMany(mappedBy="campania")
 	private Set<Smscampania> smscampanias;
 
-	//bi-directional many-to-many association to Smsenvio
-	@ManyToMany(mappedBy="campanias1")
-	private Set<Smsenvio> smsenvios1;
+	//bi-directional many-to-one association to Paremetroscampania
+	@OneToMany(mappedBy="campania")
+	private Set<Paremetroscampania> paremetroscampanias;
 
-	//bi-directional many-to-many association to Smsenvio
-	@ManyToMany(mappedBy="campanias2")
-	private Set<Smsenvio> smsenvios2;
-
-	//bi-directional many-to-many association to Smsenvio
-	@ManyToMany(mappedBy="campanias3")
-	private Set<Smsenvio> smsenvios3;
+	//bi-directional many-to-one association to Patologiacampania
+	@OneToMany(mappedBy="campania")
+	private Set<Patologiacampania> patologiacampanias;
 
 	public Campania() {
 	}
@@ -166,30 +158,6 @@ public class Campania implements Serializable {
 		return emailcampania;
 	}
 
-	public Set<Emailenvio> getEmailenvios1() {
-		return this.emailenvios1;
-	}
-
-	public void setEmailenvios1(Set<Emailenvio> emailenvios1) {
-		this.emailenvios1 = emailenvios1;
-	}
-
-	public Set<Emailenvio> getEmailenvios2() {
-		return this.emailenvios2;
-	}
-
-	public void setEmailenvios2(Set<Emailenvio> emailenvios2) {
-		this.emailenvios2 = emailenvios2;
-	}
-
-	public Set<Emailenvio> getEmailenvios3() {
-		return this.emailenvios3;
-	}
-
-	public void setEmailenvios3(Set<Emailenvio> emailenvios3) {
-		this.emailenvios3 = emailenvios3;
-	}
-
 	public Set<Smscampania> getSmscampanias() {
 		return this.smscampanias;
 	}
@@ -212,28 +180,48 @@ public class Campania implements Serializable {
 		return smscampania;
 	}
 
-	public Set<Smsenvio> getSmsenvios1() {
-		return this.smsenvios1;
+	public Set<Paremetroscampania> getParemetroscampanias() {
+		return this.paremetroscampanias;
 	}
 
-	public void setSmsenvios1(Set<Smsenvio> smsenvios1) {
-		this.smsenvios1 = smsenvios1;
+	public void setParemetroscampanias(Set<Paremetroscampania> paremetroscampanias) {
+		this.paremetroscampanias = paremetroscampanias;
 	}
 
-	public Set<Smsenvio> getSmsenvios2() {
-		return this.smsenvios2;
+	public Paremetroscampania addParemetroscampania(Paremetroscampania paremetroscampania) {
+		getParemetroscampanias().add(paremetroscampania);
+		paremetroscampania.setCampania(this);
+
+		return paremetroscampania;
 	}
 
-	public void setSmsenvios2(Set<Smsenvio> smsenvios2) {
-		this.smsenvios2 = smsenvios2;
+	public Paremetroscampania removeParemetroscampania(Paremetroscampania paremetroscampania) {
+		getParemetroscampanias().remove(paremetroscampania);
+		paremetroscampania.setCampania(null);
+
+		return paremetroscampania;
 	}
 
-	public Set<Smsenvio> getSmsenvios3() {
-		return this.smsenvios3;
+	public Set<Patologiacampania> getPatologiacampanias() {
+		return this.patologiacampanias;
 	}
 
-	public void setSmsenvios3(Set<Smsenvio> smsenvios3) {
-		this.smsenvios3 = smsenvios3;
+	public void setPatologiacampanias(Set<Patologiacampania> patologiacampanias) {
+		this.patologiacampanias = patologiacampanias;
+	}
+
+	public Patologiacampania addPatologiacampania(Patologiacampania patologiacampania) {
+		getPatologiacampanias().add(patologiacampania);
+		patologiacampania.setCampania(this);
+
+		return patologiacampania;
+	}
+
+	public Patologiacampania removePatologiacampania(Patologiacampania patologiacampania) {
+		getPatologiacampanias().remove(patologiacampania);
+		patologiacampania.setCampania(null);
+
+		return patologiacampania;
 	}
 
 }

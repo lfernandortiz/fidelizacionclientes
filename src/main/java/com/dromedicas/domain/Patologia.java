@@ -2,6 +2,7 @@ package com.dromedicas.domain;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -51,6 +52,10 @@ public class Patologia implements Serializable {
 			}
 		)	
 	private List<Afiliado> afiliados;
+	
+	//bi-directional many-to-one association to Patologiacampania
+	@OneToMany(mappedBy="patologia")
+	private Set<Patologiacampania> patologiacampanias;
 
 	public Patologia() {
 	}
@@ -99,6 +104,14 @@ public class Patologia implements Serializable {
 
 	public void setAfiliados(List<Afiliado> afiliados) {
 		this.afiliados = afiliados;
+	}
+	
+	public Set<Patologiacampania> getPatologiacampanias() {
+		return this.patologiacampanias;
+	}
+
+	public void setPatologiacampanias(Set<Patologiacampania> patologiacampanias) {
+		this.patologiacampanias = patologiacampanias;
 	}
 
 }

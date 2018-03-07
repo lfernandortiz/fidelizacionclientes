@@ -557,6 +557,7 @@ public class AfiliadoBeanEdit implements Serializable{
 		return "afiliadoedit?faces-redirect=true";
 	}
 	
+	
 	public String editarAfiliadoDocumento(String documento){
 		//Establece el objeto seleccionado
 //		Object el[]= (Object [])  event.getObject();

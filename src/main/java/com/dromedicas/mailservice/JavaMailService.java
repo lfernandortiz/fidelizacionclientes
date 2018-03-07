@@ -308,6 +308,8 @@ public class JavaMailService {
 				addres = this.getRecipientsTo(mensaje.getAllHeaders());
 			} else if (mensaje.isMimeType(MIME_TYPE_RFC_822)) {
 				addres = this.getRecipientsTo(mensaje.getAllHeaders());
+			} else if (mensaje.isMimeType(MIME_TYPE_MULTIPAR_REPORT)){
+				addres = this.getRecipientsTo(mensaje.getAllHeaders());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -21,35 +21,49 @@
                                               
                             <h1><i class="fa fa-comments" aria-hidden="true"></i> Datos de la Campaña </h1>
                             
-							<p:panelGrid columns="4" id="detailempresa"
+							<p:panelGrid columns="4" id="detailcampania"
 								columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
 								layout="grid" styleClass="ui-panelgrid-blank"
 								style="border:0px none; background-color:transparent;">
 								
-								<p:outputLabel for="nitcrearid" value="Nit Empresa" />
-								<p:inputText id="nitcrearid" value="#{empresaBeanEdit.selectedEmpresa.nit}"
+								<p:outputLabel for="nombrecampaniaid" value="Nombre Campaña" />
+								<p:inputText id="nombrecampaniaid" value="#{smsCampaniaBeanEdit.nombreCampania}"
 									required="true" />
 
-								<p:outputLabel for="nombrecrearid" value="Nombre Empresa" />
-								<p:inputText id="nombrecrearid"
-									value="#{empresaBeanEdit.selectedEmpresa.nombreEmpresa}" required="true" />
+								<p:outputLabel for="sucursalid" value="Sucursal" />
+								<p:selectOneMenu id="sucursalid" value="#{smsCampaniaBeanEdit.sucursalSelected}"
+								filter="true" filterMatchMode="contains" autoWidth="false">
+									<f:selectItems value="#{smsCampaniaBeanEdit.sucursalList}" var="suc"
+										itemLabel="#{suc.nombreSucursal}" itemValue="#{suc}" />
+									<h:outputText value="#{suc.nombreSucursal}" />
+									<f:converter binding="#{sucursalConverter}" />	
+								</p:selectOneMenu>
 
-								<p:outputLabel for="dircrearid" value="Direccion" />
-								<p:inputText id="dircrearid" value="#{empresaBeanEdit.selectedEmpresa.direccion}"
-									required="true" />
-
-								<p:outputLabel for="telcrearid" value="Telefono" />
-								<p:inputText id="telcrearid" value="#{empresaBeanEdit.selectedEmpresa.telefono}"
-									required="true" />
-
-								<p:outputLabel for="emialnoticreid" value="Email Notificaciones" />
-								<p:inputText id="emialnoticreid"
-									value="#{empresaBeanEdit.selectedEmpresa.emailNotificaciones}" required="true" />
-
-								<p:outputLabel for="emailcrearid" value="Email" />
-								<p:inputText id="emailcrearid" value="#{empresaBeanEdit.selectedEmpresa.email}" />
+								<p:outputLabel for="sexoid" value="Sexo" />
+								<p:inputText id="sexoid" value="#{smsCampaniaBeanEdit.sexo}"/>
+								
+								 <p:outputLabel for="displayRange" value="Edades:" />								 
+								 <h:panelGrid columns="1" style="width:100%;">
+	       							<h:outputText id="displayRange" value="Entre #{smsCampaniaBeanEdit.edadIni} and #{smsCampaniaBeanEdit.edadFin}" />
+	       							<p:slider for="txt6,txt7" display="displayRange"  style="width: 100%" range="true" displayTemplate="Between {min} and {max}" />
+	   							 </h:panelGrid>
+							    <h:inputHidden id="txt6" value="#{smsCampaniaBeanEdit.edadIni}" />
+							    <h:inputHidden id="txt7" value="#{smsCampaniaBeanEdit.edadFin}" />
+                    			
+                    		</p:panelGrid>
+                    		<p:panelGrid columns="1" id="patologiapanel"
+								columnClasses="ui-grid-col-12"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+								
+							    <p:outputLabel for="patologiaid" value="Patologias:" />		
+								
+								<p:selectManyCheckbox id="patologiaid" value="#{smsCampaniaBeanEdit.selectedPatologias}" layout="responsive" columns="3">
+							        <f:selectItems value="#{smsCampaniaBeanEdit.patologias}" var="data" itemLabel="#{data}" itemValue="#{data}" />
+							    </p:selectManyCheckbox>
 								
 							</p:panelGrid>
+							
 							<p:separator style="height:10px"/>
 							<h1>Condiciones del programa de acumulación</h1>
 							<p:panelGrid columns="4" id="contratopanel"
@@ -109,25 +123,25 @@
 										
 								<p:commandButton value="Crear" id="crearnuevaid"
 												 action="#{empresaBeanEdit.crearEmpresa()}" 
-												 update="crearempresaform"
+												
 												 rendered="#{empresaBeanEdit.selectedEmpresa.idempresa == null || empresaBeanEdit.selectedEmpresa.idempresa == 0}" />
 											 
 								<p:commandButton value="Actualizar" id="actualizarid"
 												 action="#{empresaBeanEdit.actualizarEmpresa()}"
-												 update="crearempresaform"
+												
 												 rendered="#{empresaBeanEdit.selectedEmpresa.idempresa != null&amp;&amp;empresaBeanEdit.selectedEmpresa.idempresa != 0}" />
 								 
 								<p:commandButton value="Limpiar" id="limpiarid"
 												 action="#{empresaBeanEdit.limpiarEdit()}"
 												 process="@this"
-												 update="crearempresaform" 
+												 
 												 rendered="#{empresaBeanEdit.selectedEmpresa.idempresa == null || empresaBeanEdit.selectedEmpresa.idempresa == 0}" />
 												 
 								<p:commandButton value="Cancelar" 
 												 id="cancelarnuevaid"
 												 action="#{empresaBeanEdit.cancelar()}" 
 												 process="@this"
-												 update="detailempresa" />								
+												/>								
 							</p:panelGrid>
 							
 						</div> <!-- end car -->

@@ -1,19 +1,33 @@
 package com.dromedicas.view.beans;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
+import com.dromedicas.domain.Campania;
+import com.dromedicas.domain.Patologia;
 import com.dromedicas.domain.Sucursal;
-import com.dromedicas.service.CampaniaService;
+import com.dromedicas.service.PatologiaService;
+import com.dromedicas.service.SucursalService;
 
 @ManagedBean(name="smsCampaniaBeanEdit")
 @SessionScoped
 public class SmsCampaniaBeanEdit {
 	
+	@EJB
+	private SucursalService sucursalService;
+	
+	@EJB
+	private PatologiaService patologiaSevice;
+		
+	
+	private Campania campaniaSelected;
+	private List<Sucursal> sucursalList;
 	
 	private String nombreCampania;
 	private String audiencia;
@@ -24,10 +38,10 @@ public class SmsCampaniaBeanEdit {
 	
 	private Sucursal sucursalSelected;
 	private String sexo;
-	private int edadIni;
-	private int edadFin;
+	private int edadIni = 18;
+	private int edadFin = 50;
 	private String[] selectedPatologias;
-	private List<String> Patologias;	
+	private List<String> patologias;	
 
 	private String hijosmenoresde4;
 	private String hijosentre4y12;
@@ -42,9 +56,19 @@ public class SmsCampaniaBeanEdit {
 	@PostConstruct
 	public void init(){
 		
+		this.sucursalList = sucursalService.findAllSucursals();
+		this.obtenerPatologias();
+		
 	}
 	
-	
+	public Campania getCampaniaSelected() {
+		return campaniaSelected;
+	}
+
+	public void setCampaniaSelected(Campania campaniaSelected) {
+		this.campaniaSelected = campaniaSelected;
+	}
+
 	public String getNombreCampania() {
 		return nombreCampania;
 	}
@@ -136,11 +160,11 @@ public class SmsCampaniaBeanEdit {
 	}
 
 	public List<String> getPatologias() {
-		return Patologias;
+		return patologias;
 	}
 
 	public void setPatologias(List<String> patologias) {
-		Patologias = patologias;
+		this.patologias = patologias;
 	}
 
 	public String getHijosmenoresde4() {
@@ -174,5 +198,34 @@ public class SmsCampaniaBeanEdit {
 	public void setHijosmayores(String hijosmayores) {
 		this.hijosmayores = hijosmayores;
 	}
+
+	public List<Sucursal> getSucursalList() {
+		return sucursalList;
+	}
+
+	public void setSucursalList(List<Sucursal> sucursalList) {
+		this.sucursalList = sucursalList;
+	}
+	
+	
+	/**
+	 * Llena la coleccion de patologias
+	 */
+	public void obtenerPatologias(){
+		
+		List<Patologia> patologiaList = this.patologiaSevice.findAllPatologias();
+		
+		this.patologias = new ArrayList<String>();
+		
+		for(Patologia e : patologiaList ){
+			
+			System.out.println("Patologia: " +  e.getDrescripcion() );
+			
+			this.patologias.add( e.getDrescripcion() );
+		}
+	}
+	
+	
+	
 
 }

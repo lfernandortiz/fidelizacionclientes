@@ -39,12 +39,12 @@
                         </p:submenu>
                         <p:submenu id="om_campanaconfg" label="Campañas" icon="fa fa-bullhorn">
                         	<p:submenu id="om_smscampania" label="Campañas y mensajes SMS" icon="fa fa-commenting">
-                        		 <p:menuitem id="om_smsdirecto" value="Envio SMS Directo" icon="fa fa-commenting-o" outcome="/login"/>
-                        		 <p:menuitem id="om_smscamp" value="Campaña SMS" icon="fa fa-comments-o" outcome="/login"/>		
+                        		<p:menuitem id="om_smscamp" value="Campaña SMS" icon="fa fa-comments-o" outcome="/smscampanialist"/>
+                        		<p:menuitem id="om_smsdirecto" value="Envio SMS Directo" icon="fa fa-commenting-o" outcome="/login"/>                        		 		
                         	</p:submenu>
                         	<p:submenu id="om_emailcampania" label="Campañas &amp; Email Marketing" icon="fa fa-envelope">
+                        	    <p:menuitem id="om_emailcamp" value="Campaña Email" icon="fa fa-envelope-o" outcome="/login"/>	
                         		<p:menuitem id="om_emaildirecto" value="Envio Email Directo" icon="fa fa-envelope" outcome="/login"/>
-                        		<p:menuitem id="om_emailcamp" value="Campaña Email" icon="fa fa-envelope-o" outcome="/login"/>		
                         	</p:submenu>
                         </p:submenu>
                         <p:submenu id="om_informes" label="Informes" icon="fa fa-bar-chart">

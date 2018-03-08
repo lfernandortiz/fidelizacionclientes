@@ -142,6 +142,16 @@ public class ExpresionesRegulares {
 		return result.toUpperCase().replace("Ñ", "N");
 	}
 	
+	/**
+	 * Reemplaza los acentos por vocales simples, y la letra
+	 * N tildel po "n" Simple
+	 */	
+	public String removerAcentosNtildesSms(String src) {
+		System.out.println("Cadena Recibida en RGX: " + src);
+		String result = Normalizer.normalize(src, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
+		return result.replace("Ñ", "N");
+	}
+	
 	
 	public int getAge(Date dateOfBirth) {
 	    Calendar today = Calendar.getInstance();

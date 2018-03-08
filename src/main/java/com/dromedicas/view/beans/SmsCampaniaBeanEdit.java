@@ -16,8 +16,10 @@ import com.dromedicas.domain.Afiliado;
 import com.dromedicas.domain.Campania;
 import com.dromedicas.domain.Patologia;
 import com.dromedicas.domain.Sucursal;
+import com.dromedicas.service.AfiliadoService;
 import com.dromedicas.service.PatologiaService;
 import com.dromedicas.service.SucursalService;
+import com.dromedicas.util.ExpresionesRegulares;
 
 @ManagedBean(name="smsCampaniaBeanEdit")
 @SessionScoped
@@ -27,12 +29,18 @@ public class SmsCampaniaBeanEdit implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
+		
+	@EJB
+	private PatologiaService patologiaSevice;
+	
+	@EJB
+	private AfiliadoService afiliadoService;
+	
 	@EJB
 	private SucursalService sucursalService;
 	
 	@EJB
-	private PatologiaService patologiaSevice;
+	private ExpresionesRegulares regex;
 	
 	private Campania campaniaSelected;
 	private List<Sucursal> sucursalList;
@@ -148,7 +156,7 @@ public class SmsCampaniaBeanEdit implements Serializable {
 	}
 
 	public void setContenidoSms(String contenidoSms) {
-		this.contenidoSms = contenidoSms;
+		this.contenidoSms = this.regex.removerAcentosNtildesSms( contenidoSms );
 	}
 	
 	
@@ -312,6 +320,7 @@ public class SmsCampaniaBeanEdit implements Serializable {
 	
 	
 	public void calcularCampania(){
+		
 		System.out.println("Calculando....");
 		
 		try {			
@@ -321,16 +330,27 @@ public class SmsCampaniaBeanEdit implements Serializable {
 				System.out.println("  - " + e.getNombreSucursal());
 			}
 			System.out.println("Sexo: " + this.getSexo());
-			System.out.println("Entre edades: " +  this.edadIni + " y " + this.edadFin);
-			
-			
-			
-			System.out.println("Patologias:" + this.selectedPatologias.length );
-			
+			System.out.println("Entre edades: " +  this.edadIni + " y " + this.edadFin);						
+			System.out.println("Patologias:" + this.selectedPatologias.length );			
 			for(String e:  this.selectedPatologias ){
 				System.out.println("  -> " + e);
-			}
-
+			}			
+			System.out.println("Hijos:" + this.selectedHijos.length );			
+			for(String e:  this.selectedHijos ){
+				System.out.println("  h-> " + e);
+			}			
+			System.out.println("Hora de envio:" +new SimpleDateFormat("dd/MM/yyyy HH").format(this.getFechaInicio()) );
+			System.out.println("Mensaje: " +  this.getContenidoSms() );
+			
+			
+			//formulacion de la consulta
+			
+			//consulta el saldo con el operador y establece si hay disponibilidad
+			
+			//
+			
+			
+			
 			
 		} catch (Exception e) {
 			e.printStackTrace();

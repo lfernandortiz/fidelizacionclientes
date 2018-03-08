@@ -42,6 +42,7 @@
 
 								<p:outputLabel for="sexomenu" value="Sexo"/>
                                 <p:selectOneMenu id="sexomenu" value="#{smsCampaniaBeanEdit.sexo}">
+                                    <f:selectItem itemLabel="Todos" itemValue="t" />
                                     <f:selectItem itemLabel="Femenino" itemValue="F" />
                                     <f:selectItem itemLabel="Masculino" itemValue="M" />
                                     <f:selectItem itemLabel="Otro" itemValue="o" />
@@ -97,21 +98,21 @@
 								
 								<p:outputLabel for="fechainiid" value="Fecha inicio" />
 									<p:calendar id="fechainiid" value="#{smsCampaniaBeanEdit.fechaInicio}"
-										pattern = "dd/MM/yyyy hh"
+										pattern = "dd/MM/yyyy hh a"
 										required="true"
 										timeZone=""
 										
 										navigator="true" popupIconOnly="false" mode="popup"
 										showOn="button" yearRange="c-1:c+5">
-										<f:convertDateTime  pattern = "dd/MM/yyyy hh" />
+										<f:convertDateTime  pattern = "dd/MM/yyyy hh a" />
 								</p:calendar>
 								
 								<p:outputLabel for="fechafinid" value="Fecha Fin" />
 									<p:calendar id="fechafinid" value="#{smsCampaniaBeanEdit.fechaFin}"
-										pattern = "dd/MM/yyyy HH"
+										pattern = "dd/MM/yyyy hh a"
 										navigator="true" popupIconOnly="false" mode="popup"
 										showOn="button" yearRange="c-1:c+5">
-										<f:convertDateTime pattern = "dd/MM/yyyy" />
+										<f:convertDateTime pattern = "dd/MM/yyyy hh a" />
 								</p:calendar>       						        						
 							</p:panelGrid>	
 							<p:panelGrid columns="1" id="mensajepanel"
@@ -123,9 +124,11 @@
 									<p:inputTextarea rows="3" placeholder="Mensaje SMS  max. 160 caracteres"
 									id="mensajesmscontent" maxlength="160"
 									value="#{smsCampaniaBeanEdit.contenidoSms}">
-										<p:ajax event="keyup" update="outCrearSms" listener="#{smsCampaniaBeanEdi.analizaSMS()}" />
+										<p:ajax event="keyup" update="outCrearSms" listener="#{smsCampaniaBeanEdit.analizaSMS()}" />
 									</p:inputTextarea>								
-									<h:outputText id="outCrearSms" value="#{smsCampaniaBeanEdi.longiMensajeSMS}" />
+									<h:outputText id="outCrearSms" value="#{smsCampaniaBeanEdit.longiMensajeSMS}" />
+									<p:tooltip id="toolTipMensaje" for="mensajesmscontent" 
+										value="Las letras Ñ o ñ son reemplazados por N o n, las tildes por vocales simples y los caracteres especiales son eliminados." position="top"/>
 									
 									<h:outputText id="outCalculo" styleClass="calculosms" value="#{smsCampaniaBeanEdit.calculoString}" />
 									

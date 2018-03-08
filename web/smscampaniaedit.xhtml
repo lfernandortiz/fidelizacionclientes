@@ -61,12 +61,12 @@
 									layout="grid" styleClass="ui-panelgrid-blank"
 									style="border:0px none; background-color:transparent;">
 									
-							    <p:outputLabel for="grid2" value="Patologias:" />
-								<p:selectManyCheckbox id="grid2"
-									value="#{smsCampaniaBeanEdit.selectedCities2}" layout="responsive"
+							    <p:outputLabel for="patologiaid" value="Patologias:" />
+								<p:selectManyCheckbox id="patologiaid"
+									value="#{smsCampaniaBeanEdit.selectedPatologias}" layout="responsive"
 									columns="4">
-									<f:selectItems value="#{smsCampaniaBeanEdit.cities}" var="city"
-										itemLabel="#{city}" itemValue="#{city}" />
+									<f:selectItems value="#{smsCampaniaBeanEdit.patologiasList}" var="data"
+										itemLabel="#{data}" itemValue="#{data}" />
 								</p:selectManyCheckbox>
 
 							</p:panelGrid>
@@ -78,7 +78,7 @@
 								
 								    <p:outputLabel for="hijosid" value="Que Tengan hijos de edad:" />		
 									
-									<p:selectManyCheckbox id="hijosid" value="#{smsCampaniaBeanEdit.selectedPatologias}" layout="responsive" columns="4">
+									<p:selectManyCheckbox id="hijosid" value="#{smsCampaniaBeanEdit.selectedHijos}" layout="responsive" columns="4">
 								         <f:selectItem itemLabel="Menores de 4 años" itemValue="4" />
 	       								 <f:selectItem itemLabel="Entre 4 y 12 años" itemValue="4-12" />
 	       								 <f:selectItem itemLabel="Entre 13 y 18 años" itemValue="13-18" />

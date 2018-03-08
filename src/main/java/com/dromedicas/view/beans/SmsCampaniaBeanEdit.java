@@ -57,8 +57,7 @@ public class SmsCampaniaBeanEdit implements Serializable {
 	private String[] selectedPatologias;
 	private List<String> patologiasList;
 	
-	private String[] selectedCities2;
-    private List<String> cities;
+	
 
 	private String hijosmenoresde4;
 	private String hijosentre4y12;
@@ -86,9 +85,9 @@ public class SmsCampaniaBeanEdit implements Serializable {
 		
 		
 		List<Patologia> ptList = this.patologiaSevice.findAllPatologias();		
-		this.cities = new ArrayList<String>();		
+		this.patologiasList = new ArrayList<String>();		
 		for(Patologia e : ptList ){			
-			this.cities.add( e.getDrescripcion() );
+			this.patologiasList.add( e.getDrescripcion() );
 		}
 		
 		
@@ -281,25 +280,6 @@ public class SmsCampaniaBeanEdit implements Serializable {
 		this.longiMensajeSMS = longiMensajeSMS;
 	}
 	
-	public String[] getSelectedCities2() {
-		return selectedCities2;
-	}
-
-
-	public void setSelectedCities2(String[] selectedCities2) {
-		this.selectedCities2 = selectedCities2;
-	}
-
-
-	public List<String> getCities() {
-		return cities;
-	}
-
-
-	public void setCities(List<String> cities) {
-		this.cities = cities;
-	}
-
 
 	/**
 	 * Llena la coleccion de patologias
@@ -345,9 +325,9 @@ public class SmsCampaniaBeanEdit implements Serializable {
 			
 			
 			
-			System.out.println("Patologias:" + this.selectedCities2.length );
+			System.out.println("Patologias:" + this.selectedPatologias.length );
 			
-			for(String e:  this.selectedCities2 ){
+			for(String e:  this.selectedPatologias ){
 				System.out.println("  -> " + e);
 			}
 

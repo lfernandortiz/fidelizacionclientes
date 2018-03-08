@@ -6,7 +6,7 @@
                 xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
                 template="/WEB-INF/template.xhtml">
    
-        <ui:define name="title">#{beanEdit.selectedEntity.id == 0 ? 'Crear' : 'Editar'} Campaña </ui:define> -->
+        <ui:define name="title">#{smsCampaniaBeanEdit.campaniaSelected.idcampania == 0 ? 'Crear' : 'Editar'} Campaña </ui:define> -->
 
     <ui:define name="content">
         <h:form id="smscampaniaformppal">
@@ -19,7 +19,7 @@
                     <div class="ui-g-12">
                         <div class="card">   
                                               
-                            <h1><i class="fa fa-comments" aria-hidden="true"></i> Datos de la Campaña </h1>
+                            <h1><i class="fa fa-comments" aria-hidden="true"></i> Datos de la Campaña SMS </h1>
                             
 							<p:panelGrid columns="4" id="detailcampania"
 								columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
@@ -27,121 +27,134 @@
 								style="border:0px none; background-color:transparent;">
 								
 								<p:outputLabel for="nombrecampaniaid" value="Nombre Campaña" />
-								<p:inputText id="nombrecampaniaid" value="#{smsCampaniaBeanEdit.nombreCampania}"
-									required="true" />
+								<p:inputText id="nombrecampaniaid" 
+											 value="#{smsCampaniaBeanEdit.campaniaSelected.nombrecampania}"
+									         required="true"/>
 
-								<p:outputLabel for="sucursalid" value="Sucursal" />
-								<p:selectOneMenu id="sucursalid" value="#{smsCampaniaBeanEdit.sucursalSelected}"
-								filter="true" filterMatchMode="contains" autoWidth="false">
+								<h:outputLabel for="sucursalid" value="Sucursal(es):" />
+								<p:selectCheckboxMenu id="sucursalid"
+									value="#{smsCampaniaBeanEdit.selectedSucursal}" label="Sucursales"
+									multiple="true" filter="true" filterMatchMode="contains">
 									<f:selectItems value="#{smsCampaniaBeanEdit.sucursalList}" var="suc"
 										itemLabel="#{suc.nombreSucursal}" itemValue="#{suc}" />
-									<h:outputText value="#{suc.nombreSucursal}" />
-									<f:converter binding="#{sucursalConverter}" />	
-								</p:selectOneMenu>
+									<f:converter binding="#{sucursalConverter}" />
+								</p:selectCheckboxMenu>
 
-								<p:outputLabel for="sexoid" value="Sexo" />
-								<p:inputText id="sexoid" value="#{smsCampaniaBeanEdit.sexo}"/>
+								<p:outputLabel for="sexomenu" value="Sexo"/>
+                                <p:selectOneMenu id="sexomenu" value="#{smsCampaniaBeanEdit.sexo}">
+                                    <f:selectItem itemLabel="Femenino" itemValue="F" />
+                                    <f:selectItem itemLabel="Masculino" itemValue="M" />
+                                    <f:selectItem itemLabel="Otro" itemValue="o" />
+                                </p:selectOneMenu>	
 								
 								 <p:outputLabel for="displayRange" value="Edades:" />								 
 								 <h:panelGrid columns="1" style="width:100%;">
-	       							<h:outputText id="displayRange" value="Entre #{smsCampaniaBeanEdit.edadIni} and #{smsCampaniaBeanEdit.edadFin}" />
-	       							<p:slider for="txt6,txt7" display="displayRange"  style="width: 100%" range="true" displayTemplate="Between {min} and {max}" />
+	       							<h:outputText id="displayRange" value="Entre #{smsCampaniaBeanEdit.edadIni} y #{smsCampaniaBeanEdit.edadFin} años" />
+	       							<p:slider for="txt6,txt7" display="displayRange"  style="width: 100%" range="true" displayTemplate="Entre {min} y {max} años" />
 	   							 </h:panelGrid>
 							    <h:inputHidden id="txt6" value="#{smsCampaniaBeanEdit.edadIni}" />
 							    <h:inputHidden id="txt7" value="#{smsCampaniaBeanEdit.edadFin}" />
                     			
                     		</p:panelGrid>
                     		<p:panelGrid columns="1" id="patologiapanel"
-								columnClasses="ui-grid-col-12"
-								layout="grid" styleClass="ui-panelgrid-blank"
-								style="border:0px none; background-color:transparent;">
+									columnClasses="ui-grid-col-12"
+									layout="grid" styleClass="ui-panelgrid-blank"
+									style="border:0px none; background-color:transparent;">
+									
+							    <p:outputLabel for="grid2" value="Patologias:" />
+								<p:selectManyCheckbox id="grid2"
+									value="#{smsCampaniaBeanEdit.selectedCities2}" layout="responsive"
+									columns="4">
+									<f:selectItems value="#{smsCampaniaBeanEdit.cities}" var="city"
+										itemLabel="#{city}" itemValue="#{city}" />
+								</p:selectManyCheckbox>
+
+							</p:panelGrid>
+							
+							<p:panelGrid columns="1" id="hijospanel"
+									columnClasses="ui-grid-col-12"
+									layout="grid" styleClass="ui-panelgrid-blank"
+									style="border:0px none; background-color:transparent;">
 								
-							    <p:outputLabel for="patologiaid" value="Patologias:" />		
-								
-								<p:selectManyCheckbox id="patologiaid" value="#{smsCampaniaBeanEdit.selectedPatologias}" layout="responsive" columns="3">
-							        <f:selectItems value="#{smsCampaniaBeanEdit.patologias}" var="data" itemLabel="#{data}" itemValue="#{data}" />
-							    </p:selectManyCheckbox>
+								    <p:outputLabel for="hijosid" value="Que Tengan hijos de edad:" />		
+									
+									<p:selectManyCheckbox id="hijosid" value="#{smsCampaniaBeanEdit.selectedPatologias}" layout="responsive" columns="4">
+								         <f:selectItem itemLabel="Menores de 4 años" itemValue="4" />
+	       								 <f:selectItem itemLabel="Entre 4 y 12 años" itemValue="4-12" />
+	       								 <f:selectItem itemLabel="Entre 13 y 18 años" itemValue="13-18" />
+	       								 <f:selectItem itemLabel="Mayores de edad" itemValue="mayor" />
+								    </p:selectManyCheckbox>
 								
 							</p:panelGrid>
 							
 							<p:separator style="height:10px"/>
-							<h1>Condiciones del programa de acumulación</h1>
+							<h3>Configuracion del envio.</h3>
+							
 							<p:panelGrid columns="4" id="contratopanel"
 								columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
 								layout="grid" styleClass="ui-panelgrid-blank"
-								style="border:0px none; background-color:transparent;">
+								style="border:0px none; background-color:transparent; margin-bottom:7px;">
 								
 								<p:outputLabel for="fechainiid" value="Fecha inicio" />
-									<p:calendar id="fechainiid" value="#{empresaBeanEdit.contrato.fechainicio}"
-										pattern = "dd/MM/yyyy"
+									<p:calendar id="fechainiid" value="#{smsCampaniaBeanEdit.fechaInicio}"
+										pattern = "dd/MM/yyyy hh"
 										required="true"
 										timeZone=""
+										
 										navigator="true" popupIconOnly="false" mode="popup"
 										showOn="button" yearRange="c-1:c+5">
-										<f:convertDateTime pattern = "dd/MM/yyyy" />
+										<f:convertDateTime  pattern = "dd/MM/yyyy hh" />
 								</p:calendar>
 								
 								<p:outputLabel for="fechafinid" value="Fecha Fin" />
-									<p:calendar id="fechafinid" value="#{empresaBeanEdit.contrato.fechafin}"
-										pattern = "dd/MM/yyyy"
-										required="true"
+									<p:calendar id="fechafinid" value="#{smsCampaniaBeanEdit.fechaFin}"
+										pattern = "dd/MM/yyyy HH"
 										navigator="true" popupIconOnly="false" mode="popup"
 										showOn="button" yearRange="c-1:c+5">
 										<f:convertDateTime pattern = "dd/MM/yyyy" />
-								</p:calendar>
-								
-								<p:outputLabel for="baseid" value="Base Acumulacion" />
-								<p:inputText id="baseid"
-									value="#{empresaBeanEdit.contrato.basegravable}" />
-								
-								<p:outputLabel for="factorid" value="Factor Puntos" />
-								<p:inputText id="factorid"
-									value="#{empresaBeanEdit.contrato.factorpuntos}" />
-								
-								<p:outputLabel for="minredimibleid" value="Minimo valor redimible" />
-								<p:inputText id="minredimibleid"
-									value="#{empresaBeanEdit.contrato.vrminimoredimir}" />
-								
-								<p:outputLabel for="redenid" value="Redencion en Sucursal" />
-        						<p:selectBooleanCheckbox id="redenid" value="#{empresaBeanEdit.redensionSuc}" />
-								
-								<p:outputLabel for="smsid" value="Envio sms" />
-        						<p:selectBooleanCheckbox id="smsid" value="#{empresaBeanEdit.envioSms}" />
- 								
- 								<p:outputLabel for="emailid" value="Envio email" />
-        						<p:selectBooleanCheckbox id="emailid" value="#{empresaBeanEdit.envioEmail}" />
-        						
-        						
-        						        						
-							</p:panelGrid>							
+								</p:calendar>       						        						
+							</p:panelGrid>	
+							<p:panelGrid columns="1" id="mensajepanel"
+									columnClasses="ui-grid-col-12"
+									layout="grid" styleClass="ui-panelgrid-blank"
+									style="border:0px none; background-color:transparent;">
+									
+								    <p:outputLabel for="mensajesmscontent" value="Contenido del Mesaje SMS:" />
+									<p:inputTextarea rows="3" placeholder="Mensaje SMS  max. 160 caracteres"
+									id="mensajesmscontent" maxlength="160"
+									value="#{smsCampaniaBeanEdit.contenidoSms}">
+										<p:ajax event="keyup" update="outCrearSms" listener="#{smsCampaniaBeanEdi.analizaSMS()}" />
+									</p:inputTextarea>								
+									<h:outputText id="outCrearSms" value="#{smsCampaniaBeanEdi.longiMensajeSMS}" />
+									
+									<h:outputText id="outCalculo" styleClass="calculosms" value="#{smsCampaniaBeanEdit.calculoString}" />
+									
+							</p:panelGrid>
+							
+													
 							<p:separator style="height:5px"/>
 							
 							<p:panelGrid columns="6" id="buttons"
 								columnClasses="ui-grid-col-2,"
 								layout="grid" styleClass="ui-panelgrid-blank"
 								style="border:0px none; background-color:transparent;">	
+								
+								<p:commandButton value="Calcular" id="calcularid"
+												 action="#{smsCampaniaBeanEdit.calcularCampania()}" 
+												 icon="fa fa-refresh"
+												 rendered="#{smsCampaniaBeanEdit.campaniaSelected.idcampania == null || empresaBeanEdit.selectedEmpresa.idempresa == 0}" />
 										
-								<p:commandButton value="Crear" id="crearnuevaid"
-												 action="#{empresaBeanEdit.crearEmpresa()}" 
-												
-												 rendered="#{empresaBeanEdit.selectedEmpresa.idempresa == null || empresaBeanEdit.selectedEmpresa.idempresa == 0}" />
+								<p:commandButton value="Crear" 
+												 id="crearnuevaid"/>
 											 
-								<p:commandButton value="Actualizar" id="actualizarid"
-												 action="#{empresaBeanEdit.actualizarEmpresa()}"
-												
-												 rendered="#{empresaBeanEdit.selectedEmpresa.idempresa != null&amp;&amp;empresaBeanEdit.selectedEmpresa.idempresa != 0}" />
+								<p:commandButton value="Actualizar" id="actualizarid"/>
 								 
 								<p:commandButton value="Limpiar" id="limpiarid"
-												 action="#{empresaBeanEdit.limpiarEdit()}"
-												 process="@this"
-												 
-												 rendered="#{empresaBeanEdit.selectedEmpresa.idempresa == null || empresaBeanEdit.selectedEmpresa.idempresa == 0}" />
+												 process="@this"/>
 												 
 								<p:commandButton value="Cancelar" 
-												 id="cancelarnuevaid"
-												 action="#{empresaBeanEdit.cancelar()}" 
-												 process="@this"
-												/>								
+												 id="cancelarnuevaid"												 
+												 process="@this"/>								
 							</p:panelGrid>
 							
 						</div> <!-- end car -->

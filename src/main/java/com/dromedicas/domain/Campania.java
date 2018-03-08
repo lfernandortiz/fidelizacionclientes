@@ -1,6 +1,9 @@
 package com.dromedicas.domain;
 
 import java.io.Serializable;
+
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.Set;
@@ -10,10 +13,13 @@ import java.util.Set;
  * The persistent class for the campania database table.
  * 
  */
+@ManagedBean(name="campania")
+@RequestScoped
 @Entity
 @Table(name="campania")
 @NamedQuery(name="Campania.findAll", query="SELECT c FROM Campania c")
 public class Campania implements Serializable {
+	
 	private static final long serialVersionUID = 1L;
 
 	@Id

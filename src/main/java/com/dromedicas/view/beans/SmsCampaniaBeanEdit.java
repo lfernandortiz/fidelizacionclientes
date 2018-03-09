@@ -65,8 +65,6 @@ public class SmsCampaniaBeanEdit implements Serializable {
 	private String[] selectedPatologias;
 	private List<String> patologiasList;
 	
-	
-
 	private String hijosmenoresde4;
 	private String hijosentre4y12;
 	private String hijosentre13y18;
@@ -344,10 +342,57 @@ public class SmsCampaniaBeanEdit implements Serializable {
 			
 			
 			//formulacion de la consulta
+			String queryString = 
+					"from Afiliado a where 1 = 1";
 			
-			//consulta el saldo con el operador y establece si hay disponibilidad
+			if( selectedPatologias.length >= 1 ){
+				queryString = "from Afiliado a inner join a.afiliadopatologias ap where 1 = 1 and (" ;
+				
+				String patNucleo = "";
+				for( int i = 0 ; i < selectedPatologias.length; i++ ){
+					Patologia pTemp = patologiaSevice.obtenerPatologiaPorDescripcion(selectedPatologias[i]);
+					
+					if( i ==  (selectedPatologias.length-1) ){
+						queryString += "ap.patologia.idpatologia = " + pTemp.getIdpatologia() + " )";
+						patNucleo += "pn.patologia.idpatologia = " + pTemp.getIdpatologia() + " )";
+					}else{
+						queryString += "ap.patologia.idpatologia = " + pTemp.getIdpatologia() + " or ";
+						patNucleo += "pn.patologia.idpatologia = " + pTemp.getIdpatologia() + " or ";
+					}
+				}//fin del for
+				
+				queryString += " or a.idafiliado in (select pn.afiliado.idafiliado from Afiliadopatologianucleo pn where ";
+				queryString += patNucleo;		
+			}// fin de patologia
 			
-			//
+			if( this.getSelectedSucursal().length >= 1 ){
+				queryString += " and ( ";
+				for( int i = 0 ; i < getSelectedSucursal().length ; i++){
+					if( i ==  (getSelectedSucursal().length-1) ){
+						queryString += " a.sucursal.codigointerno = '" + selectedSucursal[i].getCodigointerno() + "' ) ";
+					}else{
+						queryString += " a.sucursal.codigointerno = '" + selectedSucursal[i].getCodigointerno() + "' or ";
+					}
+				}
+				
+			}
+			
+			if( !this.getSexo().equals("t") ){
+				queryString += "and a.sexo = '" + this.getSexo() +  "' ";
+			}
+			
+			queryString += "and  a.edad between " + this.edadIni + " and " + this.edadFin + " ";
+			queryString += "group by a.idafiliado ";
+			
+			System.out.println("QUERY STRING : ");
+			System.out.println(	queryString );
+			
+			
+			//consulta el saldo con el operador y establece si hay disponibilidad muestra los mensajes
+			
+			//crea las entidades 
+			
+			//persiste la campania
 			
 			
 			

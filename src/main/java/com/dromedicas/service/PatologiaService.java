@@ -44,6 +44,18 @@ public class PatologiaService  implements Serializable{
 		}		
 		return temp;
 	}
+	
+	public Patologia obtenerPatologiaPorDescripcion(String descripcion){
+		Query query = em.createQuery("select p FROM Patologia p where p.drescripcion = :des");
+		query.setParameter("des", descripcion);
+		Patologia temp = null;		
+		try {
+			temp = (Patologia) query.getSingleResult();
+		} catch (NoResultException e) {
+			System.out.println("Patologia no encontrada No encontrada");			
+		}		
+		return temp;
+	}
 
 	
 	public void insertPatologia(Patologia instance){

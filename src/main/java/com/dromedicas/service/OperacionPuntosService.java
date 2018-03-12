@@ -268,6 +268,7 @@ public class OperacionPuntosService {
 		tx.setAfiliado(afiliado);
 		tx.setSucursal(sucursal);
 		tx.setFechatransaccion(momentotx);
+		tx.setVencen(momentotx);//--> se establece la fecha de vencimiento de la devolucion
 		tx.setNrofactura(nrofactura);
 		tx.setValortotaltx(valortx);
 		tx.setTipotransaccion(tipoTx);

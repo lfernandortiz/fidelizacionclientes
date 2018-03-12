@@ -1,5 +1,6 @@
 package com.dromedicas.view.beans;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,7 +18,7 @@ import com.dromedicas.service.AfiliadoService;
 
 @ManagedBean(name="afiliadoBeanList")
 @ViewScoped
-public class AfiliadoBeanList {
+public class AfiliadoBeanList implements Serializable{
 	
 	/**
 	 * 

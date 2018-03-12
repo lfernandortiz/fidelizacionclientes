@@ -367,19 +367,22 @@ public class PuntosServiceRs {
 			@PathParam("valortx") Integer valortx, @PathParam("documento") String documento) {
 		
 		ResponsePuntos responseObject = new ResponsePuntos();
-
+		
 		// se validan todos los parametros
 		if (!codsucursal.equals("") && !momento.equals("") && !nrofactura.equals("") && valortx != 0
 				&& !documento.equals("")) {
 			
 			//primero valida si la tx acumulo puntos
 			Transaccion txADevolver =  this.txService.obtenerTransaccionPorFactura(nrofactura);
+			
 			if(txADevolver == null){
 				responseObject.setCode(200);
 				responseObject.setMessage("Factura no acumula puntos");
 				return Response.status(200).entity(responseObject).build();
 			}
-
+			
+			System.out.println("FACTURA ENCONTRADA NRO: " + txADevolver.getNrofactura() );
+			
 			Sucursal sucursal = this.sucursalService.obtenerSucursalPorIdIterno(codsucursal);
 
 			// se obtiene el afiliado

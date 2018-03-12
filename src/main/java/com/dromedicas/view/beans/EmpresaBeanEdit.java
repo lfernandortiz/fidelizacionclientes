@@ -36,7 +36,7 @@ public class EmpresaBeanEdit implements Serializable {
 	@ManagedProperty(value ="#{contrato}")
 	private Contrato contrato;
 	
-	@ManagedProperty(value ="#{regex}")
+	@EJB
 	private ExpresionesRegulares ex;
 	
 	Logger log = Logger.getLogger(EmpresaBeanList.class);

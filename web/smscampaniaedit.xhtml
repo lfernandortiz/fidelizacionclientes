@@ -80,10 +80,10 @@
 								    <p:outputLabel for="hijosid" value="Que Tengan hijos de edad:" />		
 									
 									<p:selectManyCheckbox id="hijosid" value="#{smsCampaniaBeanEdit.selectedHijos}" layout="responsive" columns="4">
-								         <f:selectItem itemLabel="Menores de 4 años" itemValue="4" />
-	       								 <f:selectItem itemLabel="Entre 4 y 12 años" itemValue="4-12" />
-	       								 <f:selectItem itemLabel="Entre 13 y 18 años" itemValue="13-18" />
-	       								 <f:selectItem itemLabel="Mayores de edad" itemValue="mayor" />
+								         <f:selectItem itemLabel="Menores de 4 años" itemValue="hijosmenoresde4" />
+	       								 <f:selectItem itemLabel="Entre 4 y 12 años" itemValue="hijosentre4y12" />
+	       								 <f:selectItem itemLabel="Entre 13 y 18 años" itemValue="hijosentre13y18" />
+	       								 <f:selectItem itemLabel="Mayores de edad" itemValue="hijosmayores" />
 								    </p:selectManyCheckbox>
 								
 							</p:panelGrid>
@@ -130,7 +130,7 @@
 									<p:tooltip id="toolTipMensaje" for="mensajesmscontent" 
 										value="Las letras Ñ o ñ son reemplazados por N o n, las tildes por vocales simples y los caracteres especiales son eliminados." position="top"/>
 									
-									<h:outputText id="outCalculo" styleClass="calculosms" value="#{smsCampaniaBeanEdit.calculoString}" />
+									<h:outputText escape="false" id="outCalculo" value="#{smsCampaniaBeanEdit.calculoString}" />
 									
 							</p:panelGrid>
 							
@@ -145,9 +145,11 @@
 								<p:commandButton value="Calcular" id="calcularid"
 												 action="#{smsCampaniaBeanEdit.calcularCampania()}" 
 												 icon="fa fa-refresh"
+												 update="outCalculo smscampaniaformppal"
 												 rendered="#{smsCampaniaBeanEdit.campaniaSelected.idcampania == null || empresaBeanEdit.selectedEmpresa.idempresa == 0}" />
 										
 								<p:commandButton value="Crear" 
+												 action="#{smsCampaniaBeanEdit.crearCampania()}" 
 												 id="crearnuevaid"/>
 											 
 								<p:commandButton value="Actualizar" id="actualizarid"/>

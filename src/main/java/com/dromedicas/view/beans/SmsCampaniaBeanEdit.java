@@ -11,14 +11,20 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 import com.dromedicas.domain.Afiliado;
 import com.dromedicas.domain.Campania;
 import com.dromedicas.domain.Patologia;
 import com.dromedicas.domain.Sucursal;
 import com.dromedicas.service.AfiliadoService;
+import com.dromedicas.service.CampaniaService;
 import com.dromedicas.service.PatologiaService;
 import com.dromedicas.service.SucursalService;
+import com.dromedicas.smsservice.SMSService;
 import com.dromedicas.util.ExpresionesRegulares;
 
 @ManagedBean(name="smsCampaniaBeanEdit")
@@ -29,6 +35,9 @@ public class SmsCampaniaBeanEdit implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	@PersistenceContext(unitName="PuntosFPU")
+	EntityManager em;
 		
 	@EJB
 	private PatologiaService patologiaSevice;
@@ -41,6 +50,12 @@ public class SmsCampaniaBeanEdit implements Serializable {
 	
 	@EJB
 	private ExpresionesRegulares regex;
+	
+	@EJB
+	private SMSService smsService;
+	
+	@EJB
+	private CampaniaService campaniaService;
 	
 	private Campania campaniaSelected;
 	private List<Sucursal> sucursalList;
@@ -69,6 +84,7 @@ public class SmsCampaniaBeanEdit implements Serializable {
 	private String hijosentre4y12;
 	private String hijosentre13y18;
 	private String hijosmayores;
+	private Boolean cupoDisponible;
 	
 	
 	
@@ -286,6 +302,16 @@ public class SmsCampaniaBeanEdit implements Serializable {
 		this.longiMensajeSMS = longiMensajeSMS;
 	}
 	
+	
+	public Boolean getCupoDisponible() {
+		return cupoDisponible;
+	}
+
+
+	public void setCupoDisponible(Boolean cupoDisponible) {
+		this.cupoDisponible = cupoDisponible;
+	}
+
 
 	/**
 	 * Llena la coleccion de patologias
@@ -340,66 +366,120 @@ public class SmsCampaniaBeanEdit implements Serializable {
 			System.out.println("Hora de envio:" +new SimpleDateFormat("dd/MM/yyyy HH").format(this.getFechaInicio()) );
 			System.out.println("Mensaje: " +  this.getContenidoSms() );
 			
+			String queryString = this.obtenerConsulta();
 			
-			//formulacion de la consulta
-			String queryString = 
-					"from Afiliado a where 1 = 1";
-			
-			if( selectedPatologias.length >= 1 ){
-				queryString = "from Afiliado a inner join a.afiliadopatologias ap where 1 = 1 and (" ;
-				
-				String patNucleo = "";
-				for( int i = 0 ; i < selectedPatologias.length; i++ ){
-					Patologia pTemp = patologiaSevice.obtenerPatologiaPorDescripcion(selectedPatologias[i]);
-					
-					if( i ==  (selectedPatologias.length-1) ){
-						queryString += "ap.patologia.idpatologia = " + pTemp.getIdpatologia() + " )";
-						patNucleo += "pn.patologia.idpatologia = " + pTemp.getIdpatologia() + " )";
-					}else{
-						queryString += "ap.patologia.idpatologia = " + pTemp.getIdpatologia() + " or ";
-						patNucleo += "pn.patologia.idpatologia = " + pTemp.getIdpatologia() + " or ";
-					}
-				}//fin del for
-				
-				queryString += " or a.idafiliado in (select pn.afiliado.idafiliado from Afiliadopatologianucleo pn where ";
-				queryString += patNucleo;		
-			}// fin de patologia
-			
-			if( this.getSelectedSucursal().length >= 1 ){
-				queryString += " and ( ";
-				for( int i = 0 ; i < getSelectedSucursal().length ; i++){
-					if( i ==  (getSelectedSucursal().length-1) ){
-						queryString += " a.sucursal.codigointerno = '" + selectedSucursal[i].getCodigointerno() + "' ) ";
-					}else{
-						queryString += " a.sucursal.codigointerno = '" + selectedSucursal[i].getCodigointerno() + "' or ";
-					}
-				}
-				
-			}
-			
-			if( !this.getSexo().equals("t") ){
-				queryString += "and a.sexo = '" + this.getSexo() +  "' ";
-			}
-			
-			queryString += "and  a.edad between " + this.edadIni + " and " + this.edadFin + " ";
-			queryString += "group by a.idafiliado ";
 			
 			System.out.println("QUERY STRING : ");
 			System.out.println(	queryString );
 			
-			
+						
 			//consulta el saldo con el operador y establece si hay disponibilidad muestra los mensajes
+			int cupoMensajes = this.smsService.obtenerMensajesDisponibles();
 			
-			//crea las entidades 
-			
-			//persiste la campania
-			
-			
+			if( cupoMensajes >= this.getAfiliadoList().size() ){
+				this.setCalculoString("<span class=\"calculosms\">Total de Audiencia: " + this.getAfiliadoList().size() + " Afiliados. Hay cupo disponibles de mensajes.</span>");
+			}else{
+				this.setCalculoString("<span class=\"calculosms\">Total de Audiencia: " + this.getAfiliadoList().size() + 
+						" Afiliados. <span class=\"noCupo\"> No Hay cupo disponibles de mensajes. Diponibles " + cupoMensajes + " mensajes</span></span>");
+			}
+						
+					
 			
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+	}
+	
+	
+	public String crearCampania(){
+		//Crea las entidades
+		Campania nuevaC = new Campania();
+		nuevaC.setNombrecampania(this.getNombreCampania().trim().toUpperCase()) ;
+		nuevaC.setCriterios(this.obtenerConsulta());
+		nuevaC.setFechainicio(this.fechaInicio);
+		nuevaC.setContenidosms(this.getContenidoSms());
+		
+		
+
+		
+		
+		
+		return null;
+	}
+	
+	
+	/**
+	 * Formula la consulta y establece el List de afiliados de la consulta
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public String obtenerConsulta(){
+		//formulacion de la consulta
+		String queryString = 
+				"from Afiliado a where 1 = 1";
+		
+		if( selectedPatologias.length >= 1 ){
+			queryString = "from Afiliado a inner join a.afiliadopatologias ap where 1 = 1 and (" ;
+			
+			String patNucleo = "";
+			for( int i = 0 ; i < selectedPatologias.length; i++ ){
+				Patologia pTemp = patologiaSevice.obtenerPatologiaPorDescripcion(selectedPatologias[i]);
+				
+				if( i ==  (selectedPatologias.length-1) ){
+					queryString += "ap.patologia.idpatologia = " + pTemp.getIdpatologia() + " )";
+					patNucleo += "pn.patologia.idpatologia = " + pTemp.getIdpatologia() + " )";
+				}else{
+					queryString += "ap.patologia.idpatologia = " + pTemp.getIdpatologia() + " or ";
+					patNucleo += "pn.patologia.idpatologia = " + pTemp.getIdpatologia() + " or ";
+				}
+			}//fin del for
+			
+			queryString += " or a.idafiliado in (select pn.afiliado.idafiliado from Afiliadopatologianucleo pn where ";
+			queryString += patNucleo;		
+		}// fin de patologia
+		
+		if( this.getSelectedSucursal().length >= 1 ){
+			queryString += " and ( ";
+			for( int i = 0 ; i < getSelectedSucursal().length ; i++){
+				if( i ==  (getSelectedSucursal().length-1) ){
+					queryString += " a.sucursal.codigointerno = '" + selectedSucursal[i].getCodigointerno() + "' ) ";
+				}else{
+					queryString += " a.sucursal.codigointerno = '" + selectedSucursal[i].getCodigointerno() + "' or ";
+				}
+			}
+		}// fin sucursal
+		
+		if( !this.getSexo().equals("t") ){
+			queryString += "and a.sexo = '" + this.getSexo() +  "' ";
+		}
+		
+		//si tiene hijos
+		if( this.getSelectedHijos().length >= 1 ){
+			queryString += "and ( ";
+			for(int i = 0; i < getSelectedHijos().length; i++ ){
+				
+				if( i ==  (getSelectedHijos().length-1) ){
+					queryString += " a."+ selectedHijos[i] + " = 1 ) ";
+				}else{
+					queryString += " a."+ selectedHijos[i] + " = 1 or ";
+				}
+			}
+			
+		}					
+		queryString += "and  a.edad between " + this.edadIni + " and " + this.edadFin + " ";	
+		queryString += "and length( a.celular ) = 10 and substring(a.celular,1,1) = '3' ";
+		queryString += "group by a.idafiliado ";
+		
+		Query query = em.createQuery(queryString);
+			
+		try {
+			this.afiliadoList = query.getResultList();
+		} catch (NoResultException e) {
+			System.out.println("No encontrado");			
+		}		
+		return queryString;
 		
 	}
 

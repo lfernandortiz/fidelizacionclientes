@@ -11,6 +11,7 @@ import com.dromedicas.domain.Afiliado;
 import com.dromedicas.domain.Smsplantilla;
 import com.dromedicas.service.RegistroNotificacionesService;
 import com.dromedicas.servicio.rest.RespuestaSMSWrap;
+import com.dromedicas.servicio.rest.SaldoHablameWrap;
 import com.dromedicas.util.ExpresionesRegulares;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
@@ -90,7 +91,40 @@ public class SMSService {
 			}
 		}// fin del for
 	}
+	
+	
+	/**
+	 * Con base en el costo del mensaje SMS del operador 
+	 * @return
+	 */
+	public Integer obtenerMensajesDisponibles(){
+		
+		Integer mensajesDisponibles = null;
+		
+		try {
+			String url = "https://api.hablame.co/saldo/consulta?api=4z1MlW6lsQHKiJ6x909E7zS8Rp5PRF&cliente=10010333";
+			
+			//Objeto cliente que consume el servicio
+			Client client = Client.create();
+			WebResource webResource = client.resource( url.replace(" ",	"%20") );
+			SaldoHablameWrap response = webResource.accept("application/json").get(SaldoHablameWrap.class);
+			
+			Double saldo  = Double.parseDouble( response.getSaldo() );
+			
+			mensajesDisponibles = (saldo.intValue() / 18 );//--> Aca se debe reemplazar por una consulta del costo del sms
+			
+		} catch (Exception e) {
+			System.out.println("ERROR AL OBTENER SALDO DE MENSAJES");
+			e.printStackTrace();
+		}
+		
+		
+		
+		return mensajesDisponibles ;
+	}
 
+	
+	
 	
 	
 }

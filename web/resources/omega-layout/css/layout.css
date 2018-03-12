@@ -3665,6 +3665,11 @@ a.linkesp{
 }
 
 .calculosms{
-	font-size: 1.85rem!important;
+	font-size: 1.15rem!important;
 	color: #000a7b!important;
+}
+
+.noCupo{
+	ont-size: 1.15rem!important;
+	color: #ff8080!important;
 }

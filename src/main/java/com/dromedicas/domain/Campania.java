@@ -33,7 +33,7 @@ public class Campania implements Serializable {
 	@Column(length=150)
 	private String contenidosms;
 
-	@Column(length=60)
+	
 	private String criterios;
 
 	@Temporal(TemporalType.DATE)

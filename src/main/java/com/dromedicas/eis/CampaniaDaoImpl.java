@@ -32,16 +32,17 @@ public class CampaniaDaoImpl implements CampaniaDao {
 	}
 
 	@Override
-	public void updateCampania(Campania instance) {
-		em.merge(instance);
+	public Integer updateCampania(Campania instance) {
+		Campania cTemp = em.merge(instance);		
+		return cTemp.getIdcampania();
 
 	}
-
+																							
 	@Override
 	public void deleteCampania(Campania instance) {
 		em.merge(instance);
 		em.remove(instance);
-
 	}
+	
 
 }

@@ -12,7 +12,7 @@ public interface CampaniaDao {
 	
 	public void insertCampania(Campania instance);
 	
-	public void updateCampania(Campania instance);
+	public Integer updateCampania(Campania instance);
 	
 	public void deleteCampania(Campania instance);
 

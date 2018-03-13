@@ -55,6 +55,10 @@
 	   							 </h:panelGrid>
 							    <h:inputHidden id="txt6" value="#{smsCampaniaBeanEdit.edadIni}" />
 							    <h:inputHidden id="txt7" value="#{smsCampaniaBeanEdit.edadFin}" />
+							    
+							    <p:outputLabel for="objetivoid" value="Objetivo Campaña" />
+								<p:inputText id="objetivoid" 
+											 value="#{smsCampaniaBeanEdit.audiencia}"/>
                     			
                     		</p:panelGrid>
                     		<p:panelGrid columns="1" id="patologiapanel"
@@ -148,9 +152,9 @@
 												 update="outCalculo smscampaniaformppal"
 												 rendered="#{smsCampaniaBeanEdit.campaniaSelected.idcampania == null || empresaBeanEdit.selectedEmpresa.idempresa == 0}" />
 										
-								<p:commandButton value="Crear" 
+								<p:commandButton value="Crear" id="crearnuevaid"
 												 action="#{smsCampaniaBeanEdit.crearCampania()}" 
-												 id="crearnuevaid"/>
+												 update="smscampaniaformppal"/>
 											 
 								<p:commandButton value="Actualizar" id="actualizarid"/>
 								 

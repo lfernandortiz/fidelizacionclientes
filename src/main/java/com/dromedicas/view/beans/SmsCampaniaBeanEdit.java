@@ -1,6 +1,7 @@
 package com.dromedicas.view.beans;
 
 import java.io.Serializable;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -16,12 +17,12 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-import com.dromedicas.domain.Afiliado;
 import com.dromedicas.domain.Campania;
 import com.dromedicas.domain.Patologia;
 import com.dromedicas.domain.Sucursal;
 import com.dromedicas.service.AfiliadoService;
 import com.dromedicas.service.CampaniaService;
+import com.dromedicas.service.ParametrosCampaniaSevice;
 import com.dromedicas.service.PatologiaService;
 import com.dromedicas.service.SucursalService;
 import com.dromedicas.smsservice.SMSService;
@@ -57,9 +58,12 @@ public class SmsCampaniaBeanEdit implements Serializable {
 	@EJB
 	private CampaniaService campaniaService;
 	
+	@EJB
+	private ParametrosCampaniaSevice parametrosCampService;
+	
 	private Campania campaniaSelected;
 	private List<Sucursal> sucursalList;
-	private List<Afiliado> afiliadoList;
+	private List<String> afiliadoList;
 	private Sucursal[] selectedSucursal;
 	
 	private String nombreCampania;
@@ -270,11 +274,11 @@ public class SmsCampaniaBeanEdit implements Serializable {
 		this.selectedHijos = selectedHijos;
 	}
 	
-	public List<Afiliado> getAfiliadoList() {
+	public List<String> getAfiliadoList() {
 		return afiliadoList;
 	}
 
-	public void setAfiliadoList(List<Afiliado> afiliadoList) {
+	public void setAfiliadoList(List<String> afiliadoList) {
 		this.afiliadoList = afiliadoList;
 	}
 	
@@ -359,32 +363,25 @@ public class SmsCampaniaBeanEdit implements Serializable {
 			for(String e:  this.selectedPatologias ){
 				System.out.println("  -> " + e);
 			}			
-			System.out.println("Hijos:" + this.selectedHijos.length );			
-			for(String e:  this.selectedHijos ){
-				System.out.println("  h-> " + e);
-			}			
+			
 			System.out.println("Hora de envio:" +new SimpleDateFormat("dd/MM/yyyy HH").format(this.getFechaInicio()) );
 			System.out.println("Mensaje: " +  this.getContenidoSms() );
 			
-			String queryString = this.obtenerConsulta();
-			
+			String queryString = this.obtenerConsulta();		
 			
 			System.out.println("QUERY STRING : ");
 			System.out.println(	queryString );
-			
 						
 			//consulta el saldo con el operador y establece si hay disponibilidad muestra los mensajes
 			int cupoMensajes = this.smsService.obtenerMensajesDisponibles();
 			
 			if( cupoMensajes >= this.getAfiliadoList().size() ){
-				this.setCalculoString("<span class=\"calculosms\">Total de Audiencia: " + this.getAfiliadoList().size() + " Afiliados. Hay cupo disponibles de mensajes.</span>");
+				this.setCalculoString("<span class=\"calculosms\">Total de Audiencia: " + 
+					new DecimalFormat("#,###").format( this.getAfiliadoList().size() ) + " Afiliados. Hay cupo disponibles de mensajes.</span>");
 			}else{
-				this.setCalculoString("<span class=\"calculosms\">Total de Audiencia: " + this.getAfiliadoList().size() + 
-						" Afiliados. <span class=\"noCupo\"> No Hay cupo disponibles de mensajes. Diponibles " + cupoMensajes + " mensajes</span></span>");
-			}
-						
-					
-			
+				this.setCalculoString("<span class=\"calculosms\">Total de Audiencia: " + new DecimalFormat("#,###").format( this.getAfiliadoList().size()) + 
+						" Afiliados. <span class=\"noCupo\"> No Hay cupo disponibles de mensajes. Diponibles " +new DecimalFormat("#,###").format( cupoMensajes )+ " mensajes</span></span>");
+			}		
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -393,20 +390,35 @@ public class SmsCampaniaBeanEdit implements Serializable {
 	}
 	
 	
-	public String crearCampania(){
+	public void crearCampania(){
 		//Crea las entidades
-		Campania nuevaC = new Campania();
-		nuevaC.setNombrecampania(this.getNombreCampania().trim().toUpperCase()) ;
-		nuevaC.setCriterios(this.obtenerConsulta());
-		nuevaC.setFechainicio(this.fechaInicio);
-		nuevaC.setContenidosms(this.getContenidoSms());
+		System.out.println("CREANDO LA CAMPANIA.........");
+		
+		this.campaniaSelected.setNombrecampania( this.campaniaSelected.getNombrecampania().toUpperCase().trim()) ;
+		this.campaniaSelected.setCriterios(this.obtenerConsulta());
+		this.campaniaSelected.setFechainicio(this.fechaInicio);
+		this.campaniaSelected.setContenidosms(this.getContenidoSms());
+		this.campaniaSelected.setMercadoobjetivo(this.audiencia);
+		//persiste la campania
+		
+		
+		System.out.println("Nombre Campana: " + this.campaniaSelected.getNombrecampania() );
+		
+		
+		try {
+			Integer id =this.campaniaService.updateCampania(this.campaniaSelected);	
+			
+			System.out.println("ID DE LA CAMPANA CREADA: " + id );
+			
+			
+		} catch (Exception e) {
+			System.out.println("ALGO PASO EN LA PERSISTENCIA DEL METODO");
+			e.printStackTrace();
+		}
+		
 		
 		
 
-		
-		
-		
-		return null;
 	}
 	
 	
@@ -418,7 +430,7 @@ public class SmsCampaniaBeanEdit implements Serializable {
 	public String obtenerConsulta(){
 		//formulacion de la consulta
 		String queryString = 
-				"from Afiliado a where 1 = 1";
+				"select a.celular from Afiliado a where 1 = 1";
 		
 		if( selectedPatologias.length >= 1 ){
 			queryString = "from Afiliado a inner join a.afiliadopatologias ap where 1 = 1 and (" ;

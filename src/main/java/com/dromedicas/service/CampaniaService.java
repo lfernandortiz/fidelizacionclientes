@@ -41,8 +41,8 @@ public class CampaniaService implements Serializable {
 	}
 
 	
-	public void updateCampania(Campania instance) {
-		dao.updateCampania(instance);
+	public Integer updateCampania(Campania instance) {
+		return dao.updateCampania(instance);
 
 	}
 

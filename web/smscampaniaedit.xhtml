@@ -53,12 +53,13 @@
 	       							<h:outputText id="displayRange" value="Entre #{smsCampaniaBeanEdit.edadIni} y #{smsCampaniaBeanEdit.edadFin} años" />
 	       							<p:slider for="txt6,txt7" display="displayRange"  style="width: 100%" range="true" displayTemplate="Entre {min} y {max} años" />
 	   							 </h:panelGrid>
-							    <h:inputHidden id="txt6" value="#{smsCampaniaBeanEdit.edadIni}" />
-							    <h:inputHidden id="txt7" value="#{smsCampaniaBeanEdit.edadFin}" />
 							    
-							    <p:outputLabel for="objetivoid" value="Objetivo Campaña" />
+							    <p:outputLabel for="objetivoid" value="Objetivo de la Campaña" />
 								<p:inputText id="objetivoid" 
 											 value="#{smsCampaniaBeanEdit.audiencia}"/>
+											 
+								<h:inputHidden id="txt6" value="#{smsCampaniaBeanEdit.edadIni}" />
+							    <h:inputHidden id="txt7" value="#{smsCampaniaBeanEdit.edadFin}" />
                     			
                     		</p:panelGrid>
                     		<p:panelGrid columns="1" id="patologiapanel"
@@ -126,7 +127,7 @@
 									
 								    <p:outputLabel for="mensajesmscontent" value="Contenido del Mesaje SMS:" />
 									<p:inputTextarea rows="3" placeholder="Mensaje SMS  max. 160 caracteres"
-									id="mensajesmscontent" maxlength="160"
+									id="mensajesmscontent" maxlength="160" required="true"
 									value="#{smsCampaniaBeanEdit.contenidoSms}">
 										<p:ajax event="keyup" update="outCrearSms" listener="#{smsCampaniaBeanEdit.analizaSMS()}" />
 									</p:inputTextarea>								
@@ -150,19 +151,26 @@
 												 action="#{smsCampaniaBeanEdit.calcularCampania()}" 
 												 icon="fa fa-refresh"
 												 update="outCalculo smscampaniaformppal"
-												 rendered="#{smsCampaniaBeanEdit.campaniaSelected.idcampania == null || empresaBeanEdit.selectedEmpresa.idempresa == 0}" />
+												 rendered="#{smsCampaniaBeanEdit.campaniaSelected.idcampania == null || smsCampaniaBeanEdit.campaniaSelected.idcampania == 0}" />
 										
 								<p:commandButton value="Crear" id="crearnuevaid"
 												 action="#{smsCampaniaBeanEdit.crearCampania()}" 
-												 update="smscampaniaformppal"/>
+												 update="smscampaniaformppal"
+												 rendered="#{smsCampaniaBeanEdit.campaniaSelected.idcampania == null || smsCampaniaBeanEdit.campaniaSelected.idcampania == 0}" />
 											 
-								<p:commandButton value="Actualizar" id="actualizarid"/>
+								<p:commandButton value="Actualizar" 
+												 id="actualizarid"
+												rendered="#{smsCampaniaBeanEdit.campaniaSelected.idcampania != 0}" />
+											 
 								 
 								<p:commandButton value="Limpiar" id="limpiarid"
+												 action="#{smsCampaniaBeanEdit.resetCampania()}" 
+												 update="smscampaniaformppal"
 												 process="@this"/>
 												 
 								<p:commandButton value="Cancelar" 
-												 id="cancelarnuevaid"												 
+												 id="cancelarnuevaid"
+												 action="#{smsCampaniaBeanEdit.cancelarCampania()}" 												 
 												 process="@this"/>								
 							</p:panelGrid>
 							

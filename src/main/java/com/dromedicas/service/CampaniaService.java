@@ -6,8 +6,11 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
+import com.dromedicas.domain.Afiliado;
 import com.dromedicas.domain.Campania;
 import com.dromedicas.eis.CampaniaDao;
 
@@ -32,6 +35,19 @@ public class CampaniaService implements Serializable {
 	
 	public Campania obtenerCampaniaById(Campania instance) {
 		return dao.obtenerCampaniaById(instance);
+	}
+	
+	public Campania obtenerCampaniaById(Integer id) {		
+		Query query = em.createQuery("FROM Campania c WHERE c.idcampania = :id ");
+		query.setParameter("id", id);
+		Campania temp = null;	
+		try { 
+			temp = (Campania) query.getSingleResult();
+			
+		} catch (NoResultException e) {
+			System.out.println("Campanaia no encontrado");			
+		}		
+		return temp;
 	}
 	
 	

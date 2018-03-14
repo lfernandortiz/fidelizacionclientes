@@ -2,6 +2,7 @@ package com.dromedicas.service;
 
 import java.util.List;
 
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -15,6 +16,7 @@ public class ParametrosCampaniaSevice {
 	@PersistenceContext(unitName="PuntosFPU")
 	EntityManager em;
 	
+	@EJB
 	private ParametrosCampaniaDao dao;
 
 	
@@ -37,6 +39,8 @@ public class ParametrosCampaniaSevice {
 
 	
 	public void updateParemetroscampania(Paremetroscampania instance) {
+		System.out.println("CAMPANA RECIBIDA:  " +  instance.getCampania().getNombrecampania()  );
+		
 		dao.updateParemetroscampania(instance);
 		
 	}

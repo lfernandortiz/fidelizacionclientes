@@ -7,22 +7,30 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
+import javax.faces.context.Flash;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import com.dromedicas.domain.Campania;
+import com.dromedicas.domain.Paremetroscampania;
 import com.dromedicas.domain.Patologia;
+import com.dromedicas.domain.Patologiacampania;
+import com.dromedicas.domain.PatologiacampaniaPK;
 import com.dromedicas.domain.Sucursal;
 import com.dromedicas.service.AfiliadoService;
 import com.dromedicas.service.CampaniaService;
 import com.dromedicas.service.ParametrosCampaniaSevice;
+import com.dromedicas.service.PatologiaCampaniaSevice;
 import com.dromedicas.service.PatologiaService;
 import com.dromedicas.service.SucursalService;
 import com.dromedicas.smsservice.SMSService;
@@ -60,6 +68,9 @@ public class SmsCampaniaBeanEdit implements Serializable {
 	
 	@EJB
 	private ParametrosCampaniaSevice parametrosCampService;
+	
+	@EJB
+	private PatologiaCampaniaSevice patologiaCService;
 	
 	private Campania campaniaSelected;
 	private List<Sucursal> sucursalList;
@@ -390,35 +401,96 @@ public class SmsCampaniaBeanEdit implements Serializable {
 	}
 	
 	
-	public void crearCampania(){
+	public String crearCampania(){
 		//Crea las entidades
 		System.out.println("CREANDO LA CAMPANIA.........");
 		
-		this.campaniaSelected.setNombrecampania( this.campaniaSelected.getNombrecampania().toUpperCase().trim()) ;
-		this.campaniaSelected.setCriterios(this.obtenerConsulta());
-		this.campaniaSelected.setFechainicio(this.fechaInicio);
-		this.campaniaSelected.setContenidosms(this.getContenidoSms());
-		this.campaniaSelected.setMercadoobjetivo(this.audiencia);
-		//persiste la campania
+		//valida que exista un mensaje 
+		int tokens = new StringTokenizer(this.getContenidoSms(), " ").countTokens();
 		
-		
-		System.out.println("Nombre Campana: " + this.campaniaSelected.getNombrecampania() );
-		
-		
-		try {
-			Integer id =this.campaniaService.updateCampania(this.campaniaSelected);	
-			
-			System.out.println("ID DE LA CAMPANA CREADA: " + id );
-			
-			
-		} catch (Exception e) {
-			System.out.println("ALGO PASO EN LA PERSISTENCIA DEL METODO");
-			e.printStackTrace();
-		}
-		
-		
-		
+		if( tokens >= 3){
+			this.campaniaSelected.setNombrecampania( this.campaniaSelected.getNombrecampania().toUpperCase().trim()) ;
+			this.campaniaSelected.setCriterios(this.obtenerConsulta());
+			this.campaniaSelected.setFechainicio(this.fechaInicio);
+			this.campaniaSelected.setContenidosms(this.getContenidoSms());
+			this.campaniaSelected.setMercadoobjetivo(this.audiencia.toUpperCase().trim());
+			//persiste la campania
+			try {
+				Integer id =this.campaniaService.updateCampania(this.campaniaSelected);
 
+				System.out.println("ID DE LA CAMPANA CREADA: " + id );
+				//se obtiene el objeto campania persistido
+				Campania campaniaPersist =  this.campaniaService.obtenerCampaniaById(id);
+				
+				System.out.println("ID de la campana pesistida: " +  campaniaPersist.getIdcampania());
+				
+				//se crea los parametros de la campania
+				Paremetroscampania paramC = new Paremetroscampania();
+				paramC.setCampania(campaniaPersist);
+				paramC.setSexo(this.getSexo());
+				paramC.setEdadini(this.getEdadIni());
+				paramC.setEdadfin(this.getEdadFin());
+				paramC.setFechaenvio(this.getFechaInicio());
+				
+				this.parametrosCampService.updateParemetroscampania(paramC);			
+				
+				//falta sucursales e hijos
+				
+				//estableciendo patologias
+				
+				for(String e: this.getSelectedPatologias() ){
+					Patologia pTemp = patologiaSevice.obtenerPatologiaPorDescripcion(e);
+					//crea la llave primaria de Patologiacampania
+					PatologiacampaniaPK pk = new PatologiacampaniaPK();
+					pk.setIdcampania(campaniaPersist.getIdcampania());
+					pk.setIdpatologia(pTemp.getIdpatologia());
+					
+					Patologiacampania patC = new Patologiacampania();
+					patC.setId(pk);
+					patC.setCampania(campaniaPersist);
+					patC.setPatologia(pTemp);
+					patC.setFecha(fechaInicio);
+					
+					this.patologiaCService.updatePatologiacampania(patC);
+					
+				}
+				
+				FacesContext fContext = FacesContext.getCurrentInstance();
+				
+				fContext.getExternalContext().getSessionMap().remove("smsCampaniaBeanEdit");
+				
+				FacesContext.getCurrentInstance().addMessage("messages", new FacesMessage(FacesMessage.SEVERITY_INFO,
+						"Registro Exitoso!", "Campaña creada Exitosamente"));
+				FacesContext facesContext = FacesContext.getCurrentInstance();
+				@SuppressWarnings("static-access")
+				Flash flash = facesContext.getCurrentInstance().getExternalContext().getFlash();
+				flash.setKeepMessages(true);
+				
+				//outcome
+				return "smscampanialist?faces-redirect=true";
+				
+			} catch (Exception e) {
+				System.out.println("ALGO PASO EN LA PERSISTENCIA DEL METODO");
+				e.printStackTrace();
+				
+				FacesContext fContext = FacesContext.getCurrentInstance();
+				
+				fContext.getExternalContext().getSessionMap().remove("smsCampaniaBeanEdit");
+				
+				fContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+						"Campaña no fue creada!", "Se presento un error en la creacion de la campaña"));
+				FacesContext facesContext = FacesContext.getCurrentInstance();
+				@SuppressWarnings("static-access")
+				Flash flash = facesContext.getCurrentInstance().getExternalContext().getFlash();
+				flash.setKeepMessages(true);
+				
+				return null;
+			}
+		}else{			
+			FacesContext.getCurrentInstance().addMessage(null, 
+					new FacesMessage(FacesMessage.SEVERITY_WARN, "Mensaje Demasiado Corto", "El mensaje es muy corto!"));			
+			return null;
+		}
 	}
 	
 	
@@ -478,7 +550,6 @@ public class SmsCampaniaBeanEdit implements Serializable {
 					queryString += " a."+ selectedHijos[i] + " = 1 or ";
 				}
 			}
-			
 		}					
 		queryString += "and  a.edad between " + this.edadIni + " and " + this.edadFin + " ";	
 		queryString += "and length( a.celular ) = 10 and substring(a.celular,1,1) = '3' ";
@@ -491,7 +562,32 @@ public class SmsCampaniaBeanEdit implements Serializable {
 		} catch (NoResultException e) {
 			System.out.println("No encontrado");			
 		}		
-		return queryString;
+		return queryString;		
+	}
+	
+	
+	
+	/**
+	 * Resetea todos los campos del formulario
+	 */
+	public void resetCampania(){
+		this.setCampaniaSelected(new Campania());
+		this.setNombreCampania("");
+		this.setSelectedSucursal(null);
+		this.setSexo("t");
+		this.setEdadIni(18);
+		this.setEdadFin(50);
+		this.setAudiencia("");
+		this.setSelectedPatologias(null);
+		this.setSelectedHijos(null);
+		Date dateTemp = this.AddingHHToDate(new Date(), 1);
+		this.setFechaInicio( dateTemp );		
+		this.setContenidoSms("");
+	}
+	
+	public String cancelarCampania(){
+		FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("smsCampaniaBeanEdit");
+		return "smscampanialist?faces-redirect=true";
 		
 	}
 

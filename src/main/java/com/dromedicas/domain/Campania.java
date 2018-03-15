@@ -6,6 +6,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 
@@ -32,7 +33,6 @@ public class Campania implements Serializable {
 
 	@Column(length=150)
 	private String contenidosms;
-
 	
 	private String criterios;
 
@@ -50,22 +50,26 @@ public class Campania implements Serializable {
 
 	@Column(length=50)
 	private String urlplantillaemail;
+	
+	private byte estadocampania;
+	
+	private String tipocampania;
 
-	//bi-directional many-to-one association to Emailcampania
-	@OneToMany(mappedBy="campania")
-	private Set<Emailcampania> emailcampanias;
+	// bi-directional many-to-one association to Emailcampania
+	@OneToMany(mappedBy = "campania")
+	private List<Emailcampania> emailcampanias;
 
-	//bi-directional many-to-one association to Smscampania
-	@OneToMany(mappedBy="campania")
-	private Set<Smscampania> smscampanias;
+	// bi-directional many-to-one association to Paremetroscampania
+	@OneToMany(mappedBy = "campania")
+	private List<Paremetroscampania> paremetroscampanias;
 
-	//bi-directional many-to-one association to Paremetroscampania
-	@OneToMany(mappedBy="campania")
-	private Set<Paremetroscampania> paremetroscampanias;
+	// bi-directional many-to-one association to Patologiacampania
+	@OneToMany(mappedBy="campania", fetch = FetchType.EAGER)
+	private List<Patologiacampania> patologiacampanias;
 
-	//bi-directional many-to-one association to Patologiacampania
-	@OneToMany(mappedBy="campania")
-	private Set<Patologiacampania> patologiacampanias;
+	// bi-directional many-to-one association to Smscampania
+	@OneToMany(mappedBy = "campania")
+	private List<Smscampania> smscampanias;
 
 	public Campania() {
 	}
@@ -140,94 +144,57 @@ public class Campania implements Serializable {
 
 	public void setUrlplantillaemail(String urlplantillaemail) {
 		this.urlplantillaemail = urlplantillaemail;
+	}	
+
+	public byte getEstadocampania() {
+		return estadocampania;
 	}
 
-	public Set<Emailcampania> getEmailcampanias() {
-		return this.emailcampanias;
+	public void setEstadocampania(byte estadocampania) {
+		this.estadocampania = estadocampania;
 	}
 
-	public void setEmailcampanias(Set<Emailcampania> emailcampanias) {
+	public String getTipocampania() {
+		return tipocampania;
+	}
+
+	public void setTipocampania(String tipocampania) {
+		this.tipocampania = tipocampania;
+	}
+
+	public List<Emailcampania> getEmailcampanias() {
+		return emailcampanias;
+	}
+
+	public void setEmailcampanias(List<Emailcampania> emailcampanias) {
 		this.emailcampanias = emailcampanias;
 	}
 
-	public Emailcampania addEmailcampania(Emailcampania emailcampania) {
-		getEmailcampanias().add(emailcampania);
-		emailcampania.setCampania(this);
-
-		return emailcampania;
+	public List<Paremetroscampania> getParemetroscampanias() {
+		return paremetroscampanias;
 	}
 
-	public Emailcampania removeEmailcampania(Emailcampania emailcampania) {
-		getEmailcampanias().remove(emailcampania);
-		emailcampania.setCampania(null);
-
-		return emailcampania;
-	}
-
-	public Set<Smscampania> getSmscampanias() {
-		return this.smscampanias;
-	}
-
-	public void setSmscampanias(Set<Smscampania> smscampanias) {
-		this.smscampanias = smscampanias;
-	}
-
-	public Smscampania addSmscampania(Smscampania smscampania) {
-		getSmscampanias().add(smscampania);
-		smscampania.setCampania(this);
-
-		return smscampania;
-	}
-
-	public Smscampania removeSmscampania(Smscampania smscampania) {
-		getSmscampanias().remove(smscampania);
-		smscampania.setCampania(null);
-
-		return smscampania;
-	}
-
-	public Set<Paremetroscampania> getParemetroscampanias() {
-		return this.paremetroscampanias;
-	}
-
-	public void setParemetroscampanias(Set<Paremetroscampania> paremetroscampanias) {
+	public void setParemetroscampanias(List<Paremetroscampania> paremetroscampanias) {
 		this.paremetroscampanias = paremetroscampanias;
 	}
 
-	public Paremetroscampania addParemetroscampania(Paremetroscampania paremetroscampania) {
-		getParemetroscampanias().add(paremetroscampania);
-		paremetroscampania.setCampania(this);
-
-		return paremetroscampania;
+	public List<Patologiacampania> getPatologiacampanias() {
+		return patologiacampanias;
 	}
 
-	public Paremetroscampania removeParemetroscampania(Paremetroscampania paremetroscampania) {
-		getParemetroscampanias().remove(paremetroscampania);
-		paremetroscampania.setCampania(null);
-
-		return paremetroscampania;
-	}
-
-	public Set<Patologiacampania> getPatologiacampanias() {
-		return this.patologiacampanias;
-	}
-
-	public void setPatologiacampanias(Set<Patologiacampania> patologiacampanias) {
+	public void setPatologiacampanias(List<Patologiacampania> patologiacampanias) {
 		this.patologiacampanias = patologiacampanias;
 	}
 
-	public Patologiacampania addPatologiacampania(Patologiacampania patologiacampania) {
-		getPatologiacampanias().add(patologiacampania);
-		patologiacampania.setCampania(this);
-
-		return patologiacampania;
+	public List<Smscampania> getSmscampanias() {
+		return smscampanias;
 	}
 
-	public Patologiacampania removePatologiacampania(Patologiacampania patologiacampania) {
-		getPatologiacampanias().remove(patologiacampania);
-		patologiacampania.setCampania(null);
-
-		return patologiacampania;
+	public void setSmscampanias(List<Smscampania> smscampanias) {
+		this.smscampanias = smscampanias;
 	}
+	
+	
+	
 
 }

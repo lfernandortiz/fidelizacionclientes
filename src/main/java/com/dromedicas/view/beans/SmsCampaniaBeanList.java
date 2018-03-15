@@ -37,7 +37,9 @@ public class SmsCampaniaBeanList implements Serializable {
 			
 	@PostConstruct
 	public void init(){
-				
+		
+		this.campaniaSMSList = this.campaniaService.findAllCampaniasSMS();
+		
 	}
 
 	public List<Campania> getCampaniaSMSList() {

@@ -136,6 +136,9 @@
 										value="Las letras Ñ o ñ son reemplazados por N o n, las tildes por vocales simples y los caracteres especiales son eliminados." position="top"/>
 									
 									<h:outputText escape="false" id="outCalculo" value="#{smsCampaniaBeanEdit.calculoString}" />
+									<h:outputText id="estadoCampaniaid" styleClass="estadocampania"
+												  rendered="#{smsCampaniaBeanEdit.campaniaSelected.estadocampania == 1 }"
+												  value="#{smsCampaniaBeanEdit.campaniaSelected.estadocampania == 1 ? 'Campaña Enviada. No Editable' : ''}"/>
 									
 							</p:panelGrid>
 							
@@ -160,13 +163,15 @@
 											 
 								<p:commandButton value="Actualizar" 
 												 id="actualizarid"
-												rendered="#{smsCampaniaBeanEdit.campaniaSelected.idcampania != 0}" />
+												 action="#{smsCampaniaBeanEdit.actualizar()}" 
+												 rendered="#{smsCampaniaBeanEdit.campaniaSelected.idcampania != 0 &amp;&amp; smsCampaniaBeanEdit.campaniaSelected.estadocampania == 0 }" />
 											 
 								 
 								<p:commandButton value="Limpiar" id="limpiarid"
 												 action="#{smsCampaniaBeanEdit.resetCampania()}" 
 												 update="smscampaniaformppal"
-												 process="@this"/>
+												 process="@this"
+												 rendered="#{smsCampaniaBeanEdit.campaniaSelected.idcampania != 0 &amp;&amp; smsCampaniaBeanEdit.campaniaSelected.estadocampania == 0 }"/>
 												 
 								<p:commandButton value="Cancelar" 
 												 id="cancelarnuevaid"

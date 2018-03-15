@@ -31,7 +31,18 @@ public class CampaniaService implements Serializable {
 	public List<Campania> findAllCampanias() {
 		return dao.findAllCampanias();
 	}
-
+	
+	public List<Campania> findAllCampaniasSMS() {
+		Query query = em.createQuery("FROM Campania c WHERE c.tipocampania = 'S' order by c.idcampania desc");		
+		List temp = null;	
+		try { 
+			temp =  query.getResultList();
+			
+		} catch (NoResultException e) {
+			System.out.println("Campanaia no encontrado");			
+		}		
+		return temp;
+	}
 	
 	public Campania obtenerCampaniaById(Campania instance) {
 		return dao.obtenerCampaniaById(instance);

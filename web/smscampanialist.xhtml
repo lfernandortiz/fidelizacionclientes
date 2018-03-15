@@ -60,16 +60,16 @@
 								<p:column headerText="Audiencia">
 									<h:outputText value="#{data.mercadoobjetivo}" /> 
 								</p:column>
-								<p:column headerText="Publico">
-									<h:outputText value="#{data.smscampanias.size()}" /> 
+								<p:column headerText="Estado">
+									<h:outputText value="#{data.estadocampania == 1 ? 'Enviada' : 'Programada'}" /> 
 								</p:column>								
 								
 								<p:column headerText="Editar" style="width:32px;text-align: center">
 									<p:commandButton  icon="fa fa-pencil"
-													  title="Editar #{suc.nombreSucursal}"
+													  title="Editar #{data.nombrecampania}"
 													  id="editarrowid"
-													  action="#{sucursalbenlist.editarSucursal()}">
-										<f:setPropertyActionListener value="#{suc}" target="#{sucursalEdit.sucSelected}" /> 
+													  action="#{smsCampaniaBeanEdit.editarCampania()}">
+										<f:setPropertyActionListener value="#{data}" target="#{smsCampaniaBeanEdit.campaniaSelected}" /> 
 									</p:commandButton>	
 								</p:column>		
 							</p:dataTable>	

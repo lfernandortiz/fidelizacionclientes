@@ -42,7 +42,9 @@ public class PatologiaDaoImpl implements PatologiaDao {
 	@Override
 	public void deletePatologia(Patologia instance) {
 		em.merge(instance);
-		em.remove(instance);
+		//em.remove(instance);
+		
+		em.remove(em.contains(instance) ? instance : em.merge(instance));
 
 	}
 

@@ -5,8 +5,11 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
+import com.dromedicas.domain.Afiliado;
 import com.dromedicas.domain.Patologiacampania;
 import com.dromedicas.eis.PatologiaCampaniaDao;
 
@@ -48,6 +51,23 @@ public class PatologiaCampaniaSevice {
 	
 	public void deletePatologiacampania(Patologiacampania instance) {
 		dao.deletePatologiacampania(instance);
+	}
+	
+	
+	public Integer deltePatologiaByIdCampania(Integer id){
+		
+		Query query = em.createQuery("delete from Patologiacampania p where p.id.idcampania = :id");
+		query.setParameter("id", id);
+		
+		Integer temp = null;
+		
+		try { 
+			temp = query.executeUpdate();
+			
+		} catch (NoResultException e) {
+			System.out.println("Afiliado no encontrado");			
+		}		
+		return temp;
 	}
 	
 

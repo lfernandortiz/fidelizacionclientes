@@ -74,7 +74,7 @@ public class SmsCampaniaBeanEdit implements Serializable {
 	
 	private Campania campaniaSelected;
 	private List<Sucursal> sucursalList;
-	private List<String> afiliadoList;
+	private List<Object[]> afiliadoList;
 	private Sucursal[] selectedSucursal;
 	
 	private String nombreCampania;
@@ -286,11 +286,11 @@ public class SmsCampaniaBeanEdit implements Serializable {
 		this.selectedHijos = selectedHijos;
 	}
 	
-	public List<String> getAfiliadoList() {
+	public List<Object[]> getAfiliadoList() {
 		return afiliadoList;
 	}
 
-	public void setAfiliadoList(List<String> afiliadoList) {
+	public void setAfiliadoList(List<Object[]> afiliadoList) {
 		this.afiliadoList = afiliadoList;
 	}
 	
@@ -405,6 +405,16 @@ public class SmsCampaniaBeanEdit implements Serializable {
 	public String crearCampania(){
 		//Crea las entidades
 		System.out.println("CREANDO LA CAMPANIA.........");
+		
+		Campania cValida = this.campaniaService.obtenerCampaniaPorFecha(this.fechaInicio);
+		
+		if( cValida != null ){
+			FacesContext.getCurrentInstance().addMessage(null, 
+					new FacesMessage(FacesMessage.SEVERITY_WARN, "No se puede crear la Campaña", 
+							"Ya existe una campaña programada para esa fecha y hora elija una hora diferente!"));			
+			return null;
+		}
+		
 		
 		//valida que exista un mensaje 
 		int tokens = new StringTokenizer(this.getContenidoSms(), " ").countTokens();
@@ -528,6 +538,16 @@ public class SmsCampaniaBeanEdit implements Serializable {
 	 * @return
 	 */
 	public String actualizar(){
+		
+		Campania cValida = this.campaniaService.obtenerCampaniaPorFecha(this.fechaInicio);
+		
+		if( cValida != null && cValida.getIdcampania() != this.campaniaSelected.getIdcampania() ){
+			FacesContext.getCurrentInstance().addMessage(null, 
+					new FacesMessage(FacesMessage.SEVERITY_WARN, "No se puede crear la Campaña", 
+							"Ya existe una campaña programada para esa fecha y hora elija una hora diferente!"));			
+			return null;
+		}
+		
 		int tokens = new StringTokenizer(this.getContenidoSms(), " ").countTokens();
 		Paremetroscampania param = 
 				this.parametrosCampService.obtenerParemetroscampaniaByCampania(this.campaniaSelected);
@@ -635,10 +655,10 @@ public class SmsCampaniaBeanEdit implements Serializable {
 	public String obtenerConsulta(){
 		//formulacion de la consulta
 		String queryString = 
-				"select a.celular from Afiliado a where 1 = 1";
+				"select a.idafiliado, a.celular from Afiliado a where 1 = 1 ";
 		
 		if( selectedPatologias.length >= 1 ){
-			queryString = "from Afiliado a inner join a.afiliadopatologias ap where 1 = 1 and (" ;
+			queryString = "select a.idafiliado, a.celular from Afiliado a inner join a.afiliadopatologias ap where 1 = 1 and ( " ;
 			
 			String patNucleo = "";
 			for( int i = 0 ; i < selectedPatologias.length; i++ ){

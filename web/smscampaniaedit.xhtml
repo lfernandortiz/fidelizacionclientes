@@ -101,7 +101,7 @@
 								layout="grid" styleClass="ui-panelgrid-blank"
 								style="border:0px none; background-color:transparent; margin-bottom:7px;">
 								
-								<p:outputLabel for="fechainiid" value="Fecha inicio" />
+								<p:outputLabel for="fechainiid" value="Fecha Inicio" />
 									<p:calendar id="fechainiid" value="#{smsCampaniaBeanEdit.fechaInicio}"
 										pattern = "dd/MM/yyyy hh a"
 										required="true"
@@ -154,7 +154,7 @@
 												 action="#{smsCampaniaBeanEdit.calcularCampania()}" 
 												 icon="fa fa-refresh"
 												 update="outCalculo smscampaniaformppal"
-												 rendered="#{smsCampaniaBeanEdit.campaniaSelected.idcampania == null || smsCampaniaBeanEdit.campaniaSelected.idcampania == 0}" />
+												 rendered="#{smsCampaniaBeanEdit.campaniaSelected.estadocampania == 0}" />
 										
 								<p:commandButton value="Crear" id="crearnuevaid"
 												 action="#{smsCampaniaBeanEdit.crearCampania()}" 

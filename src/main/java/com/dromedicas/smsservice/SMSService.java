@@ -93,6 +93,19 @@ public class SMSService {
 	}
 	
 	
+	
+	public void envioSMSCampania(Afiliado afiliado, String mensaje){
+		
+		int estado = this.enviarSMSDirecto(afiliado.getCelular(), mensaje, "masivo");
+		
+		//registro en auditor del envio del sms
+		this.regNotificaciones.auditarSMSEnviado(afiliado, mensaje, "SMS Directo", estado);		
+		
+	}
+	
+	
+	
+	
 	/**
 	 * Con base en el costo del mensaje SMS del operador 
 	 * @return
@@ -109,17 +122,13 @@ public class SMSService {
 			WebResource webResource = client.resource( url.replace(" ",	"%20") );
 			SaldoHablameWrap response = webResource.accept("application/json").get(SaldoHablameWrap.class);
 			
-			Double saldo  = Double.parseDouble( response.getSaldo() );
-			
+			Double saldo  = Double.parseDouble( response.getSaldo() );			
 			mensajesDisponibles = (saldo.intValue() / 18 );//--> Aca se debe reemplazar por una consulta del costo del sms
 			
 		} catch (Exception e) {
 			System.out.println("ERROR AL OBTENER SALDO DE MENSAJES");
 			e.printStackTrace();
 		}
-		
-		
-		
 		return mensajesDisponibles ;
 	}
 

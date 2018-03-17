@@ -3,15 +3,22 @@ package com.dromedicas.service;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+
+import org.hibernate.Criteria;
 
 import com.dromedicas.domain.Afiliado;
 import com.dromedicas.eis.AfiliadoDao;
@@ -136,6 +143,22 @@ public class AfiliadoService {
 		Query query = em.createQuery("FROM Afiliado a WHERE a.documento = :docu and a.claveweb = :clave");
 		query.setParameter("docu", documento);
 		query.setParameter("clave", clave);
+		Afiliado temp = null;	
+		try { 
+			temp = (Afiliado) query.getSingleResult();
+			
+		} catch (NoResultException e) {
+			System.out.println("Afiliado no encontrado");			
+		}		
+		return temp;
+	}	
+	
+	
+	public Afiliado obtenerAfiliadoById(Integer id){	
+		System.out.println("Buscando Afiliado por id...");
+		
+		Query query = em.createQuery("FROM Afiliado a WHERE a.idafiliado = :id");
+		query.setParameter("id", id);
 		Afiliado temp = null;	
 		try { 
 			temp = (Afiliado) query.getSingleResult();

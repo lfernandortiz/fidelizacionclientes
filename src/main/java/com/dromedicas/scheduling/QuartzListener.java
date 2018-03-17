@@ -29,12 +29,13 @@ public class QuartzListener implements ServletContextListener {
 	Scheduler schEmailRechazo = null;
 	Scheduler schCumpleanos = null;
 	Scheduler schSMSCumple = null;
+	Scheduler schSMSCampania = null;
 	
 	
 
 	@Override
 	public void contextInitialized(ServletContextEvent servletContext) {
-//		try {
+		try {
 //			
 //			/*
 //			 * Schedule Notificaciones compra - acumulacion de puntos | Cada 40 minutos
@@ -45,7 +46,7 @@ public class QuartzListener implements ServletContextListener {
 //			// Trigger para Notificaciones de acumulacion de puntos cada 30 minutos
 //			// Son usadas expresiones cron
 //			Trigger trigger = newTrigger().withIdentity("NotificacionAcum", "Group")
-//					.withSchedule(CronScheduleBuilder.cronSchedule("0 0/40 * 1/1 * ? *")) //cada 40 min 	0 0/40 * 1/1 * ? *
+//					.withSchedule(CronScheduleBuilder.cronSchedule("0 0/40 * 1/1 * ? *)) //cada 40 min 	0 0/40 * 1/1 * ? *
 //					.build();
 //			
 //			// configuracion del Setup the Job and Trigger with Scheduler & schedule jobs
@@ -144,12 +145,32 @@ public class QuartzListener implements ServletContextListener {
 //			schSMSCumple = new StdSchedulerFactory().getScheduler();
 //			schSMSCumple.start();
 //			schSMSCumple.scheduleJob(smsCumpleanos, triggerSMSCumple);
-//			
-//			
-//
-//		} catch (SchedulerException e) {
-//			e.printStackTrace();
-//		}
+		
+			
+			
+			/*
+			 * Schedule valida cada hora si hay campanias SMS
+			 *  
+			 */
+			// Job para que ejecuta el EJB que realiza la lectura de los email
+			JobDetail smsCampania = newJob(EjecutarCampanaSMS.class).withIdentity("SmsCampania", "SmsCampaniaGroup")
+					.build();
+
+			//Disparador para el schedule de sms campania
+			Trigger triggerSMSCampania = newTrigger().withIdentity("SmsCampania", "SmsCampaniaGroup")
+					.withSchedule(CronScheduleBuilder.cronSchedule("0 0/2 * 1/1 * ? *")) // 0 0 0/1 1/1 * ? *
+					.build();
+			
+			// configuracion del Setup the Job and Trigger with Scheduler &
+			// schedule jobs
+			schSMSCampania = new StdSchedulerFactory().getScheduler();
+			schSMSCampania.start();
+			schSMSCampania.scheduleJob(smsCampania, triggerSMSCampania);
+		
+
+		} catch (SchedulerException e) {
+			e.printStackTrace();
+		}
 
 	}
 	
@@ -165,6 +186,8 @@ public class QuartzListener implements ServletContextListener {
 			schEmailRechazo.shutdown();
 			schCumpleanos.shutdown();
 			schSMSCumple.shutdown();
+			schSMSCampania.shutdown();
+			
 		} catch (SchedulerException e) {
 			e.printStackTrace();
 		}

@@ -39,7 +39,7 @@ public class Campania implements Serializable {
 	@Temporal(TemporalType.DATE)
 	private Date fechafin;
 
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date fechainicio;
 
 	@Column(length=150)

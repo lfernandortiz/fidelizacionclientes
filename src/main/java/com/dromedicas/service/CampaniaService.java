@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionManagement;
+import javax.ejb.TransactionManagementType;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
@@ -17,6 +19,7 @@ import com.dromedicas.eis.CampaniaDao;
 import com.dromedicas.smsservice.SMSService;
 
 @Stateless
+@TransactionManagement (TransactionManagementType.BEAN) 
 public class CampaniaService implements Serializable {
 	
 	/**
@@ -123,7 +126,7 @@ public class CampaniaService implements Serializable {
 			temp = (Campania) query.getSingleResult();
 			
 		} catch (NoResultException e) {
-			System.out.println("Campanaia no encontrado");			
+			System.out.println("Campania no encontrado");			
 		}		
 		return temp;
 	}
@@ -160,7 +163,12 @@ public class CampaniaService implements Serializable {
 				}// final del catch
 			}//fin del for
 			
-			cProgramada.setEstadocampania((byte) 1); 
+			//Marca la campania como enviada
+			cProgramada.setEstadocampania((byte) 1);	
+			
+			//actualiza el objeto campania
+			this.updateCampania(cProgramada);
+			
 		}//fin del if
 		
 		

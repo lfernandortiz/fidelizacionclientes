@@ -21,6 +21,8 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import org.apache.commons.lang3.time.DateUtils;
+
 import com.dromedicas.domain.Campania;
 import com.dromedicas.domain.Paremetroscampania;
 import com.dromedicas.domain.Patologia;
@@ -415,6 +417,28 @@ public class SmsCampaniaBeanEdit implements Serializable {
 			return null;
 		}
 		
+		//valida que la campaña no quede sobre la hora actual 		
+		switch (this.validarFechaHora(this.fechaInicio)) {
+		case -1:
+			FacesContext.getCurrentInstance().addMessage(null, 
+					new FacesMessage(FacesMessage.SEVERITY_WARN, "No se puede crear la Campaña", 
+							"Esta colocando una campaña a una hora inferior a la actual!"));			
+			return null;
+			
+		case 1:
+			FacesContext.getCurrentInstance().addMessage(null, 
+					new FacesMessage(FacesMessage.SEVERITY_WARN, "No se puede crear la Campaña", 
+							"Esta sobre la Hora actual asigne una hora diferente a esta!"));			
+			return null;
+			
+		case 2:
+			FacesContext.getCurrentInstance().addMessage(null, 
+					new FacesMessage(FacesMessage.SEVERITY_WARN, "No se puede crear la Campaña", 
+							"Esta programandola en una fecha inferior a hoy!"));			
+			return null;
+		}
+		
+		
 		
 		//valida que exista un mensaje 
 		int tokens = new StringTokenizer(this.getContenidoSms(), " ").countTokens();
@@ -541,10 +565,32 @@ public class SmsCampaniaBeanEdit implements Serializable {
 		
 		Campania cValida = this.campaniaService.obtenerCampaniaPorFecha(this.fechaInicio);
 		
+		
 		if( cValida != null && cValida.getIdcampania() != this.campaniaSelected.getIdcampania() ){
 			FacesContext.getCurrentInstance().addMessage(null, 
 					new FacesMessage(FacesMessage.SEVERITY_WARN, "No se puede crear la Campaña", 
-							"Ya existe una campaña programada para esa fecha y hora elija una hora diferente!"));			
+							"Ya existe una campaña programada para esa fecha y hora elija una hora diferente!"));				
+			return null;
+		}
+		
+		//valida que la actualizacion no la deje sobre la hora actual
+		switch (this.validarFechaHora(this.fechaInicio)) {
+		case -1:
+			FacesContext.getCurrentInstance().addMessage(null, 
+					new FacesMessage(FacesMessage.SEVERITY_WARN, "No se puede actualizar la Campaña", 
+							"Esta colocando una campaña a una hora inferior a la actual!"));			
+			return null;
+			
+		case 1:
+			FacesContext.getCurrentInstance().addMessage(null, 
+					new FacesMessage(FacesMessage.SEVERITY_WARN, "No se puede actualizar la Campaña", 
+							"Esta sobre la Hora actual asigne una hora diferente a esta!"));			
+			return null;
+			
+		case 2:
+			FacesContext.getCurrentInstance().addMessage(null, 
+					new FacesMessage(FacesMessage.SEVERITY_WARN, "No se puede actualizar la Campaña", 
+							"Esta programandola en una fecha inferior a hoy!"));			
 			return null;
 		}
 		
@@ -658,7 +704,7 @@ public class SmsCampaniaBeanEdit implements Serializable {
 				"select a.idafiliado, a.celular from Afiliado a where 1 = 1 ";
 		
 		if( selectedPatologias.length >= 1 ){
-			queryString = "select a.idafiliado, a.celular from Afiliado a inner join a.afiliadopatologias ap where 1 = 1 and ( " ;
+			queryString = "select a.idafiliado, a.celular from Afiliado a inner join a.afiliadopatologias ap where 1 = 1 and ( ( " ;
 			
 			String patNucleo = "";
 			for( int i = 0 ; i < selectedPatologias.length; i++ ){
@@ -674,7 +720,8 @@ public class SmsCampaniaBeanEdit implements Serializable {
 			}//fin del for
 			
 			queryString += " or a.idafiliado in (select pn.afiliado.idafiliado from Afiliadopatologianucleo pn where ";
-			queryString += patNucleo;		
+			queryString += patNucleo + " )";	
+			
 		}// fin de patologia
 		
 		if( this.getSelectedSucursal().length >= 1 ){
@@ -717,8 +764,7 @@ public class SmsCampaniaBeanEdit implements Serializable {
 		}		
 		return queryString;		
 	}
-	
-	
+		
 	
 	/**
 	 * Resetea todos los campos del formulario
@@ -744,6 +790,83 @@ public class SmsCampaniaBeanEdit implements Serializable {
 	}
 	
 	
+	
+	/**
+	 * Retorna la hora desde un objeto <code> Date </code>
+	 * @param date
+	 * @return
+	 */
+	public int getHourFromDate(Date date){
+		Calendar time = Calendar.getInstance();
+		time.setTime(date);
+		int hour = time.get(Calendar.HOUR_OF_DAY);
+		return hour;
+	}
+	
+	
+	
+	
+	/**
+	 * Valida que la hora recibida como parametro,
+	 * no este sobre la hora actual, sea menor a la hora actual;
+	 * y que la fecha no se inferior a la actual
+	 * -1 hora inferior a la actual
+	 * 0 Hora y fecha correcta
+	 * 1 Hora igual a la actual
+	 * 2 dia antes al actual
+	 * @param date
+	 * @return
+	 */
+	public int validarFechaHora(Date date) {
+
+		Date dateActual = new Date();
+		// primero valida que la fecha recibida no sea inferior a la fecha
+		// actual		
+		if (compareDates(dateActual, date)) {
+			return 2;
+		}
+		if (DateUtils.isSameDay(date, dateActual)) {			
+			if (this.getHourFromDate(date) == this.getHourFromDate(dateActual)) {
+				return 1;
+			}
+			if (this.getHourFromDate(date) < this.getHourFromDate(dateActual)) {
+				return -1;
+			} else {
+				return 0;
+			}
+		} else {
+			return 0;
+		}
+	}
+	
+	
+	private boolean compareDates(Date dateActual, Date dateCampania){
+		Calendar calA = Calendar.getInstance();
+		calA.setTime(dateActual);
+		Calendar calC = Calendar.getInstance();
+		calC.setTime(dateCampania);
+		 
+		// Set time fields to zero
+		calA.set(Calendar.HOUR_OF_DAY, 0);
+		calA.set(Calendar.MINUTE, 0);
+		calA.set(Calendar.SECOND, 0);
+		calA.set(Calendar.MILLISECOND, 0);
+		
+		calC.set(Calendar.HOUR_OF_DAY, 0);
+		calC.set(Calendar.MINUTE, 0);
+		calC.set(Calendar.SECOND, 0);
+		calC.set(Calendar.MILLISECOND, 0);
+		 
+		// Put it back in the Date object
+		dateActual = calA.getTime();
+		dateCampania = calC.getTime();
+		
+		if(dateCampania.compareTo(dateActual) < 0){
+			return true;
+		}else{
+			return false;
+		}
+	}
 		
 
-}
+}// final de la clase

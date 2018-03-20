@@ -16,6 +16,7 @@ import javax.persistence.Query;
 import com.dromedicas.domain.Afiliado;
 import com.dromedicas.domain.Campania;
 import com.dromedicas.eis.CampaniaDao;
+import com.dromedicas.mailservice.EnviarEmailAlertas;
 import com.dromedicas.smsservice.SMSService;
 
 @Stateless
@@ -39,6 +40,8 @@ public class CampaniaService implements Serializable {
 	@EJB
 	private SMSService smsService;
 	
+	@EJB
+	private EnviarEmailAlertas emailArlertas;
 		
 	public List<Campania> findAllCampanias() {
 		return dao.findAllCampanias();
@@ -104,7 +107,7 @@ public class CampaniaService implements Serializable {
 		try { 
 			temp = (Campania) query.getSingleResult();
 		} catch (NoResultException e) {
-			System.out.println("Campanaia no encontrado");			
+			System.out.println("Campania no encontrado");			
 		}		
 		return temp;
 	}
@@ -138,40 +141,42 @@ public class CampaniaService implements Serializable {
 		Campania cProgramada = this.obtenerCampaniaProgramadaSMS();
 
 		if (cProgramada != null) {
-
-			System.out.println("OBTENIENDO AUDIENCIA DE CAMPANIA SMS.... ");
-			System.out.println("SQL: " + cProgramada.getCriterios());
 			
 			// obtiene la coleccion de numeros y id's afiliados
 			List<Object[]> audienciaList = this.obtenerUdienciaSMSQuery(cProgramada.getCriterios());
+			
+			int cupoMensajes = this.smsService.obtenerMensajesDisponibles();
+			
+			//si noy cupo de mensajes al momento del envio de la campania envia un email
+			if( cupoMensajes > audienciaList.size() ){
+				// enviamos los mensajes
+				for (Object[] e : audienciaList) {
+					Integer id =  (Integer) e[0];
+					// obtiene el afiliado por el documento desde la tupla
+					Afiliado afTemp = this.afiliadoService.obtenerAfiliadoById(id );
 
-			// enviamos los mensajes
-			for (Object[] e : audienciaList) {
-				Integer id =  (Integer) e[0];
-				// obtiene el afiliado por el documento desde la tupla
-				Afiliado afTemp = this.afiliadoService.obtenerAfiliadoById(id );
-
-				try {
-					System.out.println("ENVIANDO SMS DE CAMPANIA");
-					// accede al servicio de SMS y envio el mensaje con un dalay
-					// de 0.04 segundos
-					this.smsService.envioSMSCampania(afTemp, cProgramada.getContenidosms());
-					Thread.sleep(40);
-				} catch (InterruptedException ex) {
-					// TODO Auto-generated catch block
-					ex.printStackTrace();
-				}// final del catch
-			}//fin del for
-			
-			//Marca la campania como enviada
-			cProgramada.setEstadocampania((byte) 1);	
-			
-			//actualiza el objeto campania
-			this.updateCampania(cProgramada);
-			
+					try {
+						System.out.println("ENVIANDO SMS DE CAMPANIA");
+						// accede al servicio de SMS y envio el mensaje con un dalay
+						// de 0.04 segundos
+						this.smsService.envioSMSCampania(afTemp, cProgramada.getContenidosms());
+						Thread.sleep(40);
+					} catch (InterruptedException ex) {
+						// TODO Auto-generated catch block
+						ex.printStackTrace();
+					}// final del catch
+				}//fin del for
+				
+				//Marca la campania como enviada
+				cProgramada.setEstadocampania((byte) 1);	
+				
+				//actualiza el objeto campania
+				this.updateCampania(cProgramada);
+			}else{
+				//envia un correo avisando
+				this.emailArlertas.emailErrorCampania(cProgramada);
+			}
 		}//fin del if
-		
-		
 	}
 	
 	

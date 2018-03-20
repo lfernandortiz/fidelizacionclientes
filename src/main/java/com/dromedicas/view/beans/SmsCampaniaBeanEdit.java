@@ -366,23 +366,8 @@ public class SmsCampaniaBeanEdit implements Serializable {
 		System.out.println("Calculando....");
 		
 		try {			
-			System.out.println("Nombre Campana: " + this.campaniaSelected.getNombrecampania().toUpperCase().trim() );
-			System.out.println("Sucursales:");			
-			for(Sucursal e:  this.getSelectedSucursal()){
-				System.out.println("  - " + e.getNombreSucursal());
-			}
-			System.out.println("Sexo: " + this.getSexo());
-			System.out.println("Entre edades: " +  this.edadIni + " y " + this.edadFin);						
-			System.out.println("Patologias:" + this.selectedPatologias.length );			
-			for(String e:  this.selectedPatologias ){
-				System.out.println("  -> " + e);
-			}			
 			
-			System.out.println("Hora de envio:" +new SimpleDateFormat("dd/MM/yyyy HH").format(this.getFechaInicio()) );
-			System.out.println("Mensaje: " +  this.getContenidoSms() );
-			
-			String queryString = this.obtenerConsulta();		
-			
+			String queryString = this.obtenerConsulta();	
 			System.out.println("QUERY STRING : ");
 			System.out.println(	queryString );
 						
@@ -438,14 +423,21 @@ public class SmsCampaniaBeanEdit implements Serializable {
 			return null;
 		}
 		
+		String queryString = this.obtenerConsulta();
 		
-		
+		//valida que exista audiencia para la campania
+		if( this.getAfiliadoList().size() < 1 ){
+			FacesContext.getCurrentInstance().addMessage(null, 
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "No se puede crear la Campaña", 
+							"No hay una audiencia para esta campaña, revise los parametros de la campaña!"));			
+			return null;
+		}		
 		//valida que exista un mensaje 
 		int tokens = new StringTokenizer(this.getContenidoSms(), " ").countTokens();
 		
 		if( tokens >= 3){
 			this.campaniaSelected.setNombrecampania( this.campaniaSelected.getNombrecampania().toUpperCase().trim()) ;
-			this.campaniaSelected.setCriterios(this.obtenerConsulta());
+			this.campaniaSelected.setCriterios( queryString );
 			this.campaniaSelected.setFechainicio(this.fechaInicio);
 			this.campaniaSelected.setContenidosms(this.getContenidoSms());
 			this.campaniaSelected.setMercadoobjetivo(this.audiencia.toUpperCase().trim());
@@ -865,6 +857,48 @@ public class SmsCampaniaBeanEdit implements Serializable {
 			return true;
 		}else{
 			return false;
+		}
+	}
+	
+	
+	
+	
+	public String eliminarCampania(){
+		Query query = em.createQuery("delete from Patologiacampania pc where pc.campania.idcampania = :id ");
+		Query query2 = em.createQuery("delete from Patologiacampania pt where pt.campania.id = :idc ");
+		Query query3 = em.createQuery("delete from Campania c where c.idcampania = :idcampania" );
+				
+		query.setParameter("id", this.campaniaSelected.getIdcampania() );
+		query2.setParameter("idc", this.campaniaSelected.getIdcampania() );
+		query3.setParameter("idcampania", this.campaniaSelected.getIdcampania() );
+		int r = 0;
+		try { 
+			 query.executeUpdate();
+			 query2.executeUpdate();
+			 r = query3.executeUpdate();
+			
+		} catch (NoResultException e) {
+			System.out.println("Campania no encontrado");			
+		}		
+
+		if( r != 0){
+			FacesContext fContext = FacesContext.getCurrentInstance();
+			
+			fContext.getExternalContext().getSessionMap().remove("smsCampaniaBeanEdit");
+			
+			FacesContext.getCurrentInstance().addMessage("messages", new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Campaña Eliminada!", "Campaña Eliminada Exitosamente"));
+			FacesContext facesContext = FacesContext.getCurrentInstance();
+			@SuppressWarnings("static-access")
+			Flash flash = facesContext.getCurrentInstance().getExternalContext().getFlash();
+			flash.setKeepMessages(true);
+			
+			return "smscampanialist?faces-redirect=true";
+		}else{
+			FacesContext.getCurrentInstance().addMessage(null, 
+					new FacesMessage(FacesMessage.SEVERITY_WARN, "No se puede eliminar la Campaña", 
+							"No es posible eliminar esta campaña.!"));			
+			return null;
 		}
 	}
 		

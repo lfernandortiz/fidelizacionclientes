@@ -28,6 +28,7 @@ import org.jsoup.nodes.Element;
 
 import com.dromedicas.domain.Afiliado;
 import com.dromedicas.domain.BalancePuntos;
+import com.dromedicas.domain.Campania;
 import com.dromedicas.domain.Sucursal;
 import com.dromedicas.domain.Transaccion;
 import com.dromedicas.service.OperacionPuntosService;
@@ -621,6 +622,9 @@ public class EnviarEmailAlertas {
 		}
 		return true;
 	}
+	
+	
+	
 
 	public String emailRecuparacionClave(Afiliado afiliado) {
 
@@ -1073,6 +1077,87 @@ public class EnviarEmailAlertas {
 		}
 		return true;
 
+	}
+	
+	
+	
+	
+	public boolean emailErrorCampania(Campania campania) {
+
+		System.out.println("Envia email de error campania ");
+		try {
+
+			ServletContext servletContext = null;
+
+			try {
+				servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+			} catch (Exception e) {
+				servletContext = context;
+			}
+
+			String mensaje = "No habia cupo disponible para el envio de la siguiente campania.\n\n "
+					+ "Nombre Campaña: " + campania.getNombrecampania() + "\n" + "Fecha: " + campania.getFechainicio() + "\n";
+
+			// Propiedades de la conexión
+			Properties props = new Properties();
+			props.setProperty("mail.smtp.host", "deus.wnkserver6.com");
+			props.setProperty("mail.smtp.port", "25");// puerto de salida, de
+			// entrada 110
+			props.setProperty("mail.smtp.user", "contacto@puntosfarmanorte.com.co");
+			props.setProperty("mail.smtp.auth", "true");
+			props.put("mail.transport.protocol.", "smtp");
+
+			// Preparamos la sesion
+			Session session = Session.getDefaultInstance(props);
+
+			// multiples direcciones
+			String[] to = { "sistemas2@dromedicas.com.co"};
+
+			// arreglo con las direcciones de correo
+			InternetAddress[] addressTo = new InternetAddress[to.length];
+			for (int i = 0; i < addressTo.length; i++) {
+				addressTo[i] = new InternetAddress(to[i]);
+			}
+			// se compone el mensaje (Asunto, cuerpo del mensaje y direccion
+			// origen)
+			final MimeMessage message = new MimeMessage(session);
+			message.setFrom(new InternetAddress("contacto@puntosfarmanorte.com.co", "Puntos Farmanorte"));
+			message.setRecipients(Message.RecipientType.BCC, addressTo);
+			// Emojis :-)
+			String subjectEmojiRaw = ":rotating_light: Error en envio de Campaña";
+			String subjectEmoji = EmojiParser.parseToUnicode(subjectEmojiRaw);
+
+			message.setSubject(subjectEmoji, "UTF-8");
+			message.setContent(mensaje, "text/plain; charset=utf-8");
+
+			// Envia el correo
+			final Transport t = session.getTransport("smtp");
+			// asigno un hilo exclusivo a la conexion y envio del mensaje
+			// dado que el proveedor de correo es muy lento para establecer
+			// la conexion
+			new Thread(new Runnable() {
+				public void run() {
+					try {
+						t.connect("contacto@puntosfarmanorte.com.co", "Dromedicas2013.");
+						t.sendMessage(message, message.getAllRecipients());
+						// Cierre de la conexion
+						t.close();
+
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}).start();
+
+			System.out.println("Conexion cerrada");
+
+		} catch (Exception e) {
+			System.out.println("Falla en el envio del correo:");
+			e.printStackTrace();
+			return false;
+		}
+		return true;
 	}
 
 

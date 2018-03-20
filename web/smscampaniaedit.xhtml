@@ -176,7 +176,15 @@
 								<p:commandButton value="Cancelar" 
 												 id="cancelarnuevaid"
 												 action="#{smsCampaniaBeanEdit.cancelarCampania()}" 												 
-												 process="@this"/>								
+												 process="@this"/>	
+												 
+								<p:commandButton value="Eliminar" 
+												 id="eliminarid"
+												 styleClass="red-button"
+												 action="#{smsCampaniaBeanEdit.eliminarCampania()}" 
+												 rendered="#{smsCampaniaBeanEdit.campaniaSelected.idcampania != 0 &amp;&amp; smsCampaniaBeanEdit.campaniaSelected.estadocampania == 0 }" />
+												 
+															
 							</p:panelGrid>
 							
 						</div> <!-- end car -->

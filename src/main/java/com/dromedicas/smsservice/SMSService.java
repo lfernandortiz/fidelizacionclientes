@@ -56,12 +56,12 @@ public class SMSService {
 			String url = urlServicio+"api="+ apiKey+"&cliente="+cliente+"&numero=" +
 					numero + "&sms=" +  mensaje +(!referencia.equals("") ? "" : "&referencia=" + referencia);
 			
-			//System.out.println("URL SMS: " + url);
+			System.out.println("URL SMS: " + url);
 			
 			WebResource webResource = client.resource( url.replace(" ",	"%20") );
 			RespuestaSMSWrap response = webResource.accept("application/json").get(RespuestaSMSWrap.class);
 			
-			resultado = response.getResultado();
+			resultado = Integer.parseInt(response.getSms().get1().getResultado());
 			
 			if( resultado == 0 ){
 				System.out.println("Mensaje enviado exitosamente");

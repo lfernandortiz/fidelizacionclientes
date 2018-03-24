@@ -16,7 +16,7 @@ public class RespuestaSMSWrap {
 	@JsonProperty("cliente")
 	private String cliente;
 	@JsonProperty("lote_id")
-	private String loteId;
+	private Integer loteId;
 	@JsonProperty("fecha_recepcion")
 	private String fechaRecepcion;
 	@JsonProperty("resultado")
@@ -29,10 +29,10 @@ public class RespuestaSMSWrap {
 	private Object referecia;
 	@JsonProperty("ip")
 	private String ip;
-	
+	@JsonProperty("sms")
+	private Sms sms;
 	@JsonIgnore
 	private Map<String, Object> additionalProperties = new HashMap<String, Object>();
-	private final static long serialVersionUID = -1561778896447044379L;
 
 	@JsonProperty("cliente")
 	public String getCliente() {
@@ -45,12 +45,12 @@ public class RespuestaSMSWrap {
 	}
 
 	@JsonProperty("lote_id")
-	public String getLoteId() {
+	public Integer getLoteId() {
 	return loteId;
 	}
 
 	@JsonProperty("lote_id")
-	public void setLoteId(String loteId) {
+	public void setLoteId(Integer loteId) {
 	this.loteId = loteId;
 	}
 
@@ -114,7 +114,16 @@ public class RespuestaSMSWrap {
 	this.ip = ip;
 	}
 
-	
+	@JsonProperty("sms")
+	public Sms getSms() {
+	return sms;
+	}
+
+	@JsonProperty("sms")
+	public void setSms(Sms sms) {
+	this.sms = sms;
+	}
+
 	@JsonAnyGetter
 	public Map<String, Object> getAdditionalProperties() {
 	return this.additionalProperties;

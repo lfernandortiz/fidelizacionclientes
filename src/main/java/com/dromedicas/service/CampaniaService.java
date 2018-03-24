@@ -161,7 +161,7 @@ public class CampaniaService implements Serializable {
 						// de 0.04 segundos
 						this.smsService.envioSMSCampania(afTemp, cProgramada.getContenidosms(), cProgramada);
 						
-						Thread.sleep(40);
+						Thread.sleep(30);
 					} catch (InterruptedException ex) {
 						// TODO Auto-generated catch block
 						ex.printStackTrace();

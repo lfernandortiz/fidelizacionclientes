@@ -22,6 +22,9 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import org.apache.commons.lang3.time.DateUtils;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
+import org.primefaces.model.chart.PieChartModel;
 
 import com.dromedicas.domain.Campania;
 import com.dromedicas.domain.Paremetroscampania;
@@ -103,6 +106,8 @@ public class SmsCampaniaBeanEdit implements Serializable {
 	private String hijosmayores;
 	private Boolean cupoDisponible;
 	
+	private PieChartModel pieModelCampania;
+	
 	
 	
 	public SmsCampaniaBeanEdit(){
@@ -131,9 +136,22 @@ public class SmsCampaniaBeanEdit implements Serializable {
 			this.patologiasList.add( e.getDrescripcion() );
 		}
 		
+		if(this.campaniaSelected.getIdcampania() == 0){
+			this.createPieModel();
+		}
+		
 	}	
-	
-	
+		
+	public PieChartModel getPieModelCampania() {
+		return pieModelCampania;
+	}
+
+
+	public void setPieModelCampania(PieChartModel pieModelCampania) {
+		this.pieModelCampania = pieModelCampania;
+	}
+
+
 	public Campania getCampaniaSelected() {
 		return campaniaSelected;
 	}
@@ -860,28 +878,21 @@ public class SmsCampaniaBeanEdit implements Serializable {
 		}
 	}
 	
-	
-	
-	
-	public String eliminarCampania(){
-		Query query = em.createQuery("delete from Patologiacampania pc where pc.campania.idcampania = :id ");
-		Query query2 = em.createQuery("delete from Patologiacampania pt where pt.campania.id = :idc ");
-		Query query3 = em.createQuery("delete from Campania c where c.idcampania = :idcampania" );
-				
-		query.setParameter("id", this.campaniaSelected.getIdcampania() );
-		query2.setParameter("idc", this.campaniaSelected.getIdcampania() );
-		query3.setParameter("idcampania", this.campaniaSelected.getIdcampania() );
-		int r = 0;
-		try { 
-			 query.executeUpdate();
-			 query2.executeUpdate();
-			 r = query3.executeUpdate();
-			
-		} catch (NoResultException e) {
-			System.out.println("Campania no encontrado");			
-		}		
 
-		if( r != 0){
+	/**
+	 * Elimina una campania programada.
+	 * @return
+	 */
+	@NotFound(action=NotFoundAction.IGNORE)  
+	public String eliminarCampania(){	
+		//
+		Campania c = this.campaniaService.obtenerCampaniaById(campaniaSelected);
+		
+		this.campaniaService.deleteCampania(c);		
+		
+		try { 			
+			this.campaniaService.deleteCampania(this.campaniaSelected);
+			
 			FacesContext fContext = FacesContext.getCurrentInstance();
 			
 			fContext.getExternalContext().getSessionMap().remove("smsCampaniaBeanEdit");
@@ -894,13 +905,34 @@ public class SmsCampaniaBeanEdit implements Serializable {
 			flash.setKeepMessages(true);
 			
 			return "smscampanialist?faces-redirect=true";
-		}else{
+		} catch (Exception e) {
+			System.out.println("-----------------No se pudo eliminar la campania");	
+			e.printStackTrace();
 			FacesContext.getCurrentInstance().addMessage(null, 
 					new FacesMessage(FacesMessage.SEVERITY_WARN, "No se puede eliminar la Campaña", 
 							"No es posible eliminar esta campaña.!"));			
 			return null;
 		}
 	}
+	
+	
+	
+	private void createPieModel(){
+		this.pieModelCampania = new PieChartModel();
+        
+		pieModelCampania.set("Enviados", 540);
+		pieModelCampania.set("Rechazados", 325);
+		pieModelCampania.setExtender("skinChart");		
+         
+		pieModelCampania.setTitle(this.campaniaSelected.getNombrecampania());
+		pieModelCampania.setLegendPosition("w");
+		pieModelCampania.setMouseoverHighlight(true);
 		
-
+	}
+	
+	
+	
+	
+	
+	
 }// final de la clase

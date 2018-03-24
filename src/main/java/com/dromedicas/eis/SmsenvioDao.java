@@ -12,7 +12,7 @@ public interface SmsenvioDao {
 
 	public void insertSmsenvio(Smsenvio instance);
 
-	public void updateSmsenvio(Smsenvio instance);
+	public Integer updateSmsenvio(Smsenvio instance);
 
 	public void deleteSmsenvio(Smsenvio instance);
 

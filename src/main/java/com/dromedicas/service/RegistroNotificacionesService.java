@@ -73,7 +73,7 @@ public class RegistroNotificacionesService {
 	}
 	
 	
-	public void auditarSMSEnviado(Afiliado afiliado, String mensaje, String tipoSms, int estado){
+	public Integer auditarSMSEnviado(Afiliado afiliado, String mensaje, String tipoSms, int estado){
 		
 		//SMS
 		//cumpleanios afiliado
@@ -93,7 +93,7 @@ public class RegistroNotificacionesService {
 		sms.setCelular(afiliadoP.getCelular());
 		sms.setMensaje(mensaje);
 		
-		this.smsEnvioService.updateSmsenvio(sms);
+		return this.smsEnvioService.updateSmsenvio(sms);
 	}
 	
 	

@@ -40,8 +40,7 @@ public class CampaniaDaoImpl implements CampaniaDao {
 																							
 	@Override
 	public void deleteCampania(Campania instance) {
-		em.merge(instance);
-		em.remove(instance);
+		em.remove(em.merge(instance));
 	}
 	
 

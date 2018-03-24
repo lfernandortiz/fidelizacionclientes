@@ -1,12 +1,16 @@
 package com.dromedicas.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
+import com.dromedicas.domain.Campania;
 import com.dromedicas.domain.Smscampania;
 import com.dromedicas.eis.SmscampaniaDao;
 
@@ -43,6 +47,9 @@ public class SmsCampaniaService {
 	public void deleteSmscampania(Smscampania instance) {
 		dao.deleteSmscampania(instance);
 	}
+	
+	
+	
 
 
 }

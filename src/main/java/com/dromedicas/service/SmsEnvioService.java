@@ -5,8 +5,12 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
+import com.dromedicas.domain.Afiliado;
+import com.dromedicas.domain.Smscampania;
 import com.dromedicas.domain.Smsenvio;
 import com.dromedicas.eis.SmsenvioDao;
 
@@ -37,15 +41,26 @@ public class SmsEnvioService {
 	}
 
 	
-	public void updateSmsenvio(Smsenvio instance) {
-		dao.updateSmsenvio(instance);
+	public Integer updateSmsenvio(Smsenvio instance) {
+		return dao.updateSmsenvio(instance);
 
 	}
 
 	
 	public void deleteSmsenvio(Smsenvio instance) {
 		dao.deleteSmsenvio(instance);
-
+	}
+	
+	public Smsenvio obtenerSmscampaniaById( int id ){
+		Query query = em.createQuery("from Smsenvio sms where sms.idsmsenvio = :id");
+		query.setParameter("id", id);
+		Smsenvio temp = null;
+		try {
+			temp =  (Smsenvio) query.getSingleResult();
+		} catch (NoResultException e) {
+			System.out.println("Smsenvio No encontrado");			
+		}		
+		return temp;
 	}
 	
 

@@ -60,15 +60,15 @@ public class Campania implements Serializable {
 	private List<Emailcampania> emailcampanias;
 
 	// bi-directional many-to-one association to Paremetroscampania
-	@OneToMany(mappedBy = "campania")
+	@OneToMany(cascade= {CascadeType.PERSIST, CascadeType.REMOVE},mappedBy = "campania")
 	private List<Paremetroscampania> paremetroscampanias;
 
 	// bi-directional many-to-one association to Patologiacampania
-	@OneToMany(mappedBy="campania", fetch = FetchType.EAGER)
+	@OneToMany(cascade= {CascadeType.PERSIST, CascadeType.REMOVE}, mappedBy="campania", fetch = FetchType.EAGER)
 	private List<Patologiacampania> patologiacampanias;
 
 	// bi-directional many-to-one association to Smscampania
-	@OneToMany(mappedBy = "campania")
+	@OneToMany( mappedBy = "campania")
 	private List<Smscampania> smscampanias;
 
 	public Campania() {

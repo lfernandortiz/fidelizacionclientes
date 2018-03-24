@@ -1,5 +1,6 @@
 package com.dromedicas.smsservice;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -8,8 +9,14 @@ import javax.ejb.TransactionManagement;
 import javax.ejb.TransactionManagementType;
 
 import com.dromedicas.domain.Afiliado;
+import com.dromedicas.domain.Campania;
+import com.dromedicas.domain.Smscampania;
+import com.dromedicas.domain.SmscampaniaPK;
+import com.dromedicas.domain.Smsenvio;
 import com.dromedicas.domain.Smsplantilla;
 import com.dromedicas.service.RegistroNotificacionesService;
+import com.dromedicas.service.SmsCampaniaService;
+import com.dromedicas.service.SmsEnvioService;
 import com.dromedicas.servicio.rest.RespuestaSMSWrap;
 import com.dromedicas.servicio.rest.SaldoHablameWrap;
 import com.dromedicas.util.ExpresionesRegulares;
@@ -25,6 +32,12 @@ public class SMSService {
 	
 	@EJB
 	private RegistroNotificacionesService regNotificaciones;
+	
+	@EJB
+	private SmsEnvioService smsEnvioService;
+	
+	@EJB
+	private SmsCampaniaService smsCampaniaService;
 	
 	private final String urlServicio = "https://api.hablame.co/sms/envio?";
 	private final String cliente = "10010333";
@@ -94,16 +107,32 @@ public class SMSService {
 	
 	
 	
-	public void envioSMSCampania(Afiliado afiliado, String mensaje){
+	public void envioSMSCampania(Afiliado afiliado, String mensaje, Campania campania){
 		
 		int estado = this.enviarSMSDirecto(afiliado.getCelular(), mensaje, "masivo");
 		
+		System.out.println("ESTADO SMS:" + estado );
+		
 		//registro en auditor del envio del sms
-		this.regNotificaciones.auditarSMSEnviado(afiliado, mensaje, "SMS Directo", estado);		
+		Integer nId = this.regNotificaciones.auditarSMSEnviado(afiliado, mensaje, "SMS Directo", estado);	
+		Smsenvio smsEnviado = this.smsEnvioService.obtenerSmscampaniaById(nId);
+		
+		//crea los registros de los mensajes enviados en la campania		
+		SmscampaniaPK pk = new SmscampaniaPK();
+		pk.setIdcampania(campania.getIdcampania());
+		pk.setIdsmsenvio(nId);
+		
+		Smscampania smsCamp = new Smscampania();
+		smsCamp.setCampania(campania);
+		smsCamp.setSmsenvio(smsEnviado);
+		smsCamp.setId(pk);
+		smsCamp.setFechacampania(new Date());
+		
+		this.smsCampaniaService.updateSmscampania(smsCamp);
+		
 		
 	}
-	
-	
+		
 	
 	
 	/**

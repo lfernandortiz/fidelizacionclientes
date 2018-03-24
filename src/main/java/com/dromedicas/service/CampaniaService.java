@@ -159,7 +159,8 @@ public class CampaniaService implements Serializable {
 						System.out.println("ENVIANDO SMS DE CAMPANIA");
 						// accede al servicio de SMS y envio el mensaje con un dalay
 						// de 0.04 segundos
-						this.smsService.envioSMSCampania(afTemp, cProgramada.getContenidosms());
+						this.smsService.envioSMSCampania(afTemp, cProgramada.getContenidosms(), cProgramada);
+						
 						Thread.sleep(40);
 					} catch (InterruptedException ex) {
 						// TODO Auto-generated catch block

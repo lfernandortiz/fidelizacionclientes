@@ -32,9 +32,10 @@ public class SmsenvioDaoImpl implements SmsenvioDao {
 	}
 
 	@Override
-	public void updateSmsenvio(Smsenvio instance) {
-		em.merge(instance);
-
+	public Integer updateSmsenvio(Smsenvio instance) {
+		Smsenvio sms = em.merge(instance);
+		return sms.getIdsmsenvio();
+		
 	}
 
 	@Override

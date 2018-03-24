@@ -8,6 +8,42 @@
    
         <ui:define name="title">#{smsCampaniaBeanEdit.campaniaSelected.idcampania == 0 ? 'Crear' : 'Editar'} Campaña </ui:define> -->
 
+ 		<ui:define name="head">
+        <script type="text/javascript">
+            //<![CDATA[      
+            function skinChart() {
+                this.cfg.shadow = false;
+                this.cfg.seriesColors = ['#007be5', '#f8ad4b', '#20d077', '#5BA5D8','#B7D666','#DA5E5B'];
+                this.cfg.grid = {
+                    background: '#ffffff',
+                    borderColor: '#ffffff',
+                    gridLineColor: '#F5F5F5',
+                    shadow: false
+                };
+                this.cfg.axesDefaults = {
+                    rendererOptions: {
+                        textColor: '#666F77',
+                    }
+                };
+                this.cfg.seriesDefaults = {
+                    renderer: $.jqplot.PieRenderer,
+                    shadow: false,
+                    lineWidth: 1,
+                    markerOptions: {
+                        shadow: false,
+                        size: 7,
+                        style: 'circle'
+                    }
+                };
+                this.cfg.seriesDefaults.rendererOptions = {
+                        showDataLabels: true
+                }
+            }
+            //]]>  
+            
+        </script>
+       
+    </ui:define>
     <ui:define name="content">
         <h:form id="smscampaniaformppal">
         <!-- <p:growl id="growl" showDetail="true" sticky="true" />  -->
@@ -92,8 +128,7 @@
 								    </p:selectManyCheckbox>
 								
 							</p:panelGrid>
-							
-							<p:separator style="height:2px"/>
+														
 							<h3>Configuracion del envio.</h3>
 							
 							<p:panelGrid columns="4" id="contratopanel"
@@ -183,7 +218,12 @@
 												 styleClass="red-button"
 												 action="#{smsCampaniaBeanEdit.eliminarCampania()}" 
 												 rendered="#{smsCampaniaBeanEdit.campaniaSelected.idcampania != 0 &amp;&amp; smsCampaniaBeanEdit.campaniaSelected.estadocampania == 0 }" />
-												 
+									
+								<p:commandButton value="Estadisticas" id="avgid"
+												 oncomplete="PF('estadisticaid').show()" 
+												 process="@this"
+												 update="avgidform" 
+												 rendered="#{smsCampaniaBeanEdit.campaniaSelected.idcampania != 0 &amp;&amp; smsCampaniaBeanEdit.campaniaSelected.estadocampania == 1 }"/> 
 															
 							</p:panelGrid>
 							
@@ -193,7 +233,54 @@
             </div>  <!-- end ui-fluid -->
 			</h:form>
 			
-                    
+			<!-- Cuadro de dialogo crear SMS -->
+			<p:dialog header="" widgetVar="estadisticaid" modal="true" id="smsdirectomodalid"
+				showEffect="fade" hideEffect="fade" resizable="false"
+				style="min-width: 40em!important;">
+				<h:form id="avgidform">
+				<div class="ui-fluid">
+					<div class="ui-g">
+						<div class="ui-g-12">							
+							<h1>
+							  <i class="fa fa-comments" aria-hidden="true"></i> Estadistica de la Campaña
+							</h1>							
+							<p:spacer height="10px" />
+							<p:panelGrid columns="1" id="smsDirectoFormCrear"
+								columnClasses="ui-grid-col-12,ui-grid-col-12" layout="grid"
+								styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+								<p:outputLabel value="#{smsCampaniaBeanEdit.campaniaSelected.nombrecampania}"></p:outputLabel>
+				                <p:chart type="pie" model="#{smsCampaniaBeanEdit.pieModelCampania}" responsive="true"/>
+							</p:panelGrid>
+							<div class="buttonssms">
+								<p:panelGrid columns="4" id="buttonsecrearid"
+									columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-3,ui-grid-col-3"
+									layout="grid" styleClass="ui-panelgrid-blank"
+									style="border:0px none;  background-color:transparent; ">
+
+									<p:commandButton value="Cancelar" 
+													 id="cancelarcrearid" 
+													 oncomplete="PF('smsdirectoafil').hide()"
+													 update="avgidform" 
+													 action="#{afiliadoBeanEdit.cancelarCrearSMS()}" />
+									
+									<p:commandButton value="Enviar" 
+													 id="sendsmsid" 
+													 styleClass="navy-button"
+													 update="avgidform"
+													 action="#{afiliadoBeanEdit.enviarSMSDirecto()}"/>
+									
+								</p:panelGrid>
+							</div>
+						</div>
+						<!-- end ui-g-12 -->
+					</div>
+					<!-- end ui-g -->
+				</div>
+				<!-- end ui-fluid -->
+				</h:form>
+			</p:dialog>
+			
         
     </ui:define>   
 </ui:composition>

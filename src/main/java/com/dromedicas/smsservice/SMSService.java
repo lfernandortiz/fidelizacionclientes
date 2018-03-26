@@ -10,10 +10,13 @@ import javax.ejb.TransactionManagementType;
 
 import com.dromedicas.domain.Afiliado;
 import com.dromedicas.domain.Campania;
+import com.dromedicas.domain.Contrato;
+import com.dromedicas.domain.Empresa;
 import com.dromedicas.domain.Smscampania;
 import com.dromedicas.domain.SmscampaniaPK;
 import com.dromedicas.domain.Smsenvio;
 import com.dromedicas.domain.Smsplantilla;
+import com.dromedicas.service.EmpresaService;
 import com.dromedicas.service.RegistroNotificacionesService;
 import com.dromedicas.service.SmsCampaniaService;
 import com.dromedicas.service.SmsEnvioService;
@@ -39,6 +42,9 @@ public class SMSService {
 	@EJB
 	private SmsCampaniaService smsCampaniaService;
 	
+	@EJB
+	private EmpresaService empresaService;
+	
 	private final String urlServicio = "https://api.hablame.co/sms/envio?";
 	private final String cliente = "10010333";
 	private final String apiKey = "4z1MlW6lsQHKiJ6x909E7zS8Rp5PRF";
@@ -47,6 +53,13 @@ public class SMSService {
 	public int enviarSMSDirecto(String numero, String mensaje, String referencia ){
 		
 		int resultado = 0;
+		
+		Empresa emp = empresaService.obtenerEmpresaPorNit("900265730-0");
+		Contrato contrato =  empresaService.obtenerUltimoContrato(emp);
+		
+		if( contrato.getEnviosms() == 0 ){
+			return 2;
+		}
 		
 		try {
 			// Thread.sleep(5500);
@@ -92,8 +105,11 @@ public class SMSService {
 			}
 						
 			int estado = this.enviarSMSDirecto(af.getCelular(), mensaje, "cumpleanios");
-			//registro en auditor del envio del sms
-			this.regNotificaciones.auditarSMSEnviado(af, mensaje, "Cumpleanos", estado);
+			
+			if( estado != 2 ){
+				//registro en auditor del envio del sms
+				this.regNotificaciones.auditarSMSEnviado(af, mensaje, "Cumpleanos", estado);
+			}
 			
 			// sleep solicitado por el por el proveedor de sms
 			try {
@@ -113,24 +129,25 @@ public class SMSService {
 		
 		System.out.println("ESTADO SMS:" + estado );
 		
-		//registro en auditor del envio del sms
-		Integer nId = this.regNotificaciones.auditarSMSEnviado(afiliado, mensaje, "SMS Directo", estado);	
-		Smsenvio smsEnviado = this.smsEnvioService.obtenerSmscampaniaById(nId);
-		
-		//crea los registros de los mensajes enviados en la campania		
-		SmscampaniaPK pk = new SmscampaniaPK();
-		pk.setIdcampania(campania.getIdcampania());
-		pk.setIdsmsenvio(nId);
-		
-		Smscampania smsCamp = new Smscampania();
-		smsCamp.setCampania(campania);
-		smsCamp.setSmsenvio(smsEnviado);
-		smsCamp.setId(pk);
-		smsCamp.setFechacampania(new Date());
-		
-		this.smsCampaniaService.updateSmscampania(smsCamp);
-		
-		
+		if( estado != 2 ){
+			//registro en auditor del envio del sms
+			Integer nId = this.regNotificaciones.auditarSMSEnviado(afiliado, mensaje, "SMS Directo", estado);	
+			Smsenvio smsEnviado = this.smsEnvioService.obtenerSmscampaniaById(nId);
+			
+			//crea los registros de los mensajes enviados en la campania		
+			SmscampaniaPK pk = new SmscampaniaPK();
+			pk.setIdcampania(campania.getIdcampania());
+			pk.setIdsmsenvio(nId);
+			
+			Smscampania smsCamp = new Smscampania();
+			smsCamp.setCampania(campania);
+			smsCamp.setSmsenvio(smsEnviado);
+			smsCamp.setId(pk);
+			smsCamp.setFechacampania(new Date());
+			
+			this.smsCampaniaService.updateSmscampania(smsCamp);
+			
+		}
 	}
 		
 	

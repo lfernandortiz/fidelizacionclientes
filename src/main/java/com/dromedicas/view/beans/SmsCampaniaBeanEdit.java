@@ -1,6 +1,7 @@
 package com.dromedicas.view.beans;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -37,6 +38,7 @@ import com.dromedicas.service.CampaniaService;
 import com.dromedicas.service.ParametrosCampaniaSevice;
 import com.dromedicas.service.PatologiaCampaniaSevice;
 import com.dromedicas.service.PatologiaService;
+import com.dromedicas.service.SmsCampaniaService;
 import com.dromedicas.service.SucursalService;
 import com.dromedicas.smsservice.SMSService;
 import com.dromedicas.util.ExpresionesRegulares;
@@ -76,6 +78,9 @@ public class SmsCampaniaBeanEdit implements Serializable {
 	
 	@EJB
 	private PatologiaCampaniaSevice patologiaCService;
+	
+	@EJB
+	private SmsCampaniaService smsCampaniaService;
 	
 	private Campania campaniaSelected;
 	private List<Sucursal> sucursalList;
@@ -134,11 +139,9 @@ public class SmsCampaniaBeanEdit implements Serializable {
 		this.patologiasList = new ArrayList<String>();		
 		for(Patologia e : ptList ){			
 			this.patologiasList.add( e.getDrescripcion() );
-		}
+		}		
 		
-		if(this.campaniaSelected.getIdcampania() == 0){
-			this.createPieModel();
-		}
+		this.pieModelCampania = new PieChartModel();
 		
 	}	
 		
@@ -564,6 +567,7 @@ public class SmsCampaniaBeanEdit implements Serializable {
 			}
 		}
 				
+		this.createPieModel();
 		return "smscampaniaedit?faces-redirect=true";
 	}
 
@@ -918,15 +922,25 @@ public class SmsCampaniaBeanEdit implements Serializable {
 	
 	
 	private void createPieModel(){
+		
 		this.pieModelCampania = new PieChartModel();
-        
-		pieModelCampania.set("Enviados", 540);
-		pieModelCampania.set("Rechazados", 325);
-		pieModelCampania.setExtender("skinChart");		
-         
-		pieModelCampania.setTitle(this.campaniaSelected.getNombrecampania());
-		pieModelCampania.setLegendPosition("w");
-		pieModelCampania.setMouseoverHighlight(true);
+		
+		System.out.println("Id CAMPANIA: " + this.campaniaSelected.getIdcampania() ) ;
+		List<Object[]> data = this.smsCampaniaService.obtenerStadisticasCampSMS(this.campaniaSelected);
+		BigDecimal env = (BigDecimal) data.get(0)[0];
+		BigDecimal rec = (BigDecimal) data.get(0)[1];
+		
+		if( data != null && !data.isEmpty() && this.campaniaSelected.getEstadocampania() == 1 ){
+			pieModelCampania.set("Enviados " + env.intValue(), env.intValue());
+			pieModelCampania.set("Rechazados " + rec.intValue(), rec.intValue());
+			pieModelCampania.setExtender("skinChart");		
+	         
+			pieModelCampania.setTitle(this.campaniaSelected.getNombrecampania());
+			pieModelCampania.setLegendPosition("w");
+			pieModelCampania.setMouseoverHighlight(true);
+		}
+		
+		
 		
 	}
 	

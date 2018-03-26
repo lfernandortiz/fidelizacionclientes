@@ -397,8 +397,6 @@ public class AfiliadoBeanEdit implements Serializable{
 			int estado = this.smsService.enviarSMSDirecto(this.afiliadoSelected.getCelular(),
 						this.getMensajeSms(), "SMS Directo");
 			
-			this.regNotificaciones.auditarSMSEnviado(this.afiliadoSelected, this.getMensajeSms(), "SMS Directo", estado);
-			
 			System.out.println("CODIGO DE RESPUESTA: " + estado);
 			
 			if(estado == 0 ){
@@ -409,6 +407,8 @@ public class AfiliadoBeanEdit implements Serializable{
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
 						"SMS enviado con exito!", "SMS enviado satisfactoriamente al Nro. " 
 								+ this.getAfiliadoSelected().getCelular()));
+				//registr auditoria del mensaje
+				this.regNotificaciones.auditarSMSEnviado(this.afiliadoSelected, this.getMensajeSms(), "SMS Directo", estado);
 				
 				this.cancelarCrearSMS();
 			}else{

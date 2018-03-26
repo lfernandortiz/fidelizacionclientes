@@ -46,7 +46,7 @@ public class QuartzListener implements ServletContextListener {
 //			// Trigger para Notificaciones de acumulacion de puntos cada 30 minutos
 //			// Son usadas expresiones cron
 //			Trigger trigger = newTrigger().withIdentity("NotificacionAcum", "Group")
-//					.withSchedule(CronScheduleBuilder.cronSchedule("0 0/40 * 1/1 * ? *)) //cada 40 min 	0 0/40 * 1/1 * ? *
+//					.withSchedule(CronScheduleBuilder.cronSchedule("0 0/40 * 1/1 * ? *")) //cada 40 min 	0 0/40 * 1/1 * ? *
 //					.build();
 //			
 //			// configuracion del Setup the Job and Trigger with Scheduler & schedule jobs
@@ -77,7 +77,7 @@ public class QuartzListener implements ServletContextListener {
 //
 //			/*
 //			 * Schedule revision de correos rechazados | Todos los dias a las 6am. 
-//			 * test  2 minutos:	0 0/2 * 1/1 * ? *
+//			 * test  2 minutos:	0 0/7 * 1/1 * ? *
 //			 */
 //			//Job para que ejecuta el EJB que realiza la lectura de los email			
 //			JobDetail jobEmailR = newJob(LeerEmailRechazados.class).withIdentity("EmailRechazados", "EmailGroup").build();
@@ -85,7 +85,7 @@ public class QuartzListener implements ServletContextListener {
 //			// Trigger todos los dias a las 6 am abre el el buzon de despacho de correos y revisa las direcciones
 //			// de email rechazadas y actualiza esta caracteristica en la base de datos
 //			Trigger triggerEmailR = newTrigger().withIdentity("EmailRechazados", "EmailGroup")
-//					.withSchedule(CronScheduleBuilder.cronSchedule("0 0 0/6 1/1 * ? *")) //Cada 6 Horas 0 0 0/6 1/1 * ? *
+//					.withSchedule(CronScheduleBuilder.cronSchedule("0 0/7 * 1/1 * ? *")) //Cada 6 Horas 0 0 0/6 1/1 * ? *
 //					.build();			
 //						
 //			 			
@@ -147,7 +147,7 @@ public class QuartzListener implements ServletContextListener {
 //			schSMSCumple.scheduleJob(smsCumpleanos, triggerSMSCumple);
 		
 			
-			
+//			
 			/*
 			 * Schedule valida cada hora si hay campanias SMS
 			 *  

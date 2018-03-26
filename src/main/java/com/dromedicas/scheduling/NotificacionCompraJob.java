@@ -15,6 +15,7 @@ import com.dromedicas.mailservice.EnviarEmailAlertas;
 import com.dromedicas.service.TransaccionService;
 
 @Stateless
+
 public class NotificacionCompraJob implements Job {
 
 	@Override
@@ -35,6 +36,8 @@ public class NotificacionCompraJob implements Job {
 			//Se buscan todas las Tx's que no han sido notificadas, el afiliado debe tener correo
 			List<Transaccion>  txList = txService.obtenerTxSinNotificacion();			
 			
+			System.out.println("Total de Txs a notificiar: " + txList.size());
+			
 			if( txList.size() > 0 ){
 				email.emailNotificacionCompra(txList);
 				
@@ -46,7 +49,7 @@ public class NotificacionCompraJob implements Job {
 			}					
 			
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			System.out.println("ERROR EN EL ENVIO DE EMAIL TX");
 			e.printStackTrace();
 		}
 	}

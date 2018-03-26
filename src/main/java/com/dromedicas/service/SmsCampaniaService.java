@@ -48,8 +48,36 @@ public class SmsCampaniaService {
 		dao.deleteSmscampania(instance);
 	}
 	
-	
-	
+	/**
+	 * Retorna las estadisticas de la campnia. Sms 
+	 * rechazados y recibidos
+	 * @param campania
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public List<Object[]> obtenerStadisticasCampSMS( Campania campania ){
+		
+		
+		System.out.println("----Id de campania: "+ campania.getIdcampania() );
+		
+		String queryString = "select 	sum(case when smsenvio.idestadosms = 0 then 1 else 0 end), "+
+							"sum(case when smsenvio.idestadosms = 1 then 1 else 0 end) 	from " +
+							"smscampania inner join smsenvio on (smscampania.idsmsenvio = smsenvio.idsmsenvio) "+
+							"where smscampania.idcampania = " + campania.getIdcampania();
 
+		System.out.println("QueryString: " + queryString );
+		
+		Query query = em.createNativeQuery(queryString);
+		
+		List<Object[]> result = null;
+		try {
+			result = query.getResultList();
+			
+		} catch (NoResultException e) {
+			System.out.println("Error al obtener estadisticas de ampania SMS");
+			e.printStackTrace();
+		}
+		return result;
+	}
 
 }

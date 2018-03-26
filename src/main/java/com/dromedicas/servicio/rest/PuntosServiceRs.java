@@ -301,9 +301,12 @@ public class PuntosServiceRs {
 									}
 									int estado = this.smsService.enviarSMSDirecto(afiliado.getCelular(), mensaje,
 											"redencion");
-									// auditoria de mensaje enviado al afiliado
-									this.regNotificaciones.auditarSMSEnviado(afiliado, mensaje, "Redencion de puntos",
-											estado);
+									
+									if( estado != 2 ){
+										// auditoria de mensaje enviado al afiliado
+										this.regNotificaciones.auditarSMSEnviado(afiliado, mensaje, "Redencion de puntos",
+												estado);
+									}
 								}
 
 								return Response.status(200).entity(responseObject).build();

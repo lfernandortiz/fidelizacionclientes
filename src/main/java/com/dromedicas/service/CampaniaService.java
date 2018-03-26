@@ -15,6 +15,8 @@ import javax.persistence.Query;
 
 import com.dromedicas.domain.Afiliado;
 import com.dromedicas.domain.Campania;
+import com.dromedicas.domain.Contrato;
+import com.dromedicas.domain.Empresa;
 import com.dromedicas.eis.CampaniaDao;
 import com.dromedicas.mailservice.EnviarEmailAlertas;
 import com.dromedicas.smsservice.SMSService;
@@ -42,6 +44,12 @@ public class CampaniaService implements Serializable {
 	
 	@EJB
 	private EnviarEmailAlertas emailArlertas;
+	
+	@EJB
+	private SmsCampaniaService smsCampaniaService;
+	
+	@EJB
+	private EmpresaService empresaService;
 		
 	public List<Campania> findAllCampanias() {
 		return dao.findAllCampanias();
@@ -147,35 +155,46 @@ public class CampaniaService implements Serializable {
 			
 			int cupoMensajes = this.smsService.obtenerMensajesDisponibles();
 			
+			Empresa emp = empresaService.obtenerEmpresaPorNit("900265730-0");
+			Contrato contrato =  empresaService.obtenerUltimoContrato(emp);
+			
 			//si noy cupo de mensajes al momento del envio de la campania envia un email
 			if( cupoMensajes > audienciaList.size() ){
 				// enviamos los mensajes
-				for (Object[] e : audienciaList) {
-					Integer id =  (Integer) e[0];
-					// obtiene el afiliado por el documento desde la tupla
-					Afiliado afTemp = this.afiliadoService.obtenerAfiliadoById(id );
+				
+				//el envio de SMS esta habilitado
+				if( contrato.getEnviosms() == 1){
+					for (Object[] e : audienciaList) {
+						Integer id =  (Integer) e[0];
+						// obtiene el afiliado por el documento desde la tupla
+						Afiliado afTemp = this.afiliadoService.obtenerAfiliadoById(id );
 
-					try {
-						System.out.println("ENVIANDO SMS DE CAMPANIA");
-						// accede al servicio de SMS y envio el mensaje con un dalay
-						// de 0.04 segundos
-						this.smsService.envioSMSCampania(afTemp, cProgramada.getContenidosms(), cProgramada);
-						
-						Thread.sleep(30);
-					} catch (InterruptedException ex) {
-						// TODO Auto-generated catch block
-						ex.printStackTrace();
-					}// final del catch
-				}//fin del for
+						try {
+							System.out.println("ENVIANDO SMS DE CAMPANIA");
+							// accede al servicio de SMS y envio el mensaje con un dalay
+							// de 0.04 segundos
+							this.smsService.envioSMSCampania(afTemp, cProgramada.getContenidosms(), cProgramada);
+							
+							Thread.sleep(30);
+						} catch (InterruptedException ex) {
+							// TODO Auto-generated catch block
+							ex.printStackTrace();
+						}// final del catch
+					}//fin del for
+					
+					//Marca la campania como enviada
+					cProgramada.setEstadocampania((byte) 1);	
+					
+					//actualiza el objeto campania
+					this.updateCampania(cProgramada);
+				}else{
+					this.emailArlertas.emailErrorCampania(cProgramada, "La opcion de envios SMS esta deshabilitada");
+				}//final del else valida opcion de envio sms
 				
-				//Marca la campania como enviada
-				cProgramada.setEstadocampania((byte) 1);	
 				
-				//actualiza el objeto campania
-				this.updateCampania(cProgramada);
 			}else{
 				//envia un correo avisando
-				this.emailArlertas.emailErrorCampania(cProgramada);
+				this.emailArlertas.emailErrorCampania(cProgramada, "Cupo insuficiente para el envio de la campania");
 			}
 		}//fin del if
 	}

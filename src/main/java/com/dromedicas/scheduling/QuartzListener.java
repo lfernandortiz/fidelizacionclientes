@@ -75,17 +75,17 @@ public class QuartzListener implements ServletContextListener {
 //			
 //			
 //
-//			/*
-//			 * Schedule revision de correos rechazados | Todos los dias a las 6am. 
-//			 * test  2 minutos:	0 0/7 * 1/1 * ? *
-//			 */
+			/*
+			 * Schedule revision de correos rechazados | Todos los dias a las 6am. 
+			 * test  5 minutos:	0 0/5 * 1/1 * ? *
+			 */
 //			//Job para que ejecuta el EJB que realiza la lectura de los email			
 //			JobDetail jobEmailR = newJob(LeerEmailRechazados.class).withIdentity("EmailRechazados", "EmailGroup").build();
 //			
 //			// Trigger todos los dias a las 6 am abre el el buzon de despacho de correos y revisa las direcciones
 //			// de email rechazadas y actualiza esta caracteristica en la base de datos
 //			Trigger triggerEmailR = newTrigger().withIdentity("EmailRechazados", "EmailGroup")
-//					.withSchedule(CronScheduleBuilder.cronSchedule("0 0/7 * 1/1 * ? *")) //Cada 6 Horas 0 0 0/6 1/1 * ? *
+//					.withSchedule(CronScheduleBuilder.cronSchedule("0 0/5 * 1/1 * ? *")) //Cada 6 Horas 0 0 0/6 1/1 * ? *
 //					.build();			
 //						
 //			 			

@@ -172,6 +172,9 @@ public class EnviarEmailAlertas {
 			if (afiliado.getEmailrechazado() == 0) {
 
 				ServletContext servletContext = null;
+				
+				String urlConfirmacion = "http://www.puntosfarmanorte.com.co/seccion/actualizacion.html?id="
+						+ afiliado.getKeycode();
 
 				try {
 					servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext()
@@ -200,6 +203,9 @@ public class EnviarEmailAlertas {
 
 				Element redimir = doc.select("span#redimir").first();
 				redimir.append(Integer.toString(balance.getDisponiblesaredimir()));
+				
+//				Element btn = doc.select("a#unsuscribe").first();
+//				btn.attr("href", urlConfirmacion);
 
 				// Element img = doc.select("img#pixelcontrol").first();
 				// img.attr("src", url);
@@ -1082,7 +1088,7 @@ public class EnviarEmailAlertas {
 	
 	
 	
-	public boolean emailErrorCampania(Campania campania) {
+	public boolean emailErrorCampania(Campania campania, String contenido) {
 
 		System.out.println("Envia email de error campania ");
 		try {
@@ -1095,7 +1101,7 @@ public class EnviarEmailAlertas {
 				servletContext = context;
 			}
 
-			String mensaje = "No habia cupo disponible para el envio de la siguiente campania.\n\n "
+			String mensaje = contenido + ".\n\n "
 					+ "Nombre Campaña: " + campania.getNombrecampania() + "\n" + "Fecha: " + campania.getFechainicio() + "\n";
 
 			// Propiedades de la conexión
@@ -1111,7 +1117,7 @@ public class EnviarEmailAlertas {
 			Session session = Session.getDefaultInstance(props);
 
 			// multiples direcciones
-			String[] to = { "sistemas2@dromedicas.com.co"};
+			String[] to = { "sistemas2@dromedicas.com.co", "mercadeo@dromedicas.com.co" };
 
 			// arreglo con las direcciones de correo
 			InternetAddress[] addressTo = new InternetAddress[to.length];

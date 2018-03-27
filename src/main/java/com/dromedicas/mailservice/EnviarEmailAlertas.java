@@ -1087,7 +1087,6 @@ public class EnviarEmailAlertas {
 	
 	
 	
-	
 	public boolean emailErrorCampania(Campania campania, String contenido) {
 
 		System.out.println("Envia email de error campania ");

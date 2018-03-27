@@ -148,8 +148,7 @@ public class CampaniaService implements Serializable {
 		// primero revisa que existan campanias SMS
 		Campania cProgramada = this.obtenerCampaniaProgramadaSMS();
 
-		if (cProgramada != null) {
-			
+		if (cProgramada != null) {			
 			// obtiene la coleccion de numeros y id's afiliados
 			List<Object[]> audienciaList = this.obtenerUdienciaSMSQuery(cProgramada.getCriterios());
 			
@@ -188,13 +187,13 @@ public class CampaniaService implements Serializable {
 					//actualiza el objeto campania
 					this.updateCampania(cProgramada);
 				}else{
-					this.emailArlertas.emailErrorCampania(cProgramada, "La opcion de envios SMS esta deshabilitada");
+					this.emailArlertas.emailErrorCampania(cProgramada, ""
+							+ "No se pudo enviar una campania; La opcion de envios SMS esta deshabilitada");
 				}//final del else valida opcion de envio sms
-				
-				
 			}else{
 				//envia un correo avisando
-				this.emailArlertas.emailErrorCampania(cProgramada, "Cupo insuficiente para el envio de la campania");
+				this.emailArlertas.emailErrorCampania(cProgramada, 
+						"No se pudo enviar una campania; Cupo insuficiente para el envio de la campania");
 			}
 		}//fin del if
 	}

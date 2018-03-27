@@ -83,7 +83,7 @@ public class TransaccionService {
 		System.out.println("Consulta txs....");
 		
 		Query query = em.createQuery("FROM Transaccion t  WHERE  t.tipotransaccion.idtipotransaccion = 1 and "
-				+ "t.envionotificacion = 0 and t.redimidos = 0 and t.afiliado.email != ''and and t.afiliado.emailrechazado = 0 ");			
+				+ "t.envionotificacion = 0 and t.redimidos = 0 and t.afiliado.email != '' and t.afiliado.emailrechazado = 0 ");			
 		try {
 			txList = query.getResultList();
 		} catch (NoResultException e) {

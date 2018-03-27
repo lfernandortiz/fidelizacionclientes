@@ -141,7 +141,7 @@ public class SmsCampaniaBeanEdit implements Serializable {
 			this.patologiasList.add( e.getDrescripcion() );
 		}		
 		
-		this.pieModelCampania = new PieChartModel();
+		
 		
 	}	
 		
@@ -923,14 +923,15 @@ public class SmsCampaniaBeanEdit implements Serializable {
 	
 	private void createPieModel(){
 		
-		this.pieModelCampania = new PieChartModel();
-		
 		System.out.println("Id CAMPANIA: " + this.campaniaSelected.getIdcampania() ) ;
 		List<Object[]> data = this.smsCampaniaService.obtenerStadisticasCampSMS(this.campaniaSelected);
 		BigDecimal env = (BigDecimal) data.get(0)[0];
 		BigDecimal rec = (BigDecimal) data.get(0)[1];
 		
-		if( data != null && !data.isEmpty() && this.campaniaSelected.getEstadocampania() == 1 ){
+		System.out.println( "TAMANIO DE DATOS: " + env );
+		
+		if( data != null && (env!=null && rec!=null) && this.campaniaSelected.getEstadocampania() == 1 ){
+			this.pieModelCampania = new PieChartModel();
 			pieModelCampania.set("Enviados " + env.intValue(), env.intValue());
 			pieModelCampania.set("Rechazados " + rec.intValue(), rec.intValue());
 			pieModelCampania.setExtender("skinChart");		
@@ -939,8 +940,6 @@ public class SmsCampaniaBeanEdit implements Serializable {
 			pieModelCampania.setLegendPosition("w");
 			pieModelCampania.setMouseoverHighlight(true);
 		}
-		
-		
 		
 	}
 	

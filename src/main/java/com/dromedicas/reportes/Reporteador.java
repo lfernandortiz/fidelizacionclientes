@@ -57,8 +57,6 @@ public class Reporteador {
 			
 			System.out.println("Exportando el informe...");
 			
-			
-
 			JRXlsExporter exporterXLS = new JRXlsExporter();
 
 			exporterXLS.setParameter(JRExporterParameter.JASPER_PRINT,jasperPrint);

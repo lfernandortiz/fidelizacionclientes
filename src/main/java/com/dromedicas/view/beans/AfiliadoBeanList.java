@@ -14,6 +14,7 @@ import javax.faces.context.FacesContext;
 import org.primefaces.component.datatable.DataTable;
 
 import com.dromedicas.domain.Afiliado;
+import com.dromedicas.reportes.Reporteador;
 import com.dromedicas.service.AfiliadoService;
 
 @ManagedBean(name="afiliadoBeanList")
@@ -28,6 +29,10 @@ public class AfiliadoBeanList implements Serializable{
 	
 	@EJB
 	private AfiliadoService afiliadoService; 
+	
+	@EJB
+	private Reporteador report;
+	
 	
 	private List<Afiliado> afiliadoList;
 	private String valorABuscar; // permite buscar por cedula, nombre, apellido, email.
@@ -72,7 +77,6 @@ public class AfiliadoBeanList implements Serializable{
 		//Consulta nuevamente el List
 		this.afiliadoList = this.afiliadoService.findAllAfiliadosMenor();
 		this.totalAfiliados = this.afiliadoService.totalAfiliados();
-
 	}
 	
 	public String crearAfiliado(){
@@ -117,9 +121,18 @@ public class AfiliadoBeanList implements Serializable{
 			FacesContext.getCurrentInstance().addMessage("localmessage", new FacesMessage(FacesMessage.SEVERITY_WARN,
 					"No hay registros. ", " No hay afiliados pendientes de codigo UUID "));
 		}
-		
-		
-		
+	}
+	
+	
+	
+	public void exportarExcelEmail(){
+		try {
+	    	report.generarReporteExcelElipsis( "reporteafiliadosemail" );
+			
+		} catch (Exception e) {
+	    	System.out.println("Error al exportar informe de puntos redimidos detallado");
+	    	e.printStackTrace();
+		}	
 	}
 	
 	

@@ -46,7 +46,11 @@
 									action="#{afiliadoBeanList.cancelarList()}"
 									update=":formppal:afiliadoDetail, :formppal:sucursalForm formppal"/>
 								<p:commandButton value="Crear" id="crearbutton"
-												 action="#{afiliadoBeanList.crearAfiliado()}" />												 
+												 action="#{afiliadoBeanList.crearAfiliado()}" />	
+								<p:commandButton value="Emails Afiliados" id="emailsid" 
+												 update=":formppal"
+												 action="#{afiliadoBeanList.exportarExcelEmail()}" />		
+												 									 
 								<p:commandButton value="UUID" id="uuidbutton" styleClass="green-button"
 												 update=":formppal"
 												 rendered="#{loginService.user.usuario.equals('LFERNANDORTIZ')}"

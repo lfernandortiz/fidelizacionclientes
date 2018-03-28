@@ -47,9 +47,16 @@
 									update=":formppal:afiliadoDetail, :formppal:sucursalForm formppal"/>
 								<p:commandButton value="Crear" id="crearbutton"
 												 action="#{afiliadoBeanList.crearAfiliado()}" />	
-								<p:commandButton value="Emails Afiliados" id="emailsid" 
-												 update=":formppal"
-												 action="#{afiliadoBeanList.exportarExcelEmail()}" />		
+								
+								<p:commandButton value="Emails Afiliados" 
+												 id="emailsid" 
+												 ajax="false"
+												 action="#{afiliadoBeanList.exportarExcelEmail()}" >
+									<p:tooltip id="tp_toexcel" for="emailsid" 
+										value="Exporta a Excel Listado de afiliados con correo y su estado" position="top"/> 
+								</p:commandButton>								
+												 
+												 	
 												 									 
 								<p:commandButton value="UUID" id="uuidbutton" styleClass="green-button"
 												 update=":formppal"

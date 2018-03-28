@@ -10,6 +10,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
 import com.dromedicas.util.UtilidadesBD;
+import com.dromedicas.view.beans.LoginBeanService;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRExporterParameter;
@@ -24,6 +25,8 @@ public class Reporteador {
 	
 	@EJB
 	private UtilidadesBD udb;
+	
+	
 
 	String path = "C:/ReportesGenerados/";
 
@@ -41,12 +44,18 @@ public class Reporteador {
 		String doc = nombreReporte + inicio + ".xls";
 		// Destino y nombre del reporte en el servidor
 		String destFileNamePdf = path + doc;
+		
 		Map parameters = new HashMap();
-		for (int i = 0; i < params.length; i++) {
-			
-			System.out.println("param" +  (i+1)  +": " + params[i]);
-			parameters.put("param" + (i + 1), params[i]);
+		
+		if( params.length != 0 ){			
+			for (int i = 0; i < params.length; i++) {
+				
+				System.out.println("param" +  (i+1)  +": " + params[i]);
+				parameters.put("param" + (i + 1), params[i]);
+			}			
 		}
+		
+		
 		try {
 			
 			System.out.println("Creando Conexion...");
@@ -66,8 +75,11 @@ public class Reporteador {
 			exporterXLS.exportReport();	
 			
 			c.close();
+			
+			System.out.println("----Enviando MIME al cliente");
 			udb.mostrarFormatoExcel(path, doc);//
 			//this.setNombrereporte(null);
+			System.out.println("----Abriendo informe");
 			return destFileNamePdf;
 		} catch (SQLException e) {
 			e.printStackTrace();

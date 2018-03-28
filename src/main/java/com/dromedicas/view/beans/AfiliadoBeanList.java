@@ -8,12 +8,14 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 import org.primefaces.component.datatable.DataTable;
 
 import com.dromedicas.domain.Afiliado;
+import com.dromedicas.domain.Empresa;
 import com.dromedicas.reportes.Reporteador;
 import com.dromedicas.service.AfiliadoService;
 
@@ -32,6 +34,9 @@ public class AfiliadoBeanList implements Serializable{
 	
 	@EJB
 	private Reporteador report;
+	
+	@EJB
+	private LoginBeanService loginService;
 	
 	
 	private List<Afiliado> afiliadoList;
@@ -127,6 +132,10 @@ public class AfiliadoBeanList implements Serializable{
 	
 	public void exportarExcelEmail(){
 		try {
+			
+			System.out.println("Parametro 2: " + loginService.getNombreUsuario() );
+			
+			
 	    	report.generarReporteExcelElipsis( "reporteafiliadosemail" );
 			
 		} catch (Exception e) {

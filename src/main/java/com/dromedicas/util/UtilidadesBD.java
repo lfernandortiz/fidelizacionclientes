@@ -90,18 +90,30 @@ public class UtilidadesBD {
 
 		if(file != null)//fileURL != null) 
 		{
-			byte[] fileData = new byte[(int)file.length()];
-			FileInputStream inputStream = new FileInputStream(file);
-			inputStream.read(fileData);
-			ServletOutputStream os = response.getOutputStream();	
-			response.setContentType("application/xls");
-			response.setHeader("Content-Disposition", "attachement; filename="+doc+"");
-			int readBytes = 0;
-			//read from the file; write to the ServletOutputStream
-			int i = 0;
-			os.write(fileData);
-			os.close();
-			facesContext.responseComplete();
+			
+			try {
+				byte[] fileData = new byte[(int)file.length()];
+				
+				System.out.println(">>Tamanio de archivo: " + fileData.length );
+				
+				FileInputStream inputStream = new FileInputStream(file);
+				inputStream.read(fileData);
+				ServletOutputStream os = response.getOutputStream();	
+				response.setContentType("application/xls");
+				response.setHeader("Content-Disposition", "attachement; filename="+doc+"");
+				int readBytes = 0;
+				//read from the file; write to the ServletOutputStream
+				int i = 0;
+				System.out.println(">>Escribiendo el archivo " );
+				os.write(fileData);
+				System.out.println(">>Cerrando el flujo " );
+				os.close();
+				System.out.println(">>Completando la respuesta " );
+				facesContext.responseComplete();
+			} catch (Exception e) {
+				System.out.println("-------------Error al exportar el informe");
+				e.printStackTrace();
+			}
 		}	
 	}
 	

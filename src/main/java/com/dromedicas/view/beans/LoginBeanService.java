@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import javax.ejb.EJB;
+import javax.ejb.Stateless;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -12,13 +13,14 @@ import javax.servlet.http.HttpSession;
 
 import org.primefaces.context.RequestContext;
 
-import com.dromedicas.domain.Empresa;
 import com.dromedicas.domain.Usuarioweb;
 import com.dromedicas.service.UsuarioWebService;
 import com.dromedicas.util.ExpresionesRegulares;
 
+
 @ManagedBean(name = "loginService")
 @SessionScoped
+@Stateless
 public class LoginBeanService implements Serializable {
 
 	@SuppressWarnings("unused")

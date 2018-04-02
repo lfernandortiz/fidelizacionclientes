@@ -121,6 +121,7 @@ public class AfiliadoBeanEdit implements Serializable{
 	private List<Sucursal> sucursalList;
 	private List<Pais> paisList;
 	private List<Emailenvio> emailEnvioList;
+	private List<Transaccion> transaccionList;
 	private Emailenvio emailEnvioSelected;
 	private String mensajeSms;
 	private String longiMensajeSMS;
@@ -160,6 +161,7 @@ public class AfiliadoBeanEdit implements Serializable{
 
 	@PostConstruct
 	public void init(){
+		
 		this.afiliadoSelected = new Afiliado();	
 		this.nacionalidad = new Pais();
 		this.tipodocList = tipodocService.findAllTipodocumento();
@@ -170,7 +172,6 @@ public class AfiliadoBeanEdit implements Serializable{
 		this.nacionalidad = paisService.obtenerPaisPorNombre("Colombia");
 		
 		System.out.println("Pais: " + this.getNacionalidad().getNombees());
-		
 	}
 			
 	public StreamedContent getFileDow() {
@@ -366,6 +367,14 @@ public class AfiliadoBeanEdit implements Serializable{
 	public void setSmsEnvioSelected(Smsenvio smsEnvioSelected) {
 		this.smsEnvioSelected = smsEnvioSelected;
 	}
+	
+	public List<Transaccion> getTransaccionList() {
+		return transaccionList;
+	}
+
+	public void setTransaccionList(List<Transaccion> transaccionList) {
+		this.transaccionList = transaccionList;
+	}
 
 	public void analizaSMS(){
 		// La longitud maxima de caracteres a enviar por mensaje SMS es de 160 caracteres
@@ -554,6 +563,10 @@ public class AfiliadoBeanEdit implements Serializable{
 		//Carga de informacion del Balance de Puntos
 		System.out.println("Afiliado Seleccionado: " + afiliadoSelected.getDocumento());		
 		this.balancePuntos = this.puntosService.consultaPuntos(afiliadoSelected);
+		
+		this.transaccionList = this.afiliadoService.obtenerTodasTransacciones(afiliadoSelected);
+		
+		System.out.println("*-*-*--*-*--*-*-*--*Tamanio de las Txs: " + this.transaccionList.size());
 		return "afiliadoedit?faces-redirect=true";
 	}
 	

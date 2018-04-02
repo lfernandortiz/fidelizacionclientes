@@ -45,6 +45,7 @@ public class Reporteador {
 		// Destino y nombre del reporte en el servidor
 		String destFileNamePdf = path + doc;
 		
+		@SuppressWarnings("rawtypes")
 		Map parameters = new HashMap();
 		
 		if( params.length != 0 ){			
@@ -76,10 +77,10 @@ public class Reporteador {
 			
 			c.close();
 			
-			System.out.println("----Enviando MIME al cliente");
+			
 			udb.mostrarFormatoExcel(path, doc);//
 			//this.setNombrereporte(null);
-			System.out.println("----Abriendo informe");
+			
 			return destFileNamePdf;
 		} catch (SQLException e) {
 			e.printStackTrace();

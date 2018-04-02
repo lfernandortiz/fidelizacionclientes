@@ -47,7 +47,7 @@ public class TransaccionService {
 	
 	
 	public Transaccion obtenerTransaccionPorFactura(String nroFactura) {
-		Query query = em.createQuery("FROM Transaccion t WHERE t.nrofactura = :nroFac");
+		Query query = em.createQuery("FROM Transaccion t WHERE t.nrofactura = :nroFac and t.tipotransaccion = 1");
 		query.setParameter("nroFac", nroFactura);
 		Transaccion temp = null;		
 		try {

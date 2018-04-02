@@ -255,7 +255,10 @@ public class PuntosServiceRs {
 						if(  bTemp.getDisponiblesaredimir() >= puntosRedimidos ){ 
 							//valida que no exista esta factura en la misma sucursal para redimir del mismo afiliado
 							Transaccion txTemp = txService.obtenerTransaccionPorFactura(nrofactura);
+							
 							//Validacion factura
+							System.out.println("-*****--------Afiliado tx documento: " + txTemp.getAfiliado().getDocumento() );
+									
 							if( txTemp.getNrofactura().equals(nrofactura) && txTemp.getAfiliado().getDocumento().equals(afiliado.getDocumento()) ){
 								responseObject.setCode(200);
 								responseObject.setMessage("Intento de redencion doble.");

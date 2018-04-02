@@ -3,24 +3,18 @@ package com.dromedicas.service;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-
-import org.hibernate.Criteria;
 
 import com.dromedicas.domain.Afiliado;
+import com.dromedicas.domain.Transaccion;
 import com.dromedicas.eis.AfiliadoDao;
 import com.dromedicas.mailservice.EnviarEmailAlertas;
 
@@ -109,6 +103,43 @@ public class AfiliadoService {
 	// ======================================
     // =     Consultas Personalizadas       =
     // ======================================
+	
+	/**
+	 * Retorna un list con todas las transacciones del afiliado
+	 * @param afiliado
+	 * @return
+	 */
+	public List<Transaccion> obtenerTodasTransacciones(Afiliado afiliado){
+		Query query = em.createQuery("FROM Transaccion t  where t.afiliado.idafiliado = " + afiliado.getIdafiliado() + " order by fechatransaccion desc");
+		//query.setMaxResults(500);
+		List<Transaccion> temp = null;
+		try {
+			temp =  query.getResultList();
+			
+			System.out.println("----------TAMANIO TXS: " + temp.size());
+			
+		} catch (NoResultException e) {
+			System.out.println("Usuario No encontrado");			
+		}		
+		return temp;
+	}
+	
+	/**
+	 * Retorna un List con las ultimas 
+	 * @param afiliado
+	 * @return
+	 */
+	public List<Transaccion> obtenerUltimasTransacciones(Afiliado afiliado){
+		Query query = em.createQuery("FROM Transaccion t  where t.afiliado.idafiliado = " + afiliado.getIdafiliado());
+		query.setMaxResults(10);
+		List<Transaccion> temp = null;
+		try {
+			temp =  query.getResultList();
+		} catch (NoResultException e) {
+			System.out.println("Usuario No encontrado");			
+		}		
+		return temp;
+	}
 	
 	
 	/**

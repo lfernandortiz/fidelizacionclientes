@@ -1400,7 +1400,7 @@
 								 
 								<p:separator style="height:10px"/>	
 								
-									<p:dataTable id="balancedatail" var="tx" value="#{afiliadoBeanEdit.afiliadoSelected.transaccions}" 
+									<p:dataTable id="balancedatail" var="tx" value="#{afiliadoBeanEdit.transaccionList}" 
 	                        			rowKey="#{tx.idtransaccion}" selection="#{afiliadoBeanEdit.txTemp}" selectionMode="single"
 	                        			emptyMessage="Registros no encontrados :-(" paginator="true"
 	                        			paginatorTemplate="{Name}" paginatorPosition="top">
@@ -1413,7 +1413,7 @@
 								            </h:commandLink>
 								         </div>
 								        </f:facet>
-										<f:facet name="{Name}">Detalle de Transacciones - #{afiliadoBeanEdit.afiliadoSelected.transaccions.size()}</f:facet>
+										<f:facet name="{Name}">Detalle de Transacciones - #{afiliadoBeanEdit.transaccionList.size()}</f:facet>
 										
 										<p:columnGroup type="header">
 								            <p:row>

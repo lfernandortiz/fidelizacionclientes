@@ -183,7 +183,7 @@ public class ClienteRecibirTxAcumulacionRs {
 							String factura = e.getTipodoc()+e.getPrefijo()+e.getNumero();
 							
 							//valida que la factura no este registrada
-							if(txService.obtenerTransaccionPorFactura(factura) == null){
+							if(txService.obtenerRedencionPorFacturaYAfiliado(factura, afiliado) == null){
 								Transaccion tx = new Transaccion();//nueva transaccion
 								
 								// se reciben parametros y se crean los objetos necesarios		

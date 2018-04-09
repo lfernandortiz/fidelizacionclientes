@@ -192,8 +192,8 @@ public class PlantillaSmsBeanList implements Serializable {
 		
 		// El metodo longitudMensaje elimina del mensaje las variables "${variable}"
 		int longitud =  this.longitudMensaje( this.smsPlantillaSelected.getSmscontenido()) ;
-		int restante = 160 - longitud;
-		if( longitud > 160){
+		int restante = 320 - longitud;
+		if( longitud > 320){
 			this.setLongiMensajeSMS(longitud  + " Mensaje muy extenso");
 		}else{
 			this.setLongiMensajeSMS( restante  + (restante == 1 ? " Caracter restante" : " Caracteres restantes") );

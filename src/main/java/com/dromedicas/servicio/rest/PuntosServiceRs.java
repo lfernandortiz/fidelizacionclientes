@@ -254,12 +254,10 @@ public class PuntosServiceRs {
 						
 						if(  bTemp.getDisponiblesaredimir() >= puntosRedimidos ){ 
 							//valida que no exista esta factura en la misma sucursal para redimir del mismo afiliado
-							Transaccion txTemp = txService.obtenerTransaccionPorFactura(nrofactura);
+							Transaccion txTemp = txService.obtenerRedencionPorFacturaYAfiliado(nrofactura, afiliado);
 							
 							//Validacion factura
-							System.out.println("-*****--------Afiliado tx documento: " + txTemp.getAfiliado().getDocumento() );
-									
-							if( txTemp.getNrofactura().equals(nrofactura) && txTemp.getAfiliado().getDocumento().equals(afiliado.getDocumento()) ){
+							if( txTemp != null ){
 								responseObject.setCode(200);
 								responseObject.setMessage("Intento de redencion doble.");
 								responseObject.setStatus(Status.OK.getReasonPhrase());
@@ -489,10 +487,59 @@ public class PuntosServiceRs {
 			responseObject.setCode(Status.BAD_REQUEST.getStatusCode());
 			responseObject.setStatus(Status.BAD_REQUEST.getReasonPhrase());
 			responseObject.setMessage("Afiliado no encontrado");
-			return Response.status(Status.OK).entity(responseObject).header("Access-Control-Allow-Origin", "*").build();
-			
-		}
+			return Response.status(Status.OK).entity(responseObject).header("Access-Control-Allow-Origin", "*").build();			
+		}	
+	}
 	
+	
+	
+	
+	@Path("/ultimastxs/{token}")
+	@GET	
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response obtenerUltimasTransaccion(@PathParam("token") String token){
+		ResponsePuntos responseObject = new ResponsePuntos();		
+		String uuidAfiliado = null;
+		try {
+			String justTheToken = token.substring("Bearer".length()).trim();
+			Key key = new SimpleKeyGenerator().generateKey();			
+			uuidAfiliado = Jwts.parser().setSigningKey(key).parseClaimsJws(justTheToken).getBody().getSubject();			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println(Response.Status.BAD_REQUEST.getStatusCode());
+			responseObject.setCode(Status.BAD_REQUEST.getStatusCode());
+			responseObject.setStatus(Status.BAD_REQUEST.getReasonPhrase());
+			responseObject.setMessage("Sesion finalizada");
+			return Response.status(Status.OK).entity(responseObject).header("Access-Control-Allow-Origin", "*").build();
+		}
+		
+		if(uuidAfiliado != null){
+			Afiliado afiliado = this.afiliadoService.obtenerAfiliadoUUID(uuidAfiliado);
+			
+			if(afiliado != null){
+				
+				List<Transaccion> txsList = this.afiliadoService.obtenerUltimasTransacciones(afiliado);
+				
+				responseObject.setCode(200);
+				responseObject.setMessage("Transaccion exitosa");
+				responseObject.setBalance(null);
+				responseObject.setContenedor(txsList);
+				responseObject.setStatus(Status.OK.getReasonPhrase());
+				return Response.status(Status.OK).entity(responseObject).header("Access-Control-Allow-Origin", "*").build();
+				
+			}else{
+				responseObject.setCode(401);
+				responseObject.setMessage("Afilaido no encontrado");
+				return Response.status(401).entity(responseObject).header("Access-Control-Allow-Origin", "*").build();
+			}
+		}else{
+			responseObject.setCode(Status.BAD_REQUEST.getStatusCode());
+			responseObject.setStatus(Status.BAD_REQUEST.getReasonPhrase());
+			responseObject.setMessage("Afiliado no encontrado");
+			return Response.status(Status.OK).entity(responseObject).header("Access-Control-Allow-Origin", "*").build();			
+		}	
+		
 	}
 	
 	

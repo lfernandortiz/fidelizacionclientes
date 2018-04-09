@@ -161,8 +161,8 @@
 									style="border:0px none; background-color:transparent;">
 									
 								    <p:outputLabel for="mensajesmscontent" value="Contenido del Mesaje SMS:" />
-									<p:inputTextarea rows="3" placeholder="Mensaje SMS  max. 160 caracteres"
-									id="mensajesmscontent" maxlength="160" required="true"
+									<p:inputTextarea rows="3" placeholder="Mensaje SMS  max. 320 caracteres"
+									id="mensajesmscontent" maxlength="320" required="true"
 									value="#{smsCampaniaBeanEdit.contenidoSms}">
 										<p:ajax event="keyup" update="outCrearSms" listener="#{smsCampaniaBeanEdit.analizaSMS()}" />
 									</p:inputTextarea>								

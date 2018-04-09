@@ -130,7 +130,8 @@ public class AfiliadoService {
 	 * @return
 	 */
 	public List<Transaccion> obtenerUltimasTransacciones(Afiliado afiliado){
-		Query query = em.createQuery("FROM Transaccion t  where t.afiliado.idafiliado = " + afiliado.getIdafiliado());
+		Query query = em.createQuery("FROM Transaccion t  where t.afiliado.idafiliado = " + afiliado.getIdafiliado() + " "
+				+ " order by t.fechatransaccion DESC");
 		query.setMaxResults(10);
 		List<Transaccion> temp = null;
 		try {

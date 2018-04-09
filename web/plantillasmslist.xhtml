@@ -103,8 +103,8 @@
 									value="#{plantillaSmsBeanList.smsPlantillaSelected.descripcion}" />	
 																
 								<p:outputLabel for="contecrearsmsid">Mensaje SMS</p:outputLabel>
-								<p:inputTextarea rows="5" placeholder="Mensaje SMS  max. 160 caracteres"
-									id="contecrearsmsid" maxlength="160"
+								<p:inputTextarea rows="5" placeholder="Mensaje SMS  max. 320 caracteres"
+									id="contecrearsmsid" maxlength="320"
 									value="#{plantillaSmsBeanList.smsPlantillaSelected.smscontenido}">
 									<p:ajax event="keyup" update="outCrearSms" listener="#{plantillaSmsBeanList.analizaSMS()}" />
 								</p:inputTextarea>								

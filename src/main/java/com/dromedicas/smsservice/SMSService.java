@@ -46,8 +46,8 @@ public class SMSService {
 	private EmpresaService empresaService;
 	
 	private final String urlServicio = "https://api.hablame.co/sms/envio?";
-	private final String cliente = "10010333";
-	private final String apiKey = "4z1MlW6lsQHKiJ6x909E7zS8Rp5PRF";
+	private final String cliente = "10011843";
+	private final String apiKey = "mZG8Sorrrm5hXuQrYCPliyzUdrt808";
 	
 	
 	public int enviarSMSDirecto(String numero, String mensaje, String referencia ){

@@ -22,8 +22,8 @@ public class EnviarSms {
 			String subjectEmojiRaw = ":large_blue_circle: Confirmacion de suscripcion :memo:";
 			String subjectEmoji = EmojiParser.parseToUnicode(subjectEmojiRaw);	
 			// Thread.sleep(5500);
-			String query = String.format("cliente=%s&api=%s&numero=%s&sms=%s", URLEncoder.encode("10010333", "UTF-8"),
-					URLEncoder.encode("4z1MlW6lsQHKiJ6x909E7zS8Rp5PRF", "UTF-8"),
+			String query = String.format("cliente=%s&api=%s&numero=%s&sms=%s", URLEncoder.encode("10011843", "UTF-8"),
+					URLEncoder.encode("mZG8Sorrrm5hXuQrYCPliyzUdrt808", "UTF-8"),
 					URLEncoder.encode( "3102097474", "UTF-8"), 
 					URLEncoder.encode(subjectEmoji, "UTF-8"));
 

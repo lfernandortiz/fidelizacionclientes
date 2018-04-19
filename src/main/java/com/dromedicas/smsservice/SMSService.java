@@ -161,7 +161,7 @@ public class SMSService {
 		Integer mensajesDisponibles = null;
 		
 		try {
-			String url = "https://api.hablame.co/saldo/consulta?api=4z1MlW6lsQHKiJ6x909E7zS8Rp5PRF&cliente=10010333";
+			String url = "https://api.hablame.co/saldo/consulta?api=mZG8Sorrrm5hXuQrYCPliyzUdrt808&cliente=10011843";
 			
 			//Objeto cliente que consume el servicio
 			Client client = Client.create();
@@ -169,7 +169,7 @@ public class SMSService {
 			SaldoHablameWrap response = webResource.accept("application/json").get(SaldoHablameWrap.class);
 			
 			Double saldo  = Double.parseDouble( response.getSaldo() );			
-			mensajesDisponibles = (saldo.intValue() / 18 );//--> Aca se debe reemplazar por una consulta del costo del sms
+			mensajesDisponibles = (saldo.intValue() / 9 );//--> Aca se debe reemplazar por una consulta del costo del sms
 			
 		} catch (Exception e) {
 			System.out.println("ERROR AL OBTENER SALDO DE MENSAJES");

@@ -69,7 +69,7 @@ public class SMSService {
 			String url = urlServicio+"api="+ apiKey+"&cliente="+cliente+"&numero=" +
 					numero + "&sms=" +  mensaje +(!referencia.equals("") ? "" : "&referencia=" + referencia);
 			
-			System.out.println("URL SMS: " + url);
+			//System.out.println("URL SMS: " + url);
 			
 			WebResource webResource = client.resource( url.replace(" ",	"%20") );
 			RespuestaSMSWrap response = webResource.accept("application/json").get(RespuestaSMSWrap.class);
@@ -77,9 +77,9 @@ public class SMSService {
 			resultado = Integer.parseInt(response.getSms().get1().getResultado());
 			
 			if( resultado == 0 ){
-				System.out.println("Mensaje enviado exitosamente");
+				//System.out.println("Mensaje enviado exitosamente");
 			}else{
-				System.out.println(":-( No se pudo enviar el SMS");
+				//System.out.println(":-( No se pudo enviar el SMS");
 			}
 
 		} catch (Exception e) {
@@ -113,7 +113,7 @@ public class SMSService {
 			
 			// sleep solicitado por el por el proveedor de sms
 			try {
-				Thread.sleep(100);
+				Thread.sleep(60);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -127,7 +127,7 @@ public class SMSService {
 		
 		int estado = this.enviarSMSDirecto(afiliado.getCelular(), mensaje, "masivo");
 		
-		System.out.println("ESTADO SMS:" + estado );
+		//System.out.println("ESTADO SMS:" + estado );
 		
 		if( estado != 2 ){
 			//registro en auditor del envio del sms

@@ -150,6 +150,8 @@ public class CampaniaService implements Serializable {
 
 		if (cProgramada != null) {			
 			// obtiene la coleccion de numeros y id's afiliados
+			String queryString  = cProgramada.getCriterios();
+			System.out.println("--> " + queryString);
 			List<Object[]> audienciaList = this.obtenerUdienciaSMSQuery(cProgramada.getCriterios());
 			
 			int cupoMensajes = this.smsService.obtenerMensajesDisponibles();
@@ -202,7 +204,7 @@ public class CampaniaService implements Serializable {
 	
 	public List<Object[]> obtenerUdienciaSMSQuery(String query){
 		
-		Query queryObject = em.createNativeQuery(query);
+		Query queryObject = em.createQuery(query);
 		List<Object[]> list = null;
 		try { 
 			list= queryObject.getResultList();

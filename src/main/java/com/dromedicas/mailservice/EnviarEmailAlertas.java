@@ -580,7 +580,7 @@ public class EnviarEmailAlertas {
 
 			// multiples direcciones
 			String[] to = { "sistemas2@dromedicas.com.co", "sistemas@dromedicas.com.co", "johnduran@dromedicas.com.co",
-					"diego.lozano@dromedicas.com.co", "archivo@dromedicas.com.co" };
+					"seguridadfarmanorte@gmail.com", "archivo@dromedicas.com.co", "elianaarredondo@dromedicas.com.co" };
 
 			// arreglo con las direcciones de correo
 			InternetAddress[] addressTo = new InternetAddress[to.length];

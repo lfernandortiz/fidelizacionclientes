@@ -132,7 +132,7 @@ public class SmsCampaniaBeanEdit implements Serializable {
 		
 		Date dateTemp = this.AddingHHToDate(new Date(), 1);
 		this.setFechaInicio( dateTemp );
-		System.out.println("FECHA: " + new SimpleDateFormat("dd/MM/yyyy HH").format(this.getFechaInicio()) );	
+		this.setCalculoString("");
 		
 		
 		List<Patologia> ptList = this.patologiaSevice.findAllPatologias();		

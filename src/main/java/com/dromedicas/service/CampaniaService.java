@@ -161,8 +161,13 @@ public class CampaniaService implements Serializable {
 			
 			//si noy cupo de mensajes al momento del envio de la campania envia un email
 			if( cupoMensajes > audienciaList.size() ){
-				// enviamos los mensajes
+				//Marca la campania como enviada
+				cProgramada.setEstadocampania((byte) 1);	
 				
+				//actualiza el objeto campania
+				this.updateCampania(cProgramada);
+				
+				// enviamos los mensajes				
 				//el envio de SMS esta habilitado
 				if( contrato.getEnviosms() == 1){
 					for (Object[] e : audienciaList) {
@@ -183,11 +188,7 @@ public class CampaniaService implements Serializable {
 						}// final del catch
 					}//fin del for
 					
-					//Marca la campania como enviada
-					cProgramada.setEstadocampania((byte) 1);	
 					
-					//actualiza el objeto campania
-					this.updateCampania(cProgramada);
 				}else{
 					this.emailArlertas.emailErrorCampania(cProgramada, ""
 							+ "No se pudo enviar una campania; La opcion de envios SMS esta deshabilitada");

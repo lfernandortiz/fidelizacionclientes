@@ -343,7 +343,7 @@ public class AfiliadoService {
 		//resta 7 dias a la fecha actual
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(new Date());
-		cal.add(Calendar.DATE, -7);
+		cal.add(Calendar.DATE, -10);
 		Date menosSiete = cal.getTime();
 		
 		Query query = em.createQuery("SELECT a FROM Afiliado a where date(a.momento) >= :menossiete order by a.idafiliado desc");	

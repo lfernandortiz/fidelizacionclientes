@@ -821,8 +821,7 @@ public class AfiliadoBeanEdit implements Serializable{
 			this.fileUp = event.getFile();
 			
 			this.setTxTemp(this.txService.obtenerTransaccionPorTxId( (int) this.txTempTable[0]));
-			System.out.println("---->" +  this.getTxTemp().getNrofactura() + " -- id: " + this.getTxTemp().getIdtransaccion() );
-			System.out.println("**** " + this.getTxTemp().getTipotransaccion().getIdtipotransaccion() );
+			
 			
 			//valida que solo se permita carga de ticket de redension y que existan los archivos
 			if( this.fileUp != null && this.getTxTemp() != null && 
@@ -872,6 +871,8 @@ public class AfiliadoBeanEdit implements Serializable{
 			        
 			        //actualiza el datatable de tx's
 			        this.afiliadoSelected = afiliadoService.obtenerAfiliadoById(this.afiliadoSelected);		
+			        int id = this.afiliadoSelected.getIdafiliado();
+					this.transaccionListP = this.afiliadoService.obtenerTxAfiliado(id);
 			        
 			        RequestContext.getCurrentInstance().update("balancedatail");	
 				}//end else (tck != null)		        

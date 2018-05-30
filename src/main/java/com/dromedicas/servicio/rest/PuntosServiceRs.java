@@ -145,7 +145,7 @@ public class PuntosServiceRs {
 				}
 			}else{ //Si no se halla el afiliado
 				responseObject.setCode(401);
-				responseObject.setMessage("Afilaido no encontrado");
+				responseObject.setMessage("Afiliado no encontrado");
 				return Response.status(401).entity(responseObject).build();
 			}			
 		}else{ //Faltan datos en la solicitud
@@ -228,6 +228,8 @@ public class PuntosServiceRs {
 		}
 		
 		
+		
+		
 		//se validan todos los parametros
 		if( !codsucursal.equals("") && !momento.equals("") && !nrofactura.equals("") && valortx != 0 
 					&& !documento.equals("") && puntosRedimidos!= 0){
@@ -236,6 +238,13 @@ public class PuntosServiceRs {
 			
 			//se obtiene el afiliado	
 			Afiliado afiliado = this.afiliadoService.obtenerAfiliadoByDocumento(documento);
+			
+			if( afiliado.getSinredencion() == 1 ){
+				responseObject.setCode(200);
+				responseObject.setMessage("REDENCION NO PERMITIDA para este afiliado. Comuniquese con sistemas");
+				responseObject.setStatus(Status.OK.getReasonPhrase());
+				return Response.status(200).entity(responseObject).build();
+			}
 			
 			if(afiliado != null){
 				
@@ -302,6 +311,7 @@ public class PuntosServiceRs {
 									}
 									int estado = this.smsService.enviarSMSDirecto(afiliado.getCelular(), mensaje,
 											"redencion");
+									
 									
 									if( estado != 2 ){
 										// auditoria de mensaje enviado al afiliado

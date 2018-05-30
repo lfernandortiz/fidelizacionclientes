@@ -14,6 +14,7 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.context.Flash;
+import javax.persistence.Query;
 
 import org.apache.commons.io.IOUtils;
 import org.primefaces.context.RequestContext;
@@ -35,10 +36,12 @@ import com.dromedicas.domain.Vendedor;
 import com.dromedicas.mailservice.EnviarEmailAlertas;
 import com.dromedicas.reportes.Reporteador;
 import com.dromedicas.service.AfiliadoService;
+import com.dromedicas.service.EmailEnvioService;
 import com.dromedicas.service.OperacionPuntosService;
 import com.dromedicas.service.PaisService;
 import com.dromedicas.service.ReferidoService;
 import com.dromedicas.service.RegistroNotificacionesService;
+import com.dromedicas.service.SmsEnvioService;
 import com.dromedicas.service.SucursalService;
 import com.dromedicas.service.TicketredencionService;
 import com.dromedicas.service.TipoDocumentoService;
@@ -113,6 +116,14 @@ public class AfiliadoBeanEdit implements Serializable{
 	@EJB
 	private RegistroNotificacionesService regNotificaciones;
 	
+	@EJB
+	private SmsEnvioService smsEnvioService;
+	
+	@EJB
+	private EmailEnvioService emailEnvioService;
+	
+	
+	
 	@ManagedProperty(value = "#{loginService}")
 	private LoginBeanService loginBean;
 		
@@ -122,10 +133,13 @@ public class AfiliadoBeanEdit implements Serializable{
 	private List<Pais> paisList;
 	private List<Emailenvio> emailEnvioList;
 	private List<Transaccion> transaccionList;
+	private List<Smsenvio> smsenviosList;
 	private Emailenvio emailEnvioSelected;
 	private String mensajeSms;
 	private String longiMensajeSMS;
 	private Smsenvio smsEnvioSelected;
+	
+	private List<Object[]> transaccionListP;
 	
 	private String street1 = "AVENIDA";
 	private String street1Valor = "";
@@ -138,8 +152,12 @@ public class AfiliadoBeanEdit implements Serializable{
 	//varialbe para gui par
 	private boolean emailValidated;
 	private boolean emailRechazado;
+	private boolean esEmpleado;
+	private boolean sinRedencion;
 	
 	private BalancePuntos balancePuntos;
+	
+	private Object[] txTempTable;
 	
 	//upload ticket redenciones
 	private String nroFacturaTemp;
@@ -173,7 +191,17 @@ public class AfiliadoBeanEdit implements Serializable{
 		
 		System.out.println("Pais: " + this.getNacionalidad().getNombees());
 	}
+	
+	
 			
+	public Object[] getTxTempTable() {
+		return txTempTable;
+	}
+
+	public void setTxTempTable(Object[] txTempTable) {
+		this.txTempTable = txTempTable;
+	}
+
 	public StreamedContent getFileDow() {
 		return fileDow;
 	}
@@ -376,6 +404,38 @@ public class AfiliadoBeanEdit implements Serializable{
 		this.transaccionList = transaccionList;
 	}
 
+	public boolean isEsEmpleado() {
+		return esEmpleado;
+	}
+
+	public void setEsEmpleado(boolean esEmpleado) {
+		this.esEmpleado = esEmpleado;
+	}
+	
+	public boolean isSinRedencion() {
+		return sinRedencion;
+	}
+
+	public void setSinRedencion(boolean sinRedencion) {
+		this.sinRedencion = sinRedencion;
+	}
+	
+	public List<Smsenvio> getSmsenviosList() {
+		return smsenviosList;
+	}
+	
+	public List<Object[]> getTransaccionListP() {
+		return transaccionListP;
+	}
+
+	public void setTransaccionListP(List<Object[]> transaccionListP) {
+		this.transaccionListP = transaccionListP;
+	}
+
+	public void setSmsenviosList(List<Smsenvio> smsenviosList) {
+		this.smsenviosList = smsenviosList;
+	}
+
 	public void analizaSMS(){
 		// La longitud maxima de caracteres a enviar por mensaje SMS es de 160 caracteres
 		// segun el proveedor del servicio.
@@ -454,6 +514,12 @@ public class AfiliadoBeanEdit implements Serializable{
 		this.afiliadoSelected.setApellidos(
 					regex.removerAcentosNtildes(this.afiliadoSelected.getApellidos().trim().toUpperCase()));
 		this.afiliadoSelected.setTipodocumentoBean(this.afiliadoSelected.getTipodocumentoBean());
+		
+		byte temp = (byte) (this.isEsEmpleado() ? 1 : 0);
+		this.afiliadoSelected.setEsempleado(temp);
+		
+		temp = (byte) (this.isSinRedencion() ? 1 : 0);
+		this.afiliadoSelected.setSinredencion(temp);
 		
 		System.out.println("NACIONALIDAD:  " + this.getNacionalidad().getNombees()); 
 		
@@ -556,6 +622,8 @@ public class AfiliadoBeanEdit implements Serializable{
 	public String editarAfiliado(){
 		this.emailValidated = this.afiliadoSelected.getEmailvalidado() == 1 ? true : false;
 		this.emailRechazado = this.afiliadoSelected.getEmailrechazado() == 1 ? true : false;
+		this.esEmpleado =  this.afiliadoSelected.getEsempleado() == 1 ? true : false;
+		this.sinRedencion = this.afiliadoSelected.getSinredencion() == 1 ? true : false;
 		//variable de control para validacion de correo se usa para aplicar el css en la vista
 		this.emailValid = true;		
 		this.nacionalidad = this.paisService.obtenerPaisPorNombre(this.afiliadoSelected.getNacionalidad());	
@@ -564,9 +632,19 @@ public class AfiliadoBeanEdit implements Serializable{
 		System.out.println("Afiliado Seleccionado: " + afiliadoSelected.getDocumento());		
 		this.balancePuntos = this.puntosService.consultaPuntos(afiliadoSelected);
 		
-		this.transaccionList = this.afiliadoService.obtenerTodasTransacciones(afiliadoSelected);
+		//this.transaccionList = this.afiliadoService.obtenerTodasTransacciones(afiliadoSelected);
+		int id = this.afiliadoSelected.getIdafiliado();
+		System.out.println("ID AFILIADO:  " + id);
+		this.transaccionListP = this.afiliadoService.obtenerTxAfiliado(id);
+		this.smsenviosList =  this.afiliadoService.obtenerSmsEnviadosAfiliado(id);
+		this.emailEnvioList =  this.afiliadoService.obtenerEmailEnviadosAfiliado(id);
 		
-		System.out.println("*-*-*--*-*--*-*-*--*Tamanio de las Txs: " + this.transaccionList.size());
+		
+		System.out.println("*-*-*--*-*--*-*-*--*Tamanio de las Txs: " + this.transaccionListP.size());
+		
+		
+		
+		
 		return "afiliadoedit?faces-redirect=true";
 	}
 	
@@ -593,6 +671,15 @@ public class AfiliadoBeanEdit implements Serializable{
 		this.afiliadoSelected.setApellidos(
 				regex.removerAcentosNtildes(this.afiliadoSelected.getApellidos().trim().toUpperCase()));
 		this.afiliadoSelected.setTipodocumentoBean(this.afiliadoSelected.getTipodocumentoBean());
+		
+		System.out.println("ES EMPLEADO: " + this.isEsEmpleado() );
+		System.out.println("Sin REDENCION: " + this.isSinRedencion() );
+		
+		byte temp = (byte) (this.isEsEmpleado() ? 1 : 0);
+		this.afiliadoSelected.setEsempleado(temp);
+		
+		temp = (byte) (this.isSinRedencion() ? 1 : 0);
+		this.afiliadoSelected.setSinredencion(temp);
 		
 		//valida si la cedula que se esta ingresando no este registrada en otro afiliado
 		Afiliado afTempo = afiliadoService.obtenerAfiliadoByDocumento(this.afiliadoSelected.getDocumento());
@@ -733,8 +820,13 @@ public class AfiliadoBeanEdit implements Serializable{
 			
 			this.fileUp = event.getFile();
 			
+			this.setTxTemp(this.txService.obtenerTransaccionPorTxId( (int) this.txTempTable[0]));
+			System.out.println("---->" +  this.getTxTemp().getNrofactura() + " -- id: " + this.getTxTemp().getIdtransaccion() );
+			System.out.println("**** " + this.getTxTemp().getTipotransaccion().getIdtipotransaccion() );
+			
 			//valida que solo se permita carga de ticket de redension y que existan los archivos
-			if( this.fileUp != null && this.getTxTemp() != null && this.getTxTemp().getTipotransaccion().getIdtipotransaccion() == 2){
+			if( this.fileUp != null && this.getTxTemp() != null && 
+					this.getTxTemp().getTipotransaccion().getIdtipotransaccion() == 2){
 				//valida si la Tx ya tiene una imagen de ticket asignada
 				Ticketredencion tck = 
 						this.ticketService.obtenerTicketredencionByNroFactura(this.txTemp.getNrofactura());
@@ -780,6 +872,7 @@ public class AfiliadoBeanEdit implements Serializable{
 			        
 			        //actualiza el datatable de tx's
 			        this.afiliadoSelected = afiliadoService.obtenerAfiliadoById(this.afiliadoSelected);		
+			        
 			        RequestContext.getCurrentInstance().update("balancedatail");	
 				}//end else (tck != null)		        
 			}else{
@@ -799,14 +892,17 @@ public class AfiliadoBeanEdit implements Serializable{
 	
 	public StreamedContent getTicketDown() {
 		
-		Ticketredencion tkTemp = this.ticketService.obtenerTicketredencionByNroFactura(this.txTemp.getNrofactura());
+		String  nroFac = (String) this.txTempTable[3];
+		System.out.println("--------" + nroFac);
+		
+		Ticketredencion tkTemp = this.ticketService.obtenerTicketredencionByNroFactura(nroFac);
 
 		if (tkTemp != null) {
 			byte[] image = null;
 			image = tkTemp.getImgticket();
 
 			DefaultStreamedContent ds = new DefaultStreamedContent(new ByteArrayInputStream(image), "image/jpg",
-					"redencion" + this.txTemp.getNrofactura()+".jpg");
+					"redencion" + nroFac +".jpg");
 			
 			this.resetFilesField();
 			

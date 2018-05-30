@@ -63,5 +63,20 @@ public class SmsEnvioService {
 		return temp;
 	}
 	
+	public List<Smsenvio> obtenerSmsEnviadosAfiliado( int idafiliado){
+		System.out.println("ID RECIBIDO: " +  idafiliado);
+		Query query = em.createQuery("from Smsenvio sms where sms.afiliado.idafiliado = :id");
+		query.setParameter("id", idafiliado);
+		List<Smsenvio> temp = null;
+		try {
+			temp =  query.getResultList();
+		} catch (NoResultException e) {
+			System.out.println("Smsenvios No encontrado");			
+		}		
+		return temp;
+		
+		
+	}
+	
 
 }

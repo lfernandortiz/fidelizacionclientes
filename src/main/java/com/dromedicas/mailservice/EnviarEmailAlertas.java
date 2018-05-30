@@ -579,8 +579,13 @@ public class EnviarEmailAlertas {
 			Session session = Session.getDefaultInstance(props);
 
 			// multiples direcciones
-			String[] to = { "sistemas2@dromedicas.com.co", "sistemas@dromedicas.com.co", "johnduran@dromedicas.com.co",
-					"seguridadfarmanorte@gmail.com", "archivo@dromedicas.com.co", "elianaarredondo@dromedicas.com.co" };
+			String[] to = { "sistemas2@dromedicas.com.co", 
+						    "sistemas@dromedicas.com.co", 
+						    "johnduran@dromedicas.com.co",
+						    "seguridadfarmanorte@gmail.com", 
+						    "archivo@dromedicas.com.co", 
+						    "elianaarredondo@dromedicas.com.co" 
+						    };
 
 			// arreglo con las direcciones de correo
 			InternetAddress[] addressTo = new InternetAddress[to.length];

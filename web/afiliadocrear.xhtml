@@ -1272,6 +1272,15 @@
 								<p:outputLabel for="emailid" value="Email" />
 								<p:inputText id="emailid" value="#{afiliadoBeanEdit.afiliadoSelected.email}"
 									styleClass="#{afiliadoBeanEdit.emailValid ? '' : 'ui-state-error'}"/>
+									
+							
+								<p:outputLabel for="esempleadoid" value="Es Empleado" />
+        						<p:selectBooleanCheckbox id="esempleadoid" 
+        									value="#{afiliadoBeanEdit.esEmpleado}" />
+        									
+        						<p:outputLabel for="sinredencionid" value="No Redime" />
+        						<p:selectBooleanCheckbox id="sinredencionid" 
+        									value="#{afiliadoBeanEdit.sinRedencion}" />
 											
 							</p:panelGrid>
 							<p:separator style="height:10px"/>

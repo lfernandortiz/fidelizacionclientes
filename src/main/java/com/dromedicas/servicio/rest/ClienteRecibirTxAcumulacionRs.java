@@ -226,8 +226,13 @@ public class ClienteRecibirTxAcumulacionRs {
 								
 								int mathPuntos = (valortx / baseAc);	//-> Cambiar (100) por paramatreo optenico de consulta  
 								System.out.println("----Puntos acumulados: "+ mathPuntos);
-															
-								tx.setPuntostransaccion(mathPuntos);
+								
+								// si el afiliado es empleado no acumula  puntos
+								if( afiliado.getEsempleado() == 1  ){
+									tx.setPuntostransaccion(0);
+								}else{
+									tx.setPuntostransaccion(mathPuntos);
+								}
 								
 								//anade le nuevo objeto Transaccion a la coleccion
 								txList.add(tx);								

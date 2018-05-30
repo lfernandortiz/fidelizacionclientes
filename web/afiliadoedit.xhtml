@@ -1204,6 +1204,14 @@
 								<p:outputLabel for="emailid" value="Email" />
 								<p:inputText id="emailid" value="#{afiliadoBeanEdit.afiliadoSelected.email}"
 									styleClass="#{afiliadoBeanEdit.emailValid ? '' : 'ui-state-error'}"/>
+									
+							    <p:outputLabel for="esempleadoid" value="Es Empleado" />
+        						<p:selectBooleanCheckbox id="esempleadoid" 
+        									value="#{afiliadoBeanEdit.esEmpleado}" />
+        									
+        						<p:outputLabel for="sinredencionid" value="No Redime" />
+        						<p:selectBooleanCheckbox id="sinredencionid" 
+        									value="#{afiliadoBeanEdit.sinRedencion}" />
 													
 							</p:panelGrid>
 							<p:separator style="height:10px"/>
@@ -1400,8 +1408,8 @@
 								 
 								<p:separator style="height:10px"/>	
 								
-									<p:dataTable id="balancedatail" var="tx" value="#{afiliadoBeanEdit.transaccionList}" 
-	                        			rowKey="#{tx.idtransaccion}" selection="#{afiliadoBeanEdit.txTemp}" selectionMode="single"
+									<p:dataTable id="balancedatail" var="tx" value="#{afiliadoBeanEdit.transaccionListP}" 
+	                        			rowKey="#{tx[0]}" selection="#{afiliadoBeanEdit.txTempTable}" selectionMode="single"
 	                        			emptyMessage="Registros no encontrados :-(" paginator="true"
 	                        			paginatorTemplate="{Name}" paginatorPosition="top">
 	                        			
@@ -1413,7 +1421,7 @@
 								            </h:commandLink>
 								         </div>
 								        </f:facet>
-										<f:facet name="{Name}">Detalle de Transacciones - #{afiliadoBeanEdit.transaccionList.size()}</f:facet>
+										<f:facet name="{Name}">Detalle de Transacciones - #{afiliadoBeanEdit.transaccionListP.size()}</f:facet>
 										
 										<p:columnGroup type="header">
 								            <p:row>
@@ -1427,51 +1435,51 @@
 								         </p:columnGroup>
 										
 										<p:column>
-											<h:outputText value="#{tx.fechatransaccion}" >
+											<h:outputText value="#{tx[1]}" >
 												<f:convertDateTime pattern = "dd/MM/yyyy HH:mm" /> 
 											</h:outputText>
 										</p:column>
 										<p:column>
-											<h:outputText value="#{tx.sucursal.nombreSucursal}" /> 
+											<h:outputText value="#{tx[2]}" /> 
 										</p:column>
 										<p:column >
-											<h:outputText value="#{tx.nrofactura}" /> 
+											<h:outputText value="#{tx[3]}" /> 
 										</p:column>
 										<p:column >
 											<div class="tipotx">
-												<h:outputText value="#{tx.tipotransaccion.descripcion.equals('INSCRIPCION AFILIADO')? 'INSCRIPCION' : 
-													tx.tipotransaccion.descripcion}" />
+												<h:outputText value="#{tx[5].equals('INSCRIPCION AFILIADO')? 'INSCRIPCION' : 
+													tx[5]}" />
 											</div>
 										</p:column>
 										<p:column>
 											<div class="celdaDerecha">
-												<h:outputText value="#{tx.tipotransaccion.idtipotransaccion == 1 || tx.tipotransaccion.idtipotransaccion == 4 ? tx.puntostransaccion : ''}"/> 
+												<h:outputText value="#{tx[4] == 1 || tx[4] == 4 ? tx[7] : ''}"/> 
 											</div>
 										</p:column>
 										<p:column>
 											<div class="celdaDerecha"> <!-- Columna redencion muestra ticket -->											
-												<ui:fragment rendered="#{tx.tipotransaccion.idtipotransaccion == 3}" >
-													<h:outputText value="#{tx.puntostransaccion*-1 }"/>
+												<ui:fragment rendered="#{tx[4] == 3}" >
+													<h:outputText value="#{tx[7]*-1 }"/>
 												</ui:fragment>
-												<ui:fragment rendered="#{tx.tipotransaccion.idtipotransaccion == 2}" >
-													<ui:fragment rendered="#{afiliadoBeanEdit.ticketAsociado(tx)}" >
+												<ui:fragment rendered="#{tx[4] == 2}" >
+													<ui:fragment rendered="#{tx[6] != null}" >
 														<p:lightBox styleClass="imagebox" id="lighbox1">  
-														    <h:outputLink value="#" title="Redencion Factura Nro. #{tx.nrofactura}" styleClass="linkticket">
-																<h:outputText value="#{tx.puntostransaccion*-1 }"/> <i class="fa fa-sticky-note" aria-hidden="true"></i>
+														    <h:outputLink value="#" title="Redencion Factura Nro. #{tx[3]}" styleClass="linkticket">
+																<h:outputText value="#{tx[7]*-1 }"/> <i class="fa fa-sticky-note" aria-hidden="true"></i>
 															</h:outputLink>
 															<f:facet name="inline">
 														       <p:graphicImage value="#{afiliadoBeanEdit.image}" style="height: 400px">
-																    <f:param name="nrofactura" value="#{tx.nrofactura}" />
+																    <f:param name="nrofactura" value="#{tx[3]}" />
 																</p:graphicImage>
 														    </f:facet>
 														</p:lightBox>
-													</ui:fragment>	<!-- end afiliadoBeanEdit.ticketAsociado(tx) -->
-													<ui:fragment rendered="#{!afiliadoBeanEdit.ticketAsociado(tx)}" >
-														<h:outputText value="#{tx.puntostransaccion*-1 }"/>
-													</ui:fragment> <!-- end !afiliadoBeanEdit.ticketAsociado(tx) -->
+													</ui:fragment>	
+													<ui:fragment rendered="#{!(tx[6] != null)}" >
+														<h:outputText value="#{tx[7]*-1 }"/>
+													</ui:fragment> 
 												</ui:fragment> <!-- end tx.tipotransaccion.idtipotransaccion == 2 -->
 												
-											</div>
+											</div><!-- end celdaDerecha -->		
 										</p:column>
 										
 										<p:columnGroup type="footer">
@@ -1515,7 +1523,7 @@
 									</ui:fragment>
 									
 									
-									<p:dataTable var="data" value="#{afiliadoBeanEdit.afiliadoSelected.emailenvios}"
+									<p:dataTable var="data" value="#{afiliadoBeanEdit.emailEnvioList}"
 										selectionMode="single" rowKey="#{data.idemailenvio}" reflow="true">
 										<f:facet name="header">
 										<i class="fa fa-envelope-o" aria-hidden="true"></i>  Email Enviados
@@ -1555,7 +1563,7 @@
 									
 										<p:separator style="height:10px"/>	
 									
-									<p:dataTable var="data" value="#{afiliadoBeanEdit.afiliadoSelected.smsenvios}"
+									<p:dataTable var="data" value="#{afiliadoBeanEdit.smsenviosList}"
 										selectionMode="single" rowKey="#{data.idsmsenvio}" reflow="true">
 										<f:facet name="header">
 										<i class="fa fa-comment" aria-hidden="true"></i>  SMS Enviados
@@ -1639,10 +1647,10 @@
 												 action="#{afiliadoBeanEdit.buscarFacturaRedencion()}"
 												 process="formticketid">
 								</p:commandButton>
-								<ui:fragment rendered="#{afiliadoBeanEdit.txTemp != null}" id="factsiid">
+								<ui:fragment rendered="#{afiliadoBeanEdit.txTempTable[3] != null}" id="factsiid">
 									<i class="fa fa-check-square-o checkfactura" aria-hidden="true"></i>
 								</ui:fragment>
-								<ui:fragment rendered="#{afiliadoBeanEdit.txTemp == null}" id="factnoid">
+								<ui:fragment rendered="#{afiliadoBeanEdit.txTempTable[3] == null}" id="factnoid">
 									<i class="fa fa-times nofactura" aria-hidden="true"></i>
 								</ui:fragment>
 							</p:panelGrid >

@@ -75,7 +75,7 @@ public class OperacionPuntosService {
 	 */
 	public int registrarTransaccion(Sucursal sucursal, String momento, String nrofactura, Integer valortx,
 			Afiliado afiliado) {
-
+		
 		BalancePuntos balance = new BalancePuntos();
 		
 		int acumuladosTxActual = 0;
@@ -114,7 +114,14 @@ public class OperacionPuntosService {
 		System.out.println("----Puntos acumulados: "+ mathPuntos);
 			
 		acumuladosTxActual = mathPuntos;
-		tx.setPuntostransaccion(mathPuntos);
+
+		// si el afiliado es empleado no acumula  puntos
+		if( afiliado.getEsempleado() == 1  ){
+			tx.setPuntostransaccion(0);
+		}else{
+			tx.setPuntostransaccion(mathPuntos);
+		}
+		
 		// graba los puntos iniciales
 		txService.updateTransaccion(tx);
 		

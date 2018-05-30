@@ -120,6 +120,13 @@ public class Afiliado implements Serializable {
 
 	private String usuarioweb;
 	
+	/*ALTER TABLE `afiliado` ADD COLUMN `esempleado` TINYINT(4) DEFAULT 0 COMMENT 'valida si es un empleado';*/
+	private byte esempleado;
+	
+	
+	/*ALTER TABLE `afiliado` ADD COLUMN `sinredencion` TINYINT(4) DEFAULT 0 COMMENT 'No permite hacer redenciones sobre este afiliado';*/
+	private byte sinredencion;
+	
 	@JsonIgnore
 	@Lob
 	@Column(length=1000000)
@@ -158,12 +165,12 @@ public class Afiliado implements Serializable {
 	private Usuarioweb usuariowebBean;
 
 	//bi-directional many-to-one association to Afiliadopatologia
-	@OneToMany(mappedBy="afiliado", fetch = FetchType.EAGER)
+	@OneToMany(mappedBy="afiliado")
 	@JsonIgnore
 	private List<Afiliadopatologia> afiliadopatologias;
 
 	//bi-directional many-to-one association to Emailenvio
-	@OneToMany(fetch = FetchType.EAGER, mappedBy="afiliado", cascade = CascadeType.ALL)
+	@OneToMany( mappedBy="afiliado", cascade = CascadeType.ALL)
 	@JsonIgnore
 	@OrderBy("fechaenvio desc")
 	private List<Emailenvio> emailenvios;
@@ -195,7 +202,7 @@ public class Afiliado implements Serializable {
 	private List<Referido> referidos;
 
 	//bi-directional many-to-one association to Smsenvio
-	@OneToMany(fetch = FetchType.EAGER, mappedBy="afiliado", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy="afiliado", cascade = CascadeType.ALL)
 	@OrderBy("fechaenvio desc")
 	@JsonIgnore
 	private List<Smsenvio> smsenvios;
@@ -694,7 +701,23 @@ public class Afiliado implements Serializable {
 	public void setEmailrechazado(byte emailrechazado) {
 		this.emailrechazado = emailrechazado;
 	}
-	
-	
 
+	public byte getEsempleado() {
+		return esempleado;
+	}
+
+	public void setEsempleado(byte esempleado) {
+		this.esempleado = esempleado;
+	}
+
+	public byte getSinredencion() {
+		return sinredencion;
+	}
+
+	public void setSinredencion(byte sinredencion) {
+		this.sinredencion = sinredencion;
+	}
+	
+	
+	
 }

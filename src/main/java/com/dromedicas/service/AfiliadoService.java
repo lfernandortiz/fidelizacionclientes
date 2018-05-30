@@ -14,6 +14,8 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import com.dromedicas.domain.Afiliado;
+import com.dromedicas.domain.Emailenvio;
+import com.dromedicas.domain.Smsenvio;
 import com.dromedicas.domain.Transaccion;
 import com.dromedicas.eis.AfiliadoDao;
 import com.dromedicas.mailservice.EnviarEmailAlertas;
@@ -505,6 +507,69 @@ public class AfiliadoService {
 			this.updateAfiliado(el);
 		}
 		
+	}
+	
+	/**
+	 * Retorna la coleccion de SMS's enviados al afiliado	
+	 * @param idafiliado
+	 * @return
+	 */
+	public List<Smsenvio> obtenerSmsEnviadosAfiliado( int idafiliado){
+		System.out.println("ID RECIBIDO: " +  idafiliado);
+		Query query = em.createQuery("from Smsenvio sms where sms.afiliado.idafiliado = :id order by sms.fechaenvio desc");
+		query.setMaxResults(4);
+		query.setParameter("id", idafiliado);
+		List<Smsenvio> temp = null;
+		try {
+			temp =  query.getResultList();
+		} catch (NoResultException e) {
+			System.out.println("Smsenvios No encontrado");			
+		}		
+		return temp;
+	}
+	
+	/**
+	 * Retorna la coleccion de email's enviados al afiliado
+	 * @param idafiliado
+	 * @return
+	 */
+	public List<Emailenvio> obtenerEmailEnviadosAfiliado( int idafiliado){
+		Query query = em.createQuery("from Emailenvio email where email.afiliado.idafiliado = :id  order by email.fechaenvio desc");
+		query.setMaxResults(3);
+		query.setParameter("id", idafiliado);
+		List<Emailenvio> temp = null;
+		try {
+			temp =  query.getResultList();
+		} catch (NoResultException e) {
+			System.out.println("Smsenvios No encontrado");			
+		}		
+		return temp;
+		
+	}
+	
+	
+	public List<Object[]> obtenerTxAfiliado(int idAfiliado){
+		//this.resetTotales();
+		String queryString =
+				"SELECT transaccion.idtransaccion, transaccion.fechatransaccion, sucursal.nombre_sucursal, " +
+				"transaccion.nrofactura, transaccion.tipotx, tipotransaccion.descripcion, " +
+				"ticketredencion.idticketredencion, transaccion.puntostransaccion " + 
+				"FROM transaccion INNER JOIN afiliado ON (transaccion.idafiliado = afiliado.idafiliado) "  +
+				"INNER JOIN sucursal ON (transaccion.idsucursal = sucursal.idsucursal) "  + 
+				"LEFT JOIN ticketredencion ON (transaccion.idtransaccion = ticketredencion.idtransaccion) " +
+				"INNER JOIN tipotransaccion ON (transaccion.tipotx = tipotransaccion.idtipotransaccion) " +
+				" WHERE transaccion.idafiliado = "+ idAfiliado + 
+				" GROUP BY 4,5 ORDER BY 2 DESC ";
+		
+		System.out.println("---QueryString " + queryString);
+		List<Object[]> txList = null;
+		try {
+			 Query query = em.createNativeQuery(queryString);
+			 txList = query.getResultList();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return txList;
 	}
 	
 	

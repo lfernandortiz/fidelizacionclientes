@@ -58,6 +58,19 @@ public class TransaccionService {
 		return temp;
 	}
 	
+	
+	public Transaccion obtenerTransaccionPorTxId(int id) {
+		Query query = em.createQuery("FROM Transaccion t WHERE t.idtransaccion = :id ");
+		query.setParameter("id", id);
+		Transaccion temp = null;		
+		try {
+			temp = (Transaccion) query.getSingleResult();
+		} catch (NoResultException e) {
+			System.out.println("Factura no encontrada");			
+		}		
+		return temp;
+	}
+	
 	public Transaccion obtenerRedencionPorFacturaYAfiliado(String nroFactura, Afiliado afiliado) {
 		System.out.println("Afiliado: " + afiliado.getNombres());
 		System.out.println("Factura: " + nroFactura);
@@ -91,6 +104,24 @@ public class TransaccionService {
 		}		
 		return txList;
 	}
+	
+	
+	public List<Transaccion> obtenerTxDeAfiliado( int idAfiliado ){
+		List<Transaccion> txList = null;
+		
+		System.out.println("Obteniendo Txs de afiliado....");
+		
+		Query query = em.createQuery("FROM Transaccion t  WHERE  t.afiliado.idafiliado = :id order by fechatransaccion desc");			
+		query.setParameter("id", idAfiliado);
+		try {
+			txList = query.getResultList();
+		} catch (NoResultException e) {
+			System.out.println("Txs no encontradas");			
+		}		
+		return txList;
+		
+	}
+	
 
 	
 }

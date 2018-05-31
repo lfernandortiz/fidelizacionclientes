@@ -44,6 +44,7 @@ public class InformespuntosBean {
 	private String totalAcumulados;
 	
 	private List<Object[]> redimidosList;
+	private List<Object[]> redimidosSucursalList;
 	private List<Object[]> redimidosDetalladoList;
 	
 	
@@ -93,6 +94,11 @@ public class InformespuntosBean {
 			this.redimidosList = null;
 		}
 		if( this.getNombreInforme().equals("redimidosdetallado")){			
+			this.resetTotales();
+			this.redimidosDetalladoList = null;
+		}
+		
+		if( this.getNombreInforme().equals("detalladosucursal")){			
 			this.resetTotales();
 			this.redimidosDetalladoList = null;
 		}
@@ -172,6 +178,44 @@ public class InformespuntosBean {
 	}
 	
 	
+	@SuppressWarnings("unchecked")
+	public void detalladoSucursal(){
+		//this.resetTotales();
+		String queryString = 	
+				"SELECT sucursal.idsucursal, sucursal.nombre_sucursal, " +
+				"(SUM( CASE WHEN (t.tipotx <> 2  and t.tipotx <> 3 and  DATE( t.vencen ) >= CURRENT_DATE  and t.redimidos = 0 )then t.puntostransaccion else 0  end) +  " +
+				"SUM( CASE WHEN (t.tipotx <> 2  and t.tipotx <> 3 and DATE( t.vencen) >= CURRENT_DATE  and t.redimidos = 1 ) then t.saldo else 0  end) - " +
+				"SUM( CASE WHEN (t.tipotx = 3 ) then t.puntostransaccion else 0  end)) AS ACUMULADOS, " + 
+				"SUM( CASE WHEN t.tipotx = 2  then t.puntostransaccion else 0 end ) as REDIMIDOS  " +
+				"FROM transaccion t LEFT OUTER JOIN sucursal ON (t.idsucursal = sucursal.idsucursal) " +
+				"INNER JOIN tipotransaccion ON (t.tipotx = tipotransaccion.idtipotransaccion) " +
+				"WHERE 1 = 1 "; 				 
+		
+		if( this.getFechaInicio() != null && this.fechaFin != null ){
+			
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			queryString += "and DATE( t.fechatransaccion)  >= '" + sdf.format(this.getFechaIniPuntos())  + "' and " + 
+							" DATE( t.fechatransaccion )  <= '" + sdf.format(this.getFechaFin()) + "' ";
+		}		
+		queryString += " GROUP BY sucursal.idsucursal order by 2 ASC ";			
+		System.out.println("-----QueryString " + queryString);
+		
+		try {
+			 Query query = em.createNativeQuery(queryString);
+			 this.redimidosSucursalList = query.getResultList();
+			 
+			 //Establece los valores totales que aparecen en la vista.
+			 this.establecerTotales(redimidosSucursalList);
+			 
+		} catch (Exception e) {
+			
+			e.printStackTrace();
+		}
+	}
+	
+	
+	
+	
 	private void establecerTotales(List<Object[]> list){
 		if( this.getNombreInforme().equals("redimidos")){
 			int acuTemp = 0;
@@ -196,6 +240,8 @@ public class InformespuntosBean {
 				this.setTotalRedimidos(new DecimalFormat("#,###").format(redTemp));
 			}
 		}
+		
+		
 	}
 	
 	private void resetTotales(){
@@ -293,6 +339,15 @@ public class InformespuntosBean {
 		this.redimidosDetalladoList = redimidosDetalladoList;
 	}
 
+	public List<Object[]> getRedimidosSucursalList() {
+		return redimidosSucursalList;
+	}
+
+	public void setRedimidosSucursalList(List<Object[]> redimidosSucursalList) {
+		this.redimidosSucursalList = redimidosSucursalList;
+	}
+
+	
 	
 
 }

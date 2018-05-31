@@ -894,7 +894,6 @@ public class AfiliadoBeanEdit implements Serializable{
 	public StreamedContent getTicketDown() {
 		
 		String  nroFac = (String) this.txTempTable[3];
-		System.out.println("--------" + nroFac);
 		
 		Ticketredencion tkTemp = this.ticketService.obtenerTicketredencionByNroFactura(nroFac);
 

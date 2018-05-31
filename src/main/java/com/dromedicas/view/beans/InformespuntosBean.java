@@ -52,12 +52,14 @@ public class InformespuntosBean {
 	@PostConstruct
 	public void init(){		
 		System.out.println("-----Post Construct");
+	
 		
 		try {
 			this.fechaIniPuntos = new SimpleDateFormat("yyyy-MM-dd").parse("2017-09-01");
 		    this.resetTotales();
 		    this.redimidosDetalladoList = null;
 		    this.redimidosList = null;
+		    this.redimidosDetalladoList = null;
 			
 		} catch (Exception e) {
 			System.out.println("ERROR AL ESTABLECER LA FECHA INICIO");
@@ -69,7 +71,11 @@ public class InformespuntosBean {
 		return FacesContext.getCurrentInstance().isPostback();
 	}
 	
-	
+	/**
+	 * Evalua la cadena recibida del informe y ejecuta
+	 * la carga de los datos para el modelo list de la vista.
+	 * @param informe
+	 */
 	public void establecerInforme(String informe){
 		System.out.println("-----PreRender View");
 		
@@ -80,10 +86,13 @@ public class InformespuntosBean {
 			}
 			if( this.getNombreInforme().equals("redimidosdetallado")){
 				this.puntosRedimidosDetallado();
-				
+			}
+			if( this.getNombreInforme().equals("detalladosucursal")){
+				this.detalladoSucursal();
 			}
 		}		
 	}
+	
 	
 	public void cancelarList(){
 		this.setFechaInicio(new Date());
@@ -151,8 +160,7 @@ public class InformespuntosBean {
 			"FROM transaccion INNER JOIN afiliado ON (transaccion.idafiliado = afiliado.idafiliado) "+
 			"INNER JOIN sucursal ON (transaccion.idsucursal = sucursal.idsucursal) "+
 			"LEFT JOIN ticketredencion ON ( transaccion.idtransaccion = ticketredencion.idtransaccion) "+
-			"WHERE  transaccion.tipotx = 2 " ;
-			
+			"WHERE  transaccion.tipotx = 2 " ;			
 			
 		if( this.getFechaInicio() != null && this.fechaFin != null ){
 			
@@ -197,7 +205,9 @@ public class InformespuntosBean {
 			queryString += "and DATE( t.fechatransaccion)  >= '" + sdf.format(this.getFechaIniPuntos())  + "' and " + 
 							" DATE( t.fechatransaccion )  <= '" + sdf.format(this.getFechaFin()) + "' ";
 		}		
+		
 		queryString += " GROUP BY sucursal.idsucursal order by 2 ASC ";			
+		
 		System.out.println("-----QueryString " + queryString);
 		
 		try {
@@ -242,6 +252,22 @@ public class InformespuntosBean {
 		}
 		
 		
+		if( this.getNombreInforme().equals("detalladosucursal")){
+			int acuTemp = 0;
+			int redTemp = 0;
+			
+			for(Object[] e: list){	
+				 BigDecimal acu = (BigDecimal) e[2];
+				 acuTemp += acu.intValue() ;
+				 BigDecimal red = (BigDecimal) e[3];
+				 redTemp += red.intValue();	
+			}
+			
+			this.setTotalAcumulados(new DecimalFormat("#,###").format(acuTemp));
+			this.setTotalRedimidos(new DecimalFormat("#,###").format(redTemp));
+		}
+		
+		
 	}
 	
 	private void resetTotales(){
@@ -265,6 +291,16 @@ public class InformespuntosBean {
 	public void exportarExcelRedimidosDetallado(){
 		try {
 	    	report.generarReporteExcelElipsis("redimidosdetalle", this.getFechaIniPuntos(), this.getFechaFin());
+			
+		} catch (Exception e) {
+	    	System.out.println("Error al exportar informe de puntos redimidos detallado");
+	    	e.printStackTrace();
+		}	
+	}
+	
+	public void exportarExcelDetalladoSucursal(){
+		try {
+	    	report.generarReporteExcelElipsis("detalladosucural", this.getFechaIniPuntos(), this.getFechaFin());
 			
 		} catch (Exception e) {
 	    	System.out.println("Error al exportar informe de puntos redimidos detallado");

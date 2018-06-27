@@ -172,10 +172,13 @@ public class AfiliadoServiceRs implements Serializable{
 			afiliado.setDocumento(documento);
 			afiliado.setNacionalidad("Colombia");
 			afiliado.setSexo(sexo);
+			
 						
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");			
 			try {
 				afiliado.setFechanacimiento(sdf.parse(fechanacimiento));
+				afiliado.setEdad(regex.getAge(afiliado.getFechanacimiento()));
+				
 			} catch (ParseException e) {
 				
 				e.printStackTrace();

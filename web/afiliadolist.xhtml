@@ -94,6 +94,7 @@
 									<p:commandButton  icon="fa fa-pencil"
 													  title="Editar #{af.nombres}"
 													  id="editarrowid"
+													  
 													  action="#{afiliadoBeanEdit.editarAfiliado()}">
 										<f:setPropertyActionListener value="#{af}" target="#{afiliadoBeanEdit.afiliadoSelected}" /> 
 										
@@ -106,7 +107,27 @@
             </div>  <!-- end ui-fluid -->
             </h:form>
             
-            <h:outputScript target="body">        	
-            </h:outputScript>     
+            <h:outputScript target="body">     
+            	
+ 			 function handleDisableButton(data) { 			 
+				    if (data.source.type != "submit") {
+				        return;
+				    }				
+				    switch (data.status) {
+				        case "begin":
+				            data.source.disabled = true;
+				            break;
+				        case "complete":
+				        	console.log("deshabilitado");
+				            data.source.disabled = true;
+				            break;
+				    }    
+				}
+				
+				jsf.ajax.addOnEvent(handleDisableButton);
+             
+           	   	
+            </h:outputScript>    
+             
     </ui:define>
 </ui:composition>

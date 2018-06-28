@@ -84,6 +84,10 @@
 								<p:outputLabel for="minredimibleid" value="Minimo valor redimible" />
 								<p:inputText id="minredimibleid"
 									value="#{empresaBeanEdit.contrato.vrminimoredimir}" />
+									
+								<p:outputLabel for="codpromoid" value="Codigo Promocional" />
+								<p:inputText id="codpromoid" value="#{empresaBeanEdit.selectedEmpresa.codigoprom}"
+									 />
 								
 								<p:outputLabel for="redenid" value="Redencion en Sucursal" />
         						<p:selectBooleanCheckbox id="redenid" value="#{empresaBeanEdit.redensionSuc}" />

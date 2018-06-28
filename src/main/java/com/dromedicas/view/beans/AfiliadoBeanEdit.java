@@ -437,13 +437,13 @@ public class AfiliadoBeanEdit implements Serializable{
 	}
 
 	public void analizaSMS(){
-		// La longitud maxima de caracteres a enviar por mensaje SMS es de 160 caracteres
+		// La longitud maxima de caracteres a enviar por mensaje SMS es de 320 caracteres
 		// segun el proveedor del servicio.
 		
 		// El metodo longitudMensaje elimina del mensaje las variables "${variable}"
 		int longitud =  this.mensajeSms.length() ;
-		int restante = 160 - longitud;
-		if( longitud > 160){
+		int restante = 320 - longitud;
+		if( longitud > 320){
 			this.setLongiMensajeSMS(longitud  + " Mensaje muy extenso");
 		}else{
 			this.setLongiMensajeSMS( restante  + (restante == 1 ? " Caracter restante" : " Caracteres restantes") );

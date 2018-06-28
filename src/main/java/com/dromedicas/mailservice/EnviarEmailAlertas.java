@@ -62,7 +62,7 @@ public class EnviarEmailAlertas {
 
 		String contenidoEmail = null;
 		
-		System.out.println("Clase enviar Email Alerta Afilidaod");
+		System.out.println("Clase enviar Email Alerta Afiliado");
 		try {
 			ServletContext servletContext = null;
 
@@ -97,10 +97,9 @@ public class EnviarEmailAlertas {
 
 			// Propiedades de la conexión
 			Properties props = new Properties();
-			props.setProperty("mail.smtp.host", "deus.wnkserver6.com");
-			props.setProperty("mail.smtp.port", "25");// puerto de salida, de
-			// entrada 110
-			props.setProperty("mail.smtp.user", "contacto@puntosfarmanorte.com.co");
+			props.setProperty("mail.smtp.host", "smtpout.secureserver.net");
+			props.setProperty("mail.smtp.port", "80");// puerto de salida,entrada 110
+			props.setProperty("mail.smtp.user", "contacto@farmanorte.com.co");
 			props.setProperty("mail.smtp.auth", "true");
 			props.put("mail.transport.protocol.", "smtp");
 
@@ -140,10 +139,11 @@ public class EnviarEmailAlertas {
 			new Thread(new Runnable() {
 				public void run() {
 					try {
-						t.connect("contacto@puntosfarmanorte.com.co", "Dromedicas2013.");
+						t.connect("contacto@farmanorte.com.co", "Dromedicas2013.");
 						t.sendMessage(message, message.getAllRecipients());
 						// Cierre de la conexion
 						t.close();
+						System.out.println("Conexion cerrada");
 
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
@@ -152,7 +152,7 @@ public class EnviarEmailAlertas {
 				}
 			}).start();
 			
-			System.out.println("Conexion cerrada");
+			
 
 		} catch (Exception e) {
 			System.out.println("Falla en el envio del correo:");

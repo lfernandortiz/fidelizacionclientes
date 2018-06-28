@@ -45,35 +45,29 @@
         </div>
 
 
-	<p:ajaxStatus styleClass="spinner-ajax" onstart="mostrarSpinner()" onsuccess="ocultarSpinner()" oncomplete="" >
-            <f:facet name="start">
-                <!--  <p:graphicImage name="images/preloader.gif" library="omega-layout" style="width: 32px;"/> -->
-                <div class="spinner-container">	
-                	<h2>Aguarde un momento</h2>
-                	<div class="spinner">
-						<div class="bounce1"></div>
-						<div class="bounce2"></div>
-						<div class="bounce3"></div>
-					</div>
-				</div>
-            </f:facet>
-
-            <f:facet name="complete">
-                <h:outputText value="" />
-            </f:facet>
-    </p:ajaxStatus>
-        
-         <script type="text/javascript">
+		<p:ajaxStatus
+			style="width:32px;height:32px;position:fixed;right:7px;bottom:7px; z-index:1000 ">
+			<f:facet name="start">
+				<p:graphicImage name="images/preloader.gif" library="omega-layout"
+					style="width: 32px;" />
+			</f:facet>
+	
+			<f:facet name="complete">
+				<h:outputText value="" />
+			</f:facet>
+		</p:ajaxStatus>
+	
+		<script type="text/javascript">
             //<![CDATA[
             	//con JQuery adiciona la clase de css para el contenedor hijo del 
             	//spinner
-           	 $( ".spinner-ajax" ).children().addClass( "c-spinner" );   
+           	 //$( ".spinner-ajax" ).children().addClass( "c-spinner" );   
 
            	 function mostrarSpinner(){               
-           		$( ".spinner-ajax" ).css("display","block");
+           		//$( ".spinner-ajax" ).css("display","block");
              }
            	 function ocultarSpinner(e){     
-       			$( ".spinner-ajax" ).css("display","none");
+       			//$( ".spinner-ajax" ).css("display","none");
        			
              }
 

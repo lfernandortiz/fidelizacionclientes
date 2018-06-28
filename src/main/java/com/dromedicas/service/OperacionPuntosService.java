@@ -308,7 +308,11 @@ public class OperacionPuntosService {
 		tx.setValortotaltx(0);
 		tx.setVencen(addDays(new Date(), 365));
 		tx.setTipotransaccion(tipoTx);
-		tx.setPuntostransaccion(100); //-> Cambiar (100) por paramatreo optenico de consulta este es un nuevo parametro x crear
+		if( instance.getCodigoprom() == 1 ){
+			tx.setPuntostransaccion(200); //-> Cambiar (200) por paramatreo 
+		}else{
+			tx.setPuntostransaccion(100); //-> Cambiar (100) por paramatreo optenico de consulta este es un nuevo parametro x crear
+		}
 		tx.setEnvionotificacion((byte)0);
 		// graba los puntos iniciales
 		txService.updateTransaccion(tx);

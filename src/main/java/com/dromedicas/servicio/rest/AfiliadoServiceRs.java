@@ -38,6 +38,7 @@ import com.dromedicas.domain.AfiliadopatologiaPK;
 import com.dromedicas.domain.Afiliadopatologianucleo;
 import com.dromedicas.domain.AfiliadopatologianucloePK;
 import com.dromedicas.domain.BalancePuntos;
+import com.dromedicas.domain.Contrato;
 import com.dromedicas.domain.Estudioafiliado;
 import com.dromedicas.domain.Nucleofamilia;
 import com.dromedicas.domain.NucleofamiliaPK;
@@ -52,6 +53,7 @@ import com.dromedicas.mailservice.EnviarEmailAlertas;
 import com.dromedicas.service.AfiliadoPatologiaNucleoService;
 import com.dromedicas.service.AfiliadoPatologiaService;
 import com.dromedicas.service.AfiliadoService;
+import com.dromedicas.service.EmpresaService;
 import com.dromedicas.service.EstudioAfiliadoService;
 import com.dromedicas.service.NucleoFamiliaService;
 import com.dromedicas.service.OcupacionService;
@@ -131,7 +133,7 @@ public class AfiliadoServiceRs implements Serializable{
 	
 	@EJB
 	private RegistroNotificacionesService registroNotificacion;
-	
+		
 	@Context UriInfo uriInfo;
 		
 	
@@ -230,6 +232,189 @@ public class AfiliadoServiceRs implements Serializable{
 					Response.status(Status.OK).entity(responseObject).header("Access-Control-Allow-Origin", "*").build();
 		}
 	}
+	
+	
+	//crear afiliado desde formulario web y la app
+		@Path("/crearafiliadonuevo")
+		@GET	
+		@Produces(MediaType.APPLICATION_JSON)
+		public Response crearAfiliadoWebNuevo(@QueryParam("documento") String documento,
+										 @QueryParam("nombres") String nombres,
+										 @QueryParam("apellidos") String apellidos,
+										 @QueryParam("tipodocumento") int tipodocumento,
+										 @QueryParam("sexo") String sexo,
+										 @QueryParam("direccion") String direccion,
+										 @QueryParam("fechanacimiento") String fechanacimiento,
+										 @QueryParam("telefonofijo") String telefonofijo,
+										 @QueryParam("celular") String celular,
+										 @QueryParam("ciudad") String ciudad,
+										 @QueryParam("email") String email,
+										 @QueryParam("barrio") String barrio,
+										 @QueryParam("usuario") String usuario,
+										 @QueryParam("sucursal") String suc,
+										 @QueryParam("codvende") String codvende,
+										 @QueryParam("codigoprom") String codigoprom,
+										 @Context UriInfo ui){
+			
+			MultivaluedMap<String, String> map = ui.getQueryParameters();
+			
+			
+			
+			ResponsePuntos responseObject = new ResponsePuntos();
+			//valida que el afiliado no exista			
+			Afiliado afTemp = this.afiliadoService.obtenerAfiliadoByDocumento(documento);
+			if (afTemp == null) {
+
+				// crea las entidades respectivas, las validaciones se hacen en
+				// frontend
+				Afiliado afiliado = new Afiliado();
+				afiliado.setNombres(nombres);
+				afiliado.setApellidos(apellidos);
+				
+				Tipodocumento tdocumento = tipodocService.obtenerTipodocumentoByIdString(tipodocumento);
+				afiliado.setTipodocumentoBean(tdocumento);
+				afiliado.setDocumento(documento);
+				afiliado.setNacionalidad("Colombia");
+				afiliado.setSexo(sexo);
+				
+				// Patologias
+				List<Integer> patologiasAfiliado = new ArrayList<Integer>();
+				List<Integer> patologias = new ArrayList<Integer>();
+
+				for (int i = 0; i < 25; i++) {
+					String pTemp = map.getFirst("p" + (i + 1));
+					if (pTemp != null) {
+						patologiasAfiliado.add(Integer.parseInt(pTemp));
+						System.out.println("Patologia: " + pTemp);
+					}					
+				}
+				
+							
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");			
+				try {
+					afiliado.setFechanacimiento(sdf.parse(fechanacimiento));
+					int edad = regex.getAge(afiliado.getFechanacimiento());
+					if( edad < 18 ){
+						
+						responseObject.setCode(Status.BAD_REQUEST.getStatusCode());
+						responseObject.setStatus(Status.BAD_REQUEST.getReasonPhrase());
+						responseObject.setMessage("Fecha de nacimiento errada.");
+						return 
+								Response.status(Status.OK).entity(responseObject).header("Access-Control-Allow-Origin", "*").build();
+						
+					}else{
+						afiliado.setEdad(edad);
+					}
+					
+					
+					
+				} catch (ParseException e) {
+					
+					e.printStackTrace();
+					responseObject.setCode(Status.BAD_REQUEST.getStatusCode());
+					responseObject.setStatus(Status.BAD_REQUEST.getReasonPhrase());
+					responseObject.setMessage("Hubo un problema en nuestro servidor intentalo mas tarde.");
+					return 
+							Response.status(Status.OK).entity(responseObject).header("Access-Control-Allow-Origin", "*").build();
+				} catch (IllegalArgumentException e) {
+					
+					e.printStackTrace();
+					responseObject.setCode(Status.BAD_REQUEST.getStatusCode());
+					responseObject.setStatus(Status.BAD_REQUEST.getReasonPhrase());
+					responseObject.setMessage("Introdujo una fecha de nacimiento mayor a hoy :-S .");
+					return 
+							Response.status(Status.OK).entity(responseObject).header("Access-Control-Allow-Origin", "*").build();
+				}	
+				
+				afiliado.setStreet(direccion);
+				afiliado.setStreetdos(barrio);
+				afiliado.setCiudad(ciudad);
+				afiliado.setDepartamento("");
+				
+				Sucursal sucursal = null;
+				System.out.println("-----SUCURSAL RECIBIDA: " + suc);
+				if( suc == null  || suc.equals("")){
+					sucursal = this.sucursalService.obtenerSucursalPorIdIterno("00");
+				}else{
+					sucursal = this.sucursalService.obtenerSucursalPorIdIterno(suc);
+				}
+				afiliado.setSucursal(sucursal);
+				afiliado.setTelefonofijo(telefonofijo);
+				afiliado.setCelular(celular);
+				afiliado.setEmail(email);
+				afiliado.setMomento(new Date());
+				Usuarioweb user =  this.usuarioService.obtenerUsuarioPorUsuario(usuario);
+				afiliado.setUsuariowebBean(user);
+				if( codvende != null && !codvende.equals("")){
+					afiliado.setCodvende(codvende.trim());
+				}
+				
+				System.out.println("Codgio Promocional >>" +codigoprom.trim()+ "<<");
+				System.out.println((!codigoprom.trim().equals("")));
+				//validacion del codigo promocional
+				if(!codigoprom.trim().equals("")){
+					if( codigoprom.trim().equals(sucursal.getEmpresa().getCodigoprom())){
+						afiliado.setCodigoprom((byte) 1);
+						
+					}else{
+						System.out.println(Response.Status.BAD_REQUEST.getStatusCode());
+						responseObject.setCode(Status.BAD_REQUEST.getStatusCode());
+						responseObject.setStatus(Status.BAD_REQUEST.getReasonPhrase());
+						responseObject.setMessage("Codigo Promocional errado valide el codigo.");
+						return 
+								Response.status(Status.OK).entity(responseObject).header("Access-Control-Allow-Origin", "*").build();
+					}	
+				}
+				
+				UUID uniqueKey = UUID.randomUUID(); // codigo usado para validaciones web
+				afiliado.setKeycode(uniqueKey.toString().replace("-", ""));
+				// crearAfiliado persiste el nuevo objeto Afiliado guarda los puntos 
+				// iniciales por inscripcion y envia el emial de notificacion
+				this.afiliadoService.crearAfiliado(afiliado);
+				
+				// Patologias afiliado
+				if (!patologiasAfiliado.isEmpty()) {
+					Afiliado afiliadoTemp = this.afiliadoService.obtenerAfiliadoByDocumento(documento);
+					try {
+						for (int e : patologiasAfiliado) {
+							Patologia patologia = this.patologiaService.obtenerPatologiaById(e);
+							AfiliadopatologiaPK pk = new AfiliadopatologiaPK();
+							pk.setIdafiliado(afiliadoTemp.getIdafiliado());
+							pk.setIdpatologia(e);
+							Afiliadopatologia afPatologia = new Afiliadopatologia();
+							afPatologia.setId(pk);
+							afPatologia.setFecha(new Date());
+							afPatologia.setAfiliado(afiliadoTemp);
+							afPatologia.setPatologia(patologia);
+							System.out.println("-Patologia: " + patologia.getDrescripcion() );
+							this.afPatologiaService.updateAfiliadopatologia(afPatologia);
+						}
+					} catch (Exception e) {
+						System.out.println(Response.Status.BAD_REQUEST.getStatusCode());
+						responseObject.setCode(Status.BAD_REQUEST.getStatusCode());
+						responseObject.setStatus(Status.BAD_REQUEST.getReasonPhrase());
+						responseObject.setMessage("Hubo un problema en nuestro servidor intentalo mas tarde.");
+						return 
+								Response.status(Status.OK).entity(responseObject).header("Access-Control-Allow-Origin", "*").build();
+					}
+				}
+				
+				System.out.println(Response.Status.OK.getStatusCode());
+				responseObject.setCode(Status.OK.getStatusCode());
+				responseObject.setStatus(Status.OK.getReasonPhrase());
+				responseObject.setMessage("Afiliado creado correctamente.");
+				return 
+						Response.status(Status.OK).entity(responseObject).header("Access-Control-Allow-Origin", "*").build();
+
+			} else {
+				System.out.println(Response.Status.BAD_REQUEST.getStatusCode());
+				responseObject.setCode(Status.BAD_REQUEST.getStatusCode());
+				responseObject.setStatus(Status.BAD_REQUEST.getReasonPhrase());
+				responseObject.setMessage("El documento ya se encuentra registrado.");
+				return 
+						Response.status(Status.OK).entity(responseObject).header("Access-Control-Allow-Origin", "*").build();
+			}
+		}
 	
 	
 	

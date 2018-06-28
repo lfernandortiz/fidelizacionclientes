@@ -1786,8 +1786,8 @@
 								style="border:0px none; background-color:transparent;">
 																
 								<p:outputLabel for="mensajesmscontent">Mensaje SMS:</p:outputLabel>
-								<p:inputTextarea rows="5" placeholder="Mensaje SMS  max. 160 caracteres"
-									id="mensajesmscontent" maxlength="160"
+								<p:inputTextarea rows="5" placeholder="Mensaje SMS  max. 320 caracteres"
+									id="mensajesmscontent" maxlength="320"
 									value="#{afiliadoBeanEdit.mensajeSms}">
 									<p:ajax event="keyup" update="outCrearSms" listener="#{afiliadoBeanEdit.analizaSMS()}" />
 								</p:inputTextarea>								

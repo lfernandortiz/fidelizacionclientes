@@ -68,6 +68,8 @@ public class Afiliado implements Serializable {
 	
 	private byte emailrechazado;
 	
+	private byte codigoprom;
+	
 	private String facebookperfil;
 	
 	@JsonIgnore
@@ -716,6 +718,14 @@ public class Afiliado implements Serializable {
 
 	public void setSinredencion(byte sinredencion) {
 		this.sinredencion = sinredencion;
+	}
+
+	public byte getCodigoprom() {
+		return codigoprom;
+	}
+
+	public void setCodigoprom(byte codigoprom) {
+		this.codigoprom = codigoprom;
 	}
 	
 	

@@ -35,11 +35,15 @@ public class Empresa implements Serializable {
 
 	private String direccion;
 
-	private String email;	
+	private String email;
+	
 	
 
 	@Column(name="email_notificaciones")
 	private String emailNotificaciones;
+	
+	@Column(name="codigoprom")
+	private String codigoprom;
 
 	private String nit;
 
@@ -185,9 +189,13 @@ public class Empresa implements Serializable {
 		return vendedor;
 	}
 	
-	
+	public String getCodigoprom() {
+		return codigoprom;
+	}
 
-	
+	public void setCodigoprom(String codigoprom) {
+		this.codigoprom = codigoprom;
+	}
 
 	@Override
 	public int hashCode() {

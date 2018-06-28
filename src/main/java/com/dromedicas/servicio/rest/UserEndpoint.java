@@ -52,8 +52,10 @@ public class UserEndpoint {
             
             Thread.sleep(3000);
             // Autentica el usuario usando las credenciales proporcionadas
-            String uuid = authenticate(login, password);
-
+//            String uuid = authenticate(login, password);
+            //cambio por nueva version ( 27/06/2018 )
+            String uuid = authenticateWithDocument(login);
+            
             // Emite un token para el usuario 
             String token = issueToken(uuid);            
 
@@ -77,6 +79,14 @@ public class UserEndpoint {
     }
 	
 	
+	/**
+	 * Retorna el token o codigo UUID de una afiliado, recibiendo como parametro
+	 * su documento de identidad y la clave web
+	 * @param login
+	 * @param password
+	 * @return UUID
+	 * @throws Exception
+	 */
 	private String authenticate(String login, String password) throws Exception {
 		System.out.println("---- login/password : " + login + "/" + password);
 		
@@ -88,6 +98,29 @@ public class UserEndpoint {
         return afTemp.getKeycode();
         
     }
+	
+	
+	/**
+	 * Retorna el token o codigo UUID de una afiliado, recibiendo como parametro
+	 * su documento de identidad
+	 * @param login
+	 * @param password
+	 * @return UUID
+	 * @throws Exception
+	 */
+	private String authenticateWithDocument(String login) throws Exception {
+		System.out.println("---- login : " + login) ;
+		
+        Afiliado afTemp = this.afiliadoService.obtenerAfiliadoByDocumento(login);
+        
+        if (afTemp == null)
+            throw new SecurityException("Invalid user/password");
+        
+        return afTemp.getKeycode();
+        
+    }
+	
+	
 
 	
     private String issueToken(String login) {

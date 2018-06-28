@@ -178,6 +178,7 @@ public class EmpresaBeanEdit implements Serializable {
 		this.selectedEmpresa.setDireccion(this.selectedEmpresa.getDireccion().trim().toUpperCase());
 		this.selectedEmpresa.setTelefono(this.selectedEmpresa.getTelefono().trim());
 		this.selectedEmpresa.setEmailNotificaciones(this.selectedEmpresa.getEmailNotificaciones().trim());
+		this.selectedEmpresa.setCodigoprom(this.selectedEmpresa.getCodigoprom().trim());
 		
 		
 		System.out.println("ID contrato: "+ this.contrato.getIdcontrato());

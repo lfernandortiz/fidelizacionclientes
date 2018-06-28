@@ -119,7 +119,7 @@ public class EnviarEmailAlertas {
 			// se compone el mensaje (Asunto, cuerpo del mensaje y direccion
 			// origen)
 			final MimeMessage message = new MimeMessage(session);
-			message.setFrom(new InternetAddress("contacto@puntosfarmanorte.com.co", "Puntos Farmanorte"));
+			message.setFrom(new InternetAddress("contacto@farmanorte.com.co", "Puntos Farmanorte"));
 			message.setRecipients(Message.RecipientType.TO, addressTo);
 			// Emojis :-)
 			String subjectEmojiRaw = ":large_blue_circle: Confirmacion de suscripcion :memo:";
@@ -212,11 +212,9 @@ public class EnviarEmailAlertas {
 
 				// Propiedades de la conexión
 				Properties props = new Properties();
-				props.setProperty("mail.smtp.host", "deus.wnkserver6.com");
-				props.setProperty("mail.smtp.port", "25");// puerto de salida,
-															// de
-				// entrada 110
-				props.setProperty("mail.smtp.user", "contacto@puntosfarmanorte.com.co");
+				props.setProperty("mail.smtp.host", "smtpout.secureserver.net");
+				props.setProperty("mail.smtp.port", "80");// puerto de salida,entrada 110
+				props.setProperty("mail.smtp.user", "contacto@farmanorte.com.co");
 				props.setProperty("mail.smtp.auth", "true");
 				props.put("mail.transport.protocol.", "smtp");
 
@@ -229,7 +227,7 @@ public class EnviarEmailAlertas {
 				// se compone el mensaje (Asunto, cuerpo del mensaje y direccion
 				// origen)
 				final MimeMessage message = new MimeMessage(session);
-				message.setFrom(new InternetAddress("contacto@puntosfarmanorte.com.co", "Puntos Farmanorte"));
+				message.setFrom(new InternetAddress("contacto@farmanorte.com.co", "Puntos Farmanorte"));
 				message.setRecipient(Message.RecipientType.TO, addressTo);
 				// Emojis :-)
 				String subjectEmojiRaw = ":pill: Puntos Farmanorte :syringe:";
@@ -289,10 +287,9 @@ public class EnviarEmailAlertas {
 
 			// Propiedades de la conexión
 			Properties props = new Properties();
-			props.setProperty("mail.smtp.host", "deus.wnkserver6.com");
-			props.setProperty("mail.smtp.port", "25");// puerto de salida, de
-			// entrada 110
-			props.setProperty("mail.smtp.user", "contacto@puntosfarmanorte.com.co");
+			props.setProperty("mail.smtp.host", "smtpout.secureserver.net");
+			props.setProperty("mail.smtp.port", "80");// puerto de salida,entrada 110
+			props.setProperty("mail.smtp.user", "contacto@farmanorte.com.co");
 			props.setProperty("mail.smtp.auth", "true");
 			props.put("mail.transport.protocol.", "smtp");
 
@@ -336,7 +333,7 @@ public class EnviarEmailAlertas {
 					// se compone el mensaje (Asunto, cuerpo del mensaje y
 					// direccion origen)
 					final MimeMessage message = new MimeMessage(session);
-					message.setFrom(new InternetAddress("contacto@puntosfarmanorte.com.co", "Puntos Farmanorte"));
+					message.setFrom(new InternetAddress("contacto@farmanorte.com.co", "Puntos Farmanorte"));
 					message.setRecipient(Message.RecipientType.TO, addressTo);
 					// Emojis :-)
 					String subjectEmojiRaw = ":pill: Acumulaste: " + tx.getPuntostransaccion()
@@ -381,10 +378,9 @@ public class EnviarEmailAlertas {
 
 			// Propiedades de la conexión
 			Properties props = new Properties();
-			props.setProperty("mail.smtp.host", "deus.wnkserver6.com");
-			props.setProperty("mail.smtp.port", "25");// puerto de salida, de
-			// entrada 110
-			props.setProperty("mail.smtp.user", "contacto@puntosfarmanorte.com.co");
+			props.setProperty("mail.smtp.host", "smtpout.secureserver.net");
+			props.setProperty("mail.smtp.port", "80");// puerto de salida,entrada 110
+			props.setProperty("mail.smtp.user", "contacto@farmanorte.com.co");
 			props.setProperty("mail.smtp.auth", "true");
 			props.put("mail.transport.protocol.", "smtp");
 
@@ -483,10 +479,9 @@ public class EnviarEmailAlertas {
 
 			// Propiedades de la conexión
 			Properties props = new Properties();
-			props.setProperty("mail.smtp.host", "deus.wnkserver6.com");
-			props.setProperty("mail.smtp.port", "25");// puerto de salida, de
-			// entrada 110
-			props.setProperty("mail.smtp.user", "contacto@puntosfarmanorte.com.co");
+			props.setProperty("mail.smtp.host", "smtpout.secureserver.net");
+			props.setProperty("mail.smtp.port", "80");// puerto de salida,entrada 110
+			props.setProperty("mail.smtp.user", "contacto@farmanorte.com.co");
 			props.setProperty("mail.smtp.auth", "true");
 			props.put("mail.transport.protocol.", "smtp");
 
@@ -506,7 +501,7 @@ public class EnviarEmailAlertas {
 			// se compone el mensaje (Asunto, cuerpo del mensaje y direccion
 			// origen)
 			final MimeMessage message = new MimeMessage(session);
-			message.setFrom(new InternetAddress("contacto@puntosfarmanorte.com.co", "Puntos Farmanorte"));
+			message.setFrom(new InternetAddress("contacto@farmanorte.com.co", "Puntos Farmanorte"));
 			message.setRecipients(Message.RecipientType.BCC, addressTo);
 			// Emojis :-)
 			String subjectEmojiRaw = ":ok_hand: Registro Completo";
@@ -568,10 +563,9 @@ public class EnviarEmailAlertas {
 
 			// Propiedades de la conexión
 			Properties props = new Properties();
-			props.setProperty("mail.smtp.host", "deus.wnkserver6.com");
-			props.setProperty("mail.smtp.port", "25");// puerto de salida, de
-			// entrada 110
-			props.setProperty("mail.smtp.user", "contacto@puntosfarmanorte.com.co");
+			props.setProperty("mail.smtp.host", "smtpout.secureserver.net");
+			props.setProperty("mail.smtp.port", "80");// puerto de salida,entrada 110
+			props.setProperty("mail.smtp.user", "contacto@farmanorte.com.co");
 			props.setProperty("mail.smtp.auth", "true");
 			props.put("mail.transport.protocol.", "smtp");
 
@@ -595,7 +589,7 @@ public class EnviarEmailAlertas {
 			// se compone el mensaje (Asunto, cuerpo del mensaje y direccion
 			// origen)
 			final MimeMessage message = new MimeMessage(session);
-			message.setFrom(new InternetAddress("contacto@puntosfarmanorte.com.co", "Puntos Farmanorte"));
+			message.setFrom(new InternetAddress("contacto@farmanorte.com.co", "Puntos Farmanorte"));
 			message.setRecipients(Message.RecipientType.BCC, addressTo);
 			// Emojis :-)
 			String subjectEmojiRaw = ":warning: Redencion de puntos sucursal " + sucursal.getNombreSucursal();
@@ -674,10 +668,9 @@ public class EnviarEmailAlertas {
 
 			// Propiedades de la conexión
 			Properties props = new Properties();
-			props.setProperty("mail.smtp.host", "deus.wnkserver6.com");
-			props.setProperty("mail.smtp.port", "25");// puerto de salida, de
-			// entrada 110
-			props.setProperty("mail.smtp.user", "contacto@puntosfarmanorte.com.co");
+			props.setProperty("mail.smtp.host", "smtpout.secureserver.net");
+			props.setProperty("mail.smtp.port", "80");// puerto de salida,entrada 110
+			props.setProperty("mail.smtp.user", "contacto@farmanorte.com.co");
 			props.setProperty("mail.smtp.auth", "true");
 			props.put("mail.transport.protocol.", "smtp");
 
@@ -697,7 +690,7 @@ public class EnviarEmailAlertas {
 			// se compone el mensaje (Asunto, cuerpo del mensaje y direccion
 			// origen)
 			final MimeMessage message = new MimeMessage(session);
-			message.setFrom(new InternetAddress("contacto@puntosfarmanorte.com.co", "Puntos Farmanorte"));
+			message.setFrom(new InternetAddress("contacto@farmanorte.com.co", "Puntos Farmanorte"));
 			message.setRecipients(Message.RecipientType.TO, addressTo);
 			// Emojis :-)
 			String subjectEmojiRaw = ":key: Recuperacion Contraseña Puntos Farmanorte";
@@ -777,10 +770,9 @@ public class EnviarEmailAlertas {
 
 			// Propiedades de la conexión
 			Properties props = new Properties();
-			props.setProperty("mail.smtp.host", "deus.wnkserver6.com");
-			props.setProperty("mail.smtp.port", "25");// puerto de salida, de
-			// entrada 110
-			props.setProperty("mail.smtp.user", "contacto@puntosfarmanorte.com.co");
+			props.setProperty("mail.smtp.host", "smtpout.secureserver.net");
+			props.setProperty("mail.smtp.port", "80");// puerto de salida,entrada 110
+			props.setProperty("mail.smtp.user", "contacto@farmanorte.com.co");
 			props.setProperty("mail.smtp.auth", "true");
 			props.put("mail.transport.protocol.", "smtp");
 
@@ -800,7 +792,7 @@ public class EnviarEmailAlertas {
 			// se compone el mensaje (Asunto, cuerpo del mensaje y direccion
 			// origen)
 			final MimeMessage message = new MimeMessage(session);
-			message.setFrom(new InternetAddress("contacto@puntosfarmanorte.com.co", "Puntos Farmanorte"));
+			message.setFrom(new InternetAddress("contacto@farmanorte.com.co", "Puntos Farmanorte"));
 			message.setRecipients(Message.RecipientType.TO, addressTo);
 			// Emojis :-)
 			String subjectEmojiRaw = ":white_check_mark: Contraseña Reestablecida - Puntos Farmanorte";
@@ -935,10 +927,9 @@ public class EnviarEmailAlertas {
 
 			// Propiedades de la conexión
 			Properties props = new Properties();
-			props.setProperty("mail.smtp.host", "deus.wnkserver6.com");
-			props.setProperty("mail.smtp.port", "25");// puerto de salida, de
-			// entrada 110
-			props.setProperty("mail.smtp.user", "noreply@puntosfarmanorte.com.co");
+			props.setProperty("mail.smtp.host", "smtpout.secureserver.net");
+			props.setProperty("mail.smtp.port", "80");// puerto de salida,entrada 110
+			props.setProperty("mail.smtp.user", "contacto@farmanorte.com.co");
 			props.setProperty("mail.smtp.auth", "true");
 			props.put("mail.transport.protocol.", "smtp");
 
@@ -1024,10 +1015,9 @@ public class EnviarEmailAlertas {
 
 			// Propiedades de la conexión
 			Properties props = new Properties();
-			props.setProperty("mail.smtp.host", "deus.wnkserver6.com");
-			props.setProperty("mail.smtp.port", "25");// puerto de salida, de
-			// entrada 110
-			props.setProperty("mail.smtp.user", "contacto@puntosfarmanorte.com.co");
+			props.setProperty("mail.smtp.host", "smtpout.secureserver.net");
+			props.setProperty("mail.smtp.port", "80");// puerto de salida,entrada 110
+			props.setProperty("mail.smtp.user", "contacto@farmanorte.com.co");
 			props.setProperty("mail.smtp.auth", "true");
 			props.put("mail.transport.protocol.", "smtp");
 
@@ -1110,10 +1100,9 @@ public class EnviarEmailAlertas {
 
 			// Propiedades de la conexión
 			Properties props = new Properties();
-			props.setProperty("mail.smtp.host", "deus.wnkserver6.com");
-			props.setProperty("mail.smtp.port", "25");// puerto de salida, de
-			// entrada 110
-			props.setProperty("mail.smtp.user", "contacto@puntosfarmanorte.com.co");
+			props.setProperty("mail.smtp.host", "smtpout.secureserver.net");
+			props.setProperty("mail.smtp.port", "80");// puerto de salida,entrada 110
+			props.setProperty("mail.smtp.user", "contacto@farmanorte.com.co");
 			props.setProperty("mail.smtp.auth", "true");
 			props.put("mail.transport.protocol.", "smtp");
 
@@ -1121,7 +1110,7 @@ public class EnviarEmailAlertas {
 			Session session = Session.getDefaultInstance(props);
 
 			// multiples direcciones
-			String[] to = { "sistemas2@dromedicas.com.co", "mercadeo@dromedicas.com.co" };
+			String[] to = { "sistemas2@dromedicas.com.co", "elianaarredondo@dromedicas.com.co" };
 
 			// arreglo con las direcciones de correo
 			InternetAddress[] addressTo = new InternetAddress[to.length];
@@ -1131,7 +1120,7 @@ public class EnviarEmailAlertas {
 			// se compone el mensaje (Asunto, cuerpo del mensaje y direccion
 			// origen)
 			final MimeMessage message = new MimeMessage(session);
-			message.setFrom(new InternetAddress("contacto@puntosfarmanorte.com.co", "Puntos Farmanorte"));
+			message.setFrom(new InternetAddress("contacto@farmanorte.com.co", "Puntos Farmanorte"));
 			message.setRecipients(Message.RecipientType.BCC, addressTo);
 			// Emojis :-)
 			String subjectEmojiRaw = ":rotating_light: Error en envio de Campaña";

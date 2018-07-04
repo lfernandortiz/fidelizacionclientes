@@ -446,6 +446,35 @@ public class AfiliadoServiceRs implements Serializable{
 	}
 	
 	
+	// validar correo de afiliados antiguos que actualizaron sus datos
+	@Path("/validacorreoactualizar")
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response validarCorreoAfiliadoAntiguo(@QueryParam("id") String id) {
+		Afiliado afiliado = this.afiliadoService.obtenerAfiliadoUUID(id);
+		
+		if( afiliado.getEmailrechazado() == 1 ){
+			afiliado.setEmailrechazado((byte) 0 );
+		}
+		
+		this.calculoService.puntosPorActualizacionDatos(afiliado);
+		//se marca como validado el correo 
+		afiliado.setEmailvalidado((byte)1);
+
+		//se actualiza el cambio 
+		this.afiliadoService.actualizarAfiliado(afiliado);		
+		
+		ResponsePuntos responseObject = new ResponsePuntos();
+		System.out.println(Response.Status.OK.getStatusCode());
+		responseObject.setCode(Status.OK.getStatusCode());
+		responseObject.setAfiliado(afiliado);
+		responseObject.setStatus(Status.OK.getReasonPhrase());
+		responseObject.setMessage("Afiliado encontrado correctamente.");
+		return 
+				Response.status(Status.OK).entity(responseObject).header("Access-Control-Allow-Origin", "*").build();
+	}
+	
+	
 	
 	//obtener datos del formulario basico de afiliado
 	@Path("/obtenerafiliado")
@@ -866,7 +895,7 @@ public class AfiliadoServiceRs implements Serializable{
 			
 			
 			String enviado = null;
-			enviado = emailAlerta.emailActualizacionDatos(tempA);
+			enviado = emailAlerta.validarCorreoActualizacion(tempA);
 			
 			
 			if (enviado != null) {

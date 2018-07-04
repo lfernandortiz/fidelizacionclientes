@@ -59,7 +59,7 @@ public class TipoEmailService {
 			
 		} catch (Exception e) {
 			System.out.println("Elemento no encontrado");
-			throw new NoResultException("No hay ningun tipo de email encontradco");
+			throw new NoResultException("No hay ningun tipo de email encontrdo");
 		} 	
 		return temp;
 	}

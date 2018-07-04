@@ -293,7 +293,10 @@ public class OperacionPuntosService {
 		return mathPuntos;
 	}
 	
-	
+	/**
+	 * Puntos acumulados en el registro inicial del afiliado
+	 * @param instance
+	 */
 	public void puntosInicialesRegistro(Afiliado instance) {
 		// Acumula los 100 puntos inciales del afiliado
 		Afiliado afTemp = afiliadoService.obtenerAfiliadoNacionalidad(instance);
@@ -346,6 +349,39 @@ public class OperacionPuntosService {
 		} // end if validacion afiliado
 
 	}
+	
+	
+	/**
+	 * Puntos obsequiados por actualizar los datos
+	 * Aca existe una restriccion consistente en que si ya
+	 * el afiliado tenia validado el correo no acumula estos
+	 * puntos.
+	 * @param instance
+	 */
+	public void puntosPorActualizacionDatos(Afiliado instance) {
+		
+		Afiliado afTemp = afiliadoService.obtenerAfiliadoNacionalidad(instance);
+
+		if( afTemp.getEmailvalidado() == 0 ){
+			System.out.println("Asignando puntos por actualizacion de datos");	
+			int id = 4;
+			Tipotransaccion tipoTx = tipoTxService.obtenerTipoTransaccioById(id);
+			Transaccion tx = new Transaccion();
+			tx.setAfiliado(afTemp);
+			tx.setSucursal(instance.getSucursal());
+			tx.setFechatransaccion(new Date());
+			tx.setNrofactura("ACTUALIZACION");
+			tx.setValortotaltx(0);
+			tx.setVencen(addDays(new Date(), 365));
+			tx.setTipotransaccion(tipoTx);
+			tx.setPuntostransaccion(200); //-> Cambiar (200) por paramatreo
+			tx.setEnvionotificacion((byte)0);
+			// graba los puntos iniciales
+			txService.updateTransaccion(tx);
+		}
+		
+	}
+	
 	
 	/**
 	 * Realiza una consulta del balance de puntos del afiliado.

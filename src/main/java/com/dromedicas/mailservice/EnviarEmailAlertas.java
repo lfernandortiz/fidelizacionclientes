@@ -164,6 +164,116 @@ public class EnviarEmailAlertas {
 	}
 	
 	
+	
+	public String validarCorreoActualizacion(Afiliado afiliado) {
+
+		//String urlConfirmacion = "http://www.puntosfarmanorte.com.co/index.html?id="
+		String urlConfirmacion = "http://localhost:8003/index.html?param=true&id="
+				+ afiliado.getKeycode();
+
+		String contenidoEmail = null;
+		
+		System.out.println("Clase enviar Email Alerta Afiliado");
+		try {
+			ServletContext servletContext = null;
+
+			try {
+				servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+			} catch (Exception e) {
+				servletContext = context;
+			}
+
+			File inputHtml = new File(servletContext.getRealPath("emailhtml/validaemailafil.html"));
+			// Asginamos el archivo al objeto analizador Document
+			Document doc = Jsoup.parse(inputHtml, "UTF-8");
+
+			// obtengo los id's del DOM a los que deseo insertar los valores
+			// mediante el metodo append() se insertan los valores obtenidos del
+			// objeto obtenido como parametro
+			Element genero = doc.select("span#genero").first();
+			genero.append(afiliado.getSexo().equals("M") ? "Sr." : "Sra.");
+
+			Element nomAfiliado = doc.select("span#nombreAfiliado").first();
+			nomAfiliado.append(afiliado.getNombres() + " " + afiliado.getApellidos());
+
+			Element anioactual = doc.select("span#anioactual").first();
+			anioactual.append(new SimpleDateFormat("yyyy").format(new Date()));
+
+			// Url de confirmacion de correo para el elemento buton
+			Element btn = doc.select("a#linkconfirm").first();
+			btn.attr("href", urlConfirmacion);
+
+			// Element img = doc.select("img#pixelcontrol").first();
+			// img.attr("src", url);
+
+			// Propiedades de la conexión
+			Properties props = new Properties();
+			props.setProperty("mail.smtp.host", "smtpout.secureserver.net");
+			props.setProperty("mail.smtp.port", "80");// puerto de salida,entrada 110
+			props.setProperty("mail.smtp.user", "contacto@farmanorte.com.co");
+			props.setProperty("mail.smtp.auth", "true");
+			props.put("mail.transport.protocol.", "smtp");
+
+			// Preparamos la sesion
+			Session session = Session.getDefaultInstance(props);
+			// Construimos el mensaje
+
+			// multiples direcciones
+			String[] to = { afiliado.getEmail() };
+
+			// arreglo con las direcciones de correo
+			InternetAddress[] addressTo = new InternetAddress[to.length];
+			for (int i = 0; i < addressTo.length; i++) {
+				addressTo[i] = new InternetAddress(to[i]);
+			}
+
+			// se compone el mensaje (Asunto, cuerpo del mensaje y direccion
+			// origen)
+			final MimeMessage message = new MimeMessage(session);
+			message.setFrom(new InternetAddress("contacto@farmanorte.com.co", "Puntos Farmanorte"));
+			message.setRecipients(Message.RecipientType.TO, addressTo);
+			// Emojis :-)
+			String subjectEmojiRaw = ":envelope: Confirmacion de correo :thumbsup:";
+			String subjectEmoji = EmojiParser.parseToUnicode(subjectEmojiRaw);
+
+			message.setSubject(subjectEmoji, "UTF-8");
+			message.setContent(doc.html(), "text/html; charset=utf-8");
+
+			message.setFlag(FLAGS.Flag.RECENT, true);
+
+			contenidoEmail = doc.html();
+			// Envia el correo
+			final Transport t = session.getTransport("smtp");
+			// asigno un hilo exclusivo a la conexion y envio del mensaje
+			// dado que el proveedor de correo es muy lento para establecer
+			// la conexion
+			new Thread(new Runnable() {
+				public void run() {
+					try {
+						t.connect("contacto@farmanorte.com.co", "Dromedicas2013.");
+						t.sendMessage(message, message.getAllRecipients());
+						// Cierre de la conexion
+						t.close();
+						System.out.println("Conexion cerrada");
+
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}).start();
+			
+
+		} catch (Exception e) {
+			System.out.println("Falla en el envio del correo:");
+			e.printStackTrace();
+			return null;
+		}
+		
+		return contenidoEmail;
+	}
+	
+	
 
 	public boolean emailAcumulacionPuntos(Afiliado afiliado, int ganados, BalancePuntos balance) {
 		

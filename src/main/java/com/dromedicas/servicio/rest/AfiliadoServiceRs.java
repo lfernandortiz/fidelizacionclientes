@@ -14,6 +14,8 @@ import java.util.UUID;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionManagement;
+import javax.ejb.TransactionManagementType;
 import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
 import javax.ws.rs.Consumes;
@@ -79,6 +81,7 @@ import io.jsonwebtoken.Jwts;
  */
 @Path("/afiliado")
 @Stateless
+@TransactionManagement (TransactionManagementType.BEAN) 
 public class AfiliadoServiceRs implements Serializable{
 	
 	/**
@@ -279,8 +282,7 @@ public class AfiliadoServiceRs implements Serializable{
 				
 				// Patologias
 				List<Integer> patologiasAfiliado = new ArrayList<Integer>();
-				List<Integer> patologias = new ArrayList<Integer>();
-
+				
 				for (int i = 0; i < 25; i++) {
 					String pTemp = map.getFirst("p" + (i + 1));
 					if (pTemp != null) {
@@ -298,15 +300,13 @@ public class AfiliadoServiceRs implements Serializable{
 						
 						responseObject.setCode(Status.BAD_REQUEST.getStatusCode());
 						responseObject.setStatus(Status.BAD_REQUEST.getReasonPhrase());
-						responseObject.setMessage("Fecha de nacimiento errada.");
+						responseObject.setMessage("NO es mayor de edad.");
 						return 
 								Response.status(Status.OK).entity(responseObject).header("Access-Control-Allow-Origin", "*").build();
 						
 					}else{
 						afiliado.setEdad(edad);
 					}
-					
-					
 					
 				} catch (ParseException e) {
 					
@@ -433,8 +433,7 @@ public class AfiliadoServiceRs implements Serializable{
 		afiliado.setEmailvalidado((byte)1);
 
 		//se actualiza el cambio 
-		this.afiliadoService.actualizarAfiliado(afiliado);
-		
+		this.afiliadoService.actualizarAfiliado(afiliado);		
 		
 		ResponsePuntos responseObject = new ResponsePuntos();
 		System.out.println(Response.Status.OK.getStatusCode());
@@ -462,8 +461,7 @@ public class AfiliadoServiceRs implements Serializable{
 		responseObject.setStatus(Status.OK.getReasonPhrase());
 		responseObject.setMessage("Afiliado encontrado correctamente.");
 		
-		System.out.println("Nombre: " + afiliado.getNombres() +" "+afiliado.getApellidos() );
-		
+		System.out.println("Nombre: " + afiliado.getNombres() +" "+afiliado.getApellidos() );		
 		
 		return 
 				Response.status(Status.OK).entity(responseObject).header("Access-Control-Allow-Origin", "*").build();
@@ -539,7 +537,6 @@ public class AfiliadoServiceRs implements Serializable{
 			String cantreferido = map.getFirst("cantreferido");
 			List<String> referidosList = new ArrayList<String>();
 			
-
 			if (cantreferido != null) {
 				for (int i = 0; i < Integer.parseInt(cantreferido); i++) {
 					String refTemp = map.getFirst("referido" + (i + 1));
@@ -694,7 +691,6 @@ public class AfiliadoServiceRs implements Serializable{
 				
 			}
 			
-			
 			System.out.println(Response.Status.OK.getStatusCode());
 			responseObject.setCode(Status.OK.getStatusCode());
 			responseObject.setAfiliado(afiliado);
@@ -727,7 +723,7 @@ public class AfiliadoServiceRs implements Serializable{
 	 * @return Response
 	 */
 	@Path("/updateprofilepartner")
-	@POST
+	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response actualizaPerfil(@Context UriInfo ui) {
 
@@ -736,7 +732,6 @@ public class AfiliadoServiceRs implements Serializable{
 		ResponsePuntos responseObject = new ResponsePuntos();
 
 		try {
-			Thread.sleep(2000);
 			
 			String documento = map.getFirst("documento");
 			String nombres = map.getFirst("nombres");
@@ -754,44 +749,73 @@ public class AfiliadoServiceRs implements Serializable{
 
 			// --> Se crean las instancias respectivas
 			Afiliado afiliado = this.afiliadoService.obtenerAfiliadoUUID(token);
+			
 			afiliado.setNombres(nombres);
 			afiliado.setApellidos(apellidos);
 			
 			Tipodocumento tdocumento = tipodocService.obtenerTipodocumentoByIdString(tipodocumento);
 			afiliado.setTipodocumentoBean(tdocumento);
+			afiliado.setDocumento(documento);
 			afiliado.setNacionalidad("Colombia");
 			afiliado.setSexo(sexo);
-
+			
+			// Patologias
+			List<Integer> patologiasAfiliado = new ArrayList<Integer>();
+			
+			for (int i = 0; i < 25; i++) {
+				String pTemp = map.getFirst("p" + (i + 1));
+				if (pTemp != null) {
+					patologiasAfiliado.add(Integer.parseInt(pTemp));
+					System.out.println("Patologia: " + pTemp);
+				}					
+			}			
+						
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");	
+			System.out.println("Fecha de nacimiento: " + fechanacimiento);
+			try {
+				afiliado.setFechanacimiento(sdf.parse(fechanacimiento));
+				int edad = regex.getAge(afiliado.getFechanacimiento());
+				if( edad < 18 ){
+					
+					responseObject.setCode(Status.BAD_REQUEST.getStatusCode());
+					responseObject.setStatus(Status.BAD_REQUEST.getReasonPhrase());
+					responseObject.setMessage("NO es mayor de edad.");
+					return Response.status(Status.OK).entity(responseObject).header("Access-Control-Allow-Origin", "*").build();
+					
+				}else{
+					afiliado.setEdad(edad);
+				}
+				
+			} catch (ParseException e) {
+				
+				e.printStackTrace();
+				responseObject.setCode(Status.BAD_REQUEST.getStatusCode());
+				responseObject.setStatus(Status.BAD_REQUEST.getReasonPhrase());
+				responseObject.setMessage("Hubo un problema en nuestro servidor intentalo mas tarde.");
+				return 
+						Response.status(Status.OK).entity(responseObject).header("Access-Control-Allow-Origin", "*").build();
+			} catch (IllegalArgumentException e) {
+				
+				e.printStackTrace();
+				responseObject.setCode(Status.BAD_REQUEST.getStatusCode());
+				responseObject.setStatus(Status.BAD_REQUEST.getReasonPhrase());
+				responseObject.setMessage("Introdujo una fecha de nacimiento mayor a hoy :-S .");
+				return 
+						Response.status(Status.OK).entity(responseObject).header("Access-Control-Allow-Origin", "*").build();
+			}	
+								
 			afiliado.setStreet(direccion);
 			afiliado.setStreetdos(barrio);
 			afiliado.setCiudad(ciudad);
 			afiliado.setDepartamento("");
-
-			Sucursal sucursal = this.sucursalService.obtenerSucursalPorIdIterno("00");
-			afiliado.setSucursal(sucursal);
+			
 			afiliado.setTelefonofijo(telefonofijo);
 			afiliado.setCelular(celular);
 			afiliado.setEmail(email);
-			
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-			try {
-				
-				System.out.println("fecha recibida: " + fechanacimiento);
-				
-				Date f = sdf.parse(fechanacimiento);
-				
-				
-				afiliado.setFechanacimiento(f);
-				
-				System.out.println("Fecha de Nacimiento Comprobacion updateprofilepartner: " + f);
-			} catch (ParseException e) {
-
-				e.printStackTrace();
-			}
-
-			//valida que no exista otro afiliado con el documento que se intenta actualizar
+			afiliado.setMomento(new Date());	
 			
 			boolean validaDocumento = afiliado.getIdafiliado() != this.afiliadoService.obtenerAfiliadoByDocumento(documento).getIdafiliado();
+			
 			
 			if( validaDocumento ){
 				System.out.println(Response.Status.BAD_REQUEST.getStatusCode());
@@ -801,15 +825,55 @@ public class AfiliadoServiceRs implements Serializable{
 				return Response.status(Status.OK).entity(responseObject).header("Access-Control-Allow-Origin", "*").build();
 			}
 			
-			
-			afiliado.setDocumento(documento);
-			
-			// se actualizan los valores
+			//Actualiza el afiliado			
 			this.afiliadoService.actualizarAfiliado(afiliado);
 			
-			Afiliado tempA=  this.afiliadoService.obtenerAfiliadoById(afiliado);
 			
+			//obtiene los objetos persistidos
+			Afiliado tempA=  this.afiliadoService.obtenerAfiliadoById(afiliado);			
 			BalancePuntos balance = calculoService.consultaPuntos(tempA);
+			
+			// Patologias afiliado
+			if (!patologiasAfiliado.isEmpty()) {
+				try {
+					this.afPatologiaService.eliminarPatologiaDeAfilaido(tempA);
+					for (int e : patologiasAfiliado) {
+						Patologia patologia = this.patologiaService.obtenerPatologiaById(e);
+						AfiliadopatologiaPK pk = new AfiliadopatologiaPK();
+						pk.setIdafiliado(tempA.getIdafiliado());
+						pk.setIdpatologia(e);
+						Afiliadopatologia afPatologia = new Afiliadopatologia();
+						afPatologia.setId(pk);
+						afPatologia.setFecha(new Date());
+						afPatologia.setAfiliado(tempA);
+						afPatologia.setPatologia(patologia);
+						System.out.println("-Patologia: " + patologia.getDrescripcion() );
+						
+						this.afPatologiaService.updateAfiliadopatologia(afPatologia);
+					}
+				} catch (Exception e) {
+					System.out.println(Response.Status.BAD_REQUEST.getStatusCode());
+					responseObject.setCode(Status.BAD_REQUEST.getStatusCode());
+					responseObject.setStatus(Status.BAD_REQUEST.getReasonPhrase());
+					responseObject.setMessage("Hubo un problema en nuestro servidor intentalo mas tarde.");
+					return 
+							Response.status(Status.OK).entity(responseObject).header("Access-Control-Allow-Origin", "*").build();
+				}
+			}
+			
+			//aca envio un nuevo correo de actualizacion de datos de afiliado
+			//ya inscrito.
+			
+			
+			String enviado = null;
+			enviado = emailAlerta.emailActualizacionDatos(tempA);
+			
+			
+			if (enviado != null) {
+				//se graba el auditor del correo
+				this.registroNotificacion.auditarEmailEnviado(tempA, enviado, "Actualizacion Datos");
+			}
+			
 			
 			System.out.println(Response.Status.OK.getStatusCode());
 			responseObject.setCode(Status.OK.getStatusCode());
@@ -820,9 +884,6 @@ public class AfiliadoServiceRs implements Serializable{
 			}
 			responseObject.setStatus(Status.OK.getReasonPhrase());
 			responseObject.setMessage("Afiliado encontrado correctamente.");
-			
-			System.out.println("Nombre: " + afiliado.getNombres() + " " + afiliado.getApellidos());
-
 			return Response.status(Status.OK).entity(responseObject).header("Access-Control-Allow-Origin", "*").build();
 
 		} catch (Exception e) {
@@ -1027,8 +1088,6 @@ public class AfiliadoServiceRs implements Serializable{
 		
 		List<Afiliado> afiliadoList = this.afiliadoService.obtenerUltimosAfiliadosRegistrados();
 		
-		
-		
 		ResponsePuntos responseObject = new ResponsePuntos();
 		responseObject.setCode(Status.OK.getStatusCode());
 		responseObject.setStatus(Status.OK.getReasonPhrase());
@@ -1038,7 +1097,6 @@ public class AfiliadoServiceRs implements Serializable{
 		return Response.status(Status.OK).entity(responseObject).header("Access-Control-Allow-Origin", "*").build();
 
 	}
-	
 	
 
 	private String getToken(String jWT){

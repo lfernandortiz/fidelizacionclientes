@@ -53,6 +53,7 @@ public class UserEndpoint {
             Thread.sleep(3000);
             // Autentica el usuario usando las credenciales proporcionadas
 //            String uuid = authenticate(login, password);
+           
             //cambio por nueva version ( 27/06/2018 )
             String uuid = authenticateWithDocument(login);
             

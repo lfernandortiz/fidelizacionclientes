@@ -20,11 +20,13 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import com.dromedicas.domain.Afiliado;
+import com.dromedicas.domain.Afiliadopatologia;
 import com.dromedicas.domain.BalancePuntos;
 import com.dromedicas.domain.Contrato;
 import com.dromedicas.domain.Smsplantilla;
 import com.dromedicas.domain.Sucursal;
 import com.dromedicas.domain.Transaccion;
+import com.dromedicas.service.AfiliadoPatologiaService;
 import com.dromedicas.service.AfiliadoService;
 import com.dromedicas.service.EmpresaService;
 import com.dromedicas.service.OperacionPuntosService;
@@ -80,6 +82,9 @@ public class PuntosServiceRs {
 	
 	@EJB
 	private RegistroNotificacionesService regNotificaciones;
+	
+	@EJB
+	private AfiliadoPatologiaService afiliadoPatologiaService;
 	
 	@Context UriInfo uriInfo;
 	
@@ -477,15 +482,18 @@ public class PuntosServiceRs {
 			if(afiliado != null){
 				
 				BalancePuntos balance = calculoService.consultaPuntos(afiliado);
-				
+				List<Integer> patologias = afiliadoPatologiaService.obtenerPatologiasPorAfiliado(afiliado) ;
+						
 				responseObject.setCode(200);
 				responseObject.setMessage("Transaccion exitosa");
 				responseObject.setBalance(balance);
+				responseObject.setContenedor(patologias);
 				responseObject.setStatus(Status.OK.getReasonPhrase());
 				if(afiliado.getFotoperfil() != null){
 					responseObject.setUrlFotoAfiliado(uriInfo.getBaseUri()+ "afiliado"+ "/getfotoperfil/" + afiliado.getKeycode());
 				}
 				responseObject.setAfiliado(afiliado);
+				
 				return Response.status(Status.OK).entity(responseObject).header("Access-Control-Allow-Origin", "*").build();
 				
 			}else{

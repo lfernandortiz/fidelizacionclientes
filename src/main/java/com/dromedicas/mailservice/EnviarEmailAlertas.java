@@ -57,8 +57,8 @@ public class EnviarEmailAlertas {
 	
 	public String enviarEmailAlertaVentas(Afiliado afiliado) {
 
-		//String urlConfirmacion = "http://www.puntosfarmanorte.com.co/index.html?id="
-		String urlConfirmacion = "http://localhost:8003/index.html?id="
+		String urlConfirmacion = "http://www.puntosfarmanorte.com.co/index.html?id="
+//		String urlConfirmacion = "http://localhost:8003/index.html?id="
 				+ afiliado.getKeycode();
 
 		String contenidoEmail = null;
@@ -164,11 +164,16 @@ public class EnviarEmailAlertas {
 	}
 	
 	
-	
+	/**
+	 * Envia email de confirmacion de correo, cuando se actualizan los datos
+	 * del afiliado.
+	 * @param afiliado
+	 * @return
+	 */
 	public String validarCorreoActualizacion(Afiliado afiliado) {
 
-		//String urlConfirmacion = "http://www.puntosfarmanorte.com.co/index.html?id="
-		String urlConfirmacion = "http://localhost:8003/index.html?param=true&id="
+		String urlConfirmacion = "http://www.puntosfarmanorte.com.co/index.html?param=true&id="
+//		String urlConfirmacion = "http://localhost:8003/index.html?param=true&id="
 				+ afiliado.getKeycode();
 
 		String contenidoEmail = null;

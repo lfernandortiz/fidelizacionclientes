@@ -2032,7 +2032,17 @@ background: #bdc3c7;  /* fallback for old browsers */
 background: -webkit-linear-gradient(to top, #052c52, #bdc3c7);  /* Chrome 10-25, Safari 5.1-6 */
 background: linear-gradient(to top, #052c52, #bdc3c7); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 
-  
+
+background: #70e1f5;  /* fallback for old browsers */
+background: -webkit-linear-gradient(to top, #ffd194, #70e1f5);  /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to top, #ffd194, #70e1f5); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+
+background: #076585;  /* fallback for old browsers */
+background: -webkit-linear-gradient(to top, #fff, #076585);  /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to top, #fff, #076585); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+
   }
   
   .contrasenia a{
@@ -2206,6 +2216,7 @@ h2 {
     border-bottom: 1px solid #d5d5d5;
     padding: .1em;
     font-size: 24px; }
+    
 
 /* Dashboard */
 .dashboard {
@@ -3773,3 +3784,35 @@ a.linkesp{
     transform: scale(1.0);
   }
 }
+
+
+
+/*Algunas clases de utilidad*/
+
+
+.float-left {
+  float: left !important; }
+
+.float-right {
+  float: right !important; }
+
+.float-center {
+  display: block;
+  margin-right: auto;
+  margin-left: auto; }
+  
+ .align-right {
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-content: stretch;
+    align-items: flex-end;}
+    
+h2.ash1 {
+    margin: 0 0 .5em 0;
+    border-bottom: 1px solid #d5d5d5;
+    padding: .1em;
+    font-size: 20px!important; }

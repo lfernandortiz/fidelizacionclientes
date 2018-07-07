@@ -48,7 +48,7 @@
 								
 							</p:panelGrid>
 							<p:separator style="height:10px"/>
-							<h1>Condiciones del programa de acumulación</h1>
+							<h2 class="ash1">Condiciones del programa de acumulación</h2>
 							<p:panelGrid columns="4" id="contratopanel"
 								columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
 								layout="grid" styleClass="ui-panelgrid-blank"
@@ -102,11 +102,12 @@
         						        						
 							</p:panelGrid>							
 							<p:separator style="height:5px"/>
+							<p:separator style="height:10px"/>
 							
 							<p:panelGrid columns="6" id="buttons"
 								columnClasses="ui-grid-col-2,"
 								layout="grid" styleClass="ui-panelgrid-blank"
-								style="border:0px none; background-color:transparent;">	
+								style="border:0px none; background-color:transparent; ">	
 										
 								<p:commandButton value="Crear" id="crearnuevaid"
 												 action="#{empresaBeanEdit.crearEmpresa()}" 
@@ -131,11 +132,34 @@
 												 update="detailempresa" />								
 							</p:panelGrid>
 							
+							<h2 class="ash1">Configuracion cuenta correo electronico central</h2>
+							<p:panelGrid columns="4" id="detailemial"
+								columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+							
+								<p:outputLabel for="userid" value="Usuario Email" />
+								<p:inputText id="userid" value="#{empresaBeanEdit.selectedEmpresa.nit}"/>
+								
+							</p:panelGrid>
+							
 						</div> <!-- end car -->
                     </div> <!-- end ui-g-12 -->
                 </div> <!-- end ui-g -->
             </div>  <!-- end ui-fluid -->     
         </h:form>
+        
+        
+        <script type="text/javascript">
+            //<![CDATA[
+            	console.log(":-)");
+            	//se usa para anadir una clase de un elemento hijo contenedor del framework Primefaces
+            	var x = $(document.getElementById("crearempresaform:buttons"))
+            						.children().children().addClass("align-right") ;
+            	console.log(x);
+            //]]>  
+        </script>
+        
     </ui:define>
     
 </ui:composition>

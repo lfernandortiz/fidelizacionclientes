@@ -57,8 +57,10 @@ public class EnviarEmailAlertas {
 	
 	public String enviarEmailAlertaVentas(Afiliado afiliado) {
 
-		String urlConfirmacion = "http://www.puntosfarmanorte.com.co/index.html?id="
-//		String urlConfirmacion = "http://localhost:8003/index.html?id="
+		
+//		String urlConfirmacion = "http://www.puntosfarmanorte.com.co/seccion/actualizacion.html?id="
+//		String urlConfirmacion = "http://www.puntosfarmanorte.com.co/index.html?id="			
+		String urlConfirmacion = "http://localhost:8003/index.html?id="
 				+ afiliado.getKeycode();
 
 		String contenidoEmail = null;
@@ -96,11 +98,11 @@ public class EnviarEmailAlertas {
 			// Element img = doc.select("img#pixelcontrol").first();
 			// img.attr("src", url);
 
-			// Propiedades de la conexión
 			Properties props = new Properties();
-			props.setProperty("mail.smtp.host", "smtpout.secureserver.net");
-			props.setProperty("mail.smtp.port", "80");// puerto de salida,entrada 110
-			props.setProperty("mail.smtp.user", "contacto@farmanorte.com.co");
+			props.setProperty("mail.smtp.host", "deus.wnkserver6.com");
+			props.setProperty("mail.smtp.port", "25");// puerto de salida, de
+			// entrada 110
+			props.setProperty("mail.smtp.user", "contacto@puntosfarmanorte.com.co");
 			props.setProperty("mail.smtp.auth", "true");
 			props.put("mail.transport.protocol.", "smtp");
 
@@ -120,7 +122,7 @@ public class EnviarEmailAlertas {
 			// se compone el mensaje (Asunto, cuerpo del mensaje y direccion
 			// origen)
 			final MimeMessage message = new MimeMessage(session);
-			message.setFrom(new InternetAddress("contacto@farmanorte.com.co", "Puntos Farmanorte"));
+			message.setFrom(new InternetAddress("contacto@puntosfarmanorte.com.co", "Puntos Farmanorte"));
 			message.setRecipients(Message.RecipientType.TO, addressTo);
 			// Emojis :-)
 			String subjectEmojiRaw = ":large_blue_circle: Confirmacion de suscripcion :memo:";
@@ -140,7 +142,7 @@ public class EnviarEmailAlertas {
 			new Thread(new Runnable() {
 				public void run() {
 					try {
-						t.connect("contacto@farmanorte.com.co", "Dromedicas2013.");
+						t.connect("contacto@puntosfarmanorte.com.co", "Dromedicas2013.");
 						t.sendMessage(message, message.getAllRecipients());
 						// Cierre de la conexion
 						t.close();
@@ -172,8 +174,8 @@ public class EnviarEmailAlertas {
 	 */
 	public String validarCorreoActualizacion(Afiliado afiliado) {
 
-		String urlConfirmacion = "http://www.puntosfarmanorte.com.co/index.html?param=true&id="
-//		String urlConfirmacion = "http://localhost:8003/index.html?param=true&id="
+//		String urlConfirmacion = "http://www.puntosfarmanorte.com.co/index.html?param=true&id="
+		String urlConfirmacion = "http://localhost:8003/index.html?param=true&id="
 				+ afiliado.getKeycode();
 
 		String contenidoEmail = null;
@@ -1176,7 +1178,7 @@ public class EnviarEmailAlertas {
 			// se compone el mensaje (Asunto, cuerpo del mensaje y direccion
 			// origen)
 			final MimeMessage message = new MimeMessage(session);
-			message.setFrom(new InternetAddress("noreply@puntosfarmanorte.com.co", "Puntos Farmanorte"));
+			message.setFrom(new InternetAddress("contacto@farmanorte.com.co", "Puntos Farmanorte"));
 			message.setRecipients(Message.RecipientType.TO, addressTo);
 			// Emojis :-)
 			String subjectEmojiRaw = ":birthday: " + new SimpleDateFormat("dd-MM-yyyy").format(new Date())
@@ -1196,7 +1198,7 @@ public class EnviarEmailAlertas {
 			new Thread(new Runnable() {
 				public void run() {
 					try {
-						t.connect("noreply@puntosfarmanorte.com.co", "Dromedicas2013.");
+						t.connect("contacto@farmanorte.com.co", "Dromedicas2013.");
 						t.sendMessage(message, message.getAllRecipients());
 						// Cierre de la conexion
 						t.close();

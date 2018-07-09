@@ -100,8 +100,7 @@ public class EnviarEmailAlertas {
 
 			Properties props = new Properties();
 			props.setProperty("mail.smtp.host", "deus.wnkserver6.com");
-			props.setProperty("mail.smtp.port", "25");// puerto de salida, de
-			// entrada 110
+			props.setProperty("mail.smtp.port", "25");// puerto de salida, de// entrada 110
 			props.setProperty("mail.smtp.user", "contacto@puntosfarmanorte.com.co");
 			props.setProperty("mail.smtp.auth", "true");
 			props.put("mail.transport.protocol.", "smtp");

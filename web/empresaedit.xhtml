@@ -48,7 +48,7 @@
 								
 							</p:panelGrid>
 							<p:separator style="height:10px"/>
-							<h2 class="ash1">Condiciones del programa de acumulación</h2>
+							<h2 class="ash1"><i class="fa fa-circle" aria-hidden="true"></i> Condiciones del programa de acumulación</h2>
 							<p:panelGrid columns="4" id="contratopanel"
 								columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
 								layout="grid" styleClass="ui-panelgrid-blank"
@@ -97,12 +97,70 @@
  								
  								<p:outputLabel for="emailid" value="Envio email" />
         						<p:selectBooleanCheckbox id="emailid" value="#{empresaBeanEdit.envioEmail}" />
-        						
-        						
         						        						
 							</p:panelGrid>							
-							<p:separator style="height:5px"/>
+							
 							<p:separator style="height:10px"/>
+							
+							<!-- Panel de configuracion de correo -->
+							<h2 class="ash1"><i class="fa fa-envelope-o" aria-hidden="true"></i> Configuracion cuenta correo electronico central</h2>
+							<p:panelGrid columns="4" id="detailemial"
+								columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+								
+								<p:outputLabel for="smtpuserid" value="SMTP User (smtp.user)" styleClass="labelImportant"/>
+								<p:inputText id="smtpuserid" value="#{empresaBeanEdit.paramEmailSelected.smtpUser}"/>
+								
+								<p:outputLabel for="passwordid" value="Password  (password)" styleClass="labelImportant"/>
+								<p:inputText id="passwordid" value="#{empresaBeanEdit.paramEmailSelected.password}"/>
+																
+								<p:outputLabel for="smtphostid" value="SMTP Host (smtp.host)" styleClass="labelImportant"/>
+								<p:inputText id="smtphostid" value="#{empresaBeanEdit.paramEmailSelected.smtpHost}"/>
+								
+								<p:outputLabel for="smtpportid" value="SMTP Port (smtp.port)" styleClass="labelImportant"/>
+								<p:inputText id="smtpportid" value="#{empresaBeanEdit.paramEmailSelected.smtpPort}"/>
+																
+								<p:outputLabel for="smtpauthid" value="SMTP Auth (smtp.auth)" styleClass="labelImportant"/>
+								<p:inputText id="smtpauthid" value="#{empresaBeanEdit.paramEmailSelected.smtpAuth}"/>
+								
+								<p:outputLabel for="protocoid" value="Transport Protocol  (transport.protocol)" styleClass="labelImportant"/>
+								<p:inputText id="protocoid" value="#{empresaBeanEdit.paramEmailSelected.transportprotocol}"/>
+								
+								<p:outputLabel for="hostid" value="Host (host)" />
+								<p:inputText id="hostid" value="#{empresaBeanEdit.paramEmailSelected.host}"/>
+								
+								<p:outputLabel for="portid" value="Port (port)" />
+								<p:inputText id="portid" value="#{empresaBeanEdit.paramEmailSelected.port}"/>
+								
+								<p:outputLabel for="smtpsockportid" value="SMTP Socket Factory Port" />
+								<p:inputText id="smtpsockportid" value="#{empresaBeanEdit.paramEmailSelected.smtp_socketFactory_port}"/>
+								
+								<p:outputLabel for="smtpsockclassid" value="SMTP Socket Factory Class" />
+								<p:inputText id="smtpsockclassid" value="#{empresaBeanEdit.paramEmailSelected.smtp_socketFactory_class}"/>
+								
+								<p:outputLabel for="userid" value="User (user)"/>
+								<p:inputText id="userid" value="#{empresaBeanEdit.paramEmailSelected.user}"/>
+													
+								<p:outputLabel for="smtppasswordid" value="SMTP Password" />
+								<p:inputText id="smtppasswordid" value="#{empresaBeanEdit.paramEmailSelected.smtpPassword}"/>
+																
+								<p:outputLabel for="storeprotid" value="Store Protocol" />
+								<p:inputText id="storeprotid" value="#{empresaBeanEdit.paramEmailSelected.storeProtocol}"/>
+								
+								<p:outputLabel for="smtpenableid" value="SMTP starttls Enable " />
+								<p:inputText id="smtpenableid" value="#{empresaBeanEdit.paramEmailSelected.smtpStarttlsEnable}"/>
+								
+								<p:outputLabel for="archivedid" value="Folder Archived" />
+								<p:inputText id="archivedid" value="#{empresaBeanEdit.paramEmailSelected.archived}"/>
+								
+								<p:outputLabel for="propositoid" value="Proposito" />
+								<p:inputText id="propositoid" value="#{empresaBeanEdit.paramEmailSelected.proposito}"/>
+								
+								
+							</p:panelGrid>
+							
+							<p:separator style="height:5px"/>
 							
 							<p:panelGrid columns="6" id="buttons"
 								columnClasses="ui-grid-col-2,"
@@ -132,25 +190,20 @@
 												 update="detailempresa" />								
 							</p:panelGrid>
 							
-							<h2 class="ash1">Configuracion cuenta correo electronico central</h2>
-							<p:panelGrid columns="4" id="detailemial"
-								columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
-								layout="grid" styleClass="ui-panelgrid-blank"
-								style="border:0px none; background-color:transparent;">
 							
-								<p:outputLabel for="userid" value="Usuario Email" />
-								<p:inputText id="userid" value="#{empresaBeanEdit.selectedEmpresa.nit}"/>
-								
-							</p:panelGrid>
-							
+							<h:commandLink class="ayudamodulolink">
+							<h4 class="ayudamodulo"><i class="fa fa-info-circle" aria-hidden="true"></i> Ayuda sobre este modulo.</h4>
+							</h:commandLink>
 						</div> <!-- end car -->
                     </div> <!-- end ui-g-12 -->
                 </div> <!-- end ui-g -->
             </div>  <!-- end ui-fluid -->     
         </h:form>
-        
-        
-        <script type="text/javascript">
+
+		
+		
+		
+		<script type="text/javascript">
             //<![CDATA[
             	console.log(":-)");
             	//se usa para anadir una clase de un elemento hijo contenedor del framework Primefaces

@@ -15,7 +15,9 @@ import org.apache.log4j.Logger;
 
 import com.dromedicas.domain.Contrato;
 import com.dromedicas.domain.Empresa;
+import com.dromedicas.domain.Parametrosemail;
 import com.dromedicas.service.EmpresaService;
+import com.dromedicas.service.ParametrosEmialService;
 import com.dromedicas.util.ExpresionesRegulares;
 
 @ManagedBean(name="empresaBeanEdit")
@@ -32,9 +34,12 @@ public class EmpresaBeanEdit implements Serializable {
 
 	@ManagedProperty(value = "#{empresa}")
 	private Empresa empresa;
-	
+		
 	@ManagedProperty(value ="#{contrato}")
 	private Contrato contrato;
+	
+	@EJB
+	private ParametrosEmialService emailParameterService; 
 	
 	@EJB
 	private ExpresionesRegulares ex;
@@ -42,6 +47,7 @@ public class EmpresaBeanEdit implements Serializable {
 	Logger log = Logger.getLogger(EmpresaBeanList.class);
 	
 	private Empresa selectedEmpresa;
+	private Parametrosemail paramEmailSelected;
 	private boolean envioSms;
 	private boolean envioEmail;
 	private boolean redensionSuc;
@@ -54,7 +60,7 @@ public class EmpresaBeanEdit implements Serializable {
 	@PostConstruct
 	public void init(){	
 		this.selectedEmpresa = new Empresa();
-		
+		this.paramEmailSelected = new Parametrosemail();
 	}
 
 	public Empresa getSelectedEmpresa() {
@@ -135,6 +141,14 @@ public class EmpresaBeanEdit implements Serializable {
 		this.ex = ex;
 	}
 	
+	public Parametrosemail getParamEmailSelected() {
+		return paramEmailSelected;
+	}
+
+	public void setParamEmailSelected(Parametrosemail paramEmailSelected) {
+		this.paramEmailSelected = paramEmailSelected;
+	}
+
 	public void limpiarEdit(){
 		this.selectedEmpresa.setNit("");
 		this.selectedEmpresa.setNombreEmpresa("");
@@ -160,6 +174,10 @@ public class EmpresaBeanEdit implements Serializable {
 		this.envioSms =	this.contrato.getEnviosms() == 1 ? true : false;
 		this.envioEmail = this.contrato.getEnvioemail() == 1 ? true : false;
 		this.redensionSuc = this.contrato.getRedensionsucursales() == 1 ? true : false;
+
+		//carga los datos de configuracion de email
+		this.paramEmailSelected = 
+				this.emailParameterService.obtenerParametrosemailPorFinalidad(Integer.toString(selectedEmpresa.getIdempresa()));
 		
 		
 		this.setIdEmpresaSel(this.selectedEmpresa.getIdempresa());
@@ -171,6 +189,7 @@ public class EmpresaBeanEdit implements Serializable {
 	
 	public String actualizarEmpresa(){
 		System.out.println("Actualizando empresa.....");
+		//Actualiza la informacion general de la empresa
 		this.selectedEmpresa.setIdempresa(this.selectedEmpresa.getIdempresa());
 		System.out.println("Nit----:" + this.selectedEmpresa.getNit());
 		this.selectedEmpresa.setNit(this.selectedEmpresa.getNit());
@@ -181,6 +200,7 @@ public class EmpresaBeanEdit implements Serializable {
 		this.selectedEmpresa.setCodigoprom(this.selectedEmpresa.getCodigoprom().trim());
 		
 		
+		//Actualiza la informacion de la dinamica de puntos 
 		System.out.println("ID contrato: "+ this.contrato.getIdcontrato());
 		this.contrato.setIdcontrato(this.contrato.getIdcontrato());
 		this.contrato.setFechainicio(this.contrato.getFechainicio());
@@ -195,6 +215,12 @@ public class EmpresaBeanEdit implements Serializable {
 		temp = (byte) (this.redensionSuc == true ? 1 : 0);
 		this.contrato.setRedensionsucursales(temp);
 			
+		
+		//Actualiza la informacion de configuracion de la cuenta 
+		//de email central de puntos
+		
+		
+		//Actualiza la informacion de configuracion del proveedor de sms
 		
 		this.empEjb.updateEmpresa(this.selectedEmpresa);
 		this.contrato.setEmpresa(this.selectedEmpresa);

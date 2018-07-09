@@ -1,14 +1,21 @@
 package com.dromedicas.domain;
 
 import java.io.Serializable;
+
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlRootElement;
 
 
 /**
  * The persistent class for the parametrosemail database table.
  * 
  */
+
 @Entity
+@ManagedBean(name="parametrosemail")
+@SessionScoped
 @NamedQuery(name="Parametrosemail.findAll", query="SELECT p FROM Parametrosemail p")
 public class Parametrosemail implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -53,7 +60,10 @@ public class Parametrosemail implements Serializable {
 
 	@Column(name="store_protocol")
 	private String storeProtocol;
-
+	
+	@Column(name="transport_protocol")	
+	private String transportprotocol;
+	
 	public Parametrosemail() {
 	}
 
@@ -184,5 +194,16 @@ public class Parametrosemail implements Serializable {
 	public void setStoreProtocol(String storeProtocol) {
 		this.storeProtocol = storeProtocol;
 	}
+
+	public String getTransportprotocol() {
+		return transportprotocol;
+	}
+
+	public void setTransportprotocol(String transportprotocol) {
+		this.transportprotocol = transportprotocol;
+	}
+	
+	
+	
 
 }

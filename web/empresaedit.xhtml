@@ -10,7 +10,7 @@
     <ui:define name="content">    
         <h:form id="crearempresaform">
        <!--  <p:growl id="growl" showDetail="true" sticky="true" />  -->
-        <p:messages id="crearempresamessage"  autoUpdate="true" closable="true" />
+        <p:messages for="crearempresaform" id="crearempresamessage"  autoUpdate="true" closable="true" globalOnly="true"/>
             <div class="ui-fluid">
                 <div class="ui-g">
                     <div class="ui-g-12">
@@ -104,6 +104,7 @@
 							
 							<!-- Panel de configuracion de correo -->
 							<h2 class="ash1"><i class="fa fa-envelope-o" aria-hidden="true"></i> Configuración cuenta correo electrónico central</h2>
+							<p:messages for="dialogemail" id="configemailmessage" showDetail="true" autoUpdate="true" closable="true"/>
 							<p:panelGrid columns="4" id="detailemial"
 								columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
 								layout="grid" styleClass="ui-panelgrid-blank"
@@ -246,6 +247,7 @@
 								<p:outputLabel for="diremailid" value="Direccion de email:" />
 								<p:inputText id="diremailid" maxlength="44"
 									value="#{empresaBeanEdit.emailTest}" />	
+								<p:outputLabel value="Estre envio de email tomara unos segundos." />
 										
 							</p:panelGrid>
 							<p:spacer height="10px" />
@@ -264,9 +266,8 @@
 									<p:commandButton value="Enviar" 
 													 id="enviarEmailTestid" 
 													 styleClass="navy-button"
-													 update="emailTestFormid"
+													 update="emailTestFormid configemailmessage"
 													 action="#{empresaBeanEdit.enviarEmailTest()}"/>
-									
 									
 								</p:panelGrid>
 							</div>

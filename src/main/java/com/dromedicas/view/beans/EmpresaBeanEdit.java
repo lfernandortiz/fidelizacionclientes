@@ -250,7 +250,7 @@ public class EmpresaBeanEdit implements Serializable {
 		this.empEjb.updateContrato(this.contrato);
 		this.emailParameterService.updateParametrosemail(this.paramEmailSelected);
 				
-		FacesContext.getCurrentInstance().addMessage("globalMessagex", new FacesMessage(FacesMessage.SEVERITY_INFO,
+		FacesContext.getCurrentInstance().addMessage("crearempresaform", new FacesMessage(FacesMessage.SEVERITY_INFO,
 				"Actualizacion Exitosa!", "Empresa " + this.selectedEmpresa.getNombreEmpresa() + " fue actualizada correctamente."));
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		Flash flash = facesContext.getCurrentInstance().getExternalContext().getFlash();
@@ -304,20 +304,45 @@ public class EmpresaBeanEdit implements Serializable {
 	}
 	
 	
+	
+	/**
+	 * Permite enviar un Email de prueba a a la direccion
+	 * recibida como parametro. Retorna a la vista, el error 
+	 * recibido del servidor en caso de haber un parametro de 
+	 * conexion errado.
+	 */
 	public void enviarEmailTest(){
 		System.out.println("Direccion de email: " + this.emailTest);
 		
 		boolean valido = ex.validateEmail( this.emailTest );
+		
 		System.out.println("Email valido: " + valido);
 		
 		if( valido ){
 			try {
+				//Envia el email de prueba
 				emailService.enviarEmailPrueba(this.emailTest);
+				
 				//cierra el cuado de dialogo de envio de Email de prueba
 				RequestContext.getCurrentInstance().execute("PF('testEmail').hide();");
+								
+				FacesContext.getCurrentInstance().addMessage("dialogemail", 
+						new FacesMessage(FacesMessage.SEVERITY_INFO,
+												"Email enviado exitosamente a: ", this.emailTest ));
+				
+				//limpia el formulario
 				cancelarTest();
+				
 			} catch (Exception e) {
-				// TODO: handle exception
+				
+				System.out.println("---Error en servidor: " + e.getMessage());
+				
+				RequestContext.getCurrentInstance().execute("PF('testEmail').hide();");
+				cancelarTest();
+				
+				FacesContext.getCurrentInstance().addMessage("dialogemail", 
+							new FacesMessage(FacesMessage.SEVERITY_ERROR,
+											"Error en la validacion: "+ e.getMessage(), ":(" ));
 			}			
 			
 		}else{
@@ -327,8 +352,9 @@ public class EmpresaBeanEdit implements Serializable {
 			cancelarTest();
 			
 			//RequestContext.getCurrentInstance().execute("PF('globalMessagex').hide();");
-			FacesContext.getCurrentInstance().addMessage("globalMessagex", new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Direccion de Email no valida", "La direccion ingresada no es valida"));
+			FacesContext.getCurrentInstance().addMessage("dialogemail", 
+					new FacesMessage(FacesMessage.SEVERITY_ERROR,
+							"Direccion de Email no valida",  "La direccion ingresada no es valida"));
 		}
 	}
 	

@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
 import javax.ejb.EJB;
 import javax.ejb.Remote;
@@ -103,6 +104,14 @@ public class EnviarEmailAlertas {
          defaultMailConfig.setProperty(MAIL_USERNAME, param.getSmtpUser());
          defaultMailConfig.setProperty(MAIL_SMTP_AUTH, param.getSmtpAuth());
          defaultMailConfig.put(MAIL_TRANSPORT_PROTOCOL, param.getTransportprotocol());
+         
+			Set<Object> claves = defaultMailConfig.keySet(); 
+			// imprime los pares nombre/valor
+			for (Object clave : claves) {
+				System.out.printf("%s\t%s\n", clave, defaultMailConfig.getProperty((String) clave));
+			} // fin de for
+			System.out.println();
+		
          
          //se establecen variables de instancia para inicio de session
          this.setUserSession(param.getSmtpUser());
@@ -1459,7 +1468,8 @@ public class EnviarEmailAlertas {
 		String enviado = "Exitoso";
 		
 		try {
-			String mensaje = "Mensaje de prueba configuracion de correo";	
+			String mensaje = 
+					"Mensaje de prueba configuracion de correo Puntos Farmanorte.";	
 			
 			//Establece las propiedades de conexion
 			this.setProperties();

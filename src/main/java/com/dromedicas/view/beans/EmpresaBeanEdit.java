@@ -12,10 +12,12 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.Flash;
 
 import org.apache.log4j.Logger;
+import org.primefaces.context.RequestContext;
 
 import com.dromedicas.domain.Contrato;
 import com.dromedicas.domain.Empresa;
 import com.dromedicas.domain.Parametrosemail;
+import com.dromedicas.mailservice.EnviarEmailAlertas;
 import com.dromedicas.service.EmpresaService;
 import com.dromedicas.service.ParametrosEmialService;
 import com.dromedicas.util.ExpresionesRegulares;
@@ -44,6 +46,9 @@ public class EmpresaBeanEdit implements Serializable {
 	@EJB
 	private ExpresionesRegulares ex;
 	
+	@EJB
+	private EnviarEmailAlertas emailService;
+	
 	Logger log = Logger.getLogger(EmpresaBeanList.class);
 	
 	private Empresa selectedEmpresa;
@@ -53,6 +58,7 @@ public class EmpresaBeanEdit implements Serializable {
 	private boolean redensionSuc;
 	private int idContratoSel;
 	private int idEmpresaSel;
+	private String emailTest;
 	
 	
 	public EmpresaBeanEdit(){}
@@ -148,6 +154,14 @@ public class EmpresaBeanEdit implements Serializable {
 	public void setParamEmailSelected(Parametrosemail paramEmailSelected) {
 		this.paramEmailSelected = paramEmailSelected;
 	}
+	
+	public String getEmailTest() {
+		return emailTest;
+	}
+
+	public void setEmailTest(String emailTest) {
+		this.emailTest = emailTest;
+	}
 
 	public void limpiarEdit(){
 		this.selectedEmpresa.setNit("");
@@ -218,13 +232,23 @@ public class EmpresaBeanEdit implements Serializable {
 		
 		//Actualiza la informacion de configuracion de la cuenta 
 		//de email central de puntos
+		this.paramEmailSelected.setSmtpUser(this.paramEmailSelected.getSmtpUser().trim());
+		this.paramEmailSelected.setSmtpPassword(this.paramEmailSelected.getSmtpPassword().trim());
+		this.paramEmailSelected.setSmtpHost(this.paramEmailSelected.getSmtpHost().trim());
+		this.paramEmailSelected.setSmtpPort(this.paramEmailSelected.getSmtpPort().trim());
+		this.paramEmailSelected.setSmtpAuth(this.paramEmailSelected.getSmtpAuth().trim());
 		
+		String prt = this.paramEmailSelected.getTransportprotocol();
+		System.out.println("Protocolo de transporte: " +  prt);
+		this.paramEmailSelected.setTransportprotocol(prt);
 		
+				
 		//Actualiza la informacion de configuracion del proveedor de sms
 		
 		this.empEjb.updateEmpresa(this.selectedEmpresa);
 		this.contrato.setEmpresa(this.selectedEmpresa);
 		this.empEjb.updateContrato(this.contrato);
+		this.emailParameterService.updateParametrosemail(this.paramEmailSelected);
 				
 		FacesContext.getCurrentInstance().addMessage("globalMessagex", new FacesMessage(FacesMessage.SEVERITY_INFO,
 				"Actualizacion Exitosa!", "Empresa " + this.selectedEmpresa.getNombreEmpresa() + " fue actualizada correctamente."));
@@ -232,7 +256,8 @@ public class EmpresaBeanEdit implements Serializable {
 		Flash flash = facesContext.getCurrentInstance().getExternalContext().getFlash();
 		flash.setKeepMessages(true);
 		
-		return "empresalist?faces-redirect=true";		
+		//return "null";
+		return "empresaedit?faces-redirect=true";		
 	}
 	
 	
@@ -276,6 +301,40 @@ public class EmpresaBeanEdit implements Serializable {
 		flash.setKeepMessages(true);
 		//Outcome para navegacion
 		return "empresalist?faces-redirect=true";		
+	}
+	
+	
+	public void enviarEmailTest(){
+		System.out.println("Direccion de email: " + this.emailTest);
+		
+		boolean valido = ex.validateEmail( this.emailTest );
+		System.out.println("Email valido: " + valido);
+		
+		if( valido ){
+			try {
+				emailService.enviarEmailPrueba(this.emailTest);
+				//cierra el cuado de dialogo de envio de Email de prueba
+				RequestContext.getCurrentInstance().execute("PF('testEmail').hide();");
+				cancelarTest();
+			} catch (Exception e) {
+				// TODO: handle exception
+			}			
+			
+		}else{
+			
+			//cierra el cuado de dialogo de envio de Email de prueba
+			RequestContext.getCurrentInstance().execute("PF('testEmail').hide();");
+			cancelarTest();
+			
+			//RequestContext.getCurrentInstance().execute("PF('globalMessagex').hide();");
+			FacesContext.getCurrentInstance().addMessage("globalMessagex", new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Direccion de Email no valida", "La direccion ingresada no es valida"));
+		}
+	}
+	
+	
+	public void cancelarTest(){
+		this.emailTest = "";
 	}
 	
 	

@@ -29,9 +29,11 @@ import org.jsoup.nodes.Element;
 import com.dromedicas.domain.Afiliado;
 import com.dromedicas.domain.BalancePuntos;
 import com.dromedicas.domain.Campania;
+import com.dromedicas.domain.Parametrosemail;
 import com.dromedicas.domain.Sucursal;
 import com.dromedicas.domain.Transaccion;
 import com.dromedicas.service.OperacionPuntosService;
+import com.dromedicas.service.ParametrosEmialService;
 import com.dromedicas.service.RegistroNotificacionesService;
 import com.dromedicas.util.ExpresionesRegulares;
 import com.sun.mail.imap.protocol.FLAGS;
@@ -55,8 +57,92 @@ public class EnviarEmailAlertas {
 	@EJB
 	private RegistroNotificacionesService registroNotificacion;
 	
-	public String enviarEmailAlertaVentas(Afiliado afiliado) {
+	@EJB
+	private ParametrosEmialService emailParameterService;
+	
+	
+	private static final String MAIL_SMTP_AUTH = "mail.smtp.auth";
+    private static final String MAIL_SMTP_STARTTLS_ENABLE = "mail.smtp.starttls.enable";
+    private static final String MAIL_SMTP_HOST = "mail.smtp.host"; 
+    private static final String MAIL_SMTP_PORT = "mail.smtp.port";
+    private static final String MAIL_SMTP_SSL_SOCKETFACTORY = "mail.smtp.ssl.socketFactory";
+    private static final String MAIL_SERVER_PROTOCOL = "mail.server.protocol";
+    private static final String MAIL_SERVER_PORT = "mail.port";
+    private static final String MAIL_USERNAME = "mail.smtp.user";
+    private static final String MAIL_PASSWORD = "mail.smtp.password";
+    private static final String MAIL_SERVER_HOST = "mail.server.host";
+    private static final String MAIL_STORE_IMAP = "mail.store.protocol";
+    private static final String MAIL_SMTP_STATRTTLS = "mail.smtp.starttls.enable";
+    private static final String MAIL_TRANSPORT_PROTOCOL = "mail.transport.protocol";
+    private static final String ARCHIVED_FOLDER= "archived";
+    
+    private Parametrosemail param;
+    private Properties defaultMailConfig;
+    
+    private String userSession;
+    private String passwordSession;
+    private String emailSession;
+    
+    /**
+     * Establece las propiedades de conexion y envio del 
+     * email a usar, desde la base de datos.
+     */
+    private void setProperties(){
+    	//instancia  el objeto properties
+    	 this.defaultMailConfig = new Properties(); 
+    	 
+    	 //obtiene los parametros de la cuenta de correo de la base de datos
+    	 //estos parametros se configuran en el modulo de empresa
+    	 this.param = 
+ 				this.emailParameterService.obtenerParametrosemailPorFinalidad(Integer.toString(1));
+    	 
+    	 //establece los valores del objeto properties usando las constantes declaradas
+    	 //como llaves
+    	 defaultMailConfig.setProperty(MAIL_SMTP_HOST, param.getSmtpHost());        
+         defaultMailConfig.setProperty(MAIL_SMTP_PORT, param.getPort());
+         defaultMailConfig.setProperty(MAIL_USERNAME, param.getSmtpUser());
+         defaultMailConfig.setProperty(MAIL_SMTP_AUTH, param.getSmtpAuth());
+         defaultMailConfig.put(MAIL_TRANSPORT_PROTOCOL, param.getTransportprotocol());
+         
+         //se establecen variables de instancia para inicio de session
+         this.setUserSession(param.getSmtpUser());
+         this.setPasswordSession(param.getSmtpPassword());
+        
+    }        
+	
+	public Properties getDefaultMailConfig() {
+		return defaultMailConfig;
+	}
 
+	public void setDefaultMailConfig(Properties defaultMailConfig) {
+		this.defaultMailConfig = defaultMailConfig;
+	}
+
+	public String getUserSession() {
+		return userSession;
+	}
+
+	public void setUserSession(String userSession) {
+		this.userSession = userSession;
+	}
+
+	public String getPasswordSession() {
+		return passwordSession;
+	}
+
+	public void setPasswordSession(String passwordSession) {
+		this.passwordSession = passwordSession;
+	}
+	
+	public String getEmailSession() {
+		return emailSession;
+	}
+
+	public void setEmailSession(String emailSession) {
+		this.emailSession = emailSession;
+	}
+
+	public String enviarEmailAlertaVentas(Afiliado afiliado) {
 		
 //		String urlConfirmacion = "http://www.puntosfarmanorte.com.co/seccion/actualizacion.html?id="
 //		String urlConfirmacion = "http://www.puntosfarmanorte.com.co/index.html?id="			
@@ -104,11 +190,14 @@ public class EnviarEmailAlertas {
 			props.setProperty("mail.smtp.user", "contacto@puntosfarmanorte.com.co");
 			props.setProperty("mail.smtp.auth", "true");
 			props.put("mail.transport.protocol.", "smtp");
-
+			
+			//Establece las propiedades de conexion
+			this.setProperties();
+			
 			// Preparamos la sesion
-			Session session = Session.getDefaultInstance(props);
+			Session session = Session.getDefaultInstance( this.defaultMailConfig );
+			
 			// Construimos el mensaje
-
 			// multiples direcciones
 			String[] to = { afiliado.getEmail() };
 
@@ -121,7 +210,7 @@ public class EnviarEmailAlertas {
 			// se compone el mensaje (Asunto, cuerpo del mensaje y direccion
 			// origen)
 			final MimeMessage message = new MimeMessage(session);
-			message.setFrom(new InternetAddress("contacto@puntosfarmanorte.com.co", "Puntos Farmanorte"));
+			message.setFrom(new InternetAddress(this.getUserSession(), "Puntos Farmanorte"));
 			message.setRecipients(Message.RecipientType.TO, addressTo);
 			// Emojis :-)
 			String subjectEmojiRaw = ":large_blue_circle: Confirmacion de suscripcion :memo:";
@@ -133,15 +222,18 @@ public class EnviarEmailAlertas {
 			message.setFlag(FLAGS.Flag.RECENT, true);
 
 			contenidoEmail = doc.html();
-			// Envia el correo
+			// Envia el correo | constantes usadas en el subproceso
 			final Transport t = session.getTransport("smtp");
+			final String email = this.getUserSession();
+			final String passw = this.getPasswordSession();
+			
 			// asigno un hilo exclusivo a la conexion y envio del mensaje
 			// dado que el proveedor de correo es muy lento para establecer
 			// la conexion
 			new Thread(new Runnable() {
 				public void run() {
 					try {
-						t.connect("contacto@puntosfarmanorte.com.co", "Dromedicas2013.");
+						t.connect(email, passw);
 						t.sendMessage(message, message.getAllRecipients());
 						// Cierre de la conexion
 						t.close();
@@ -220,8 +312,12 @@ public class EnviarEmailAlertas {
 			props.setProperty("mail.smtp.auth", "true");
 			props.put("mail.transport.protocol.", "smtp");
 
+			//establece los valores de la propiedades
+			this.setProperties();
+			
 			// Preparamos la sesion
-			Session session = Session.getDefaultInstance(props);
+			Session session = Session.getDefaultInstance( this.defaultMailConfig );
+						
 			// Construimos el mensaje
 
 			// multiples direcciones
@@ -236,7 +332,7 @@ public class EnviarEmailAlertas {
 			// se compone el mensaje (Asunto, cuerpo del mensaje y direccion
 			// origen)
 			final MimeMessage message = new MimeMessage(session);
-			message.setFrom(new InternetAddress("contacto@farmanorte.com.co", "Puntos Farmanorte"));
+			message.setFrom(new InternetAddress(this.getUserSession(), "Puntos Farmanorte"));
 			message.setRecipients(Message.RecipientType.TO, addressTo);
 			// Emojis :-)
 			String subjectEmojiRaw = ":envelope: Confirmacion de correo :thumbsup:";
@@ -250,13 +346,15 @@ public class EnviarEmailAlertas {
 			contenidoEmail = doc.html();
 			// Envia el correo
 			final Transport t = session.getTransport("smtp");
+			final String email = this.getUserSession();
+			final String passw = this.getPasswordSession();
 			// asigno un hilo exclusivo a la conexion y envio del mensaje
 			// dado que el proveedor de correo es muy lento para establecer
 			// la conexion
 			new Thread(new Runnable() {
 				public void run() {
 					try {
-						t.connect("contacto@farmanorte.com.co", "Dromedicas2013.");
+						t.connect(email, passw);
 						t.sendMessage(message, message.getAllRecipients());
 						// Cierre de la conexion
 						t.close();
@@ -335,8 +433,12 @@ public class EnviarEmailAlertas {
 				props.setProperty("mail.smtp.auth", "true");
 				props.put("mail.transport.protocol.", "smtp");
 
+				//establece los valores de la propiedades
+				this.setProperties();
+				
 				// Preparamos la sesion
-				Session session = Session.getDefaultInstance(props);
+				Session session = Session.getDefaultInstance( this.defaultMailConfig );
+								
 				// Construimos el mensaje
 
 				InternetAddress addressTo = new InternetAddress(afiliado.getEmail());
@@ -344,7 +446,7 @@ public class EnviarEmailAlertas {
 				// se compone el mensaje (Asunto, cuerpo del mensaje y direccion
 				// origen)
 				final MimeMessage message = new MimeMessage(session);
-				message.setFrom(new InternetAddress("contacto@farmanorte.com.co", "Puntos Farmanorte"));
+				message.setFrom(new InternetAddress(this.getUserSession(), "Puntos Farmanorte"));
 				message.setRecipient(Message.RecipientType.TO, addressTo);
 				// Emojis :-)
 				String subjectEmojiRaw = ":pill: Puntos Farmanorte :syringe:";
@@ -356,13 +458,15 @@ public class EnviarEmailAlertas {
 				System.out.println("Enviando Correo....");
 				// Envia el correo
 				final Transport t = session.getTransport("smtp");
+				final String email = this.getUserSession();
+				final String passw = this.getPasswordSession();
 				// asigno un hilo exclusivo a la conexion y envio del mensaje
 				// dado que el proveedor de correo es muy lento para establecer
 				// la conexion
 				new Thread(new Runnable() {
 					public void run() {
 						try {
-							t.connect("contacto@farmanorte.com.co", "Dromedicas2013.");
+							t.connect(email, passw);
 							t.sendMessage(message, message.getAllRecipients());
 							// Cierre de la conexion
 							t.close();
@@ -410,12 +514,18 @@ public class EnviarEmailAlertas {
 			props.setProperty("mail.smtp.auth", "true");
 			props.put("mail.transport.protocol.", "smtp");
 
+			//establece los valores de la propiedades
+			this.setProperties();
+			
 			// Preparamos la sesion
-			Session session = Session.getDefaultInstance(props);
+			Session session = Session.getDefaultInstance( this.defaultMailConfig );
 			System.out.println("Enviando Correos....");
+			
 			// Envia el correo
 			final Transport t = session.getTransport("smtp");
-			t.connect("contacto@farmanorte.com.co", "Dromedicas2013.");
+			final String email = this.getUserSession();
+			final String passw = this.getPasswordSession();
+			t.connect(email, passw);
 
 			for (Transaccion tx : txList) {
 				Afiliado afiliado = tx.getAfiliado();
@@ -450,7 +560,7 @@ public class EnviarEmailAlertas {
 					// se compone el mensaje (Asunto, cuerpo del mensaje y
 					// direccion origen)
 					final MimeMessage message = new MimeMessage(session);
-					message.setFrom(new InternetAddress("contacto@farmanorte.com.co", "Puntos Farmanorte"));
+					message.setFrom(new InternetAddress(email, "Puntos Farmanorte"));
 					message.setRecipient(Message.RecipientType.TO, addressTo);
 					// Emojis :-)
 					String subjectEmojiRaw = ":pill: Acumulaste: " + tx.getPuntostransaccion()
@@ -502,8 +612,14 @@ public class EnviarEmailAlertas {
 			props.setProperty("mail.smtp.auth", "true");
 			props.put("mail.transport.protocol.", "smtp");
 
+			
+			//establece los valores de la propiedades
+			this.setProperties();
+			
 			// Preparamos la sesion
-			final Session session = Session.getDefaultInstance(props);
+			final Session session = Session.getDefaultInstance(this.defaultMailConfig);
+			final String email = this.getUserSession();
+			final String passw = this.getPasswordSession();
 			System.out.println("Enviando Correos....");
 			// Envia el correo
 			final ServletContext servletContextFinal = servletContext;
@@ -511,7 +627,7 @@ public class EnviarEmailAlertas {
 				public void run() {
 					try {
 						Transport t = session.getTransport("smtp");
-						t.connect("contacto@farmanorte.com.co", "Dromedicas2013.");
+						t.connect(email, passw);
 
 						for (String dir : emailList) {
 
@@ -528,8 +644,7 @@ public class EnviarEmailAlertas {
 							// se compone el mensaje (Asunto, cuerpo del mensaje
 							// y direccion origen)
 							final MimeMessage message = new MimeMessage(session);
-							message.setFrom(
-									new InternetAddress("contacto@puntosfarmanorte.com.co", "Puntos Farmanorte"));
+							message.setFrom(new InternetAddress(email, "Puntos Farmanorte"));
 							message.setRecipient(Message.RecipientType.TO, addressTo);
 							// Emojis :-)
 							String subjectEmojiRaw = ":large_blue_circle: Afiliate a Puntos Farmanorte";
@@ -604,8 +719,12 @@ public class EnviarEmailAlertas {
 			props.setProperty("mail.smtp.auth", "true");
 			props.put("mail.transport.protocol.", "smtp");
 
+			//Establece las propiedades de conexion
+			this.setProperties();
+			
 			// Preparamos la sesion
-			Session session = Session.getDefaultInstance(props);
+			Session session = Session.getDefaultInstance( this.defaultMailConfig );			
+			
 			// Construimos el mensaje
 
 			// multiples direcciones
@@ -620,7 +739,7 @@ public class EnviarEmailAlertas {
 			// se compone el mensaje (Asunto, cuerpo del mensaje y direccion
 			// origen)
 			final MimeMessage message = new MimeMessage(session);
-			message.setFrom(new InternetAddress("contacto@puntosfarmanorte.com.co", "Puntos Farmanorte"));
+			message.setFrom(new InternetAddress(this.getUserSession(), "Puntos Farmanorte"));
 			message.setRecipients(Message.RecipientType.BCC, addressTo);
 			// Emojis :-)
 			String subjectEmojiRaw = ":ok_hand: Registro Completo";
@@ -633,13 +752,15 @@ public class EnviarEmailAlertas {
 
 			// Envia el correo
 			final Transport t = session.getTransport("smtp");
+			final String email = this.getUserSession();
+			final String passw = this.getPasswordSession();
 			// asigno un hilo exclusivo a la conexion y envio del mensaje
 			// dado que el proveedor de correo es muy lento para establecer
 			// la conexion
 			new Thread(new Runnable() {
 				public void run() {
 					try {
-						t.connect("contacto@farmanorte.com.co", "Dromedicas2013.");
+						t.connect(email, passw);
 						t.sendMessage(message, message.getAllRecipients());
 						// Cierre de la conexion
 						t.close();
@@ -704,8 +825,12 @@ public class EnviarEmailAlertas {
 			props.setProperty("mail.smtp.auth", "true");
 			props.put("mail.transport.protocol.", "smtp");
 
+			//Establece las propiedades de conexion
+			this.setProperties();
+			
 			// Preparamos la sesion
-			Session session = Session.getDefaultInstance(props);
+			Session session = Session.getDefaultInstance( this.defaultMailConfig );
+			
 			// Construimos el mensaje
 
 			// multiples direcciones
@@ -720,7 +845,7 @@ public class EnviarEmailAlertas {
 			// se compone el mensaje (Asunto, cuerpo del mensaje y direccion
 			// origen)
 			final MimeMessage message = new MimeMessage(session);
-			message.setFrom(new InternetAddress("contacto@farmanorte.com.co", "Puntos Farmanorte"));
+			message.setFrom(new InternetAddress(this.getUserSession(), "Puntos Farmanorte"));
 			message.setRecipients(Message.RecipientType.BCC, addressTo);
 			// Emojis :-)
 			String subjectEmojiRaw = ":ok_hand: Actualizacion datos completa";
@@ -733,13 +858,14 @@ public class EnviarEmailAlertas {
 
 			// Envia el correo
 			final Transport t = session.getTransport("smtp");
-			// asigno un hilo exclusivo a la conexion y envio del mensaje
+			final String email = this.getUserSession();
+			final String passw = this.getPasswordSession();// asigno un hilo exclusivo a la conexion y envio del mensaje
 			// dado que el proveedor de correo es muy lento para establecer
 			// la conexion
 			new Thread(new Runnable() {
 				public void run() {
 					try {
-						t.connect("contacto@farmanorte.com.co", "Dromedicas2013.");
+						t.connect(email, passw);
 						t.sendMessage(message, message.getAllRecipients());
 						// Cierre de la conexion
 						t.close();
@@ -797,8 +923,11 @@ public class EnviarEmailAlertas {
 			props.setProperty("mail.smtp.auth", "true");
 			props.put("mail.transport.protocol.", "smtp");
 
+			///Establece las propiedades de conexion
+			this.setProperties();
+			
 			// Preparamos la sesion
-			Session session = Session.getDefaultInstance(props);
+			Session session = Session.getDefaultInstance( this.defaultMailConfig );
 
 			// multiples direcciones
 			String[] to = { "sistemas2@dromedicas.com.co", 
@@ -808,7 +937,7 @@ public class EnviarEmailAlertas {
 						    "archivo@dromedicas.com.co", 
 						    "elianaarredondo@dromedicas.com.co" 
 						    };
-
+		
 			// arreglo con las direcciones de correo
 			InternetAddress[] addressTo = new InternetAddress[to.length];
 			for (int i = 0; i < addressTo.length; i++) {
@@ -817,7 +946,7 @@ public class EnviarEmailAlertas {
 			// se compone el mensaje (Asunto, cuerpo del mensaje y direccion
 			// origen)
 			final MimeMessage message = new MimeMessage(session);
-			message.setFrom(new InternetAddress("contacto@farmanorte.com.co", "Puntos Farmanorte"));
+			message.setFrom(new InternetAddress(this.getUserSession(), "Puntos Farmanorte"));
 			message.setRecipients(Message.RecipientType.BCC, addressTo);
 			// Emojis :-)
 			String subjectEmojiRaw = ":warning: Redencion de puntos sucursal " + sucursal.getNombreSucursal();
@@ -828,13 +957,15 @@ public class EnviarEmailAlertas {
 
 			// Envia el correo
 			final Transport t = session.getTransport("smtp");
+			final String email = this.getUserSession();
+			final String passw = this.getPasswordSession();
 			// asigno un hilo exclusivo a la conexion y envio del mensaje
 			// dado que el proveedor de correo es muy lento para establecer
 			// la conexion
 			new Thread(new Runnable() {
 				public void run() {
 					try {
-						t.connect("contacto@farmanorte.com.co", "Dromedicas2013.");
+						t.connect(email, passw);
 						t.sendMessage(message, message.getAllRecipients());
 						// Cierre de la conexion
 						t.close();
@@ -902,8 +1033,11 @@ public class EnviarEmailAlertas {
 			props.setProperty("mail.smtp.auth", "true");
 			props.put("mail.transport.protocol.", "smtp");
 
+			//Establece las propiedades de conexion
+			this.setProperties();
+			
 			// Preparamos la sesion
-			Session session = Session.getDefaultInstance(props);
+			Session session = Session.getDefaultInstance( this.defaultMailConfig );
 			// Construimos el mensaje
 
 			// multiples direcciones
@@ -918,7 +1052,7 @@ public class EnviarEmailAlertas {
 			// se compone el mensaje (Asunto, cuerpo del mensaje y direccion
 			// origen)
 			final MimeMessage message = new MimeMessage(session);
-			message.setFrom(new InternetAddress("contacto@farmanorte.com.co", "Puntos Farmanorte"));
+			message.setFrom(new InternetAddress(this.getUserSession(), "Puntos Farmanorte"));
 			message.setRecipients(Message.RecipientType.TO, addressTo);
 			// Emojis :-)
 			String subjectEmojiRaw = ":key: Recuperacion Contraseña Puntos Farmanorte";
@@ -933,13 +1067,15 @@ public class EnviarEmailAlertas {
 
 			// Envia el correo
 			final Transport t = session.getTransport("smtp");
+			final String email = this.getUserSession();
+			final String passw = this.getPasswordSession();
 			// asigno un hilo exclusivo a la conexion y envio del mensaje
 			// dado que el proveedor de correo es muy lento para establecer
 			// la conexion
 			new Thread(new Runnable() {
 				public void run() {
 					try {
-						t.connect("contacto@farmanorte.com.co", "Dromedicas2013.");
+						t.connect(email, passw);
 						t.sendMessage(message, message.getAllRecipients());
 						// Cierre de la conexion
 						t.close();
@@ -1004,8 +1140,12 @@ public class EnviarEmailAlertas {
 			props.setProperty("mail.smtp.auth", "true");
 			props.put("mail.transport.protocol.", "smtp");
 
+			//Establece las propiedades de conexion
+			this.setProperties();
+			
 			// Preparamos la sesion
-			Session session = Session.getDefaultInstance(props);
+			Session session = Session.getDefaultInstance( this.defaultMailConfig );
+			
 			// Construimos el mensaje
 
 			// multiples direcciones
@@ -1020,7 +1160,7 @@ public class EnviarEmailAlertas {
 			// se compone el mensaje (Asunto, cuerpo del mensaje y direccion
 			// origen)
 			final MimeMessage message = new MimeMessage(session);
-			message.setFrom(new InternetAddress("contacto@farmanorte.com.co", "Puntos Farmanorte"));
+			message.setFrom(new InternetAddress(this.getUserSession(), "Puntos Farmanorte"));
 			message.setRecipients(Message.RecipientType.TO, addressTo);
 			// Emojis :-)
 			String subjectEmojiRaw = ":white_check_mark: Contraseña Reestablecida - Puntos Farmanorte";
@@ -1035,13 +1175,15 @@ public class EnviarEmailAlertas {
 
 			// Envia el correo
 			final Transport t = session.getTransport("smtp");
+			final String email = this.getUserSession();
+			final String passw = this.getPasswordSession();
 			// asigno un hilo exclusivo a la conexion y envio del mensaje
 			// dado que el proveedor de correo es muy lento para establecer
 			// la conexion
 			new Thread(new Runnable() {
 				public void run() {
 					try {
-						t.connect("contacto@farmanorte.com.co", "Dromedicas2013.");
+						t.connect(email, passw);
 						t.sendMessage(message, message.getAllRecipients());
 						// Cierre de la conexion
 						t.close();
@@ -1161,8 +1303,11 @@ public class EnviarEmailAlertas {
 			props.setProperty("mail.smtp.auth", "true");
 			props.put("mail.transport.protocol.", "smtp");
 
+			//Establece las propiedades de conexion
+			this.setProperties();
+			
 			// Preparamos la sesion
-			Session session = Session.getDefaultInstance(props);
+			Session session = Session.getDefaultInstance( this.defaultMailConfig );
 			// Construimos el mensaje
 
 			// multiples direcciones
@@ -1177,7 +1322,7 @@ public class EnviarEmailAlertas {
 			// se compone el mensaje (Asunto, cuerpo del mensaje y direccion
 			// origen)
 			final MimeMessage message = new MimeMessage(session);
-			message.setFrom(new InternetAddress("contacto@farmanorte.com.co", "Puntos Farmanorte"));
+			message.setFrom(new InternetAddress(this.getUserSession(), "Puntos Farmanorte"));
 			message.setRecipients(Message.RecipientType.TO, addressTo);
 			// Emojis :-)
 			String subjectEmojiRaw = ":birthday: " + new SimpleDateFormat("dd-MM-yyyy").format(new Date())
@@ -1191,13 +1336,15 @@ public class EnviarEmailAlertas {
 
 			// Envia el correo
 			final Transport t = session.getTransport("smtp");
+			final String email = this.getUserSession();
+			final String passw = this.getPasswordSession();
 			// asigno un hilo exclusivo a la conexion y envio del mensaje
 			// dado que el proveedor de correo es muy lento para establecer
 			// la conexion
 			new Thread(new Runnable() {
 				public void run() {
 					try {
-						t.connect("contacto@farmanorte.com.co", "Dromedicas2013.");
+						t.connect(email, passw);
 						t.sendMessage(message, message.getAllRecipients());
 						// Cierre de la conexion
 						t.close();
@@ -1219,95 +1366,6 @@ public class EnviarEmailAlertas {
 		return true;
 	}
 
-
-
-	/**
-	 * Envia emaila de felicitacion a un List de afiliados
-	 * @param emailList
-	 * @return
-	 */
-	public boolean emailAfiliadoCumpleanios(final List<String> emailList) {
-
-		System.out.println("Clase enviar Emial cumpleanos afilaido ");
-		try {
-
-			// se optiene el contexto de la aplicacion
-			// para calificar la ruta de acceso del archivo
-			// template HTML del email
-			ServletContext servletContext = null;
-			try {
-				servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
-			} catch (Exception e) {
-				servletContext = context;
-			}
-
-			// Propiedades de la conexión
-			Properties props = new Properties();
-			props.setProperty("mail.smtp.host", "smtpout.secureserver.net");
-			props.setProperty("mail.smtp.port", "80");// puerto de salida,entrada 110
-			props.setProperty("mail.smtp.user", "contacto@farmanorte.com.co");
-			props.setProperty("mail.smtp.auth", "true");
-			props.put("mail.transport.protocol.", "smtp");
-
-			// Preparamos la sesion
-			final Session session = Session.getDefaultInstance(props);
-			System.out.println("Enviando Correos....");
-			// Envia el correo
-			final ServletContext servletContextFinal = servletContext;
-			new Thread(new Runnable() {
-				public void run() {
-					try {
-						Transport t = session.getTransport("smtp");
-						t.connect("contacto@farmanorte.com.co", "Dromedicas2013.");
-
-						for (String dir : emailList) {
-
-							File inputHtml = new File(servletContextFinal.getRealPath("emailhtml/emailreferido.html"));
-							// Asginamos el archivo al objeto analizador
-							// Document
-							Document doc = Jsoup.parse(inputHtml, "UTF-8");
-
-							Element anioactual = doc.select("span#anioactual").first();
-							anioactual.append(new SimpleDateFormat("yyyy").format(new Date()));
-
-							InternetAddress addressTo = new InternetAddress(dir);
-
-							// se compone el mensaje (Asunto, cuerpo del mensaje
-							// y direccion origen)
-							final MimeMessage message = new MimeMessage(session);
-							message.setFrom(
-									new InternetAddress("contacto@puntosfarmanorte.com.co", "Puntos Farmanorte"));
-							message.setRecipient(Message.RecipientType.TO, addressTo);
-							// Emojis :-)
-							String subjectEmojiRaw = ":large_blue_circle: Afiliate a Puntos Farmanorte";
-							String subjectEmoji = EmojiParser.parseToUnicode(subjectEmojiRaw);
-
-							message.setSubject(subjectEmoji, "UTF-8");
-							message.setContent(doc.html(), "text/html; charset=utf-8");
-
-							t.sendMessage(message, message.getAllRecipients());
-
-						}
-						// Cierre de la conexion
-						t.close();
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			}).start();
-
-			System.out.println("Conexion cerrada");
-
-		} catch (Exception e) {
-			System.out.println("Falla en el envio del correo de referidos");
-			e.printStackTrace();
-			return false;
-		}
-		return true;
-
-	}
-	
 	
 	
 	public boolean emailErrorCampania(Campania campania, String contenido) {
@@ -1334,8 +1392,11 @@ public class EnviarEmailAlertas {
 			props.setProperty("mail.smtp.auth", "true");
 			props.put("mail.transport.protocol.", "smtp");
 
+			//Establece las propiedades de conexion
+			this.setProperties();
+			
 			// Preparamos la sesion
-			Session session = Session.getDefaultInstance(props);
+			Session session = Session.getDefaultInstance( this.defaultMailConfig );
 
 			// multiples direcciones
 			String[] to = { "sistemas2@dromedicas.com.co", "elianaarredondo@dromedicas.com.co" };
@@ -1348,7 +1409,7 @@ public class EnviarEmailAlertas {
 			// se compone el mensaje (Asunto, cuerpo del mensaje y direccion
 			// origen)
 			final MimeMessage message = new MimeMessage(session);
-			message.setFrom(new InternetAddress("contacto@farmanorte.com.co", "Puntos Farmanorte"));
+			message.setFrom(new InternetAddress(this.getUserSession(), "Puntos Farmanorte"));
 			message.setRecipients(Message.RecipientType.BCC, addressTo);
 			// Emojis :-)
 			String subjectEmojiRaw = ":rotating_light: Error en envio de Campaña";
@@ -1359,13 +1420,15 @@ public class EnviarEmailAlertas {
 
 			// Envia el correo
 			final Transport t = session.getTransport("smtp");
+			final String email = this.getUserSession();
+			final String passw = this.getPasswordSession();
 			// asigno un hilo exclusivo a la conexion y envio del mensaje
 			// dado que el proveedor de correo es muy lento para establecer
 			// la conexion
 			new Thread(new Runnable() {
 				public void run() {
 					try {
-						t.connect("contacto@farmanorte.com.co", "Dromedicas2013.");
+						t.connect(email, passw);
 						t.sendMessage(message, message.getAllRecipients());
 						// Cierre de la conexion
 						t.close();
@@ -1388,6 +1451,54 @@ public class EnviarEmailAlertas {
 	}
 
 
+	
+	public String enviarEmailPrueba(String dirEmail) throws Exception{
+		
+		System.out.println("Email Test Configuracion.. ");
+		
+		String enviado = "Exitoso";
+		
+		try {
+			String mensaje = "Mensaje de prueba configuracion de correo";	
+			
+			//Establece las propiedades de conexion
+			this.setProperties();
+			
+			// Preparamos la sesion
+			Session session = Session.getDefaultInstance( this.defaultMailConfig );
 
+			// se compone el mensaje (Asunto, cuerpo del mensaje y direccion
+			// origen)
+			final MimeMessage message = new MimeMessage(session);
+			message.setFrom(new InternetAddress(this.getUserSession(), "Puntos Farmanorte"));
+			message.setRecipient(Message.RecipientType.BCC, new InternetAddress(dirEmail));
+			// Emojis :-)
+			String subjectEmojiRaw = ":white_check_mark: Correo de Prueba";
+			String subjectEmoji = EmojiParser.parseToUnicode(subjectEmojiRaw);
+
+			message.setSubject(subjectEmoji, "UTF-8");
+			message.setContent(mensaje, "text/plain; charset=utf-8");
+
+			// Envia el correo
+			final Transport t = session.getTransport("smtp");
+			final String email = this.getUserSession();
+			final String passw = this.getPasswordSession();
+			// asigno un hilo exclusivo a la conexion y envio del mensaje
+			// dado que el proveedor de correo es muy lento para establecer
+			// la conexion
+			t.connect(email, passw);
+			t.sendMessage(message, message.getAllRecipients());
+			System.out.println("Conexion cerrada");
+
+		} catch (Exception e) {
+			throw new Exception( e.getMessage() );
+		}
+		return enviado;
+	}
+	
+	
+	
+	//Proximamente un solo metodo para enviar Emails
+	
 	
 }

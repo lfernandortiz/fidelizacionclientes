@@ -36,7 +36,7 @@ public class QuartzListener implements ServletContextListener {
 	@Override
 	public void contextInitialized(ServletContextEvent servletContext) {
 //		try {
-//			
+			
 //			/*
 //			 * Schedule Notificaciones compra - acumulacion de puntos | Cada 40 minutos
 //			 */			
@@ -96,7 +96,7 @@ public class QuartzListener implements ServletContextListener {
 						
 			
 			
-			
+//			
 //			/*
 //			 * Schedule revision de cumpleanos y actualiza edad afiliados | Todos los dias a las
 //			 * 6am.
@@ -110,7 +110,7 @@ public class QuartzListener implements ServletContextListener {
 //			// de email rechazadas y actualiza esta caracteristica en la base de
 //			// datos
 //			Trigger triggerCumple = newTrigger().withIdentity("Cumpleanos", "CumpleGroup")
-//					.withSchedule(CronScheduleBuilder.cronSchedule("0 0 6 ? * MON-SUN *")) // Todos los dias a las 6AM  0 0 6 ? * MON-SUN *
+//					.withSchedule(CronScheduleBuilder.cronSchedule("6AM  0 0 6 ? * MON-SUN *")) // Todos los dias a las 6AM  0 0 6 ? * MON-SUN *
 //					.build();
 //
 //			

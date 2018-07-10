@@ -103,7 +103,7 @@
 							<p:separator style="height:10px"/>
 							
 							<!-- Panel de configuracion de correo -->
-							<h2 class="ash1"><i class="fa fa-envelope-o" aria-hidden="true"></i> Configuracion cuenta correo electronico central</h2>
+							<h2 class="ash1"><i class="fa fa-envelope-o" aria-hidden="true"></i> Configuración cuenta correo electrónico central</h2>
 							<p:panelGrid columns="4" id="detailemial"
 								columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
 								layout="grid" styleClass="ui-panelgrid-blank"
@@ -113,7 +113,7 @@
 								<p:inputText id="smtpuserid" value="#{empresaBeanEdit.paramEmailSelected.smtpUser}"/>
 								
 								<p:outputLabel for="passwordid" value="Password  (password)" styleClass="labelImportant"/>
-								<p:inputText id="passwordid" value="#{empresaBeanEdit.paramEmailSelected.password}"/>
+								<p:inputText id="passwordid" value="#{empresaBeanEdit.paramEmailSelected.smtpPassword}" styleClass="inputPassword"/>
 																
 								<p:outputLabel for="smtphostid" value="SMTP Host (smtp.host)" styleClass="labelImportant"/>
 								<p:inputText id="smtphostid" value="#{empresaBeanEdit.paramEmailSelected.smtpHost}"/>
@@ -127,10 +127,10 @@
 								<p:outputLabel for="protocoid" value="Transport Protocol  (transport.protocol)" styleClass="labelImportant"/>
 								<p:inputText id="protocoid" value="#{empresaBeanEdit.paramEmailSelected.transportprotocol}"/>
 								
-								<p:outputLabel for="hostid" value="Host (host)" />
+								<p:outputLabel for="hostid" value="Host" />
 								<p:inputText id="hostid" value="#{empresaBeanEdit.paramEmailSelected.host}"/>
 								
-								<p:outputLabel for="portid" value="Port (port)" />
+								<p:outputLabel for="portid" value="Port" />
 								<p:inputText id="portid" value="#{empresaBeanEdit.paramEmailSelected.port}"/>
 								
 								<p:outputLabel for="smtpsockportid" value="SMTP Socket Factory Port" />
@@ -142,8 +142,8 @@
 								<p:outputLabel for="userid" value="User (user)"/>
 								<p:inputText id="userid" value="#{empresaBeanEdit.paramEmailSelected.user}"/>
 													
-								<p:outputLabel for="smtppasswordid" value="SMTP Password" />
-								<p:inputText id="smtppasswordid" value="#{empresaBeanEdit.paramEmailSelected.smtpPassword}"/>
+								<p:outputLabel for="smtppasswordid" value="Password" />
+								<p:inputText id="smtppasswordid" value="#{empresaBeanEdit.paramEmailSelected.password}" styleClass="inputPassword"/>
 																
 								<p:outputLabel for="storeprotid" value="Store Protocol" />
 								<p:inputText id="storeprotid" value="#{empresaBeanEdit.paramEmailSelected.storeProtocol}"/>
@@ -157,12 +157,31 @@
 								<p:outputLabel for="propositoid" value="Proposito" />
 								<p:inputText id="propositoid" value="#{empresaBeanEdit.paramEmailSelected.proposito}"/>
 								
-								
 							</p:panelGrid>
 							
-							<p:separator style="height:5px"/>
+							<div class="buttonssms">
+							<p:panelGrid columns="4" id="buttonsEmail"
+								columnClasses="ui-grid-col-3,"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent; ">
+								
+								<p:commandButton value="Enviar Emial Prueba " id="testEmailid"
+												 styleClass="aqua-button"
+												 oncomplete="PF('testEmail').show()"
+												 update="crearempresaform"/>
+						
+						  	</p:panelGrid>
+							</div>
 							
-							<p:panelGrid columns="6" id="buttons"
+							<p:separator style="height:10px"/>
+							
+							<!-- Panel de configuracion de correo -->
+							<h2 class="ash1"><i class="fa fa-commenting-o" aria-hidden="true"></i> Configuraciónn credenciales proveedor SMS</h2>
+							
+							
+							<p:separator style="height:10px"/>
+							<div class="buttonssms">
+								<p:panelGrid columns="6" id="buttons"
 								columnClasses="ui-grid-col-2,"
 								layout="grid" styleClass="ui-panelgrid-blank"
 								style="border:0px none; background-color:transparent; ">	
@@ -187,9 +206,15 @@
 												 id="cancelarnuevaid"
 												 action="#{empresaBeanEdit.cancelar()}" 
 												 process="@this"
-												 update="detailempresa" />								
+												 update="detailempresa" />
+												 
+								<p:commandButton value="Volver" 
+												 id="volverid"
+												 action="#{empresaBeanEdit.cancelar()}" 
+												 process="@this"
+												 update="detailempresa" />									
 							</p:panelGrid>
-							
+							</div>
 							
 							<h:commandLink class="ayudamodulolink">
 							<h4 class="ayudamodulo"><i class="fa fa-info-circle" aria-hidden="true"></i> Ayuda sobre este modulo.</h4>
@@ -198,21 +223,77 @@
                     </div> <!-- end ui-g-12 -->
                 </div> <!-- end ui-g -->
             </div>  <!-- end ui-fluid -->     
-        </h:form>
+            
+            
+            <!-- Cuadro de dialogo crear SMS -->
+			<p:dialog header="" widgetVar="testEmail" modal="true" id="dialogemail"
+				showEffect="fade" hideEffect="fade" resizable="false"
+				style="min-width: 30em!important;">
+				<div class="ui-fluid">
+					<div class="ui-g">
+						<div class="ui-g-12">
+							
+								<h1>
+									<i class="fa fa-envelope-o" aria-hidden="true"></i> Enviar Email de Prueba a:
+								</h1>					
+														
+							<p:spacer height="10px" />
+							<p:panelGrid columns="1" id="emailTestFormid"
+								columnClasses="ui-grid-col-12,ui-grid-col-12" layout="grid"
+								styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+								
+								<p:outputLabel for="diremailid" value="Direccion de email:" />
+								<p:inputText id="diremailid" maxlength="44"
+									value="#{empresaBeanEdit.emailTest}" />	
+										
+							</p:panelGrid>
+							<p:spacer height="10px" />
+							<div class="buttonssms">
+								<p:panelGrid columns="3" id="buttonsecrearid"
+									columnClasses="ui-grid-col-4,ui-grid-col-4,ui-grid-col-4"
+									layout="grid" styleClass="ui-panelgrid-blank"
+									style="border:0px none;  background-color:transparent; ">
 
-		
-		
-		
+									<p:commandButton value="Cancelar" 
+													 id="cancelarid" 
+													 oncomplete="PF('testEmail').hide()"
+													 update="emailTestFormid" 
+													 action="#{empresaBeanEdit.cancelarTest()}" />
+									
+									<p:commandButton value="Enviar" 
+													 id="enviarEmailTestid" 
+													 styleClass="navy-button"
+													 update="emailTestFormid"
+													 action="#{empresaBeanEdit.enviarEmailTest()}"/>
+									
+									
+								</p:panelGrid>
+							</div>
+						</div>
+						<!-- end ui-g-12 -->
+					</div>
+					<!-- end ui-g -->
+				</div>
+				<!-- end ui-fluid -->
+			</p:dialog>
+			
+			
+            
+            
+        </h:form>		
 		<script type="text/javascript">
             //<![CDATA[
-            	console.log(":-)");
+            	console.log("@lfernandortiz :-)");
             	//se usa para anadir una clase de un elemento hijo contenedor del framework Primefaces
-            	var x = $(document.getElementById("crearempresaform:buttons"))
-            						.children().children().addClass("align-right") ;
-            	console.log(x);
+            	/* $(document.getElementById("crearempresaform:buttons"))
+            						.children().children().addClass("align-right") ; */
+
+            	/* $(document.getElementById("crearempresaform:buttonsEmail"))
+									.children().children().addClass("align-right") ; */
+
             //]]>  
         </script>
         
     </ui:define>
-    
 </ui:composition>

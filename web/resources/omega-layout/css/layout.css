@@ -3784,8 +3784,8 @@ a.linkesp{
 
 
 .labelImportant{
-	font-weight: bold;
-	color: #0f2062;
+	font-weight: bold; 
+	color: #124722;
 }
 
 /*Algunas clases de utilidad*/
@@ -3816,7 +3816,15 @@ h2.ash1 {
     margin: 0 0 .5em 0;
     border-bottom: 1px solid #d5d5d5;
     padding: .1em;
-    font-size: 20px!important; }
-    
+    font-size: 18px!important; }
+
+
+.inputPassword{
+	font-weight: bold!important;
+	letter-spacing: 0.0625em;
+	}
+	
+	
+	  
     
     

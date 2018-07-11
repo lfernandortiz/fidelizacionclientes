@@ -769,8 +769,13 @@ public class AfiliadoBeanEdit implements Serializable{
 		if( this.afiliadoSelected.getCodvende() != null &&  !this.afiliadoSelected.getCodvende().equals("")){			
 			Vendedor v = 
 					this.vendedorService.obtenerVendedorPorCodigo( this.afiliadoSelected.getCodvende());
+
+			if(v == null){
+				registro = "Vendedor no determinado";
+			}else{
+				registro = v.getNombres() + " " + v.getApellidos();
+			}
 			
-			registro = v.getNombres() + " " + v.getApellidos();
 		}else{
 			registro = this.afiliadoSelected.getUsuariowebBean().getNombreusuario();
 		}

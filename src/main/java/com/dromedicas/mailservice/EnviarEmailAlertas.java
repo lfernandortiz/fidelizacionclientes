@@ -1001,7 +1001,8 @@ public class EnviarEmailAlertas {
 
 	public String emailRecuparacionClave(Afiliado afiliado) {
 
-		String urlConfirmacion = "http://www.puntosfarmanorte.com.co/seccion/resetpassword.html?id="
+		//String urlConfirmacion = "http://www.puntosfarmanorte.com.co/seccion/resetpassword.html?id="
+		String urlConfirmacion = "http://localhost:8003/seccion/resetpassword.html?id="
 				+ afiliado.getKeycode();
 
 		System.out.println("Enviar Email Recuperacion clave");
@@ -1088,15 +1089,13 @@ public class EnviarEmailAlertas {
 						t.sendMessage(message, message.getAllRecipients());
 						// Cierre de la conexion
 						t.close();
-
+						System.out.println("Conexion cerrada");
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
-			}).start();
-
-			System.out.println("Conexion cerrada");
+			}).start();			
 
 		} catch (Exception e) {
 			System.out.println("Falla en el envio del correo:");

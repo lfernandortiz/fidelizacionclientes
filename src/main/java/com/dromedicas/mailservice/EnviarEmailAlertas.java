@@ -155,7 +155,7 @@ public class EnviarEmailAlertas {
 		
 //		String urlConfirmacion = "http://www.puntosfarmanorte.com.co/seccion/actualizacion.html?id="
 //		String urlConfirmacion = "http://www.puntosfarmanorte.com.co/index.html?id="			
-		String urlConfirmacion = "http://localhost:8003/index.html?id="
+		String urlConfirmacion = "http://www.puntosfarmanorte.com.co/index.html?id="
 				+ afiliado.getKeycode();
 
 		String contenidoEmail = null;
@@ -253,8 +253,7 @@ public class EnviarEmailAlertas {
 						e.printStackTrace();
 					}
 				}
-			}).start();
-			
+			}).start();			
 
 		} catch (Exception e) {
 			System.out.println("Falla en el envio del correo:");
@@ -275,7 +274,7 @@ public class EnviarEmailAlertas {
 	public String validarCorreoActualizacion(Afiliado afiliado) {
 
 //		String urlConfirmacion = "http://www.puntosfarmanorte.com.co/index.html?param=true&id="
-		String urlConfirmacion = "http://localhost:8003/index.html?param=true&id="
+		String urlConfirmacion = "http://www.puntosfarmanorte.com.co/index.html?param=true&id="
 				+ afiliado.getKeycode();
 
 		String contenidoEmail = null;
@@ -374,8 +373,7 @@ public class EnviarEmailAlertas {
 						e.printStackTrace();
 					}
 				}
-			}).start();
-			
+			}).start();			
 
 		} catch (Exception e) {
 			System.out.println("Falla en el envio del correo:");
@@ -594,8 +592,8 @@ public class EnviarEmailAlertas {
 			return false;
 		}
 		return true;
-
 	}
+	
 
 	
 	public boolean emailNotificacionReferido(final List<String> emailList) {
@@ -684,6 +682,7 @@ public class EnviarEmailAlertas {
 		return true;
 
 	}
+	
 	
 	
 	public String emailConfirmacionFinalSuscripcion(Afiliado afiliado) {
@@ -791,6 +790,7 @@ public class EnviarEmailAlertas {
 		return cmensaje;
 	}
 
+	
 	
 	public String emailActualizacionDatos(Afiliado afiliado) {
 
@@ -1002,7 +1002,7 @@ public class EnviarEmailAlertas {
 	public String emailRecuparacionClave(Afiliado afiliado) {
 
 		//String urlConfirmacion = "http://www.puntosfarmanorte.com.co/seccion/resetpassword.html?id="
-		String urlConfirmacion = "http://localhost:8003/seccion/resetpassword.html?id="
+		String urlConfirmacion = "http://www.puntosfarmanorte.com.co/seccion/resetpassword.html?id="
 				+ afiliado.getKeycode();
 
 		System.out.println("Enviar Email Recuperacion clave");

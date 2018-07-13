@@ -244,6 +244,14 @@ public class PuntosServiceRs {
 			//se obtiene el afiliado	
 			Afiliado afiliado = this.afiliadoService.obtenerAfiliadoByDocumento(documento);
 			
+			
+			if( afiliado.getEmailvalidado() == 0 ){
+				responseObject.setCode(200);
+				responseObject.setMessage("No tiene su correo electronico validado ACTUALICE SUS DATOS.");
+				responseObject.setStatus(Status.OK.getReasonPhrase());
+				return Response.status(200).entity(responseObject).build();
+			}
+			
 			if( afiliado.getSinredencion() == 1 ){
 				responseObject.setCode(200);
 				responseObject.setMessage("REDENCION NO PERMITIDA para este afiliado. Comuniquese con sistemas");

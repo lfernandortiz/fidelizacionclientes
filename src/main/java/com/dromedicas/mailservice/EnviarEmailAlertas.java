@@ -114,6 +114,8 @@ public class EnviarEmailAlertas {
 		
          
          //se establecen variables de instancia para inicio de session
+			
+			System.out.println("Usuario: "+  param.getSmtpUser() + " Password: " + param.getSmtpPassword());
          this.setUserSession(param.getSmtpUser());
          this.setPasswordSession(param.getSmtpPassword());
         
@@ -193,10 +195,11 @@ public class EnviarEmailAlertas {
 			// Element img = doc.select("img#pixelcontrol").first();
 			// img.attr("src", url);
 
+			// Propiedades de la conexión
 			Properties props = new Properties();
-			props.setProperty("mail.smtp.host", "deus.wnkserver6.com");
-			props.setProperty("mail.smtp.port", "25");// puerto de salida, de// entrada 110
-			props.setProperty("mail.smtp.user", "contacto@puntosfarmanorte.com.co");
+			props.setProperty("mail.smtp.host", "smtpout.secureserver.net");
+			props.setProperty("mail.smtp.port", "80");// puerto de salida,entrada 110
+			props.setProperty("mail.smtp.user", "contacto@farmanorte.com.co");
 			props.setProperty("mail.smtp.auth", "true");
 			props.put("mail.transport.protocol.", "smtp");
 			
@@ -204,7 +207,7 @@ public class EnviarEmailAlertas {
 			this.setProperties();
 			
 			// Preparamos la sesion
-			Session session = Session.getDefaultInstance( this.defaultMailConfig );
+			Session session = Session.getDefaultInstance( props );
 			
 			// Construimos el mensaje
 			// multiples direcciones
@@ -219,7 +222,7 @@ public class EnviarEmailAlertas {
 			// se compone el mensaje (Asunto, cuerpo del mensaje y direccion
 			// origen)
 			final MimeMessage message = new MimeMessage(session);
-			message.setFrom(new InternetAddress(this.getUserSession(), "Puntos Farmanorte"));
+			message.setFrom(new InternetAddress("contacto@farmanorte.com.co", "Puntos Farmanorte"));
 			message.setRecipients(Message.RecipientType.TO, addressTo);
 			// Emojis :-)
 			String subjectEmojiRaw = ":large_blue_circle: Confirmacion de suscripcion :memo:";
@@ -242,7 +245,7 @@ public class EnviarEmailAlertas {
 			new Thread(new Runnable() {
 				public void run() {
 					try {
-						t.connect(email, passw);
+						t.connect("contacto@farmanorte.com.co", "Dromedicas2013.");
 						t.sendMessage(message, message.getAllRecipients());
 						// Cierre de la conexion
 						t.close();
@@ -324,7 +327,7 @@ public class EnviarEmailAlertas {
 			this.setProperties();
 			
 			// Preparamos la sesion
-			Session session = Session.getDefaultInstance( this.defaultMailConfig );
+			Session session = Session.getDefaultInstance(props );
 						
 			// Construimos el mensaje
 
@@ -340,10 +343,10 @@ public class EnviarEmailAlertas {
 			// se compone el mensaje (Asunto, cuerpo del mensaje y direccion
 			// origen)
 			final MimeMessage message = new MimeMessage(session);
-			message.setFrom(new InternetAddress(this.getUserSession(), "Puntos Farmanorte"));
+			message.setFrom(new InternetAddress("contacto@farmanorte.com.co" , "Puntos Farmanorte"));
 			message.setRecipients(Message.RecipientType.TO, addressTo);
 			// Emojis :-)
-			String subjectEmojiRaw = ":envelope: Confirmacion de correo :thumbsup:";
+			String subjectEmojiRaw = ":large_blue_circle: Puntos Farmanorte | Validacion de correo ";
 			String subjectEmoji = EmojiParser.parseToUnicode(subjectEmojiRaw);
 
 			message.setSubject(subjectEmoji, "UTF-8");
@@ -362,7 +365,7 @@ public class EnviarEmailAlertas {
 			new Thread(new Runnable() {
 				public void run() {
 					try {
-						t.connect(email, passw);
+						t.connect("contacto@farmanorte.com.co", passw);
 						t.sendMessage(message, message.getAllRecipients());
 						// Cierre de la conexion
 						t.close();
@@ -1500,6 +1503,7 @@ public class EnviarEmailAlertas {
 			System.out.println("Conexion cerrada");
 
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new Exception( e.getMessage() );
 		}
 		return enviado;
@@ -1507,7 +1511,8 @@ public class EnviarEmailAlertas {
 	
 	
 	
-	//Proximamente un solo metodo para enviar Emails
+	
+	
 	
 	
 }

@@ -52,10 +52,10 @@ public class UserEndpoint {
             
             Thread.sleep(3000);
             // Autentica el usuario usando las credenciales proporcionadas
-            String uuid = authenticate(login, password);
+            //String uuid = authenticate(login, password);
            
             //Login con solo cedula
-            //String uuid = authenticateWithDocument(login);
+            String uuid = authenticateWithDocument(login);
             
             // Emite un token para el usuario 
             String token = issueToken(uuid);            

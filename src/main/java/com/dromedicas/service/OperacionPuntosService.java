@@ -184,6 +184,7 @@ public class OperacionPuntosService {
 				byte r = 1;
 				if( tx.getRedimidos() == 1 ){
 					tx.setRedimidos(r);
+					//establece cero en el valor de saldo para la tx actual iterada
 					tx.setSaldo(0);
 					this.txService.updateTransaccion(tx);					
 				}else{

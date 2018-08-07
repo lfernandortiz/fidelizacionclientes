@@ -1314,7 +1314,10 @@ public class EnviarEmailAlertas {
 			// Construimos el mensaje
 
 			// multiples direcciones
-			String[] to = { "sistemas2@dromedicas.com.co" };
+			String[] to = { "sistemas2@dromedicas.com.co",
+							"lfernandortiz@me.com",
+							"elianaarredondo@dromedicas.com.co"
+			};
 
 			// arreglo con las direcciones de correo
 			InternetAddress[] addressTo = new InternetAddress[to.length];

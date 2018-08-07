@@ -85,7 +85,7 @@ public class QuartzListener implements ServletContextListener {
 //			// Trigger todos los dias a las 6 am abre el el buzon de despacho de correos y revisa las direcciones
 //			// de email rechazadas y actualiza esta caracteristica en la base de datos
 //			Trigger triggerEmailR = newTrigger().withIdentity("EmailRechazados", "EmailGroup")
-//					.withSchedule(CronScheduleBuilder.cronSchedule("0 0/30 * 1/1 * ? *")) //Cada 6 Horas 0 0 0/6 1/1 * ? *
+//					.withSchedule(CronScheduleBuilder.cronSchedule("0 0 0/6 1/1 * ? *")) //Cada 6 Horas 0 0 0/6 1/1 * ? *
 //					.build();			
 //						
 //			 			

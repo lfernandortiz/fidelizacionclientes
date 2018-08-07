@@ -38,8 +38,13 @@ public class ParametrosEmialService {
 
 	
 	public void updateParametrosemail(Parametrosemail instance) {
-		dao.updateParametrosemail(instance);
-
+		Parametrosemail temp =  this.obtenerParametrosemailPorFinalidad("1");
+		if(temp == null){
+			dao.updateParametrosemail(temp);
+		}else{
+			temp = instance;
+			dao.updateParametrosemail(temp);	
+		}
 	}
 
 	

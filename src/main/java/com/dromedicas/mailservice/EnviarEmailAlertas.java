@@ -195,19 +195,11 @@ public class EnviarEmailAlertas {
 			// Element img = doc.select("img#pixelcontrol").first();
 			// img.attr("src", url);
 
-			// Propiedades de la conexión
-			Properties props = new Properties();
-			props.setProperty("mail.smtp.host", "smtpout.secureserver.net");
-			props.setProperty("mail.smtp.port", "80");// puerto de salida,entrada 110
-			props.setProperty("mail.smtp.user", "contacto@farmanorte.com.co");
-			props.setProperty("mail.smtp.auth", "true");
-			props.put("mail.transport.protocol.", "smtp");
-			
 			//Establece las propiedades de conexion
 			this.setProperties();
 			
 			// Preparamos la sesion
-			Session session = Session.getDefaultInstance( props );
+			Session session = Session.getDefaultInstance( this.defaultMailConfig );
 			
 			// Construimos el mensaje
 			// multiples direcciones
@@ -222,7 +214,7 @@ public class EnviarEmailAlertas {
 			// se compone el mensaje (Asunto, cuerpo del mensaje y direccion
 			// origen)
 			final MimeMessage message = new MimeMessage(session);
-			message.setFrom(new InternetAddress("contacto@farmanorte.com.co", "Puntos Farmanorte"));
+			message.setFrom(new InternetAddress(this.getUserSession(), "Puntos Farmanorte"));
 			message.setRecipients(Message.RecipientType.TO, addressTo);
 			// Emojis :-)
 			String subjectEmojiRaw = ":large_blue_circle: Confirmacion de suscripcion :memo:";
@@ -245,7 +237,7 @@ public class EnviarEmailAlertas {
 			new Thread(new Runnable() {
 				public void run() {
 					try {
-						t.connect("contacto@farmanorte.com.co", "Dromedicas2013.");
+						t.connect(email, passw);
 						t.sendMessage(message, message.getAllRecipients());
 						// Cierre de la conexion
 						t.close();
@@ -325,9 +317,9 @@ public class EnviarEmailAlertas {
 
 			//establece los valores de la propiedades
 			this.setProperties();
-			
+		
 			// Preparamos la sesion
-			Session session = Session.getDefaultInstance(props );
+			Session session = Session.getDefaultInstance( this.defaultMailConfig );
 						
 			// Construimos el mensaje
 
@@ -343,7 +335,7 @@ public class EnviarEmailAlertas {
 			// se compone el mensaje (Asunto, cuerpo del mensaje y direccion
 			// origen)
 			final MimeMessage message = new MimeMessage(session);
-			message.setFrom(new InternetAddress("contacto@farmanorte.com.co" , "Puntos Farmanorte"));
+			message.setFrom(new InternetAddress(this.getUserSession(), "Puntos Farmanorte"));
 			message.setRecipients(Message.RecipientType.TO, addressTo);
 			// Emojis :-)
 			String subjectEmojiRaw = ":large_blue_circle: Puntos Farmanorte | Validacion de correo ";
@@ -365,7 +357,7 @@ public class EnviarEmailAlertas {
 			new Thread(new Runnable() {
 				public void run() {
 					try {
-						t.connect("contacto@farmanorte.com.co", passw);
+						t.connect(email, passw);
 						t.sendMessage(message, message.getAllRecipients());
 						// Cierre de la conexion
 						t.close();

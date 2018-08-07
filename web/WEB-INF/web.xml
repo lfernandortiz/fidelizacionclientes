@@ -126,5 +126,4 @@
   <listener>
     <listener-class>com.dromedicas.scheduling.QuartzListener</listener-class>
   </listener>
- 
 </web-app>

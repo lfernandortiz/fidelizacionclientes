@@ -32,6 +32,7 @@ public class QuartzListener implements ServletContextListener {
 	Scheduler schSMSCampania = null;
 	
 	
+	
 
 	@Override
 	public void contextInitialized(ServletContextEvent servletContext) {

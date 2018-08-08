@@ -94,9 +94,7 @@ public class QuartzListener implements ServletContextListener {
 //			schEmailRechazo = new StdSchedulerFactory().getScheduler();
 //			schEmailRechazo.start();
 //			schEmailRechazo.scheduleJob(jobEmailR, triggerEmailR);
-						
-			
-			
+					
 			
 			/*
 			 * Schedule revision de cumpleanos y actualiza edad afiliados | Todos los dias a las
@@ -120,7 +118,6 @@ public class QuartzListener implements ServletContextListener {
 			schCumpleanos = new StdSchedulerFactory().getScheduler();
 			schCumpleanos.start();
 			schCumpleanos.scheduleJob(cumpleanosAct, triggerCumple);
-
 		
 			
 			/*
@@ -145,8 +142,7 @@ public class QuartzListener implements ServletContextListener {
 			schSMSCumple = new StdSchedulerFactory().getScheduler();
 			schSMSCumple.start();
 			schSMSCumple.scheduleJob(smsCumpleanos, triggerSMSCumple);
-		
-			
+					
 			
 			/*
 			 * Schedule valida cada hora si hay campanias SMS

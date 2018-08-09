@@ -1,6 +1,6 @@
-# Plataforma de Fidelizacion Puntos Farmanorte
+# Plataforma de Fidelizacion 
 <p align="center">
-	<img src="https://github.com/SOFTDromedicas/puntosfarmanorte/blob/master/web/resources/omega-layout/images/loginLogoFP.png">
+	<img src="https://raw.githubusercontent.com/lfernandortiz/fidelizacionclientes/master/web/resources/omega-layout/images/nuevologoPuntosF.png">
 </p>
 
 

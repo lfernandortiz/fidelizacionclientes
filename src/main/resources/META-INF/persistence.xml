@@ -29,7 +29,10 @@
 		<class>com.dromedicas.domain.Ocupacion</class>
 		<class>com.dromedicas.domain.Pais</class>
 		<class>com.dromedicas.domain.Parametrosemail</class>
-		<class>com.dromedicas.domain.Patologia</class>
+		<class>com.dromedicas.domain.Paremetroscampania</class>
+		<class>com.dromedicas.domain.Patologia</class>		
+		<class>com.dromedicas.domain.Patologiacampania</class>
+		<class>com.dromedicas.domain.PatologiacampaniaPK</class>
 		<class>com.dromedicas.domain.Perfil</class>
 		<class>com.dromedicas.domain.Permisorol</class>
 		<class>com.dromedicas.domain.PermisorolPK</class>

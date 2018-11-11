@@ -762,6 +762,9 @@ public class AfiliadoBeanEdit implements Serializable{
 		
 	}
 	
+	
+	
+	
 	public String usuarioRegistro(){
 		String registro = "";
 		

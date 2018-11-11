@@ -217,7 +217,8 @@ public class EnviarEmailAlertas {
 			message.setFrom(new InternetAddress(this.getUserSession(), "Puntos Farmanorte"));
 			message.setRecipients(Message.RecipientType.TO, addressTo);
 			// Emojis :-)
-			String subjectEmojiRaw = ":large_blue_circle: Confirmacion de suscripcion :memo:";
+			//String subjectEmojiRaw = ":large_blue_circle: Confirmacion de suscripcion :memo:";
+			String subjectEmojiRaw = ":santa: :christmas_tree: :large_blue_circle: Confirmacion de suscripcion :memo:";
 			String subjectEmoji = EmojiParser.parseToUnicode(subjectEmojiRaw);
 
 			message.setSubject(subjectEmoji, "UTF-8");

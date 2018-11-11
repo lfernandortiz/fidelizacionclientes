@@ -43,10 +43,11 @@ public class LeerEmailRechazados implements Job {
 			// se conecta al servicio de correo recibiendo la cuenta de correo
 			// usada para este fin
 
-			mailService.setConnectionValues("notificaciones");
+			mailService.setConnectionValues("1");
 
 			// se obtienen todo los mensajes de la bandeja de entrada de la
 			// cuenta
+			
 			List<Message> inboxM = mailService.getNewMessages();// Mensajes recibidos			
 
 			System.out.println("---------INBOX SIZE:" + inboxM.size());
@@ -73,13 +74,13 @@ public class LeerEmailRechazados implements Job {
 
 					} catch (Exception e) {
 						System.out.println(e.getMessage());
-						e.printStackTrace();
+						//e.printStackTrace();
 					}
 
 					// metodo que devuelve el message-id
 					// messageId = mailService.messageId(m);
 					
-					// añado el mensaje a la coleecion de leidos
+					// aï¿½ado el mensaje a la coleecion de leidos
 					// archivo.add(m);
 
 					// copio el mensaje a la carperta de leidos

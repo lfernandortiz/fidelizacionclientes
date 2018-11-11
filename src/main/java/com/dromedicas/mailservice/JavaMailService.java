@@ -106,7 +106,16 @@ public class JavaMailService {
         defaultMailConfig.setProperty(MAIL_USERNAME, param.getUser());
         defaultMailConfig.setProperty(MAIL_SMTP_AUTH, param.getSmtpAuth());
         defaultMailConfig.setProperty(MAIL_STORE_IMAP, param.getStoreProtocol());
-        defaultMailConfig.setProperty(MAIL_TRANSPORT_PROTOCOL, param.getProtocol());
+        defaultMailConfig.setProperty(MAIL_TRANSPORT_PROTOCOL, param.getTransportprotocol());
+        
+        
+        Set< Object > claves = defaultMailConfig.keySet(); // obtiene los nombres de las propiedades
+        
+       // imprime los pares nombre/valor
+        for ( Object clave : claves ) {
+        	System.out.printf("%s\t\t%s\n", clave, defaultMailConfig.getProperty( ( String ) clave ) );
+         } 
+	    System.out.println();
         
         return defaultMailConfig;
     }
@@ -146,6 +155,7 @@ public class JavaMailService {
 			store = session.getStore();
 			// store.connect(serverHost, port, username, password);
 			store.connect(this.serverSMTPHost, this.username, this.password);
+			
 
 		}
 		return store;
@@ -525,7 +535,7 @@ public class JavaMailService {
 		} // fin de for
 
 		System.out.println();
-	} // fin del método listarPropiedades
+	} // fin del mï¿½todo listarPropiedades
 
 	
 }//FIN de la clase

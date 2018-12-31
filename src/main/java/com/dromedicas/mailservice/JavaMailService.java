@@ -535,7 +535,7 @@ public class JavaMailService {
 		} // fin de for
 
 		System.out.println();
-	} // fin del m�todo listarPropiedades
+	} 
 
 	
 }//FIN de la clase

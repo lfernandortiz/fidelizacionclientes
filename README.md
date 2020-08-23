@@ -6,5 +6,7 @@
 	</p>
 </p>
 
+Plataforma de fidelizacion de clientes para cadena de farmacias. 
+
 
 

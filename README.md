@@ -6,7 +6,8 @@
 	</p>
 </p>
 
-Plataforma de fidelizacion de clientes para cadena de farmacias. 
+Plataforma de fidelizacion de clientes para cadena de farmacias. Desarrollada en JavaEE, JSF, JPA, JAX-RS y GlassFish 
+
 
 
 
